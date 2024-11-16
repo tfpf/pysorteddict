@@ -18,6 +18,19 @@ struct ComparePyObjects
     }
 };
 
+/**
+ * Set an error message containing the string representation of a Python
+ * object.
+ */
+static void PyErr_FormatWrapper(PyObject* exc, char const* fmt, PyObject* ob)
+{
+    PyObject* repr = PyObject_Repr(ob);  // New reference.
+    // The second argument is no longer a string constant. Is there an elegant
+    // fix?
+    PyErr_Format(PyExc_ValueError, fmt, PyUnicode_AsUTF8(repr));
+    Py_DECREF(repr);
+}
+
 // clang-format off
 struct SortedDictType
 {
@@ -83,17 +96,13 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
     SortedDictType* sd = (SortedDictType*)self;
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
-        PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
-        PyErr_Format(PyExc_ValueError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
-        Py_DECREF(key_type_repr);
+        PyErr_FormatWrapper(PyExc_ValueError, "key must be of type %s", sd->key_type);
         return nullptr;
     }
     auto it = sd->map->find(key);
     if (it == sd->map->end())
     {
-        PyObject* key_repr = PyObject_Repr(key);  // New reference.
-        PyErr_Format(PyExc_KeyError, "%s", PyUnicode_AsUTF8(key_repr));
-        Py_DECREF(key_repr);
+        PyErr_FormatWrapper(PyExc_KeyError, "%s", sd->key_type);
         return nullptr;
     }
     return it->second;
@@ -107,9 +116,7 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     SortedDictType* sd = (SortedDictType*)self;
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
-        PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
-        PyErr_Format(PyExc_ValueError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
-        Py_DECREF(key_type_repr);
+        PyErr_FormatWrapper(PyExc_ValueError, "key must be of type %s", sd->key_type);
         return -1;
     }
 
@@ -119,9 +126,7 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     {
         if (it == sd->map->end())
         {
-            PyObject* key_repr = PyObject_Repr(key);  // New reference.
-            PyErr_Format(PyExc_KeyError, "%s", PyUnicode_AsUTF8(key_repr));
-            Py_DECREF(key_repr);
+            PyErr_FormatWrapper(PyExc_KeyError, "%s", sd->key_type);
             return -1;
         }
         Py_DECREF(it->first);
