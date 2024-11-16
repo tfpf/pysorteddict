@@ -26,6 +26,16 @@ struct ComparePyObjects
 };
 
 /**
+ * Deinitialise and deallocate.
+ */
+static void sorted_dict_type_dealloc(PyObject *self){
+    SortedDictType* sd = (SortedDictType*)self;
+    Py_DECREF(sd->key_type);
+    delete sd->map;
+    Py_TYPE(self)->tp_free(self);
+}
+
+/**
  * Allocate and initialise.
  */
 static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
@@ -56,16 +66,6 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     sd->key_type = (PyTypeObject*)key_type;
     Py_INCREF(sd->key_type);
     return self;
-}
-
-/**
- * Deinitialise and deallocate.
- */
-static void sorted_dict_type_dealloc(PyObject *self){
-    SortedDictType* sd = (SortedDictType*)self;
-    Py_DECREF(sd->key_type);
-    delete sd->map;
-    Py_TYPE(self)->tp_free(self);
 }
 
 // clang-format off
