@@ -1,36 +1,61 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <iterator>
 #include <map>
-
-// clang-format off
-struct SortedDictType
-{
-    PyObject_HEAD
-    void *map;
-    PyTypeObject *key_type;
-};
-// clang-format on
+#include <sstream>
 
 /**
  * C++-style comparison implementation for Python objects.
  */
 struct ComparePyObjects
 {
-    bool operator()(PyObject* a, PyObject* b)
+    bool operator()(PyObject* a, PyObject* b) const
     {
         // This assumes that the comparison operation will never error out. I
         // think it should be enough to ensure that the two Python objects
         // being compared always have the same type.
-        return PyObject_RichCompareBool(a, b, Py_LE) == 1;
+        return PyObject_RichCompareBool(a, b, Py_LT) == 1;
     }
 };
 
 /**
+ * Set an error message containing the string representation of a Python
+ * object.
+ */
+static void PyErr_FormatWrapper(PyObject* exc, char const* fmt, PyObject* ob)
+{
+    PyObject* repr = PyObject_Repr(ob);  // New reference.
+    // The second argument is no longer a string constant. Is there an elegant
+    // fix?
+    PyErr_Format(PyExc_ValueError, fmt, PyUnicode_AsUTF8(repr));
+    Py_DECREF(repr);
+}
+
+// clang-format off
+struct SortedDictType
+{
+    PyObject_HEAD
+    // Pointer to an object on the heap. Can't be the object itself, because
+    // this container will be allocated a definite amount of space, which won't
+    // allow the object to grow.
+    std::map<PyObject *, PyObject*, ComparePyObjects> *map = nullptr;
+    // The type of the keys of the dictionary.
+    PyObject *key_type = nullptr;
+};
+// clang-format on
+
+/**
  * Deinitialise and deallocate.
  */
-static void sorted_dict_type_dealloc(PyObject *self){
+static void sorted_dict_type_dealloc(PyObject* self)
+{
     SortedDictType* sd = (SortedDictType*)self;
     Py_DECREF(sd->key_type);
+    for (auto& item : *sd->map)
+    {
+        Py_DECREF(item.first);
+        Py_DECREF(item.second);
+    }
     delete sd->map;
     Py_TYPE(self)->tp_free(self);
 }
@@ -46,38 +71,137 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
         return nullptr;
     }
 
-    PyObject* key_type;  // Borrowed reference.
+    SortedDictType* sd = (SortedDictType*)self;
     // Casting a string constant to a non-const pointer is not permitted in
     // C++, but the signature of this function is such that I am forced to.
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", (char*[]) { "key_type", nullptr }, &key_type))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", (char*[]) { "key_type", nullptr }, &sd->key_type))
     {
         return nullptr;
     }
 
     // Check the type to use for keys.
-    if (PyObject_RichCompareBool(key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
+    if (PyObject_RichCompareBool(sd->key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
     {
         PyErr_SetString(PyExc_ValueError, "constructor argument must be a supported type");
         return nullptr;
     }
 
-    SortedDictType* sd = (SortedDictType*)self;
     sd->map = new std::map<PyObject*, PyObject*, ComparePyObjects>;
-    sd->key_type = (PyTypeObject*)key_type;
     Py_INCREF(sd->key_type);
     return self;
+}
+
+/**
+ * Obtain the number of keys.
+ */
+Py_ssize_t sorted_dict_type_len(PyObject *self){
+    SortedDictType* sd = (SortedDictType*)self;
+    return sd->map->size();
+}
+
+/**
+ * Query the value at a key.
+ */
+static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
+{
+    SortedDictType* sd = (SortedDictType*)self;
+    if (PyObject_IsInstance(key, sd->key_type) != 1)
+    {
+        PyErr_FormatWrapper(PyExc_ValueError, "key must be of type %s", sd->key_type);
+        return nullptr;
+    }
+    auto it = sd->map->find(key);
+    if (it == sd->map->end())
+    {
+        PyErr_FormatWrapper(PyExc_KeyError, "%s", sd->key_type);
+        return nullptr;
+    }
+    return it->second;
+}
+
+/**
+ * Assign the value at a key.
+ */
+static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* value)
+{
+    SortedDictType* sd = (SortedDictType*)self;
+    if (PyObject_IsInstance(key, sd->key_type) != 1)
+    {
+        PyErr_FormatWrapper(PyExc_ValueError, "key must be of type %s", sd->key_type);
+        return -1;
+    }
+
+    // Remove the key.
+    auto it = sd->map->find(key);
+    if (value == nullptr)
+    {
+        if (it == sd->map->end())
+        {
+            PyErr_FormatWrapper(PyExc_KeyError, "%s", sd->key_type);
+            return -1;
+        }
+        Py_DECREF(it->first);
+        Py_DECREF(it->second);
+        sd->map->erase(it);
+        return 0;
+    }
+
+    // Insert or replace the value.
+    if (it == sd->map->end())
+    {
+        auto status = sd->map->insert({ key, value });
+        it = status.first;
+        Py_INCREF(it->first);
+    }
+    else
+    {
+        Py_DECREF(it->second);
+        it->second = value;
+    }
+    Py_INCREF(it->second);
+    return 0;
+}
+
+static PyMappingMethods sorted_dict_type_mapping = {
+    .mp_length = sorted_dict_type_len,
+    .mp_subscript = sorted_dict_type_getitem,
+    .mp_ass_subscript = sorted_dict_type_setitem,
+};
+
+/**
+ * Stringify.
+ */
+static PyObject* sorted_dict_type_str(PyObject* self)
+{
+    SortedDictType* sd = (SortedDictType*)self;
+    std::ostringstream oss;
+    char const* delimiter = "";
+    char const* actual_delimiter = ", ";
+    oss << '\x7b';
+    for (auto& item : *sd->map)
+    {
+        PyObject* key_repr = PyObject_Repr(item.first);  // New reference.
+        PyObject* value_repr = PyObject_Repr(item.second);  // New reference.
+        oss << delimiter << PyUnicode_AsUTF8(key_repr) << ": " << PyUnicode_AsUTF8(value_repr);
+        delimiter = actual_delimiter;
+        Py_DECREF(key_repr);
+        Py_DECREF(value_repr);
+    }
+    oss << '\x7d';
+    return PyUnicode_FromString(oss.str().data());
 }
 
 // clang-format off
 static PyTypeObject sorted_dict_type = {
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
-    .tp_name = "pysorteddict.SortedDict",
+    .tp_name = "SortedDict",
     .tp_basicsize = sizeof(SortedDictType),
     .tp_itemsize = 0,
     .tp_dealloc = sorted_dict_type_dealloc,
     // .tp_repr = sorted_dict_type_repr,
-    // .tp_as_mapping = &sorted_dict_type_mapping,
+    .tp_as_mapping = &sorted_dict_type_mapping,
     .tp_hash = PyObject_HashNotImplemented,
+    .tp_str = sorted_dict_type_str,
     // .tp_getattro =  PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     // .tp_methods = sorted_dict_type_methods,
