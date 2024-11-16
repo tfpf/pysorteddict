@@ -3,7 +3,8 @@
 from pysorteddict import SortedDict
 
 sd = SortedDict(int)
-print(sd)
 sd[1] = "anda"
+sd[2] = "gundu"
+print(sd)
 print(sd[1])
 del sd

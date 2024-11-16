@@ -1,6 +1,8 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <iterator>
 #include <map>
+#include <sstream>
 
 /**
  * C++-style comparison implementation for Python objects.
@@ -149,6 +151,29 @@ static PyMappingMethods sorted_dict_type_mapping = {
     .mp_ass_subscript = sorted_dict_type_setitem,
 };
 
+/**
+ * Stringify.
+ */
+static PyObject* sorted_dict_type_str(PyObject* self)
+{
+    SortedDictType* sd = (SortedDictType*)self;
+    std::ostringstream oss;
+    char const* delimiter = "";
+    char const* actual_delimiter = ", ";
+    oss << '\x7b';
+    for (auto it = sd->map->begin(); it != sd->map->end(); it = std::next(it))
+    {
+        PyObject* key_repr = PyObject_Repr(it->first);  // New reference.
+        PyObject* value_repr = PyObject_Repr(it->second);  // New reference.
+        oss << delimiter << PyUnicode_AsUTF8(key_repr) << ": " << PyUnicode_AsUTF8(value_repr);
+        delimiter = actual_delimiter;
+        Py_DECREF(key_repr);
+        Py_DECREF(value_repr);
+    }
+    oss << '\x7d';
+    return PyUnicode_FromString(oss.str().data());
+}
+
 // clang-format off
 static PyTypeObject sorted_dict_type = {
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -159,6 +184,7 @@ static PyTypeObject sorted_dict_type = {
     // .tp_repr = sorted_dict_type_repr,
     .tp_as_mapping = &sorted_dict_type_mapping,
     .tp_hash = PyObject_HashNotImplemented,
+    .tp_str = sorted_dict_type_str,
     // .tp_getattro =  PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     // .tp_methods = sorted_dict_type_methods,
