@@ -51,26 +51,28 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
         return nullptr;
     }
 
-    PyObject* key_type;  // Borrowed reference.
+    // Initialise the object to a null pointer so that if premature
+    // deallocation occurs, no invalid memory is accessed.
+    SortedDictType* sd = (SortedDictType*)self;
+    sd->map = nullptr;
+
     // Casting a string constant to a non-const pointer is not permitted in
     // C++, but the signature of this function is such that I am forced to.
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", (char*[]) { "key_type", nullptr }, &key_type))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", (char*[]) { "key_type", nullptr }, &sd->key_type))
     {
         Py_DECREF(self);
         return nullptr;
     }
 
     // Check the type to use for keys.
-    if (PyObject_RichCompareBool(key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
+    if (PyObject_RichCompareBool(sd->key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
     {
         PyErr_SetString(PyExc_ValueError, "constructor argument must be a supported type");
         Py_DECREF(self);
         return nullptr;
     }
 
-    SortedDictType* sd = (SortedDictType*)self;
     sd->map = new std::map<PyObject*, PyObject*, ComparePyObjects>;
-    sd->key_type = key_type;
     Py_INCREF(sd->key_type);
     return self;
 }
