@@ -51,6 +51,11 @@ static void sorted_dict_type_dealloc(PyObject* self)
 {
     SortedDictType* sd = (SortedDictType*)self;
     Py_DECREF(sd->key_type);
+    for (auto& item : *sd->map)
+    {
+        Py_DECREF(item.first);
+        Py_DECREF(item.second);
+    }
     delete sd->map;
     Py_TYPE(self)->tp_free(self);
 }
