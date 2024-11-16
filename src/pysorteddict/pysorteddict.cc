@@ -76,7 +76,6 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     // C++, but the signature of this function is such that I am forced to.
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", (char*[]) { "key_type", nullptr }, &sd->key_type))
     {
-        Py_DECREF(self);
         return nullptr;
     }
 
@@ -84,7 +83,6 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     if (PyObject_RichCompareBool(sd->key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
     {
         PyErr_SetString(PyExc_ValueError, "constructor argument must be a supported type");
-        Py_DECREF(self);
         return nullptr;
     }
 
