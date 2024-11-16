@@ -15,5 +15,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.urls]
+"Homepage" = "https://github.com/tfpf/pysorteddict"
+"Bug Tracker" = "https://github.com/tfpf/pysorteddict/issues"
+
 [tool.ruff]
 line-length = 119
