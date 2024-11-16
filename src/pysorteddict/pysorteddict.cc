@@ -32,7 +32,8 @@ struct SortedDictType
 /**
  * Deinitialise and deallocate.
  */
-static void sorted_dict_type_dealloc(PyObject *self){
+static void sorted_dict_type_dealloc(PyObject* self)
+{
     SortedDictType* sd = (SortedDictType*)self;
     Py_DECREF(sd->key_type);
     delete sd->map;
@@ -80,8 +81,9 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
 static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 {
     SortedDictType* sd = (SortedDictType*)self;
-    if(PyObject_IsInstance(key, sd->key_type) != 1){
-        PyErr_Format(PyExc_ValueError, "index must be of type %s", PyObject_Repr(sd->key_type));
+    if (PyObject_IsInstance(key, sd->key_type) != 1)
+    {
+        PyErr_SetString(PyExc_ValueError, "index must be of registered type");
         return nullptr;
     }
     auto it = sd->map->find(key);
