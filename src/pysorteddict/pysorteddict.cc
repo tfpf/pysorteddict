@@ -166,10 +166,10 @@ static PyObject* sorted_dict_type_str(PyObject* self)
     char const* delimiter = "";
     char const* actual_delimiter = ", ";
     oss << '\x7b';
-    for (auto it = sd->map->begin(); it != sd->map->end(); it = std::next(it))
+    for (auto& item : *sd->map)
     {
-        PyObject* key_repr = PyObject_Repr(it->first);  // New reference.
-        PyObject* value_repr = PyObject_Repr(it->second);  // New reference.
+        PyObject* key_repr = PyObject_Repr(item.first);  // New reference.
+        PyObject* value_repr = PyObject_Repr(item.second);  // New reference.
         oss << delimiter << PyUnicode_AsUTF8(key_repr) << ": " << PyUnicode_AsUTF8(value_repr);
         delimiter = actual_delimiter;
         Py_DECREF(key_repr);
