@@ -2,21 +2,12 @@
 #include <Python.h>
 #include <map>
 
-// clang-format off
-struct SortedDictType
-{
-    PyObject_HEAD
-    void *map;
-    PyTypeObject *key_type;
-};
-// clang-format on
-
 /**
  * C++-style comparison implementation for Python objects.
  */
 struct ComparePyObjects
 {
-    bool operator()(PyObject* a, PyObject* b)
+    bool operator()(PyObject* a, PyObject* b) const
     {
         // This assumes that the comparison operation will never error out. I
         // think it should be enough to ensure that the two Python objects
@@ -24,6 +15,19 @@ struct ComparePyObjects
         return PyObject_RichCompareBool(a, b, Py_LE) == 1;
     }
 };
+
+// clang-format off
+struct SortedDictType
+{
+    PyObject_HEAD
+    // Pointer to an object on the heap. Can't be the object itself, because
+    // this container will be allocated a definite amount of space, which won't
+    // allow the object to grow.
+    std::map<PyObject *, PyObject*, ComparePyObjects> *map;
+    // The type of the keys of the dictionary.
+    PyObject *key_type;
+};
+// clang-format on
 
 /**
  * Deinitialise and deallocate.
@@ -63,10 +67,33 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
 
     SortedDictType* sd = (SortedDictType*)self;
     sd->map = new std::map<PyObject*, PyObject*, ComparePyObjects>;
-    sd->key_type = (PyTypeObject*)key_type;
+    sd->key_type = key_type;
     Py_INCREF(sd->key_type);
     return self;
 }
+
+/**
+ * Query the value at a key.
+ */
+static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
+{
+    SortedDictType* sd = (SortedDictType*)self;
+    if(PyObject_IsInstance(key, sd->key_type) != 1){
+        PyErr_Format(PyExc_ValueError, "index must be of type %s", PyObject_Repr(sd->key_type));
+        return nullptr;
+    }
+    auto it = sd->map->find(key);
+    if (it == sd->map->end())
+    {
+        PyErr_Format(PyExc_KeyError, "%d", key);
+        return nullptr;
+    }
+    return it->second;
+}
+
+static PyMappingMethods sorted_dict_type_mapping = {
+    .mp_subscript = sorted_dict_type_getitem,
+};
 
 // clang-format off
 static PyTypeObject sorted_dict_type = {
@@ -76,7 +103,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_itemsize = 0,
     .tp_dealloc = sorted_dict_type_dealloc,
     // .tp_repr = sorted_dict_type_repr,
-    // .tp_as_mapping = &sorted_dict_type_mapping,
+    .tp_as_mapping = &sorted_dict_type_mapping,
     .tp_hash = PyObject_HashNotImplemented,
     // .tp_getattro =  PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
