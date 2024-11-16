@@ -81,15 +81,17 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
     SortedDictType* sd = (SortedDictType*)self;
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
-        PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
-        PyErr_Format(PyExc_ValueError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
-        Py_DECREF(key_type_repr);
+        PyObject* key_type_str = PyObject_Str(sd->key_type);  // New reference.
+        PyErr_Format(PyExc_ValueError, "key must be of type %s", PyUnicode_AsUTF8(key_type_str));
+        Py_DECREF(key_type_str);
         return nullptr;
     }
     auto it = sd->map->find(key);
     if (it == sd->map->end())
     {
-        PyErr_Format(PyExc_KeyError, "%d", key);
+        PyObject* key_str = PyObject_Str(key);  // New reference.
+        PyErr_Format(PyExc_KeyError, "%s", PyUnicode_AsUTF8(key_str));
+        Py_DECREF(key_str);
         return nullptr;
     }
     return it->second;
