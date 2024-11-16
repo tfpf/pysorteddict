@@ -26,17 +26,27 @@ struct ComparePyObjects
 };
 
 /**
- * Allocate memory.
+ * Deinitialise and deallocate.
+ */
+static void sorted_dict_type_dealloc(PyObject *self){
+    SortedDictType* sd = (SortedDictType*)self;
+    Py_DECREF(sd->key_type);
+    delete sd->map;
+    Py_TYPE(self)->tp_free(self);
+}
+
+/**
+ * Allocate and initialise.
  */
 static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    PyObject* self = type->tp_alloc(type, 0);
+    PyObject* self = type->tp_alloc(type, 0);  // New reference.
     if (self == nullptr)
     {
         return nullptr;
     }
 
-    PyObject* key_type;
+    PyObject* key_type;  // Borrowed reference.
     // Casting a string constant to a non-const pointer is not permitted in
     // C++, but the signature of this function is such that I am forced to.
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", (char*[]) { "key_type", nullptr }, &key_type))
@@ -44,19 +54,17 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
         return nullptr;
     }
 
-    // Record the type to use for keys.
-    SortedDictType* sd = (SortedDictType*)self;
-    if (PyObject_RichCompareBool(key_type, (PyObject*)&PyLong_Type, Py_EQ) == 1)
-    {
-        sd->key_type = &PyLong_Type;
-    }
-    else
+    // Check the type to use for keys.
+    if (PyObject_RichCompareBool(key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
     {
         PyErr_SetString(PyExc_ValueError, "constructor argument must be a supported type");
         return nullptr;
     }
 
+    SortedDictType* sd = (SortedDictType*)self;
     sd->map = new std::map<PyObject*, PyObject*, ComparePyObjects>;
+    sd->key_type = (PyTypeObject*)key_type;
+    Py_INCREF(sd->key_type);
     return self;
 }
 
@@ -66,6 +74,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_name = "pysorteddict.SortedDict",
     .tp_basicsize = sizeof(SortedDictType),
     .tp_itemsize = 0,
+    .tp_dealloc = sorted_dict_type_dealloc,
     // .tp_repr = sorted_dict_type_repr,
     // .tp_as_mapping = &sorted_dict_type_mapping,
     .tp_hash = PyObject_HashNotImplemented,
@@ -74,6 +83,7 @@ static PyTypeObject sorted_dict_type = {
     // .tp_methods = sorted_dict_type_methods,
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = sorted_dict_type_new,
+    .tp_free = PyObject_Del,
 };
 // clang-format on
 

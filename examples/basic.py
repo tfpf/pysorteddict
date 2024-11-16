@@ -4,3 +4,4 @@ from pysorteddict import SortedDict
 
 sd = SortedDict(int)
 print(sd)
+del sd
