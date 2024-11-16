@@ -27,7 +27,7 @@ static void PyErr_FormatWrapper(PyObject* exc, char const* fmt, PyObject* ob)
     PyObject* repr = PyObject_Repr(ob);  // New reference.
     // The second argument is no longer a string constant. Is there an elegant
     // fix?
-    PyErr_Format(PyExc_ValueError, fmt, PyUnicode_AsUTF8(repr));
+    PyErr_Format(exc, fmt, PyUnicode_AsUTF8(repr));
     Py_DECREF(repr);
 }
 
@@ -113,7 +113,7 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
     auto it = sd->map->find(key);
     if (it == sd->map->end())
     {
-        PyErr_FormatWrapper(PyExc_KeyError, "%s", sd->key_type);
+        PyErr_FormatWrapper(PyExc_KeyError, "%s", key);
         return nullptr;
     }
     return it->second;
@@ -137,7 +137,7 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     {
         if (it == sd->map->end())
         {
-            PyErr_FormatWrapper(PyExc_KeyError, "%s", sd->key_type);
+            PyErr_FormatWrapper(PyExc_KeyError, "%s", key);
             return -1;
         }
         Py_DECREF(it->first);
