@@ -14,7 +14,7 @@ struct ComparePyObjects
         // This assumes that the comparison operation will never error out. I
         // think it should be enough to ensure that the two Python objects
         // being compared always have the same type.
-        return PyObject_RichCompareBool(a, b, Py_LE) == 1;
+        return PyObject_RichCompareBool(a, b, Py_LT) == 1;
     }
 };
 
