@@ -26,7 +26,17 @@ struct ComparePyObjects
 };
 
 /**
- * Allocate memory.
+ * Deinitialise and deallocate.
+ */
+static void sorted_dict_type_dealloc(PyObject *self){
+    SortedDictType* sd = (SortedDictType*)self;
+    Py_DECREF(sd->key_type);
+    delete sd->map;
+    Py_TYPE(self)->tp_free(self);
+}
+
+/**
+ * Allocate and initialise.
  */
 static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
@@ -44,7 +54,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
         return nullptr;
     }
 
-    // Record the type to use for keys.
+    // Check the type to use for keys.
     if (PyObject_RichCompareBool(key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
     {
         PyErr_SetString(PyExc_ValueError, "constructor argument must be a supported type");
@@ -64,6 +74,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_name = "pysorteddict.SortedDict",
     .tp_basicsize = sizeof(SortedDictType),
     .tp_itemsize = 0,
+    .tp_dealloc = sorted_dict_type_dealloc,
     // .tp_repr = sorted_dict_type_repr,
     // .tp_as_mapping = &sorted_dict_type_mapping,
     .tp_hash = PyObject_HashNotImplemented,
@@ -72,6 +83,7 @@ static PyTypeObject sorted_dict_type = {
     // .tp_methods = sorted_dict_type_methods,
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = sorted_dict_type_new,
+    .tp_free = PyObject_Del,
 };
 // clang-format on
 
