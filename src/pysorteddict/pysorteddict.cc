@@ -97,8 +97,56 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
     return it->second;
 }
 
+/**
+ * Assign the value at a key.
+ */
+static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* value)
+{
+    SortedDictType* sd = (SortedDictType*)self;
+    if (PyObject_IsInstance(key, sd->key_type) != 1)
+    {
+        PyObject* key_type_str = PyObject_Str(sd->key_type);  // New reference.
+        PyErr_Format(PyExc_ValueError, "key must be of type %s", PyUnicode_AsUTF8(key_type_str));
+        Py_DECREF(key_type_str);
+        return -1;
+    }
+
+    // Remove the key.
+    auto it = sd->map->find(key);
+    if (value == nullptr)
+    {
+        if (it == sd->map->end())
+        {
+            PyObject* key_str = PyObject_Str(key);  // New reference.
+            PyErr_Format(PyExc_KeyError, "%s", PyUnicode_AsUTF8(key_str));
+            Py_DECREF(key_str);
+            return -1;
+        }
+        Py_DECREF(it->first);
+        Py_DECREF(it->second);
+        sd->map->erase(it);
+        return 0;
+    }
+
+    // Insert or replace the value.
+    if (it == sd->map->end())
+    {
+        auto status = sd->map->insert({ key, value });
+        it = status.first;
+        Py_INCREF(it->first);
+    }
+    else
+    {
+        Py_DECREF(it->second);
+        it->second = value;
+    }
+    Py_INCREF(it->second);
+    return 0;
+}
+
 static PyMappingMethods sorted_dict_type_mapping = {
     .mp_subscript = sorted_dict_type_getitem,
+    .mp_ass_subscript = sorted_dict_type_setitem,
 };
 
 // clang-format off
