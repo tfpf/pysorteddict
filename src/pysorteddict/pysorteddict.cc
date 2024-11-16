@@ -92,6 +92,14 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
 }
 
 /**
+ * Obtain the number of keys.
+ */
+Py_ssize_t sorted_dict_type_len(PyObject *self){
+    SortedDictType* sd = (SortedDictType*)self;
+    return sd->map->size();
+}
+
+/**
  * Query the value at a key.
  */
 static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
@@ -155,6 +163,7 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
 }
 
 static PyMappingMethods sorted_dict_type_mapping = {
+    .mp_length = sorted_dict_type_len,
     .mp_subscript = sorted_dict_type_getitem,
     .mp_ass_subscript = sorted_dict_type_setitem,
 };

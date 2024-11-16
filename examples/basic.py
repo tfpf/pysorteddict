@@ -7,6 +7,6 @@ sd = SortedDict(int)
 sd[100] = "wut"
 sd[1] = "ok"
 sd[1] = "notok"
-print(sd)
+print(sd, len(sd))
 print(sd[1])
 del sd
