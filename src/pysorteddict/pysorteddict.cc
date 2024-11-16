@@ -23,9 +23,9 @@ struct SortedDictType
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
-    std::map<PyObject *, PyObject*, ComparePyObjects> *map;
+    std::map<PyObject *, PyObject*, ComparePyObjects> *map = nullptr;
     // The type of the keys of the dictionary.
-    PyObject *key_type;
+    PyObject *key_type = nullptr;
 };
 // clang-format on
 
@@ -51,11 +51,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
         return nullptr;
     }
 
-    // Initialise the object to a null pointer so that if premature
-    // deallocation occurs, no invalid memory is accessed.
     SortedDictType* sd = (SortedDictType*)self;
-    sd->map = nullptr;
-
     // Casting a string constant to a non-const pointer is not permitted in
     // C++, but the signature of this function is such that I am forced to.
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", (char*[]) { "key_type", nullptr }, &sd->key_type))
@@ -85,7 +81,9 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
     SortedDictType* sd = (SortedDictType*)self;
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
-        PyErr_SetString(PyExc_ValueError, "index must be of registered type");
+        PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
+        PyErr_Format(PyExc_ValueError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
+        Py_DECREF(key_type_repr);
         return nullptr;
     }
     auto it = sd->map->find(key);
