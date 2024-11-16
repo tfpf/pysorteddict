@@ -185,7 +185,7 @@ static PyObject* sorted_dict_type_str(PyObject* self)
 // clang-format off
 static PyTypeObject sorted_dict_type = {
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
-    .tp_name = "pysorteddict.SortedDict",
+    .tp_name = "SortedDict",
     .tp_basicsize = sizeof(SortedDictType),
     .tp_itemsize = 0,
     .tp_dealloc = sorted_dict_type_dealloc,
