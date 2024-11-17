@@ -3,7 +3,7 @@ import unittest
 from pysorteddict import SortedDict
 
 
-class TestMisc(unittest.TestCase):
+class TestInvalidConstruction(unittest.TestCase):
     """Test invalid construction of a sorted dictionary."""
 
     @classmethod
