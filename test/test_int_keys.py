@@ -3,19 +3,24 @@ import unittest
 
 from pysorteddict import SortedDict
 
-engine = random.Random(__name__)
+
+class Random(random.Random):
+    def __init__(self, x: str = __name__):
+        super().__init__(x)
+
+    def randrange(self, start: int = 1000, stop: int = 2000):
+        return super().randrange(start, stop)
 
 
-def rand(start: int = 1000, stop: int = 2000):
-    return engine.randrange(start, stop)
+r = Random()
 
 
 class TestIntKeys(unittest.TestCase):
     """Test a sorted dictionary with ``int`` keys."""
 
     def setUp(self):
-        self.keys = [rand() for _ in range(1000)]
-        self.values = [rand() for _ in self.keys]
+        self.keys = [r.randrange() for _ in range(1000)]
+        self.values = [r.randrange() for _ in self.keys]
         self.normal_dict = dict(zip(self.keys, self.values, strict=True))
         self.sorted_dict = SortedDict(int)
         for key, value in zip(self.keys, self.values, strict=True):
