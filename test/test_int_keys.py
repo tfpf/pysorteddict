@@ -15,7 +15,7 @@ class TestIntKeys(unittest.TestCase):
 
     def setUp(self):
         self.keys = [rand() for _ in range(1000)]
-        self.values = [rand() for _ in range(1000)]
+        self.values = [rand() for _ in self.keys]
         self.regular_dict = dict(zip(self.keys, self.values, strict=True))
         self.sorted_dict = SortedDict(int)
         for key, value in zip(self.keys, self.values, strict=False):
