@@ -205,7 +205,19 @@ static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
  */
 static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 {
-    return nullptr;
+    SortedDictType* sd = (SortedDictType*)self;
+    PyObject* pykeys = PyList_New(sd->map->size());  // New reference.
+    if (pykeys == nullptr)
+    {
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *sd->map)
+    {
+        PyList_SET_ITEM(pykeys, idx++, item.first);
+        Py_INCREF(item.first);
+    }
+    return pykeys;
 }
 
 /**
