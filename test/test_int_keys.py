@@ -35,6 +35,3 @@ class TestIntKeys(unittest.TestCase):
         expected = [*map(lambda item: item[1], sorted(self.regular_dict.items()))]
         observed = self.sorted_dict.values()
         self.assertEqual(expected, observed)
-
-if __name__ == "__main__":
-    unittest.main()
