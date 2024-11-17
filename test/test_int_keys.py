@@ -29,12 +29,12 @@ class TestIntKeys(unittest.TestCase):
     def test_getitem_wrong_type(self):
         with self.assertRaises(ValueError) as ctx:
             self.sorted_dict[object()]
-        self.assertEqual(ctx.exception.args[0], "key must be of type <class 'int'>")
+        self.assertEqual("key must be of type <class 'int'>", ctx.exception.args[0])
 
     def test_getitem_not_found(self):
         with self.assertRaises(KeyError) as ctx:
             self.sorted_dict[-1000]
-        self.assertEqual(ctx.exception.args[0], -1000)
+        self.assertEqual(-1000, ctx.exception.args[0])
 
     def test_str(self):
         expected = str(dict(sorted(self.normal_dict.items())))
