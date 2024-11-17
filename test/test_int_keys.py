@@ -41,6 +41,12 @@ class TestIntKeys(unittest.TestCase):
             self.sorted_dict[-1000]
         self.assertEqual(-1000, ctx.exception.args[0])
 
+    def test_getitem(self):
+        key = r.choice(self.keys)
+        expected = self.normal_dict[key]
+        observed = self.sorted_dict[key]
+        self.assertEqual(expected, observed)
+
     def test_str(self):
         expected = str(dict(sorted(self.normal_dict.items())))
         observed = str(self.sorted_dict)
