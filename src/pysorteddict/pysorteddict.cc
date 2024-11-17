@@ -155,7 +155,10 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
         return 0;
     }
 
-    // Insert or replace the value.
+    // Insert or replace the value. This merely stores additional references to
+    // the key (if applicable) and the value. If I ever plan to allow mutable
+    // types as keys, I should store references to their copies instead. Like
+    // the C++ standard library containers do.
     if (it == sd->map->end())
     {
         it = sd->map->insert({ key, value }).first;
