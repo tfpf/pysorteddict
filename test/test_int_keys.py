@@ -22,7 +22,7 @@ class TestIntKeys(unittest.TestCase):
     def setUp(self):
         print("\x1b[96mstarting setting up\x1b[m", file=sys.stderr, flush=True)
         self.keys = [r.randrange() for _ in range(100)]
-        print("\x1b[96mstill setting up\x1b[m", file=sys.stderr, flush=True)
+        print(f"\x1b[96mstill setting up {self.keys=}\x1b[m", file=sys.stderr, flush=True)
         self.values = [r.randrange() for _ in self.keys]
         print("\x1b[96mnot done setting up\x1b[m", file=sys.stderr, flush=True)
         self.normal_dict = dict(zip(self.keys, self.values, strict=True))

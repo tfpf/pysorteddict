@@ -1,6 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <iterator>
+#include <fstream>
 #include <map>
 #include <sstream>
 
@@ -55,8 +56,8 @@ static void sorted_dict_type_dealloc(PyObject* self)
     {
         for (auto& item : *sd->map)
         {
-            Py_DECREF(item.first);
-            Py_DECREF(item.second);
+            // Py_DECREF(item.first);
+            // Py_DECREF(item.second);
         }
     }
     delete sd->map;
@@ -161,8 +162,19 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     // the C++ standard library containers do.
     if (it == sd->map->end())
     {
-        fprintf(stderr, "hey\n");
+        PyObject *key_repr = PyObject_Repr(key);
+        PyObject *value_repr = PyObject_Repr(value);
+        {
+            std::ofstream fhandle("run.log", std::ios_base::app);
+            fhandle << __LINE__ << ' ' << PyUnicode_AsUTF8(key_repr) << ' ' << PyUnicode_AsUTF8(value_repr) << ' ' << sd->map->size() << '\n';
+        }
         auto result = sd->map->insert({key, value}); // The problem is here!
+        Py_INCREF(result.first->first);
+        Py_INCREF(result.first->second);
+        {
+            // std::ofstream fhandle("run.log", std::ios_base::app);
+            // fhandle << __LINE__ << ' ' << PyUnicode_AsUTF8(key_repr) << ' ' << PyUnicode_AsUTF8(value_repr) << " whew\n";
+        }
         // it = result.first;
         // Py_INCREF(it->first);
     }
