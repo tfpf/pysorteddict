@@ -94,7 +94,8 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
 /**
  * Obtain the number of keys.
  */
-Py_ssize_t sorted_dict_type_len(PyObject *self){
+Py_ssize_t sorted_dict_type_len(PyObject* self)
+{
     SortedDictType* sd = (SortedDictType*)self;
     return sd->map->size();
 }
@@ -113,7 +114,7 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
     auto it = sd->map->find(key);
     if (it == sd->map->end())
     {
-        PyErr_FormatWrapper(PyExc_KeyError, "%s", key);
+        PyErr_SetObject(PyExc_KeyError, key);
         return nullptr;
     }
     return it->second;
@@ -137,7 +138,7 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     {
         if (it == sd->map->end())
         {
-            PyErr_FormatWrapper(PyExc_KeyError, "%s", key);
+            PyErr_SetObject(PyExc_KeyError, key);
             return -1;
         }
         Py_DECREF(it->first);
