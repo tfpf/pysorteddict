@@ -21,6 +21,11 @@ class TestIntKeys(unittest.TestCase):
         for key, value in zip(self.keys, self.values):
             self.sorted_dict[key] = value
 
+    def test_items(self):
+        expected = sorted(self.regular_dict.items())
+        observed = self.sorted_dict.items()
+        self.assertEqual(expected, observed)
+
     def test_keys(self):
         expected = sorted(self.regular_dict.keys())
         observed = self.sorted_dict.keys()
