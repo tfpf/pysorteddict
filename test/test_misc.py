@@ -4,6 +4,8 @@ from pysorteddict import SortedDict
 
 
 class TestMisc(unittest.TestCase):
+    """Test invalid construction of a sorted dictionary."""
+
     @classmethod
     def setUpClass(self):
         self.missing_argument = "function missing required argument 'key_type' (pos 1)"
