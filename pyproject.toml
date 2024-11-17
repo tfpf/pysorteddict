@@ -24,4 +24,4 @@ classifiers = [
 line-length = 119
 
 [tool.ruff.lint]
-ignore = ["S311", "T201"]
+ignore = ["PT009", "PT027", "S311", "T201"]

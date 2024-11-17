@@ -18,7 +18,7 @@ class TestIntKeys(unittest.TestCase):
         self.values = [rand() for _ in range(1000)]
         self.regular_dict = dict(zip(self.keys, self.values, strict=True))
         self.sorted_dict = SortedDict(int)
-        for key, value in zip(self.keys, self.values):
+        for key, value in zip(self.keys, self.values, strict=False):
             self.sorted_dict[key] = value
 
     def test_items(self):
@@ -32,6 +32,6 @@ class TestIntKeys(unittest.TestCase):
         self.assertEqual(expected, observed)
 
     def test_values(self):
-        expected = [*map(lambda item: item[1], sorted(self.regular_dict.items()))]
+        expected = [item[1] for item in sorted(self.regular_dict.items())]
         observed = self.sorted_dict.values()
         self.assertEqual(expected, observed)
