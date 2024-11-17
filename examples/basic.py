@@ -9,4 +9,5 @@ sd[1] = "ok"
 sd[1] = "notok"
 print(sd, len(sd))
 print(sd[1])
+print(sd.keys(), sd.values(), sd.items())
 del sd

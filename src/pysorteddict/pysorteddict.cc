@@ -50,11 +50,14 @@ struct SortedDictType
 static void sorted_dict_type_dealloc(PyObject* self)
 {
     SortedDictType* sd = (SortedDictType*)self;
-    Py_DECREF(sd->key_type);
-    for (auto& item : *sd->map)
+    Py_XDECREF(sd->key_type);
+    if (sd->map != nullptr)
     {
-        Py_DECREF(item.first);
-        Py_DECREF(item.second);
+        for (auto& item : *sd->map)
+        {
+            Py_DECREF(item.first);
+            Py_DECREF(item.second);
+        }
     }
     delete sd->map;
     Py_TYPE(self)->tp_free(self);
@@ -76,6 +79,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     // C++, but the signature of this function is such that I am forced to.
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", (char*[]) { "key_type", nullptr }, &sd->key_type))
     {
+        Py_DECREF(self);
         return nullptr;
     }
 
@@ -83,6 +87,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     if (PyObject_RichCompareBool(sd->key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
     {
         PyErr_SetString(PyExc_ValueError, "constructor argument must be a supported type");
+        Py_DECREF(self);
         return nullptr;
     }
 
@@ -198,13 +203,15 @@ static PyObject* sorted_dict_type_str(PyObject* self)
 static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
 {
     SortedDictType* sd = (SortedDictType*)self;
-    PyObject *pyitems = PyList_New(sd->map->size()); // New reference.
-    if(pyitems == nullptr){
+    PyObject* pyitems = PyList_New(sd->map->size());  // New reference.
+    if (pyitems == nullptr)
+    {
         return nullptr;
     }
     Py_ssize_t idx = 0;
-    for (auto& item : *sd->map){
-        PyObject *pyitem = PyTuple_New(2); // New reference.
+    for (auto& item : *sd->map)
+    {
+        PyObject* pyitem = PyTuple_New(2);  // New reference.
         PyTuple_SET_ITEM(pyitem, 0, item.first);
         Py_INCREF(item.first);
         PyTuple_SET_ITEM(pyitem, 1, item.second);
