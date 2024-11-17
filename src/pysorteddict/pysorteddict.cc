@@ -158,8 +158,7 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     // Insert or replace the value.
     if (it == sd->map->end())
     {
-        auto status = sd->map->insert({ key, value });
-        it = status.first;
+        it = sd->map->insert({ key, value }).first;
         Py_INCREF(it->first);
     }
     else
@@ -259,7 +258,7 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
     for (auto& item : *sd->map)
     {
         PyList_SET_ITEM(pyvalues, idx++, item.second);
-        Py_INCREF(item.first);
+        Py_INCREF(item.second);
     }
     return pyvalues;
 }
