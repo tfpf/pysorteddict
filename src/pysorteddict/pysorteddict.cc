@@ -197,7 +197,21 @@ static PyObject* sorted_dict_type_str(PyObject* self)
  */
 static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
 {
-    return nullptr;
+    SortedDictType* sd = (SortedDictType*)self;
+    PyObject *pyitems = PyList_New(sd->map->size()); // New reference.
+    if(pyitems == nullptr){
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *sd->map){
+        PyObject *pyitem = PyTuple_New(2); // New reference.
+        PyTuple_SET_ITEM(pyitem, 0, item.first);
+        Py_INCREF(item.first);
+        PyTuple_SET_ITEM(pyitem, 1, item.second);
+        Py_INCREF(item.second);
+        PyList_SET_ITEM(pyitems, idx++, pyitem);
+    }
+    return pyitems;
 }
 
 /**
