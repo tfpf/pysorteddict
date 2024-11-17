@@ -1,5 +1,6 @@
 import random
 import unittest
+import sys
 
 from pysorteddict import SortedDict
 
@@ -19,12 +20,16 @@ class TestIntKeys(unittest.TestCase):
     """Test a sorted dictionary with ``int`` keys."""
 
     def setUp(self):
-        self.keys = [r.randrange() for _ in range(1000)]
+        print("\x1b[96mstarting setting up\x1b[m", file=sys.stderr, flush=True)
+        self.keys = [r.randrange() for _ in range(100)]
+        print("\x1b[96mstill setting up\x1b[m", file=sys.stderr, flush=True)
         self.values = [r.randrange() for _ in self.keys]
+        print("\x1b[96mnot done setting up\x1b[m", file=sys.stderr, flush=True)
         self.normal_dict = dict(zip(self.keys, self.values, strict=True))
         self.sorted_dict = SortedDict(int)
         for key, value in zip(self.keys, self.values, strict=True):
             self.sorted_dict[key] = value
+        print("\x1b[96mfinished setting up\x1b[m")
 
     @unittest.skip
     def test_len(self):

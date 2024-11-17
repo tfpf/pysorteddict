@@ -161,15 +161,17 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     // the C++ standard library containers do.
     if (it == sd->map->end())
     {
-        it = sd->map->insert({ key, value }).first;
-        Py_INCREF(it->first);
+        fprintf(stderr, "hey\n");
+        auto result = sd->map->insert({key, value}); // The problem is here!
+        // it = result.first;
+        // Py_INCREF(it->first);
     }
     else
     {
-        Py_DECREF(it->second);
-        it->second = value;
+        // Py_DECREF(it->second);
+        // it->second = value;
     }
-    Py_INCREF(it->second);
+    // Py_INCREF(it->second);
     return 0;
 }
 
