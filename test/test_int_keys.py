@@ -16,32 +16,42 @@ class TestIntKeys(unittest.TestCase):
     def setUp(self):
         self.keys = [rand() for _ in range(1000)]
         self.values = [rand() for _ in self.keys]
-        self.regular_dict = dict(zip(self.keys, self.values, strict=True))
+        self.normal_dict = dict(zip(self.keys, self.values, strict=True))
         self.sorted_dict = SortedDict(int)
-        for key, value in zip(self.keys, self.values, strict=False):
+        for key, value in zip(self.keys, self.values, strict=True):
             self.sorted_dict[key] = value
 
     def test_len(self):
-        expected = len(self.regular_dict)
+        expected = len(self.normal_dict)
         observed = len(self.sorted_dict)
         self.assertEqual(expected, observed)
 
+    def test_getitem_wrong_type(self):
+        with self.assertRaises(ValueError) as ctx:
+            self.sorted_dict[object()]
+        self.assertEqual(ctx.exception.args[0], "key must be of type <class 'int'>")
+
+    def test_getitem_not_found(self):
+        with self.assertRaises(KeyError) as ctx:
+            self.sorted_dict[-1000]
+        self.assertEqual(ctx.exception.args[0], -1000)
+
     def test_str(self):
-        expected = str(dict(sorted(self.regular_dict.items())))
+        expected = str(dict(sorted(self.normal_dict.items())))
         observed = str(self.sorted_dict)
         self.assertEqual(expected, observed)
 
     def test_items(self):
-        expected = sorted(self.regular_dict.items())
+        expected = sorted(self.normal_dict.items())
         observed = self.sorted_dict.items()
         self.assertEqual(expected, observed)
 
     def test_keys(self):
-        expected = sorted(self.regular_dict.keys())
+        expected = sorted(self.normal_dict.keys())
         observed = self.sorted_dict.keys()
         self.assertEqual(expected, observed)
 
     def test_values(self):
-        expected = [item[1] for item in sorted(self.regular_dict.items())]
+        expected = [item[1] for item in sorted(self.normal_dict.items())]
         observed = self.sorted_dict.values()
         self.assertEqual(expected, observed)
