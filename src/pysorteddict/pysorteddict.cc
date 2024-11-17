@@ -50,11 +50,14 @@ struct SortedDictType
 static void sorted_dict_type_dealloc(PyObject* self)
 {
     SortedDictType* sd = (SortedDictType*)self;
-    Py_DECREF(sd->key_type);
-    for (auto& item : *sd->map)
+    Py_XDECREF(sd->key_type);
+    if (sd->map != nullptr)
     {
-        Py_DECREF(item.first);
-        Py_DECREF(item.second);
+        for (auto& item : *sd->map)
+        {
+            Py_DECREF(item.first);
+            Py_DECREF(item.second);
+        }
     }
     delete sd->map;
     Py_TYPE(self)->tp_free(self);
@@ -76,6 +79,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     // C++, but the signature of this function is such that I am forced to.
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", (char*[]) { "key_type", nullptr }, &sd->key_type))
     {
+        Py_DECREF(self);
         return nullptr;
     }
 
@@ -83,6 +87,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     if (PyObject_RichCompareBool(sd->key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
     {
         PyErr_SetString(PyExc_ValueError, "constructor argument must be a supported type");
+        Py_DECREF(self);
         return nullptr;
     }
 
@@ -192,6 +197,75 @@ static PyObject* sorted_dict_type_str(PyObject* self)
     return PyUnicode_FromString(oss.str().data());
 }
 
+/**
+ * Create a list containing pairs of the keys and values in the dictionary.
+ */
+static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
+{
+    SortedDictType* sd = (SortedDictType*)self;
+    PyObject* pyitems = PyList_New(sd->map->size());  // New reference.
+    if (pyitems == nullptr)
+    {
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *sd->map)
+    {
+        PyObject* pyitem = PyTuple_New(2);  // New reference.
+        PyTuple_SET_ITEM(pyitem, 0, item.first);
+        Py_INCREF(item.first);
+        PyTuple_SET_ITEM(pyitem, 1, item.second);
+        Py_INCREF(item.second);
+        PyList_SET_ITEM(pyitems, idx++, pyitem);
+    }
+    return pyitems;
+}
+
+/**
+ * Create a list containing the keys in the dictionary.
+ */
+static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
+{
+    SortedDictType* sd = (SortedDictType*)self;
+    PyObject* pykeys = PyList_New(sd->map->size());  // New reference.
+    if (pykeys == nullptr)
+    {
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *sd->map)
+    {
+        PyList_SET_ITEM(pykeys, idx++, item.first);
+        Py_INCREF(item.first);
+    }
+    return pykeys;
+}
+
+/**
+ * Create a list containing the values in the dictionary.
+ */
+static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
+{
+    SortedDictType* sd = (SortedDictType*)self;
+    PyObject* pyvalues = PyList_New(sd->map->size());  // New reference.
+    if (pyvalues == nullptr)
+    {
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *sd->map)
+    {
+        PyList_SET_ITEM(pyvalues, idx++, item.second);
+        Py_INCREF(item.first);
+    }
+    return pyvalues;
+}
+
+static PyMethodDef sorted_dict_type_methods[] = { { "items", sorted_dict_type_items, METH_NOARGS },
+                                                  { "keys", sorted_dict_type_keys, METH_NOARGS },
+                                                  { "values", sorted_dict_type_values, METH_NOARGS },
+                                                  { nullptr } };
+
 // clang-format off
 static PyTypeObject sorted_dict_type = {
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -205,7 +279,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_str = sorted_dict_type_str,
     // .tp_getattro =  PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
-    // .tp_methods = sorted_dict_type_methods,
+    .tp_methods = sorted_dict_type_methods,
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = sorted_dict_type_new,
     .tp_free = PyObject_Del,
