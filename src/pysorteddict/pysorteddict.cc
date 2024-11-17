@@ -192,6 +192,35 @@ static PyObject* sorted_dict_type_str(PyObject* self)
     return PyUnicode_FromString(oss.str().data());
 }
 
+/**
+ * Create a list containing pairs of the keys and values in the dictionary.
+ */
+static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
+{
+    return nullptr;
+}
+
+/**
+ * Create a list containing the keys in the dictionary.
+ */
+static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
+{
+    return nullptr;
+}
+
+/**
+ * Create a list containing the values in the dictionary.
+ */
+static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
+{
+    return nullptr;
+}
+
+static PyMethodDef sorted_dict_type_methods[] = { { "items", sorted_dict_type_items, METH_NOARGS },
+                                                  { "keys", sorted_dict_type_keys, METH_NOARGS },
+                                                  { "values", sorted_dict_type_values, METH_NOARGS },
+                                                  { nullptr } };
+
 // clang-format off
 static PyTypeObject sorted_dict_type = {
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -205,7 +234,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_str = sorted_dict_type_str,
     // .tp_getattro =  PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
-    // .tp_methods = sorted_dict_type_methods,
+    .tp_methods = sorted_dict_type_methods,
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = sorted_dict_type_new,
     .tp_free = PyObject_Del,
