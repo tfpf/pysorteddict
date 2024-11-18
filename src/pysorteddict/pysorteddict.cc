@@ -59,6 +59,7 @@ static void sorted_dict_type_dealloc(PyObject* self)
             // Decrease the reference count of only the key, because doing it
             // for the value causes a segmentation fault. I don't know why.
             Py_DECREF(item.first);
+            Py_DECREF(item.second);
         }
     }
     delete sd->map;
