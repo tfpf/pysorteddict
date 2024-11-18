@@ -24,6 +24,7 @@ struct ComparePyObjects
  */
 static void PyErr_FormatWrapper(PyObject* exc, char const* fmt, PyObject* ob)
 {
+    // TODO Replace this function with a stringifier.
     PyObject* repr = PyObject_Repr(ob);  // New reference.
     // The second argument is no longer a string constant. Is there an elegant
     // fix?
@@ -103,7 +104,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
 /**
  * Obtain the number of keys.
  */
-Py_ssize_t sorted_dict_type_len(PyObject* self)
+static Py_ssize_t sorted_dict_type_len(PyObject* self)
 {
     SortedDictType* sd = (SortedDictType*)self;
     return sd->map->size();
