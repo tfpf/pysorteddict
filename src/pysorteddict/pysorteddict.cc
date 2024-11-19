@@ -58,6 +58,11 @@ static void sorted_dict_type_dealloc(PyObject* self)
         {
             // Decrease the reference count of only the key, because doing it
             // for the value causes a segmentation fault. I don't know why.
+            fprintf(
+                stderr, "\x1b[96mk = %s (%p, %zd), v = %s (%p, %zd)\x1b[m\n",
+                PyUnicode_AsUTF8(PyObject_Repr(item.first)), item.first, Py_REFCNT(item.first),
+                PyUnicode_AsUTF8(PyObject_Repr(item.second)), item.second, Py_REFCNT(item.second)
+            );
             Py_DECREF(item.first);
             Py_DECREF(item.second);
         }
@@ -117,11 +122,21 @@ static Py_ssize_t sorted_dict_type_len(PyObject* self)
 static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 {
     SortedDictType* sd = (SortedDictType*)self;
+    fprintf(
+        stderr, "\x1b[93mk = %s (%p, %zd), v = %s (%p, %zd)\x1b[m\n",
+        PyUnicode_AsUTF8(PyObject_Repr(sd->map->begin()->first)), sd->map->begin()->first, Py_REFCNT(sd->map->begin()->first),
+        PyUnicode_AsUTF8(PyObject_Repr(sd->map->begin()->second)), sd->map->begin()->second, Py_REFCNT(sd->map->begin()->second)
+    );
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
         PyErr_FormatWrapper(PyExc_ValueError, "key must be of type %s", sd->key_type);
         return nullptr;
     }
+    fprintf(
+        stderr, "\x1b[95mk = %s (%p, %zd), v = %s (%p, %zd)\x1b[m\n",
+        PyUnicode_AsUTF8(PyObject_Repr(sd->map->begin()->first)), sd->map->begin()->first, Py_REFCNT(sd->map->begin()->first),
+        PyUnicode_AsUTF8(PyObject_Repr(sd->map->begin()->second)), sd->map->begin()->second, Py_REFCNT(sd->map->begin()->second)
+    );
     auto it = sd->map->find(key);
     if (it == sd->map->end())
     {
@@ -173,6 +188,11 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
         it->second = value;
     }
     Py_INCREF(it->second);
+    fprintf(
+        stderr, "\x1b[94mk = %s (%p, %zd), v = %s (%p, %zd)\x1b[m\n",
+        PyUnicode_AsUTF8(PyObject_Repr(it->first)), it->first, Py_REFCNT(it->first),
+        PyUnicode_AsUTF8(PyObject_Repr(it->second)), it->second, Py_REFCNT(it->second)
+    );
     return 0;
 }
 
