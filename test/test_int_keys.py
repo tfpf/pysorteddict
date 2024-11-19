@@ -1,21 +1,9 @@
 import random
 import unittest
-import faulthandler
-
-faulthandler.enable()
+import faulthandler; faulthandler.enable()
 
 
 from pysorteddict import SortedDict
-
-
-class Random(random.Random):
-    def __init__(self, x: str = __name__):
-        super().__init__(x)
-
-    def randrange(self, start: int = 1000, stop: int = 2000):
-        return super().randint(start, stop - 1)
-        return super().randrange(start, stop)
-
 
 
 
@@ -23,16 +11,13 @@ class TestIntKeys(unittest.TestCase):
     """Test a sorted dictionary with ``int`` keys."""
 
     def setUp(self):
-        self.r = Random()
-        self.keys = [self.r.randrange() for _ in range(1000)]
-        self.values = [self.r.randrange() for _ in self.keys]
+        self.rg = random.Random(__name__)
+        self.keys = [self.rg.randint(1000, 2000) for _ in range(2)]
+        self.values = [self.rg.randint(1000, 2000) for _ in self.keys]
         self.normal_dict = dict(zip(self.keys, self.values, strict=True))
         self.sorted_dict = SortedDict(int)
         for key, value in zip(self.keys, self.values, strict=True):
             self.sorted_dict[key] = value
-
-    def tearDown(self):
-        del self.sorted_dict
 
     @unittest.skip
     def test_len(self):
@@ -52,10 +37,10 @@ class TestIntKeys(unittest.TestCase):
         self.assertEqual(-1000, ctx.exception.args[0])
 
     def test_getitem(self):
-        key = self.r.choice(self.keys)
-        # expected = self.normal_dict[key]
+        key = self.rg.choice(self.keys)
+        expected = self.normal_dict[key]
         observed = self.sorted_dict[key]
-        # self.assertEqual(expected, observed)
+        self.assertEqual(expected, observed)
 
     @unittest.skip
     def test_str(self):
