@@ -59,7 +59,7 @@ class TestIntKeys(unittest.TestCase):
             del self.sorted_dict[-1000]
         self.assertEqual(-1000, ctx.exception.args[0])
 
-    def test_setitem_remove(self):
+    def test_setitem_remove_existing(self):
         key = self.rg.choice(self.keys)
         del self.sorted_dict[key]
         with self.assertRaises(KeyError) as ctx:
