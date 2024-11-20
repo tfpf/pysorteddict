@@ -20,3 +20,7 @@ class TestInvalidConstruction(unittest.TestCase):
         with self.assertRaises(ValueError) as ctx:
             SortedDict(object())
         self.assertEqual(self.wrong_argument, ctx.exception.args[0])
+
+
+if __name__ == "__main__":
+    unittest.main()
