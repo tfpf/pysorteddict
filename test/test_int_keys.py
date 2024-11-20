@@ -38,9 +38,10 @@ class TestIntKeys(unittest.TestCase):
         self.assertEqual(self.wrong_argument, ctx.exception.args[0])
 
     def test_getitem_not_found(self):
+        key = -self.rg.int()
         with self.assertRaises(KeyError) as ctx:
-            self.sorted_dict[-1000]
-        self.assertEqual(-1000, ctx.exception.args[0])
+            self.sorted_dict[key]
+        self.assertEqual(key, ctx.exception.args[0])
 
     def test_getitem(self):
         key = self.rg.choice(self.keys)
@@ -56,11 +57,16 @@ class TestIntKeys(unittest.TestCase):
         value = self.rg.int()
         self.sorted_dict[key] = value
         self.assertEqual(value, self.sorted_dict[key])
+        self.assertEqual(5, sys.getrefcount(key));
+        self.assertEqual(3, sys.getrefcount(value));
 
     def test_setitem_new(self):
+        key = -self.rg.int()
         value = self.rg.int()
-        self.sorted_dict[-1000] = value
-        self.assertEqual(value, self.sorted_dict[-1000])
+        self.sorted_dict[key] = value
+        self.assertEqual(value, self.sorted_dict[key])
+        self.assertEqual(3, sys.getrefcount(key));
+        self.assertEqual(3, sys.getrefcount(value));
 
     def test_setitem_remove_not_found(self):
         with self.assertRaises(KeyError) as ctx:
@@ -88,6 +94,8 @@ class TestIntKeys(unittest.TestCase):
 
     def test_del(self):
         del self.sorted_dict
+        self.keys_refcounts = [3] * len(self.normal_dict)
+        self.values_refcounts = [3] * len(self.normal_dict)
 
     def test_empty(self):
         sorted_dict = SortedDict(int)
