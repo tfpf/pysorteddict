@@ -53,12 +53,13 @@ class TestIntKeys(unittest.TestCase):
         self.assertEqual(self.wrong_argument, ctx.exception.args[0])
 
     def test_setitem_existing(self):
-        key = self.rg.choice(self.keys)
+        idx, key = self.rg.choice([*enumerate(self.normal_dict)])
         value = self.rg.int()
         self.sorted_dict[key] = value
         self.assertEqual(value, self.sorted_dict[key])
         self.assertEqual(5, sys.getrefcount(key));
         self.assertEqual(3, sys.getrefcount(value));
+        self.values_refcounts[idx] -= 1
 
     def test_setitem_new(self):
         key = -self.rg.int()
@@ -74,11 +75,13 @@ class TestIntKeys(unittest.TestCase):
         self.assertEqual(-1000, ctx.exception.args[0])
 
     def test_setitem_remove_existing(self):
-        key = self.rg.choice(self.keys)
+        idx, key = self.rg.choice([*enumerate(self.normal_dict)])
         del self.sorted_dict[key]
         with self.assertRaises(KeyError) as ctx:
             self.sorted_dict[key]
         self.assertEqual(key, ctx.exception.args[0])
+        self.keys_refcounts[idx] -= 1
+        self.values_refcounts[idx] -= 1
 
     def test_str(self):
         self.assertEqual(str(dict(sorted(self.normal_dict.items()))), str(self.sorted_dict))
