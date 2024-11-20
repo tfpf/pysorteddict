@@ -22,9 +22,7 @@ class TestIntKeys(unittest.TestCase):
             self.sorted_dict[key] = value
 
     def test_len(self):
-        expected = len(self.normal_dict)
-        observed = len(self.sorted_dict)
-        self.assertEqual(expected, observed)
+        self.assertEqual(len(self.normal_dict), len(self.sorted_dict))
 
     def test_getitem_wrong_type(self):
         with self.assertRaises(ValueError) as ctx:
@@ -38,29 +36,52 @@ class TestIntKeys(unittest.TestCase):
 
     def test_getitem(self):
         key = self.rg.choice(self.keys)
-        expected = self.normal_dict[key]
-        observed = self.sorted_dict[key]
-        self.assertEqual(expected, observed)
+        self.assertEqual(self.normal_dict[key], self.sorted_dict[key])
+
+    def test_setitem_wrong_type(self):
+        with self.assertRaises(ValueError) as ctx:
+            self.sorted_dict[object()] = -1000
+        self.assertEqual(self.wrong_argument, ctx.exception.args[0])
+
+    def test_setitem_existing(self):
+        key = self.rg.choice(self.keys)
+        value = self.rg.int()
+        self.sorted_dict[key] = value
+        self.assertEqual(value, self.sorted_dict[key])
+
+    def test_setitem_new(self):
+        value = self.rg.int()
+        self.sorted_dict[-1000] = value
+        self.assertEqual(value, self.sorted_dict[-1000])
+
+    def test_setitem_remove_not_found(self):
+        with self.assertRaises(KeyError) as ctx:
+            del self.sorted_dict[-1000]
+        self.assertEqual(-1000, ctx.exception.args[0])
+
+    def test_setitem_remove(self):
+        key = self.rg.choice(self.keys)
+        del self.sorted_dict[key]
+        with self.assertRaises(KeyError) as ctx:
+            self.sorted_dict[key]
+        self.assertEqual(key, ctx.exception.args[0])
 
     def test_str(self):
-        expected = str(dict(sorted(self.normal_dict.items())))
-        observed = str(self.sorted_dict)
-        self.assertEqual(expected, observed)
+        self.assertEqual(str(dict(sorted(self.normal_dict.items()))), str(self.sorted_dict))
 
     def test_items(self):
-        expected = sorted(self.normal_dict.items())
-        observed = self.sorted_dict.items()
-        self.assertEqual(expected, observed)
+        self.assertEqual(sorted(self.normal_dict.items()), self.sorted_dict.items())
 
     def test_keys(self):
-        expected = sorted(self.normal_dict.keys())
-        observed = self.sorted_dict.keys()
-        self.assertEqual(expected, observed)
+        self.assertEqual(sorted(self.normal_dict.keys()), self.sorted_dict.keys())
 
     def test_values(self):
-        expected = [item[1] for item in sorted(self.normal_dict.items())]
-        observed = self.sorted_dict.values()
-        self.assertEqual(expected, observed)
+        self.assertEqual([item[1] for item in sorted(self.normal_dict.items())], self.sorted_dict.values())
+
+    def test_empty(self):
+        sorted_dict = SortedDict(int)
+        self.assertEqual("{}", str(sorted_dict))
+        self.assertEqual(0, len(sorted_dict))
 
 
 if __name__ == "__main__":
