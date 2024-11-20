@@ -97,6 +97,10 @@ class TestIntKeys(unittest.TestCase):
     def tearDown(self):
         for expected, observed in zip(self.keys_refcounts, map(sys.getrefcount, self.normal_dict), strict=False):
             self.assertEqual(expected, observed)
+        for expected, observed in zip(
+            self.values_refcounts, map(sys.getrefcount, self.normal_dict.values()), strict=False
+        ):
+            self.assertEqual(expected, observed)
 
 
 if __name__ == "__main__":
