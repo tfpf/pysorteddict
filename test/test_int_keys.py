@@ -45,12 +45,17 @@ class TestIntKeys(unittest.TestCase):
 
     def test_getitem(self):
         key = self.rg.choice(self.keys)
-        self.assertEqual(self.normal_dict[key], self.sorted_dict[key])
+        value = self.sorted_dict[key]
+        self.assertEqual(self.normal_dict[key], value)
+        self.assertEqual(5, sys.getrefcount(key))
+        self.assertEqual(5, sys.getrefcount(value))
 
     def test_setitem_wrong_type(self):
+        value = self.rg.int()
         with self.assertRaises(ValueError) as ctx:
-            self.sorted_dict[object()] = -1000
+            self.sorted_dict[object()] = value
         self.assertEqual(self.wrong_argument, ctx.exception.args[0])
+        self.assertEqual(2, sys.getrefcount(value))
 
     def test_setitem_existing(self):
         idx, key = self.rg.choice([*enumerate(self.normal_dict)])
