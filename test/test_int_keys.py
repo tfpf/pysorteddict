@@ -8,6 +8,10 @@ from .utils import Random
 class TestIntKeys(unittest.TestCase):
     """Test a sorted dictionary with ``int`` keys."""
 
+    @classmethod
+    def setUpClass(cls):
+        cls.wrong_argument = "key must be of type <class 'int'>"
+
     def setUp(self):
         self.rg = Random()
         self.keys = [self.rg.int() for _ in range(1000)]
@@ -25,7 +29,7 @@ class TestIntKeys(unittest.TestCase):
     def test_getitem_wrong_type(self):
         with self.assertRaises(ValueError) as ctx:
             self.sorted_dict[object()]
-        self.assertEqual("key must be of type <class 'int'>", ctx.exception.args[0])
+        self.assertEqual(self.wrong_argument, ctx.exception.args[0])
 
     def test_getitem_not_found(self):
         with self.assertRaises(KeyError) as ctx:

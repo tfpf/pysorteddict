@@ -7,9 +7,9 @@ class TestInvalidConstruction(unittest.TestCase):
     """Test invalid construction of a sorted dictionary."""
 
     @classmethod
-    def setUpClass(self):
-        self.missing_argument = "function missing required argument 'key_type' (pos 1)"
-        self.wrong_argument = "constructor argument must be a supported type"
+    def setUpClass(cls):
+        cls.missing_argument = "function missing required argument 'key_type' (pos 1)"
+        cls.wrong_argument = "constructor argument must be a supported type"
 
     def test_construct_without_argument(self):
         with self.assertRaises(TypeError) as ctx:
