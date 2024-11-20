@@ -143,6 +143,7 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
         PyErr_SetObject(PyExc_KeyError, key);
         return nullptr;
     }
+    Py_INCREF(it->second);
     return it->second;
 }
 
@@ -222,7 +223,7 @@ static PyObject* sorted_dict_type_str(PyObject* self)
         Py_DECREF(value_repr);
     }
     oss << '\x7d';
-    return PyUnicode_FromString(oss.str().data());
+    return PyUnicode_FromString(oss.str().data()); // New reference.
 }
 
 /**
