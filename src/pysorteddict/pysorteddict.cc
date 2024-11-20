@@ -200,7 +200,7 @@ static PyObject* sorted_dict_type_str(PyObject* self)
         Py_DECREF(value_repr);
     }
     oss << '\x7d';
-    return PyUnicode_FromString(oss.str().data()); // New reference.
+    return PyUnicode_FromString(oss.str().data());  // New reference.
 }
 
 /**
