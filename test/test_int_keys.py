@@ -1,3 +1,4 @@
+import sys
 import unittest
 
 from pysorteddict import SortedDict
@@ -20,6 +21,13 @@ class TestIntKeys(unittest.TestCase):
         self.sorted_dict = SortedDict(int)
         for key, value in zip(self.keys, self.values, strict=True):
             self.sorted_dict[key] = value
+
+        # Store the reference count of a number in a list at the position at
+        # which it appears in the normal dictionary. At this point, the
+        # reference counts are all 3, but querying the reference count
+        # increases it, so I store 4.
+        self.keys_refcounts = [4] * len(self.normal_dict)
+        self.values_refcounts = [4] * len(self.normal_dict)
 
     def test_len(self):
         self.assertEqual(len(self.normal_dict), len(self.sorted_dict))
@@ -78,10 +86,17 @@ class TestIntKeys(unittest.TestCase):
     def test_values(self):
         self.assertEqual([item[1] for item in sorted(self.normal_dict.items())], self.sorted_dict.values())
 
+    def test_del(self):
+        del self.sorted_dict
+
     def test_empty(self):
         sorted_dict = SortedDict(int)
         self.assertEqual("{}", str(sorted_dict))
         self.assertEqual(0, len(sorted_dict))
+
+    def tearDown(self):
+        for expected, observed in zip(self.keys_refcounts, map(sys.getrefcount, self.normal_dict), strict=False):
+            self.assertEqual(expected, observed)
 
 
 if __name__ == "__main__":
