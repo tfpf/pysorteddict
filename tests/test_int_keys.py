@@ -22,10 +22,11 @@ class TestIntKeys(unittest.TestCase):
         for key, value in zip(self.keys, self.values, strict=True):
             self.sorted_dict[key] = value
 
-        # Store the reference count of a number in a list at the position at
+        # Store the reference count of an item in a list at the position at
         # which it appears in the normal dictionary. At this point, the
         # reference counts are all 3, but querying the reference count
-        # increases it, so I store 4.
+        # increases it, so I store 4. Whenever a test changes the reference
+        # count of any item, I set the new reference count at its index.
         self.keys_refcounts = [4] * len(self.normal_dict)
         self.values_refcounts = [4] * len(self.normal_dict)
 
@@ -42,12 +43,14 @@ class TestIntKeys(unittest.TestCase):
         with self.assertRaises(KeyError) as ctx:
             self.sorted_dict[key]
         self.assertEqual(key, ctx.exception.args[0])
+
         self.assertEqual(3, sys.getrefcount(key))
 
     def test_getitem(self):
         key = self.rg.choice(self.keys)
         value = self.sorted_dict[key]
         self.assertEqual(self.normal_dict[key], value)
+
         self.assertEqual(5, sys.getrefcount(key))
         self.assertEqual(5, sys.getrefcount(value))
 
@@ -56,6 +59,7 @@ class TestIntKeys(unittest.TestCase):
         with self.assertRaises(ValueError) as ctx:
             self.sorted_dict[object()] = value
         self.assertEqual(self.wrong_argument, ctx.exception.args[0])
+
         self.assertEqual(2, sys.getrefcount(value))
 
     def test_setitem_existing(self):
@@ -63,6 +67,7 @@ class TestIntKeys(unittest.TestCase):
         value = self.rg.int()
         self.sorted_dict[key] = value
         self.assertEqual(value, self.sorted_dict[key])
+
         self.assertEqual(5, sys.getrefcount(key))
         self.assertEqual(3, sys.getrefcount(value))
         self.values_refcounts[idx] -= 1
@@ -72,6 +77,7 @@ class TestIntKeys(unittest.TestCase):
         value = self.rg.int()
         self.sorted_dict[key] = value
         self.assertEqual(value, self.sorted_dict[key])
+
         self.assertEqual(3, sys.getrefcount(key))
         self.assertEqual(3, sys.getrefcount(value))
 
@@ -80,6 +86,7 @@ class TestIntKeys(unittest.TestCase):
         with self.assertRaises(KeyError) as ctx:
             del self.sorted_dict[key]
         self.assertEqual(key, ctx.exception.args[0])
+
         self.assertEqual(3, sys.getrefcount(key))
 
     def test_setitem_remove_existing(self):
@@ -88,12 +95,16 @@ class TestIntKeys(unittest.TestCase):
         with self.assertRaises(KeyError) as ctx:
             self.sorted_dict[key]
         self.assertEqual(key, ctx.exception.args[0])
+
         self.assertEqual(5, sys.getrefcount(key))
         self.keys_refcounts[idx] -= 1
         self.values_refcounts[idx] -= 1
 
     def test_str(self):
-        self.assertEqual(str(dict(sorted(self.normal_dict.items()))), str(self.sorted_dict))
+        s = str(self.sorted_dict)
+        self.assertEqual(str(dict(sorted(self.normal_dict.items()))), s)
+
+        self.assertEqual(2, sys.getrefcount(s))
 
     def test_items(self):
         self.assertEqual(sorted(self.normal_dict.items()), self.sorted_dict.items())
