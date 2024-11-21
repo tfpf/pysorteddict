@@ -139,6 +139,7 @@ class TestIntKeys(unittest.TestCase):
 
     def test_del(self):
         del self.sorted_dict
+
         self.keys_refcounts = [3] * len(self.normal_dict)
         self.values_refcounts = [3] * len(self.normal_dict)
 
