@@ -87,6 +87,9 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     if (PyObject_RichCompareBool(sd->key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
     {
         PyErr_SetString(PyExc_ValueError, "constructor argument must be a supported type");
+        // I haven't increased its reference count, so the deallocator
+        // shouldn't decrease it. Hence, set it to a null pointer.
+        sd->key_type = nullptr;
         Py_DECREF(self);
         return nullptr;
     }
@@ -99,7 +102,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
 /**
  * Obtain the number of keys.
  */
-Py_ssize_t sorted_dict_type_len(PyObject* self)
+static Py_ssize_t sorted_dict_type_len(PyObject* self)
 {
     SortedDictType* sd = (SortedDictType*)self;
     return sd->map->size();
@@ -122,7 +125,7 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
         PyErr_SetObject(PyExc_KeyError, key);
         return nullptr;
     }
-    return it->second;
+    return Py_NewRef(it->second);
 }
 
 /**
@@ -152,11 +155,13 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
         return 0;
     }
 
-    // Insert or replace the value.
+    // Insert or replace the value. This merely stores additional references to
+    // the key (if applicable) and the value. If I ever plan to allow mutable
+    // types as keys, I should store references to their copies instead. Like
+    // the C++ standard library containers do.
     if (it == sd->map->end())
     {
-        auto status = sd->map->insert({ key, value });
-        it = status.first;
+        it = sd->map->insert({ key, value }).first;
         Py_INCREF(it->first);
     }
     else
@@ -194,7 +199,7 @@ static PyObject* sorted_dict_type_str(PyObject* self)
         Py_DECREF(value_repr);
     }
     oss << '\x7d';
-    return PyUnicode_FromString(oss.str().data());
+    return PyUnicode_FromString(oss.str().data());  // New reference.
 }
 
 /**
@@ -256,7 +261,7 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
     for (auto& item : *sd->map)
     {
         PyList_SET_ITEM(pyvalues, idx++, item.second);
-        Py_INCREF(item.first);
+        Py_INCREF(item.second);
     }
     return pyvalues;
 }
