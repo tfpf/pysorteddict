@@ -25,4 +25,4 @@ line-length = 119
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*" = ["T201"]
-"test/*" = ["PT009", "PT027", "TID252"]
+"tests/*" = ["PT009", "PT027", "TID252"]
