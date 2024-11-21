@@ -109,11 +109,33 @@ class TestIntKeys(unittest.TestCase):
     def test_items(self):
         self.assertEqual(sorted(self.normal_dict.items()), self.sorted_dict.items())
 
+    def test_items_preserved(self):
+        self._items = self.sorted_dict.items()
+        self.assertEqual(sorted(self.normal_dict.items()), self._items)
+
+        self.assertEqual(2, sys.getrefcount(self._items))
+        self.keys_refcounts = [5] * len(self.normal_dict)
+        self.values_refcounts = [5] * len(self.normal_dict)
+
     def test_keys(self):
         self.assertEqual(sorted(self.normal_dict.keys()), self.sorted_dict.keys())
 
+    def test_keys_preserved(self):
+        self._keys = self.sorted_dict.keys()
+        self.assertEqual(sorted(self.normal_dict.keys()), self._keys)
+
+        self.assertEqual(2, sys.getrefcount(self._keys))
+        self.keys_refcounts = [5] * len(self.normal_dict)
+
     def test_values(self):
         self.assertEqual([item[1] for item in sorted(self.normal_dict.items())], self.sorted_dict.values())
+
+    def test_values_preserved(self):
+        self._values = self.sorted_dict.values()
+        self.assertEqual([item[1] for item in sorted(self.normal_dict.items())], self._values)
+
+        self.assertEqual(2, sys.getrefcount(self._values))
+        self.values_refcounts = [5] * len(self.normal_dict)
 
     def test_del(self):
         del self.sorted_dict
