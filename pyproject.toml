@@ -23,8 +23,6 @@ classifiers = [
 [tool.ruff]
 line-length = 119
 
-[tool.ruff.lint]
-ignore = ["PT009", "PT027", "S311", "T201"]
-
 [tool.ruff.lint.per-file-ignores]
-"test/*" = ["TID252"]
+"examples/*" = ["T201"]
+"test/*" = ["PT009", "PT027", "TID252"]
