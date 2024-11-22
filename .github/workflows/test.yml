@@ -1,11 +1,18 @@
-name: style
+name: test
 on: [push, workflow_dispatch]
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        os: ["macos-13", "macos-14", "ubuntu-22.04", "windows-2022"]
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    name: ${{ matrix.os }} / ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python }}
     - run: pipx install hatch
-    - run: hatch -v run python -m unittest
+    - run: hatch run python -m unittest
