@@ -1,5 +1,3 @@
-import platform
-
 import setuptools
 
 setuptools.setup(
