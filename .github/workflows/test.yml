@@ -7,4 +7,5 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
+    - run: pipx install hatch
     - run: hatch -v run python -m unittest
