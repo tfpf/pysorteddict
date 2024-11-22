@@ -116,7 +116,7 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
     SortedDictType* sd = (SortedDictType*)self;
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
-        PyErr_FormatWrapper(PyExc_ValueError, "key must be of type %s", sd->key_type);
+        PyErr_FormatWrapper(PyExc_TypeError, "key must be of type %s", sd->key_type);
         return nullptr;
     }
     auto it = sd->map->find(key);
@@ -136,7 +136,7 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     SortedDictType* sd = (SortedDictType*)self;
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
-        PyErr_FormatWrapper(PyExc_ValueError, "key must be of type %s", sd->key_type);
+        PyErr_FormatWrapper(PyExc_TypeError, "key must be of type %s", sd->key_type);
         return -1;
     }
 

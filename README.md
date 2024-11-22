@@ -24,7 +24,7 @@ from pysorteddict import SortedDict
 sorted_dict = SortedDict(int)
 sorted_dict[5659] = "gaining weight is"
 sorted_dict[1992] = 31.692
-sorted_dict[24274] = "times harder than"
+sorted_dict[24274] = "times easier than"
 sorted_dict[9765] = ["losing", "weight"]
 print(sorted_dict)
 ```
@@ -34,3 +34,48 @@ This program should output
 are in ascending order.
 
 ## Documentation
+
+### `class pysorteddict.SortedDict(key_type)`
+
+Constructor. Create a new sorted dictionary in which the keys are of type `key_type`. As of the current version,
+`key_type` must be `int`. Support for some more types will be added in due course.
+
+#### `len(d)`
+
+Return the number of key-value pairs in a sorted dictionary `d`.
+
+#### `d[key]`
+
+Return the value mapped to `key` in a sorted dictionary `d`.
+
+* If `type(key)` does not match `key_type` passed to the constructor, raise `TypeError`.
+* If `key` is not present in `d`, raise `KeyError`.
+
+#### `d[key] = value`
+
+Map `value` to `key` in a sorted dictionary `d`, overwriting the previously-mapped value (if any).
+
+* If `type(key)` does not match `key_type` passed to the constructor, raise `TypeError`.
+
+#### `del d[key]`
+
+Remove `key` and the value mapped to it from a sorted dictionary `d`.
+
+* If `key` is not present in `d`, raise `KeyError`.
+
+#### `str(d)`
+
+Return a human-readable representation of a sorted dictionary `d`.
+
+#### `d.items()`
+
+Return the list of key-value pairs in a sorted dictionary `d`. This list will be sorted.
+
+#### `d.keys()`
+
+Return the list of keys in a sorted dictionary `d`. This list will be sorted.
+
+#### `d.values()`
+
+Return the list of values in a sorted dictionary `d`. The order of the values will be such that the keys they are
+mapped to will be in ascending order.
