@@ -126,7 +126,8 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
         PyErr_SetObject(PyExc_KeyError, key);
         return nullptr;
     }
-    return Py_NewRef(it->second);
+    Py_INCREF(it->second);
+    return it->second;
 }
 
 /**
