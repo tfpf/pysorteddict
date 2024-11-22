@@ -1,0 +1,22 @@
+name: build
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: ["macos-13", "macos-14", "ubuntu-22.04"]
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    name: build on ${{ matrix.os }} with ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python }}
+    - run: pipx install hatch
+    - run: hatch build
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.os }}-${{ matrix.python }}
+        path: dist/*.whl
