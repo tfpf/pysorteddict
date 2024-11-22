@@ -3,14 +3,14 @@ on: [push, workflow_dispatch]
 
 jobs:
   cxx-style:
-    name: Format C++
+    name: format C++
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - run: ./clang-format.bash check
 
   python-style:
-    name: Format and Lint Python
+    name: format and lint Python
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
