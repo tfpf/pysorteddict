@@ -1,6 +1,6 @@
 # pysorteddict
 
-Like `dict`, but the keys are always in ascending order.
+Like Python's `dict`, but the keys are always in ascending order.
 
 ## Installation
 
