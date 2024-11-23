@@ -2,6 +2,10 @@
 
 Like Python's `dict`, but the keys are always in ascending order.
 
+<p align="center">
+ <img src="https://github.com/user-attachments/assets/e9d1e78e-c0fd-4d87-93f6-e293ddef31ba" />
+</p>
+
 ## Installation
 
 [pysorteddict is available on PyPI.](https://pypi.org/project/pysorteddict/)
