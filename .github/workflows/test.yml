@@ -16,6 +16,6 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
     - run: pipx install hatch
-    - run: hatch -v run python -m unittest
+    - run: hatch run python -m unittest
       env:
         HATCH_PYTHON: ${{ steps.sp.outputs.python-path }}
