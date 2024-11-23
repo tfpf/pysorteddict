@@ -2,6 +2,12 @@
 
 Like Python's `dict`, but the keys are always in ascending order.
 
+[![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
+
+[![style](https://github.com/tfpf/pysorteddict/actions/workflows/style.yml/badge.svg)](https://github.com/tfpf/pysorteddict/actions/workflows/style.yml)
+[![test](https://github.com/tfpf/pysorteddict/actions/workflows/test.yml/badge.svg)](https://github.com/tfpf/pysorteddict/actions/workflows/test.yml)
+[![package](https://github.com/tfpf/pysorteddict/actions/workflows/package.yml/badge.svg)](https://github.com/tfpf/pysorteddict/actions/workflows/package.yml)
+
 <p align="center">
  <img src="https://github.com/user-attachments/assets/e9d1e78e-c0fd-4d87-93f6-e293ddef31ba" />
 </p>
