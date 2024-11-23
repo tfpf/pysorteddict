@@ -2,12 +2,12 @@ name: package
 on: [push, workflow_dispatch]
 
 jobs:
-  package:
+  build:
     strategy:
       matrix:
         os: ["macos-13", "macos-14", "ubuntu-22.04"]
         python: ["3.10", "3.11", "3.12", "3.13"]
-    name: package on ${{ matrix.os }} with ${{ matrix.python }}
+    name: build on ${{ matrix.os }} with ${{ matrix.python }}
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -23,3 +23,13 @@ jobs:
       with:
         name: ${{ matrix.os }}-${{ matrix.python }}
         path: dist/*.whl
+
+  release:
+    # if: github.ref_type == "tag"
+    needs: [build]
+    runs-on: ubuntu-22.04
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+      - run: find .
