@@ -75,9 +75,13 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     }
 
     SortedDictType* sd = (SortedDictType*)self;
-    // Casting a string constant to a non-const pointer is not permitted in
-    // C++, but the signature of this function is such that I am forced to.
-    char* args_names[] = { "key_type", nullptr };
+    // Up to Python 3.12, the argument parser below took an array of pointers
+    // (with each pointer pointing to a C string) as its fourth argument.
+    // However, C++ does not allow converting a string constant to a pointer.
+    // Hence, I use a character array to construct the C string, and then place
+    // it in an array of pointers.
+    char key_type[] = "key_type";
+    char* args_names[] = { key_type, nullptr };
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", args_names, &sd->key_type))
     {
         Py_DECREF(self);
