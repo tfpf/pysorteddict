@@ -14,14 +14,14 @@ Like Python's `dict`, but the keys are always in ascending order.
 
 ## Installation
 
-[pysorteddict is available on PyPI.](https://pypi.org/project/pysorteddict/)
+[pysorteddict is available on PyPI for macOS and Linux.](https://pypi.org/project/pysorteddict/) It requires Python 3.10 or newer.
 
 ```shell
 pip install pysorteddict
 ```
 
-At the moment, only a source distribution is provided, so make sure to install the Python development headers and
-libraries for your operating system. Otherwise, the above command may fail.
+You might be able to install it on Windows by running the above command if you have the Python development headers and
+libraries installed.
 
 ## Usage
 
@@ -40,7 +40,7 @@ print(sorted_dict)
 ```
 
 This program should output
-`{1992: 31.692, 5659: 'gaining weight is', 9765: ['losing', 'weight'], 24274: 'times harder than'}`. Note that the keys
+`{1992: 31.692, 5659: 'gaining weight is', 9765: ['losing', 'weight'], 24274: 'times easier than'}`. Note that the keys
 are in ascending order.
 
 ## Documentation
@@ -58,14 +58,14 @@ Return the number of key-value pairs in a sorted dictionary `d`.
 
 Return the value mapped to `key` in a sorted dictionary `d`.
 
-* If `type(key)` does not match `key_type` passed to the constructor, raise `TypeError`.
+* If `key` is not an instance of `key_type` passed to the constructor, raise `TypeError`.
 * If `key` is not present in `d`, raise `KeyError`.
 
 #### `d[key] = value`
 
 Map `value` to `key` in a sorted dictionary `d`, overwriting the previously-mapped value (if any).
 
-* If `type(key)` does not match `key_type` passed to the constructor, raise `TypeError`.
+* If `key` is not an instance of `key_type` passed to the constructor, raise `TypeError`.
 
 #### `del d[key]`
 
