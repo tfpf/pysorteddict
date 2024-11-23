@@ -35,3 +35,5 @@ jobs:
       - run: |
           gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} --generate-notes
           gh release upload ${{ github.ref_name }} */*.whl
+        env:
+          GH_TOKEN: ${{ github.token }}
