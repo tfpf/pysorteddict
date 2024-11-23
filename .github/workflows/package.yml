@@ -26,12 +26,12 @@ jobs:
         name: wheel-${{ matrix.os }}-${{ matrix.python }}
         path: dist/*.whl
 
-  # Hatch builds wheels with a platform tag not permitted by PyPI. Hence, use
-  # cibuildwheel.
-  build_linux:
+  # Hatch builds Linux wheels with a platform tag not permitted by PyPI. Hence,
+  # use cibuildwheel.
+  build_ubuntu_windows:
     strategy:
       matrix:
-        os: ['ubuntu-22.04']
+        os: ['ubuntu-22.04', 'windows-2022']
     name: build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -45,7 +45,7 @@ jobs:
 
   release:
     if: github.ref_type == 'tag'
-    needs: [build_macos, build_linux]
+    needs: [build_macos, build_ubuntu_windows]
     runs-on: ubuntu-22.04
     permissions: write-all
     steps:
