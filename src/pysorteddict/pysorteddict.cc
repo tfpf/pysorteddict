@@ -77,7 +77,8 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     SortedDictType* sd = (SortedDictType*)self;
     // Casting a string constant to a non-const pointer is not permitted in
     // C++, but the signature of this function is such that I am forced to.
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", (char*[]) { "key_type", nullptr }, &sd->key_type))
+    char* args_names[] = { "key_type", nullptr };
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", args_names, &sd->key_type))
     {
         Py_DECREF(self);
         return nullptr;
@@ -116,7 +117,7 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
     SortedDictType* sd = (SortedDictType*)self;
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
-        PyErr_FormatWrapper(PyExc_ValueError, "key must be of type %s", sd->key_type);
+        PyErr_FormatWrapper(PyExc_TypeError, "key must be of type %s", sd->key_type);
         return nullptr;
     }
     auto it = sd->map->find(key);
@@ -136,7 +137,7 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     SortedDictType* sd = (SortedDictType*)self;
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
-        PyErr_FormatWrapper(PyExc_ValueError, "key must be of type %s", sd->key_type);
+        PyErr_FormatWrapper(PyExc_TypeError, "key must be of type %s", sd->key_type);
         return -1;
     }
 

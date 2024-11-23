@@ -1,0 +1,58 @@
+name: package
+on: [push, workflow_dispatch]
+
+jobs:
+  # The Apple linker does not understand one of the flags cibuildwheel passes
+  # to it. Hence, use Hatch: it generates universal wheels.
+  build_macos:
+    strategy:
+      matrix:
+        os: ['macos-14']
+        python: ['3.10', '3.11', '3.12', '3.13']
+    name: build on ${{ matrix.os }} with ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      id: sp
+      with:
+        python-version: ${{ matrix.python }}
+    - run: pipx install hatch
+    - run: hatch build
+      env:
+        HATCH_PYTHON: ${{ steps.sp.outputs.python-path }}
+    - uses: actions/upload-artifact@v4
+      with:
+        name: wheel-${{ matrix.os }}-${{ matrix.python }}
+        path: dist/*.whl
+
+  # Hatch builds wheels with a platform tag not permitted by PyPI. Hence, use
+  # cibuildwheel.
+  build_linux:
+    strategy:
+      matrix:
+        os: ['ubuntu-22.04']
+    name: build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+    - run: pipx install cibuildwheel==2.21.3
+    - run: cibuildwheel --output-dir wheelhouse
+    - uses: actions/upload-artifact@v4
+      with:
+        name: wheel-${{ matrix.os }}-${{ strategy.job-index }}
+        path: wheelhouse/*.whl
+
+  release:
+    if: github.ref_type == 'tag'
+    needs: [build_macos, build_linux]
+    runs-on: ubuntu-22.04
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+      - run: |
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} --generate-notes
+          gh release upload ${{ github.ref_name }} */*.whl
+        env:
+          GH_TOKEN: ${{ github.token }}

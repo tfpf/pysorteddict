@@ -1,0 +1,21 @@
+name: test
+on: [push, workflow_dispatch]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: ['macos-14', 'ubuntu-22.04']
+        python: ['3.10', '3.11', '3.12', '3.13']
+    name: test on ${{ matrix.os }} with ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      id: sp
+      with:
+        python-version: ${{ matrix.python }}
+    - run: pipx install hatch
+    - run: hatch run python -m unittest
+      env:
+        HATCH_PYTHON: ${{ steps.sp.outputs.python-path }}

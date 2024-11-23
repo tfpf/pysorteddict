@@ -34,7 +34,7 @@ class TestIntKeys(unittest.TestCase):
         self.assertEqual(len(self.normal_dict), len(self.sorted_dict))
 
     def test_getitem_wrong_type(self):
-        with self.assertRaises(ValueError) as ctx:
+        with self.assertRaises(TypeError) as ctx:
             self.sorted_dict[object()]
         self.assertEqual(self.wrong_argument, ctx.exception.args[0])
 
@@ -56,7 +56,7 @@ class TestIntKeys(unittest.TestCase):
 
     def test_setitem_wrong_type(self):
         value = self.rg.int()
-        with self.assertRaises(ValueError) as ctx:
+        with self.assertRaises(TypeError) as ctx:
             self.sorted_dict[object()] = value
         self.assertEqual(self.wrong_argument, ctx.exception.args[0])
 
