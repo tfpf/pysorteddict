@@ -7,7 +7,7 @@
 /**
  * C++-style comparison implementation for Python objects.
  */
-struct ComparePyObjects
+struct PyObject_CustomCompare
 {
     bool operator()(PyObject* a, PyObject* b) const
     {
@@ -38,7 +38,7 @@ struct SortedDictType
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
-    std::map<PyObject *, PyObject*, ComparePyObjects> *map = nullptr;
+    std::map<PyObject *, PyObject*, PyObject_CustomCompare> *map = nullptr;
     // The type of the keys of the dictionary.
     PyObject *key_type = nullptr;
 };
@@ -95,7 +95,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
         return nullptr;
     }
 
-    sd->map = new std::map<PyObject*, PyObject*, ComparePyObjects>;
+    sd->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
     Py_INCREF(sd->key_type);
     return self;
 }
