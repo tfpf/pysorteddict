@@ -14,14 +14,15 @@ Provides `SortedDict`. It's like Python's `dict`, but the keys are always in asc
 
 ## Installation
 
-[pysorteddict is available on PyPI for macOS and Linux.](https://pypi.org/project/pysorteddict/) It requires Python 3.10 or newer.
+[pysorteddict is available on PyPI.](https://pypi.org/project/pysorteddict/) It requires Python 3.10 or newer. Built
+distributions (binary wheels) are provided for Linux, macOS and Windows, so installing is straightforward.
 
 ```shell
 pip install pysorteddict
 ```
 
-You might be able to install it on Windows by running the above command if you have the Python development headers and
-libraries installed.
+If you are on any other platform, install the Python development headers and libraries before running the above
+command.
 
 ## Usage
 
