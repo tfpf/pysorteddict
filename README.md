@@ -1,6 +1,6 @@
 # pysorteddict
 
-Like Python's `dict`, but the keys are always in ascending order.
+Provides `SortedDict`. It's like Python's `dict`, but the keys are always in ascending order.
 
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
 
@@ -42,6 +42,11 @@ print(sorted_dict)
 This program should output
 `{1992: 31.692, 5659: 'gaining weight is', 9765: ['losing', 'weight'], 24274: 'times easier than'}`. Note that the keys
 are in ascending order.
+
+## Implementation Details
+
+pysorteddict is implemented entirely in C++. `SortedDict` provides a Python interface to
+`std::map<PyObject*, PyObject*, _>`.
 
 ## Documentation
 
