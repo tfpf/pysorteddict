@@ -20,7 +20,7 @@ jobs:
 
   release:
     if: github.ref_type == 'tag'
-    needs: [build_macos, build_ubuntu_windows]
+    needs: [build_ubuntu_windows]
     runs-on: ubuntu-22.04
     permissions: write-all
     steps:
