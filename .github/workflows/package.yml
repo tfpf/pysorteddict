@@ -13,6 +13,7 @@ jobs:
     - run: pipx install cibuildwheel==2.21.3
     - run: cibuildwheel --output-dir wheelhouse
       env:
+        CIBW_TEST_COMMAND: echo {project} && pwd
         # The Apple linker does not recognise one of the flags passed to it
         # while building for PyPy. Skip it.
         CIBW_SKIP: pp*-macosx*
