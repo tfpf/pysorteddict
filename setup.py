@@ -3,12 +3,9 @@ import sysconfig
 
 import setuptools
 
-if os.name != "nt" or sysconfig.get_platform().startswith("mingw"):
-    # Either one of Linux, macOS and Cygwin, or MSYS2.
-    cxx_standard_arg = "-std=c++14"
-else:
-    # Windows.
-    cxx_standard_arg = "/std:c++14"
+# If running on either one of Linux, macOS and Cygwin, or MSYS2, specify the
+# argument in the GNU style.
+cxx_standard_arg = "-std=c++14" if os.name != "nt" or sysconfig.get_platform().startswith("mingw") else "/std:c++14"
 
 setuptools.setup(
     ext_modules=[
