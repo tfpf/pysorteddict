@@ -4,7 +4,7 @@ import sysconfig
 import setuptools
 
 # If running on either one of Linux, macOS and Cygwin, or MSYS2, specify the
-# argument in the GNU style.
+# argument the way the corresponding tools expect it.
 cxx_standard_arg = "-std=c++14" if os.name != "nt" or sysconfig.get_platform().startswith("mingw") else "/std:c++14"
 
 setuptools.setup(
