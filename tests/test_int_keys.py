@@ -14,6 +14,7 @@ class TestIntKeys(TestGenericKeys, unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.wrong_argument = "key must be of type <class 'int'>"
 
     def setUp(self):
