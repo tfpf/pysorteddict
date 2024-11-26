@@ -1,6 +1,6 @@
 import platform
-import sys
 import random
+import sys
 
 from pysorteddict import SortedDict
 
