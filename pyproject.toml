@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysorteddict"
-version = "0.0.6"
+version = "0.0.7"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
@@ -41,4 +41,4 @@ line-length = 119
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*" = ["T201"]
-"tests/*" = ["PT009", "PT027", "TID252"]
+"tests/*" = ["PT009", "PT027", "S311"]
