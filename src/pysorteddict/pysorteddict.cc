@@ -14,8 +14,9 @@ struct PyObject_CustomCompare
     bool operator()(PyObject* a, PyObject* b) const
     {
         // This assumes that the comparison operation will never error out. I
-        // think it should be enough to ensure that the two Python objects
-        // being compared always have the same type.
+        // ensure this by allowing only some built-in types as key types: thus,
+        // two instances of the same key type can always be compared.
+        // TODO update this comment explaining that I allow only a few types (and not types derived from them) as key types.
         return PyObject_RichCompareBool(a, b, Py_LT) == 1;
     }
 };
