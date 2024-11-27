@@ -17,7 +17,7 @@ class TestInvalidConstruction(unittest.TestCase):
         self.assertEqual(self.missing_argument, ctx.exception.args[0])
 
     def test_construct_with_object_instance(self):
-        with self.assertRaises(ValueError) as ctx:
+        with self.assertRaises(TypeError) as ctx:
             SortedDict(object())
         self.assertEqual(self.wrong_argument, ctx.exception.args[0])
 
