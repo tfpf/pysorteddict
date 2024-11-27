@@ -23,7 +23,7 @@ struct PyObject_CustomCompare
 /**
  * Obtain the Python representation of a Python object.
  */
-std::pair<std::string, bool> repr(PyObject* ob)
+static std::pair<std::string, bool> repr(PyObject* ob)
 {
     PyObject* ob_repr = PyObject_Repr(ob);  // New reference.
     if (ob_repr == nullptr)
@@ -38,7 +38,7 @@ std::pair<std::string, bool> repr(PyObject* ob)
 /**
  * Obtain a human-readable string representation of a Python object.
  */
-std::pair<std::string, bool> str(PyObject* ob)
+static std::pair<std::string, bool> str(PyObject* ob)
 {
     PyObject* ob_str = PyObject_Str(ob);  // New reference.
     if (ob_str == nullptr)
@@ -48,19 +48,6 @@ std::pair<std::string, bool> str(PyObject* ob)
     std::pair<std::string, bool> result = { PyUnicode_AsUTF8(ob_str), true };
     Py_DECREF(ob_str);
     return result;
-}
-
-/**
- * Set an error message containing the string representation of a Python
- * object.
- */
-static void PyErr_FormatWrapper(PyObject* exc, char const* fmt, PyObject* ob)
-{
-    PyObject* repr = PyObject_Repr(ob);  // New reference.
-    // The second argument is no longer a string constant. Is there an elegant
-    // fix?
-    PyErr_Format(exc, fmt, PyUnicode_AsUTF8(repr));
-    Py_DECREF(repr);
 }
 
 // clang-format off
@@ -153,7 +140,13 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
     SortedDictType* sd = (SortedDictType*)self;
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
-        PyErr_FormatWrapper(PyExc_TypeError, "key must be of type %s", sd->key_type);
+        PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
+        if (key_type_repr == nullptr)
+        {
+            return nullptr;
+        }
+        PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
+        Py_DECREF(key_type_repr);
         return nullptr;
     }
     auto it = sd->map->find(key);
@@ -173,7 +166,13 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     SortedDictType* sd = (SortedDictType*)self;
     if (PyObject_IsInstance(key, sd->key_type) != 1)
     {
-        PyErr_FormatWrapper(PyExc_TypeError, "key must be of type %s", sd->key_type);
+        PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
+        if (key_type_repr == nullptr)
+        {
+            return -1;
+        }
+        PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
+        Py_DECREF(key_type_repr);
         return -1;
     }
 
@@ -230,12 +229,21 @@ static PyObject* sorted_dict_type_str(PyObject* self)
     oss << '\x7b';
     for (auto& item : *sd->map)
     {
-        PyObject* key_repr = PyObject_Repr(item.first);  // New reference.
-        PyObject* value_repr = PyObject_Repr(item.second);  // New reference.
-        oss << delimiter << PyUnicode_AsUTF8(key_repr) << ": " << PyUnicode_AsUTF8(value_repr);
+        PyObject* key_str = PyObject_Str(item.first);  // New reference.
+        if (key_str == nullptr)
+        {
+            return nullptr;
+        }
+        PyObject* value_str = PyObject_Str(item.second);  // New reference.
+        if (value_str == nullptr)
+        {
+            Py_DECREF(key_str);
+            return nullptr;
+        }
+        oss << delimiter << PyUnicode_AsUTF8(key_str) << ": " << PyUnicode_AsUTF8(value_str);
         delimiter = actual_delimiter;
-        Py_DECREF(key_repr);
-        Py_DECREF(value_repr);
+        Py_DECREF(key_str);
+        Py_DECREF(value_str);
     }
     oss << '\x7d';
     return PyUnicode_FromString(oss.str().data());  // New reference.
@@ -256,6 +264,11 @@ static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
     for (auto& item : *sd->map)
     {
         PyObject* pyitem = PyTuple_New(2);  // New reference.
+        if (pyitem == nullptr)
+        {
+            Py_DECREF(pyitems);
+            return nullptr;
+        }
         PyTuple_SET_ITEM(pyitem, 0, item.first);
         Py_INCREF(item.first);
         PyTuple_SET_ITEM(pyitem, 1, item.second);
