@@ -1,6 +1,6 @@
 import unittest
 
-from tests.utils import TestGenericKeys
+from .utils import TestGenericKeys
 
 
 class TestIntKeys(TestGenericKeys, unittest.TestCase):
