@@ -3,6 +3,8 @@
 #include <iterator>
 #include <map>
 #include <sstream>
+#include <string>
+#include <utility>
 
 /**
  * C++-style comparison implementation for Python objects.
@@ -17,6 +19,36 @@ struct PyObject_CustomCompare
         return PyObject_RichCompareBool(a, b, Py_LT) == 1;
     }
 };
+
+/**
+ * Obtain the Python representation of a Python object.
+ */
+std::pair<std::string, bool> repr(PyObject* ob)
+{
+    PyObject* ob_repr = PyObject_Repr(ob);  // New reference.
+    if (ob_repr == nullptr)
+    {
+        return { "", false };
+    }
+    std::pair<std::string, bool> result = { PyUnicode_AsUTF8(ob_repr), true };
+    Py_DECREF(ob_repr);
+    return result;
+}
+
+/**
+ * Obtain a human-readable string representation of a Python object.
+ */
+std::pair<std::string, bool> str(PyObject* ob)
+{
+    PyObject* ob_str = PyObject_Str(ob);  // New reference.
+    if (ob_str == nullptr)
+    {
+        return { "", false };
+    }
+    std::pair<std::string, bool> result = { PyUnicode_AsUTF8(ob_str), true };
+    Py_DECREF(ob_str);
+    return result;
+}
 
 /**
  * Set an error message containing the string representation of a Python
