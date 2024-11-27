@@ -138,7 +138,7 @@ static Py_ssize_t sorted_dict_type_len(PyObject* self)
 static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 {
     SortedDictType* sd = (SortedDictType*)self;
-    if (PyObject_IsInstance(key, sd->key_type) != 1)
+    if (Py_IS_TYPE(key, (PyTypeObject*)sd->key_type) == 0)
     {
         PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
         if (key_type_repr == nullptr)
@@ -164,7 +164,7 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* value)
 {
     SortedDictType* sd = (SortedDictType*)self;
-    if (PyObject_IsInstance(key, sd->key_type) != 1)
+    if (Py_IS_TYPE(key, (PyTypeObject*)sd->key_type) == 0)
     {
         PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
         if (key_type_repr == nullptr)
