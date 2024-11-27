@@ -91,7 +91,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     // Check the type to use for keys.
     if (PyObject_RichCompareBool(sd->key_type, (PyObject*)&PyLong_Type, Py_EQ) != 1)
     {
-        PyErr_SetString(PyExc_ValueError, "constructor argument must be a supported type");
+        PyErr_SetString(PyExc_TypeError, "constructor argument must be a supported type");
         // I haven't increased its reference count, so the deallocator
         // shouldn't decrease it. Hence, set it to a null pointer.
         sd->key_type = nullptr;
