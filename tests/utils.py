@@ -31,11 +31,12 @@ class TestGenericKeys:
         cls.wrong_argument = ""
 
     def setUp(self, key_type: type):
+        self.key_type = key_type
         self.rg = random.Random(__name__)
         self.keys = [self.small_key() for _ in range(1000)]
         self.values = [self.small_key() for _ in self.keys]
         self.normal_dict = dict(zip(self.keys, self.values, strict=True))
-        self.sorted_dict = SortedDict(key_type)
+        self.sorted_dict = SortedDict(self.key_type)
         for key, value in zip(self.keys, self.values, strict=True):
             self.sorted_dict[key] = value
 
@@ -44,8 +45,11 @@ class TestGenericKeys:
         # reference counts are all 3, but querying the reference count
         # increases it, so I store 4. Whenever a test changes the reference
         # count of any item, I set the new reference count at its index.
-        self.keys_refcounts = [4] * len(self.normal_dict)
-        self.values_refcounts = [4] * len(self.normal_dict)
+        # Remember that reference counting is specific to the CPython
+        # implementation.
+        if self.cpython:
+            self.keys_refcounts = [4] * len(self.normal_dict)
+            self.values_refcounts = [4] * len(self.normal_dict)
 
     def test_len(self):
         self.assertEqual(len(self.normal_dict), len(self.sorted_dict))
@@ -95,21 +99,23 @@ class TestGenericKeys:
             self.values_refcounts[idx] -= 1
 
     def test_setitem_new(self):
-        key = -self.rg.int()
-        value = self.rg.int()
+        key = self.large_key()
+        value = self.small_key()
         self.sorted_dict[key] = value
         self.assertEqual(value, self.sorted_dict[key])
 
-        self.assertEqual(3, sys.getrefcount(key))
-        self.assertEqual(3, sys.getrefcount(value))
+        if self.cpython:
+            self.assertEqual(3, sys.getrefcount(key))
+            self.assertEqual(3, sys.getrefcount(value))
 
     def test_setitem_remove_not_found(self):
-        key = -self.rg.int()
+        key = self.large_key()
         with self.assertRaises(KeyError) as ctx:
             del self.sorted_dict[key]
         self.assertEqual(key, ctx.exception.args[0])
 
-        self.assertEqual(3, sys.getrefcount(key))
+        if self.cpython:
+            self.assertEqual(3, sys.getrefcount(key))
 
     def test_setitem_remove_existing(self):
         idx, key = self.rg.choice([*enumerate(self.normal_dict)])
@@ -118,15 +124,20 @@ class TestGenericKeys:
             self.sorted_dict[key]
         self.assertEqual(key, ctx.exception.args[0])
 
-        self.assertEqual(5, sys.getrefcount(key))
-        self.keys_refcounts[idx] -= 1
-        self.values_refcounts[idx] -= 1
+        if self.cpython:
+            self.assertEqual(5, sys.getrefcount(key))
+            self.keys_refcounts[idx] -= 1
+            self.values_refcounts[idx] -= 1
 
     def test_str(self):
-        s = str(self.sorted_dict)
-        self.assertEqual(str(dict(sorted(self.normal_dict.items()))), s)
+        self.assertEqual(str(dict(sorted(self.normal_dict.items()))), str(self.sorted_dict))
 
-        self.assertEqual(2, sys.getrefcount(s))
+    def test_str_preserved(self):
+        self._str = str(self.sorted_dict)
+        self.assertEqual(str(dict(sorted(self.normal_dict.items()))), self._str)
+
+        if self.cpython:
+            self.assertEqual(2, sys.getrefcount(self._str))
 
     def test_items(self):
         self.assertEqual(sorted(self.normal_dict.items()), self.sorted_dict.items())
@@ -135,9 +146,10 @@ class TestGenericKeys:
         self._items = self.sorted_dict.items()
         self.assertEqual(sorted(self.normal_dict.items()), self._items)
 
-        self.assertEqual(2, sys.getrefcount(self._items))
-        self.keys_refcounts = [5] * len(self.normal_dict)
-        self.values_refcounts = [5] * len(self.normal_dict)
+        if self.cpython:
+            self.assertEqual(2, sys.getrefcount(self._items))
+            self.keys_refcounts = [5] * len(self.normal_dict)
+            self.values_refcounts = [5] * len(self.normal_dict)
 
     def test_keys(self):
         self.assertEqual(sorted(self.normal_dict.keys()), self.sorted_dict.keys())
@@ -146,8 +158,9 @@ class TestGenericKeys:
         self._keys = self.sorted_dict.keys()
         self.assertEqual(sorted(self.normal_dict.keys()), self._keys)
 
-        self.assertEqual(2, sys.getrefcount(self._keys))
-        self.keys_refcounts = [5] * len(self.normal_dict)
+        if self.cpython:
+            self.assertEqual(2, sys.getrefcount(self._keys))
+            self.keys_refcounts = [5] * len(self.normal_dict)
 
     def test_values(self):
         self.assertEqual([item[1] for item in sorted(self.normal_dict.items())], self.sorted_dict.values())
@@ -156,24 +169,27 @@ class TestGenericKeys:
         self._values = self.sorted_dict.values()
         self.assertEqual([item[1] for item in sorted(self.normal_dict.items())], self._values)
 
-        self.assertEqual(2, sys.getrefcount(self._values))
-        self.values_refcounts = [5] * len(self.normal_dict)
+        if self.cpython:
+            self.assertEqual(2, sys.getrefcount(self._values))
+            self.values_refcounts = [5] * len(self.normal_dict)
 
     def test_del(self):
         del self.sorted_dict
 
-        self.keys_refcounts = [3] * len(self.normal_dict)
-        self.values_refcounts = [3] * len(self.normal_dict)
+        if self.cpython:
+            self.keys_refcounts = [3] * len(self.normal_dict)
+            self.values_refcounts = [3] * len(self.normal_dict)
 
     def test_empty(self):
-        sorted_dict = SortedDict(int)
+        sorted_dict = SortedDict(self.key_type)
         self.assertEqual("{}", str(sorted_dict))
         self.assertEqual(0, len(sorted_dict))
 
     def tearDown(self):
-        for expected, observed in zip(self.keys_refcounts, map(sys.getrefcount, self.normal_dict), strict=False):
-            self.assertEqual(expected, observed)
-        for expected, observed in zip(
-            self.values_refcounts, map(sys.getrefcount, self.normal_dict.values()), strict=False
-        ):
-            self.assertEqual(expected, observed)
+        if self.cpython:
+            for expected, observed in zip(self.keys_refcounts, map(sys.getrefcount, self.normal_dict), strict=True):
+                self.assertEqual(expected, observed)
+            for expected, observed in zip(
+                self.values_refcounts, map(sys.getrefcount, self.normal_dict.values()), strict=True
+            ):
+                self.assertEqual(expected, observed)
