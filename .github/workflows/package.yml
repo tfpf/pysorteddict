@@ -16,11 +16,6 @@ jobs:
         # The Apple linker does not recognise one of the flags passed to it
         # while building for PyPy. Skip it.
         CIBW_SKIP: pp*-macosx*
-        # The unit tests import a utility from their containing directory. To
-        # resolve this import correctly, enter the package directory and run
-        # the unit tests. pysorteddict being imported in that manner (as
-        # opposed to being imported from the installed wheel) is not possible,
-        # being that it is not written in Python.
         CIBW_TEST_COMMAND: python -m unittest discover -s {package}/tests -t {package}
     - uses: actions/upload-artifact@v4
       with:
