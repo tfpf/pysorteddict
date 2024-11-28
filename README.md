@@ -51,14 +51,18 @@ pysorteddict is implemented entirely in C++. `SortedDict` provides a Python inte
 
 ## Documentation
 
-### `class pysorteddict.SortedDict(key_type)`
+### Constructor
 
-Constructor. Create a new sorted dictionary in which the keys are of type `key_type`. As of the current version,
-`key_type` must be `int`. Support for some more types will be added in due course.
+#### `SortedDict(key_type: type) -> SortedDict`
+
+Create a new sorted dictionary in which the keys are of type `key_type`. As of the current version, `key_type` must be
+`int`. Support for some more types will be added in due course.
+
+### Magic Methods
 
 #### `len(d)`
 
-Return the number of key-value pairs in a sorted dictionary `d`.
+Return the number of key-value pairs in the sorted dictionary `d`.
 
 #### `d[key]`
 
@@ -83,15 +87,17 @@ Remove `key` and the value mapped to it from a sorted dictionary `d`.
 
 Return a human-readable representation of a sorted dictionary `d`.
 
-#### `d.items()`
+### Other Methods
 
-Return the list of key-value pairs in a sorted dictionary `d`. This list will be sorted.
+#### `d.items() -> list[tuple[object, object]]`
 
-#### `d.keys()`
+Create and return a new list containing the key-value pairs in the sorted dictionary ``d``. This list will be sorted.
 
-Return the list of keys in a sorted dictionary `d`. This list will be sorted.
+#### `d.keys() -> list[object]`
 
-#### `d.values()`
+Create and return a new list containing the keys in the sorted dictionary ``d``. This list will be sorted.
 
-Return the list of values in a sorted dictionary `d`. The order of the values will be such that the keys they are
-mapped to will be in ascending order.
+#### `d.values() -> list[object]`
+
+Create and return a new list containing the values in the sorted dictionary ``d``. This list will be sorted by the keys
+which the values are mapped to.

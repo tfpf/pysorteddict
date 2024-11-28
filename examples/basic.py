@@ -1,13 +1,6 @@
 #! /usr/bin/env python3
 
-from pysorteddict import SortedDict
+import pysorteddict
 
-sd = SortedDict(int)
-
-sd[100] = "wut"
-sd[1] = "ok"
-sd[1] = "notok"
-print(sd, len(sd))
-print(sd[1])
-print(sd.keys(), sd.values(), sd.items())
-del sd
+help(pysorteddict)
+help(pysorteddict.SortedDict)
