@@ -66,26 +66,27 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 
 #### `d[key]`
 
-Return the value mapped to `key` in a sorted dictionary `d`.
+Return the value mapped to `key` in the sorted dictionary `d`.
 
-* If `key` is not an instance of `key_type` passed to the constructor, raise `TypeError`.
+* If `type(key)` is not the same as `key_type` passed to the constructor, raise `TypeError`.
 * If `key` is not present in `d`, raise `KeyError`.
 
 #### `d[key] = value`
 
-Map `value` to `key` in a sorted dictionary `d`, overwriting the previously-mapped value (if any).
+Map `value` to `key` in the sorted dictionary `d`, overwriting the previously-mapped value (if any).
 
-* If `key` is not an instance of `key_type` passed to the constructor, raise `TypeError`.
+* If `type(key)` is not the same as `key_type` passed to the constructor, raise `TypeError`.
 
 #### `del d[key]`
 
-Remove `key` and the value mapped to it from a sorted dictionary `d`.
+Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
+* If `type(key)` is not the same as `key_type` passed to the constructor, raise `TypeError`.
 * If `key` is not present in `d`, raise `KeyError`.
 
 #### `str(d)`
 
-Return a human-readable representation of a sorted dictionary `d`.
+Return a human-readable representation of the sorted dictionary `d`.
 
 ### Other Methods
 
