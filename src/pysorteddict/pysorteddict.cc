@@ -362,7 +362,8 @@ static PyMethodDef sorted_dict_type_methods[] = {
 PyDoc_STRVAR(
     sorted_dict_type_doc,
     "SortedDict(key_type: type) -> SortedDict\n"
-    "Create a new sorted dictionary with ``key_type`` as the type of its keys."
+    "Create a new sorted dictionary in which the keys are of type ``key_type``. "
+    "As of the current version, ``key_type`` must be ``int``. Support for some more types will be added in due course."
 );
 
 // clang-format off
