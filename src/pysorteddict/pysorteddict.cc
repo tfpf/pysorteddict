@@ -13,10 +13,11 @@ struct PyObject_CustomCompare
 {
     bool operator()(PyObject* a, PyObject* b) const
     {
-        // This assumes that the comparison operation will never error out. I
-        // ensure this by allowing only some built-in types as key types: thus,
-        // two instances of the same key type can always be compared.
-        // TODO update this comment explaining that I allow only a few types (and not types derived from them) as key types.
+        // There must exist a total order on the set of possible keys. (Else,
+        // this comparison may error out.) Hence, only instances of the type
+        // passed to the constructor may be used as keys. (Instances of types
+        // derived from that type are not allowed, because comparisons
+        // precautions, this comparison should always work.
         return PyObject_RichCompareBool(a, b, Py_LT) == 1;
     }
 };
