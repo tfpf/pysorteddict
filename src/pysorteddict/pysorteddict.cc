@@ -361,7 +361,8 @@ static PyMethodDef sorted_dict_type_methods[] = {
 
 PyDoc_STRVAR(
     sorted_dict_type_doc,
-    "Python sorted dictionary: a Python dictionary in which the keys are always in ascending order."
+    "SortedDict(key_type: type) -> SortedDict\n"
+    "Create a new sorted dictionary with ``key_type`` as the type of its keys."
 );
 
 // clang-format off
