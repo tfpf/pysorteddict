@@ -33,7 +33,6 @@ class TestGenericKeys:
     def setUp(self, key_type: type):
         self.key_type = key_type
         self.key_subtype = type("sub" + self.key_type.__name__, (self.key_type,), {})
-        print(self.key_type.__name__, self.key_subtype.__name__)
         self.rg = random.Random(__name__)
         self.keys = [self.small_key() for _ in range(1000)]
         self.values = [self.small_key() for _ in self.keys]
