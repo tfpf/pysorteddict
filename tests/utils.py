@@ -32,6 +32,7 @@ class TestGenericKeys:
 
     def setUp(self, key_type: type):
         self.key_type = key_type
+        self.key_subtype = type("sub" + self.key_type.__name__, (self.key_type,), {})
         self.rg = random.Random(__name__)
         self.keys = [self.small_key() for _ in range(1000)]
         self.values = [self.small_key() for _ in self.keys]
@@ -56,7 +57,7 @@ class TestGenericKeys:
 
     def test_getitem_wrong_type(self):
         with self.assertRaises(TypeError) as ctx:
-            self.sorted_dict[object()]
+            self.sorted_dict[self.key_subtype()]
         self.assertEqual(self.wrong_argument, ctx.exception.args[0])
 
     def test_getitem_not_found(self):
@@ -78,10 +79,9 @@ class TestGenericKeys:
             self.assertEqual(5, sys.getrefcount(value))
 
     def test_setitem_wrong_type(self):
-        key = object()
         value = self.small_key()
         with self.assertRaises(TypeError) as ctx:
-            self.sorted_dict[key] = value
+            self.sorted_dict[self.key_subtype()] = value
         self.assertEqual(self.wrong_argument, ctx.exception.args[0])
 
         if self.cpython:
