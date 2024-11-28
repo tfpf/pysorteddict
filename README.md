@@ -1,6 +1,7 @@
 # pysorteddict
 
-Provides `SortedDict`. It's like Python's `dict`, but the keys are always in ascending order.
+Provides `SortedDict`, which is a Python sorted dictionary: a Python dictionary in which the keys are always in
+ascending order.
 
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
 
@@ -50,47 +51,54 @@ pysorteddict is implemented entirely in C++. `SortedDict` provides a Python inte
 
 ## Documentation
 
-### `class pysorteddict.SortedDict(key_type)`
+### Constructor
 
-Constructor. Create a new sorted dictionary in which the keys are of type `key_type`. As of the current version,
-`key_type` must be `int`. Support for some more types will be added in due course.
+#### `SortedDict(key_type: type) -> SortedDict`
+
+Create a new sorted dictionary in which the keys are of type `key_type`. As of the current version, `key_type` must be
+`int`. Support for some more types will be added in due course.
+
+### Magic Methods
 
 #### `len(d)`
 
-Return the number of key-value pairs in a sorted dictionary `d`.
+Return the number of key-value pairs in the sorted dictionary `d`.
 
 #### `d[key]`
 
-Return the value mapped to `key` in a sorted dictionary `d`.
+Return the value mapped to `key` in the sorted dictionary `d`.
 
-* If `key` is not an instance of `key_type` passed to the constructor, raise `TypeError`.
+* If `type(key)` is not the same as `key_type` passed to the constructor, raise `TypeError`.
 * If `key` is not present in `d`, raise `KeyError`.
 
 #### `d[key] = value`
 
-Map `value` to `key` in a sorted dictionary `d`, overwriting the previously-mapped value (if any).
+Map `value` to `key` in the sorted dictionary `d`, overwriting the previously-mapped value (if any).
 
-* If `key` is not an instance of `key_type` passed to the constructor, raise `TypeError`.
+* If `type(key)` is not the same as `key_type` passed to the constructor, raise `TypeError`.
 
 #### `del d[key]`
 
-Remove `key` and the value mapped to it from a sorted dictionary `d`.
+Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
+* If `type(key)` is not the same as `key_type` passed to the constructor, raise `TypeError`.
 * If `key` is not present in `d`, raise `KeyError`.
 
 #### `str(d)`
 
-Return a human-readable representation of a sorted dictionary `d`.
+Return a human-readable representation of the sorted dictionary `d`.
 
-#### `d.items()`
+### Other Methods
 
-Return the list of key-value pairs in a sorted dictionary `d`. This list will be sorted.
+#### `d.items() -> list[tuple[object, object]]`
 
-#### `d.keys()`
+Create and return a new list containing the key-value pairs in the sorted dictionary ``d``. This list will be sorted.
 
-Return the list of keys in a sorted dictionary `d`. This list will be sorted.
+#### `d.keys() -> list[object]`
 
-#### `d.values()`
+Create and return a new list containing the keys in the sorted dictionary ``d``. This list will be sorted.
 
-Return the list of values in a sorted dictionary `d`. The order of the values will be such that the keys they are
-mapped to will be in ascending order.
+#### `d.values() -> list[object]`
+
+Create and return a new list containing the values in the sorted dictionary ``d``. This list will be sorted by the keys
+which the values are mapped to.
