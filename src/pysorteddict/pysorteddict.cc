@@ -61,8 +61,31 @@ struct SortedDictType
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
     std::map<PyObject *, PyObject*, PyObject_CustomCompare> *map = nullptr;
-    // The type of the keys of the dictionary.
+    // The type of the keys.
     PyObject *key_type = nullptr;
+
+    /**
+     * Check whether the given Python object has the same type as the type of
+     * the keys. If not, set a Python exception.
+     *
+     * @param ob Python object.
+     *
+     * @return `true` if its type is the same as the key type, else `false`.
+     */
+    bool is_type_key_type(PyObject *ob)
+    {
+        if (Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0){
+            return true;
+        }
+        PyObject* key_type_repr = PyObject_Repr(this->key_type);  // New reference.
+        if (key_type_repr == nullptr)
+        {
+            return false;
+        }
+        PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
+        Py_DECREF(key_type_repr);
+        return false;
+    }
 };
 // clang-format on
 
@@ -141,15 +164,7 @@ static Py_ssize_t sorted_dict_type_len(PyObject* self)
 static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    if (Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(sd->key_type)) == 0)
-    {
-        PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
-        if (key_type_repr == nullptr)
-        {
-            return nullptr;
-        }
-        PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
-        Py_DECREF(key_type_repr);
+    if(!sd->is_type_key_type(key)){
         return nullptr;
     }
     auto it = sd->map->find(key);
@@ -167,15 +182,7 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* value)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    if (Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(sd->key_type)) == 0)
-    {
-        PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
-        if (key_type_repr == nullptr)
-        {
-            return -1;
-        }
-        PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
-        Py_DECREF(key_type_repr);
+    if(!sd->is_type_key_type(key)){
         return -1;
     }
 
