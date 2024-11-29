@@ -57,39 +57,39 @@ static std::pair<std::string, bool> str(PyObject* ob)
 struct SortedDictType
 {
     PyObject_HEAD
-
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
     std::map<PyObject *, PyObject*, PyObject_CustomCompare> *map = nullptr;
-
     // The type of each key.
     PyObject *key_type = nullptr;
 
-    /**
-     * Check whether the given Python object has the correct type for use as a
-     * key. If not, set a Python exception.
-     *
-     * @param ob Python object.
-     *
-     * @return `true` if its type is the same as the key type, else `false`.
-     */
-    bool is_type_key_type(PyObject *ob)
-    {
-        if (Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0){
-            return true;
-        }
-        PyObject* key_type_repr = PyObject_Repr(this->key_type);  // New reference.
-        if (key_type_repr == nullptr)
-        {
-            return false;
-        }
-        PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
-        Py_DECREF(key_type_repr);
-        return false;
-    }
+    bool is_type_key_type(PyObject *);
 };
 // clang-format on
+
+/**
+ * Check whether the given Python object has the correct type for use as a key.
+ * If not, set a Python exception.
+ *
+ * @param ob Python object.
+ *
+ * @return `true` if its type is the same as the key type, else `false`.
+ */
+bool SortedDictType::is_type_key_type(PyObject *ob)
+{
+    if (Py_IS_TYPE(ob, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0){
+        return true;
+    }
+    PyObject* key_type_repr = PyObject_Repr(this->key_type);  // New reference.
+    if (key_type_repr == nullptr)
+    {
+        return false;
+    }
+    PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
+    Py_DECREF(key_type_repr);
+    return false;
+}
 
 /**
  * Deinitialise and deallocate.
