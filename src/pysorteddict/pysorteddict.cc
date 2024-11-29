@@ -57,16 +57,18 @@ static std::pair<std::string, bool> str(PyObject* ob)
 struct SortedDictType
 {
     PyObject_HEAD
+
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
     std::map<PyObject *, PyObject*, PyObject_CustomCompare> *map = nullptr;
-    // The type of the keys.
+
+    // The type of each key.
     PyObject *key_type = nullptr;
 
     /**
-     * Check whether the given Python object has the same type as the type of
-     * the keys. If not, set a Python exception.
+     * Check whether the given Python object has the correct type for use as a
+     * key. If not, set a Python exception.
      *
      * @param ob Python object.
      *
