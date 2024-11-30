@@ -25,6 +25,10 @@ struct PyObject_CustomCompare
 
 /**
  * Obtain the Python representation of a Python object.
+ *
+ * @param ob Python object.
+ *
+ * @return Pair of a string and a stringification success flag.
  */
 static std::pair<std::string, bool> repr(PyObject* ob)
 {
@@ -40,6 +44,10 @@ static std::pair<std::string, bool> repr(PyObject* ob)
 
 /**
  * Obtain a human-readable string representation of a Python object.
+ *
+ * @param ob Python object.
+ *
+ * @return Pair of a string and a stringification success flag.
  */
 static std::pair<std::string, bool> str(PyObject* ob)
 {
