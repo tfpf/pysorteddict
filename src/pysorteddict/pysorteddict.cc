@@ -76,9 +76,10 @@ struct SortedDictType
  *
  * @return `true` if its type is the same as the key type, else `false`.
  */
-bool SortedDictType::is_type_key_type(PyObject *ob)
+bool SortedDictType::is_type_key_type(PyObject* ob)
 {
-    if (Py_IS_TYPE(ob, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0){
+    if (Py_IS_TYPE(ob, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0)
+    {
         return true;
     }
     PyObject* key_type_repr = PyObject_Repr(this->key_type);  // New reference.
@@ -166,7 +167,8 @@ static Py_ssize_t sorted_dict_type_len(PyObject* self)
 static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    if(!sd->is_type_key_type(key)){
+    if (!sd->is_type_key_type(key))
+    {
         return nullptr;
     }
     auto it = sd->map->find(key);
@@ -184,7 +186,8 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* value)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    if(!sd->is_type_key_type(key)){
+    if (!sd->is_type_key_type(key))
+    {
         return -1;
     }
 
