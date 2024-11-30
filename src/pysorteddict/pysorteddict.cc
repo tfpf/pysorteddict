@@ -75,8 +75,7 @@ struct SortedDictType
     // These methods are named after the Python functions they emulate.
     bool is_type_key_type(PyObject *);
     PyObject *getitem(PyObject *);
-    int setitem_erase(PyObject *);
-    PyObject *setitem_insert(PyObject *, PyObject *);
+    int setitem(PyObject *, PyObject*);
 };
 // clang-format on
 
@@ -112,7 +111,7 @@ bool SortedDictType::is_type_key_type(PyObject* ob)
  *
  * @return Value if found, else `nullptr`.
  */
-PyObject *SortedDictType::getitem(PyObject *key)
+PyObject* SortedDictType::getitem(PyObject* key)
 {
     auto it = sd->map->find(key);
     if (it == sd->map->end())
@@ -124,14 +123,52 @@ PyObject *SortedDictType::getitem(PyObject *key)
 }
 
 /**
- * Remove a key-value pair without checking the type of the key. If not
- * removed, set a Python exception.
+ * Map a value to a key or remove a key-value pair without checking the type of
+ * the key. If not removed when removal was requested, set a Python exception.
  *
  * @param key Key.
+ * @param value Value.
  *
- * @return 0 if removed, else -1.
+ * @return 0 if mapped or removed, else -1.
  */
-int SortedDictType::setitem_erase(PyObject *key){
+int SortedDictType::setitem(PyObject* key, PyObject *value)
+{
+    // Insertion will be faster if the approximate location is known. Hence,
+    // look for the nearest match.
+    auto it = this->map->lower_bound(key);
+    bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
+
+    // Remove the key-value pair.
+    if (value == nullptr)
+    {
+        if (!found)
+        {
+            PyErr_SetObject(PyExc_KeyError, key);
+            return -1;
+        }
+        Py_DECREF(it->first);
+        Py_DECREF(it->second);
+        this->map->erase(it);
+        return 0;
+    }
+
+    // Map the value to the key. This merely stores additional references to
+    // the key (if applicable) and the value. If I ever plan to allow mutable
+    // types as keys, I should store references to their copies instead. Like
+    // the C++ standard library containers do.
+    if (!found)
+    {
+        it = sd->map->insert({ key, value }).first;
+        Py_INCREF(it->first);
+    }
+    else
+    {
+        // Replace the previously-mapped value.
+        Py_DECREF(it->second);
+        it->second = value;
+    }
+    Py_INCREF(it->second);
+    return 0;
 }
 
 /**
@@ -226,38 +263,7 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     {
         return -1;
     }
-
-    // Remove the key.
-    auto it = sd->map->find(key);
-    if (value == nullptr)
-    {
-        if (it == sd->map->end())
-        {
-            PyErr_SetObject(PyExc_KeyError, key);
-            return -1;
-        }
-        Py_DECREF(it->first);
-        Py_DECREF(it->second);
-        sd->map->erase(it);
-        return 0;
-    }
-
-    // Insert or replace the value. This merely stores additional references to
-    // the key (if applicable) and the value. If I ever plan to allow mutable
-    // types as keys, I should store references to their copies instead. Like
-    // the C++ standard library containers do.
-    if (it == sd->map->end())
-    {
-        it = sd->map->insert({ key, value }).first;
-        Py_INCREF(it->first);
-    }
-    else
-    {
-        Py_DECREF(it->second);
-        it->second = value;
-    }
-    Py_INCREF(it->second);
-    return 0;
+    return sd->setitem(key, value);
 }
 
 // clang-format off
