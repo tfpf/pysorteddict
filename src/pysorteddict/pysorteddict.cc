@@ -72,13 +72,17 @@ struct SortedDictType
     // The type of each key.
     PyObject *key_type = nullptr;
 
+    // These methods are named after the Python functions they emulate.
     bool is_type_key_type(PyObject *);
+    PyObject *getitem(PyObject *);
+    int setitem_erase(PyObject *);
+    PyObject *setitem_insert(PyObject *, PyObject *);
 };
 // clang-format on
 
 /**
- * Check whether the given Python object has the correct type for use as a key.
- * If not, set a Python exception.
+ * Check whether a Python object has the correct type for use as a key. If not,
+ * set a Python exception.
  *
  * @param ob Python object.
  *
@@ -98,6 +102,36 @@ bool SortedDictType::is_type_key_type(PyObject* ob)
     PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
     Py_DECREF(key_type_repr);
     return false;
+}
+
+/**
+ * Find the value mapped to a key without checking the type of the key. If not
+ * found, set a Python exception.
+ *
+ * @param key Key.
+ *
+ * @return Value if found, else `nullptr`.
+ */
+PyObject *SortedDictType::getitem(PyObject *key)
+{
+    auto it = sd->map->find(key);
+    if (it == sd->map->end())
+    {
+        PyErr_SetObject(PyExc_KeyError, key);
+        return nullptr;
+    }
+    return Py_NewRef(it->second);
+}
+
+/**
+ * Remove a key-value pair without checking the type of the key. If not
+ * removed, set a Python exception.
+ *
+ * @param key Key.
+ *
+ * @return 0 if removed, else -1.
+ */
+int SortedDictType::setitem_erase(PyObject *key){
 }
 
 /**
@@ -170,7 +204,7 @@ static Py_ssize_t sorted_dict_type_len(PyObject* self)
 }
 
 /**
- * Query the value at a key.
+ * Find the value mapped to a key.
  */
 static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 {
@@ -179,17 +213,11 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
     {
         return nullptr;
     }
-    auto it = sd->map->find(key);
-    if (it == sd->map->end())
-    {
-        PyErr_SetObject(PyExc_KeyError, key);
-        return nullptr;
-    }
-    return Py_NewRef(it->second);
+    return sd->getitem(key);
 }
 
 /**
- * Assign the value at a key.
+ * Map a value to a key or remove a key-value pair.
  */
 static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* value)
 {
