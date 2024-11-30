@@ -73,7 +73,7 @@ Return the value mapped to `key` in the sorted dictionary `d`.
 
 #### `d[key] = value`
 
-Map `value` to `key` in the sorted dictionary `d`, overwriting the previously-mapped value (if any).
+Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
 
 * If `type(key)` is not the same as `key_type` passed to the constructor, raise `TypeError`.
 
