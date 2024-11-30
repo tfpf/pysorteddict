@@ -2,7 +2,6 @@
 #include <Python.h>
 #include <iterator>
 #include <map>
-#include <sstream>
 #include <string>
 #include <utility>
 
@@ -25,6 +24,10 @@ struct PyObject_CustomCompare
 
 /**
  * Obtain the Python representation of a Python object.
+ *
+ * @param ob Python object.
+ *
+ * @return Pair of a string and a stringification success flag.
  */
 static std::pair<std::string, bool> repr(PyObject* ob)
 {
@@ -40,6 +43,10 @@ static std::pair<std::string, bool> repr(PyObject* ob)
 
 /**
  * Obtain a human-readable string representation of a Python object.
+ *
+ * @param ob Python object.
+ *
+ * @return Pair of a string and a stringification success flag.
  */
 static std::pair<std::string, bool> str(PyObject* ob)
 {
@@ -57,14 +64,149 @@ static std::pair<std::string, bool> str(PyObject* ob)
 struct SortedDictType
 {
     PyObject_HEAD
+
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
     std::map<PyObject *, PyObject*, PyObject_CustomCompare> *map = nullptr;
-    // The type of the keys of the dictionary.
+
+    // The type of each key.
     PyObject *key_type = nullptr;
+
+    // These methods are named after the Python functions they emulate.
+    bool is_type_key_type(PyObject *);
+    PyObject *getitem(PyObject *);
+    int setitem(PyObject *, PyObject*);
+    PyObject* str(void);
 };
 // clang-format on
+
+/**
+ * Check whether a Python object has the correct type for use as a key. If not,
+ * set a Python exception.
+ *
+ * @param ob Python object.
+ *
+ * @return `true` if its type is the same as the key type, else `false`.
+ */
+bool SortedDictType::is_type_key_type(PyObject* ob)
+{
+    if (Py_IS_TYPE(ob, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0)
+    {
+        return true;
+    }
+    PyObject* key_type_repr = PyObject_Repr(this->key_type);  // New reference.
+    if (key_type_repr == nullptr)
+    {
+        return false;
+    }
+    PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
+    Py_DECREF(key_type_repr);
+    return false;
+}
+
+/**
+ * Find the value mapped to a key without checking the type of the key. If not
+ * found, set a Python exception.
+ *
+ * @param key Key.
+ *
+ * @return Value if found, else `nullptr`.
+ */
+PyObject* SortedDictType::getitem(PyObject* key)
+{
+    auto it = this->map->find(key);
+    if (it == this->map->end())
+    {
+        PyErr_SetObject(PyExc_KeyError, key);
+        return nullptr;
+    }
+    return Py_NewRef(it->second);
+}
+
+/**
+ * Map a value to a key or remove a key-value pair without checking the type of
+ * the key. If not removed when removal was requested, set a Python exception.
+ *
+ * @param key Key.
+ * @param value Value.
+ *
+ * @return 0 if mapped or removed, else -1.
+ */
+int SortedDictType::setitem(PyObject* key, PyObject* value)
+{
+    // Insertion will be faster if the approximate location is known. Hence,
+    // look for the nearest match.
+    auto it = this->map->lower_bound(key);
+    bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
+
+    // Remove the key-value pair.
+    if (value == nullptr)
+    {
+        if (!found)
+        {
+            PyErr_SetObject(PyExc_KeyError, key);
+            return -1;
+        }
+        Py_DECREF(it->first);
+        Py_DECREF(it->second);
+        this->map->erase(it);
+        return 0;
+    }
+
+    // Map the value to the key. This merely stores additional references to
+    // the key (if applicable) and the value. If I ever plan to allow mutable
+    // types as keys, I should store references to their copies instead. Like
+    // the C++ standard library containers do.
+    if (!found)
+    {
+        // Insert a new key-value pair. The hint is correct; the key will get
+        // inserted just before it.
+        it = this->map->emplace_hint(it, key, value);
+        Py_INCREF(it->first);
+    }
+    else
+    {
+        // Replace the previously-mapped value.
+        Py_DECREF(it->second);
+        it->second = value;
+    }
+    Py_INCREF(it->second);
+    return 0;
+}
+
+/**
+ * Stringify.
+ */
+PyObject* SortedDictType::str(void)
+{
+    char const* delimiter = "";
+    char const* actual_delimiter = ", ";
+    std::string this_as_string = "\x7b";
+    for (auto& item : *this->map)
+    {
+        PyObject* key_str = PyObject_Str(item.first);  // New reference.
+        if (key_str == nullptr)
+        {
+            return nullptr;
+        }
+        PyObject* value_str = PyObject_Str(item.second);  // New reference.
+        if (value_str == nullptr)
+        {
+            Py_DECREF(key_str);
+            return nullptr;
+        }
+        this_as_string.append(delimiter)
+            .append(PyUnicode_AsUTF8(key_str))
+            .append(": ")
+            .append(PyUnicode_AsUTF8(value_str));
+        delimiter = actual_delimiter;
+        Py_DECREF(key_str);
+        Py_DECREF(value_str);
+    }
+    this_as_string.append("\x7d");
+    return PyUnicode_FromStringAndSize(this_as_string.data(), this_as_string.size());  // New reference.
+}
 
 /**
  * Deinitialise and deallocate.
@@ -136,80 +278,29 @@ static Py_ssize_t sorted_dict_type_len(PyObject* self)
 }
 
 /**
- * Query the value at a key.
+ * Find the value mapped to a key.
  */
 static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    if (Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(sd->key_type)) == 0)
+    if (!sd->is_type_key_type(key))
     {
-        PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
-        if (key_type_repr == nullptr)
-        {
-            return nullptr;
-        }
-        PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
-        Py_DECREF(key_type_repr);
         return nullptr;
     }
-    auto it = sd->map->find(key);
-    if (it == sd->map->end())
-    {
-        PyErr_SetObject(PyExc_KeyError, key);
-        return nullptr;
-    }
-    return Py_NewRef(it->second);
+    return sd->getitem(key);
 }
 
 /**
- * Assign the value at a key.
+ * Map a value to a key or remove a key-value pair.
  */
 static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* value)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    if (Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(sd->key_type)) == 0)
+    if (!sd->is_type_key_type(key))
     {
-        PyObject* key_type_repr = PyObject_Repr(sd->key_type);  // New reference.
-        if (key_type_repr == nullptr)
-        {
-            return -1;
-        }
-        PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
-        Py_DECREF(key_type_repr);
         return -1;
     }
-
-    // Remove the key.
-    auto it = sd->map->find(key);
-    if (value == nullptr)
-    {
-        if (it == sd->map->end())
-        {
-            PyErr_SetObject(PyExc_KeyError, key);
-            return -1;
-        }
-        Py_DECREF(it->first);
-        Py_DECREF(it->second);
-        sd->map->erase(it);
-        return 0;
-    }
-
-    // Insert or replace the value. This merely stores additional references to
-    // the key (if applicable) and the value. If I ever plan to allow mutable
-    // types as keys, I should store references to their copies instead. Like
-    // the C++ standard library containers do.
-    if (it == sd->map->end())
-    {
-        it = sd->map->insert({ key, value }).first;
-        Py_INCREF(it->first);
-    }
-    else
-    {
-        Py_DECREF(it->second);
-        it->second = value;
-    }
-    Py_INCREF(it->second);
-    return 0;
+    return sd->setitem(key, value);
 }
 
 // clang-format off
@@ -226,31 +317,7 @@ static PyMappingMethods sorted_dict_type_mapping = {
 static PyObject* sorted_dict_type_str(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    std::ostringstream oss;
-    char const* delimiter = "";
-    char const* actual_delimiter = ", ";
-    oss << '\x7b';
-    for (auto& item : *sd->map)
-    {
-        PyObject* key_str = PyObject_Str(item.first);  // New reference.
-        if (key_str == nullptr)
-        {
-            return nullptr;
-        }
-        PyObject* value_str = PyObject_Str(item.second);  // New reference.
-        if (value_str == nullptr)
-        {
-            Py_DECREF(key_str);
-            return nullptr;
-        }
-        oss << delimiter << PyUnicode_AsUTF8(key_str) << ": " << PyUnicode_AsUTF8(value_str);
-        delimiter = actual_delimiter;
-        Py_DECREF(key_str);
-        Py_DECREF(value_str);
-    }
-    oss << '\x7d';
-    std::string oss_str = oss.str();
-    return PyUnicode_FromStringAndSize(oss_str.data(), oss_str.size());  // New reference.
+    return sd->str();
 }
 
 PyDoc_STRVAR(
