@@ -2,7 +2,6 @@
 #include <Python.h>
 #include <iterator>
 #include <map>
-#include <sstream>
 #include <string>
 #include <utility>
 
@@ -78,6 +77,7 @@ struct SortedDictType
     bool is_type_key_type(PyObject *);
     PyObject *getitem(PyObject *);
     int setitem(PyObject *, PyObject*);
+    PyObject* str(void);
 };
 // clang-format on
 
@@ -173,6 +173,39 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     }
     Py_INCREF(it->second);
     return 0;
+}
+
+/**
+ * Stringify.
+ */
+PyObject* SortedDictType::str(void)
+{
+    char const* delimiter = "";
+    char const* actual_delimiter = ", ";
+    std::string this_as_string = "\x7b";
+    for (auto& item : *this->map)
+    {
+        PyObject* key_str = PyObject_Str(item.first);  // New reference.
+        if (key_str == nullptr)
+        {
+            return nullptr;
+        }
+        PyObject* value_str = PyObject_Str(item.second);  // New reference.
+        if (value_str == nullptr)
+        {
+            Py_DECREF(key_str);
+            return nullptr;
+        }
+        this_as_string.append(delimiter)
+            .append(PyUnicode_AsUTF8(key_str))
+            .append(": ")
+            .append(PyUnicode_AsUTF8(value_str));
+        delimiter = actual_delimiter;
+        Py_DECREF(key_str);
+        Py_DECREF(value_str);
+    }
+    this_as_string.append("\x7d");
+    return PyUnicode_FromStringAndSize(this_as_string.data(), this_as_string.size());  // New reference.
 }
 
 /**
@@ -284,31 +317,7 @@ static PyMappingMethods sorted_dict_type_mapping = {
 static PyObject* sorted_dict_type_str(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    std::ostringstream oss;
-    char const* delimiter = "";
-    char const* actual_delimiter = ", ";
-    oss << '\x7b';
-    for (auto& item : *sd->map)
-    {
-        PyObject* key_str = PyObject_Str(item.first);  // New reference.
-        if (key_str == nullptr)
-        {
-            return nullptr;
-        }
-        PyObject* value_str = PyObject_Str(item.second);  // New reference.
-        if (value_str == nullptr)
-        {
-            Py_DECREF(key_str);
-            return nullptr;
-        }
-        oss << delimiter << PyUnicode_AsUTF8(key_str) << ": " << PyUnicode_AsUTF8(value_str);
-        delimiter = actual_delimiter;
-        Py_DECREF(key_str);
-        Py_DECREF(value_str);
-    }
-    oss << '\x7d';
-    std::string oss_str = oss.str();
-    return PyUnicode_FromStringAndSize(oss_str.data(), oss_str.size());  // New reference.
+    return sd->str();
 }
 
 PyDoc_STRVAR(
