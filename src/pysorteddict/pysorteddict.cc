@@ -158,7 +158,7 @@ int SortedDictType::setitem(PyObject* key, PyObject *value)
     // the C++ standard library containers do.
     if (!found)
     {
-        it = this->map->insert({ key, value }).first;
+        it = this->map->emplace_hint(it, key, value);
         Py_INCREF(it->first);
     }
     else
