@@ -113,8 +113,8 @@ bool SortedDictType::is_type_key_type(PyObject* ob)
  */
 PyObject* SortedDictType::getitem(PyObject* key)
 {
-    auto it = sd->map->find(key);
-    if (it == sd->map->end())
+    auto it = this->map->find(key);
+    if (it == this->map->end())
     {
         PyErr_SetObject(PyExc_KeyError, key);
         return nullptr;
@@ -158,7 +158,7 @@ int SortedDictType::setitem(PyObject* key, PyObject *value)
     // the C++ standard library containers do.
     if (!found)
     {
-        it = sd->map->insert({ key, value }).first;
+        it = this->map->insert({ key, value }).first;
         Py_INCREF(it->first);
     }
     else
