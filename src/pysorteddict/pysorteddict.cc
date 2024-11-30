@@ -131,7 +131,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
  *
  * @return 0 if mapped or removed, else -1.
  */
-int SortedDictType::setitem(PyObject* key, PyObject *value)
+int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
     // Insertion will be faster if the approximate location is known. Hence,
     // look for the nearest match.
