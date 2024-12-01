@@ -52,6 +52,23 @@ class TestGenericKeys:
             self.keys_refcounts = [4] * len(self.normal_dict)
             self.values_refcounts = [4] * len(self.normal_dict)
 
+    def test_contains_wrong_type(self):
+        self.assertTrue(self.key_subtype() not in self.sorted_dict)
+
+    def test_contains_false(self):
+        key = self.large_key()
+        self.assertTrue(key not in self.sorted_dict)
+
+        if self.cpython:
+            self.assertEqual(2, sys.getrefcount(key))
+
+    def test_contains_true(self):
+        key = self.rg.choice(self.keys)
+        self.assertTrue(key in self.sorted_dict)
+
+        if self.cpython:
+            self.assertEqual(5, sys.getrefcount(key))
+
     def test_len(self):
         self.assertEqual(len(self.normal_dict), len(self.sorted_dict))
 

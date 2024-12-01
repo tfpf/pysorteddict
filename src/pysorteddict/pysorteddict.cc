@@ -74,7 +74,8 @@ struct SortedDictType
     PyObject *key_type = nullptr;
 
     // These methods are named after the Python functions they emulate.
-    bool is_type_key_type(PyObject *);
+    bool is_type_key_type(PyObject *, bool);
+    int contains(PyObject*);
     PyObject *getitem(PyObject *);
     int setitem(PyObject *, PyObject*);
     PyObject* str(void);
@@ -82,27 +83,47 @@ struct SortedDictType
 // clang-format on
 
 /**
- * Check whether a Python object has the correct type for use as a key. If not,
- * set a Python exception.
+ * Check whether a Python object has the correct type for use as a key.
  *
  * @param ob Python object.
+ * @param raise Whether to set a Python exception if the type is wrong.
  *
  * @return `true` if its type is the same as the key type, else `false`.
  */
-bool SortedDictType::is_type_key_type(PyObject* ob)
+bool SortedDictType::is_type_key_type(PyObject* ob, bool raise = true)
 {
     if (Py_IS_TYPE(ob, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0)
     {
         return true;
     }
-    PyObject* key_type_repr = PyObject_Repr(this->key_type);  // New reference.
-    if (key_type_repr == nullptr)
+    if (raise)
     {
-        return false;
+        PyObject* key_type_repr = PyObject_Repr(this->key_type);  // New reference.
+        if (key_type_repr == nullptr)
+        {
+            return false;
+        }
+        PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
+        Py_DECREF(key_type_repr);
     }
-    PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
-    Py_DECREF(key_type_repr);
     return false;
+}
+
+/**
+ * Check whether a Python object is present as a key without checking the type
+ * of the object.
+ *
+ * @param ob Python object.
+ *
+ * @return 1 if it is present, else 0.
+ */
+int SortedDictType::contains(PyObject* ob)
+{
+    if (this->map->find(ob) == this->map->end())
+    {
+        return 0;
+    }
+    return 1;
 }
 
 /**
@@ -231,6 +252,34 @@ static void sorted_dict_type_dealloc(PyObject* self)
     delete sd->map;
     Py_TYPE(self)->tp_free(self);
 }
+
+/**
+ * Check whether a key is present.
+ */
+static int sorted_dict_type_contains(PyObject* self, PyObject* key)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    if (!sd->is_type_key_type(key, false))
+    {
+        return 0;
+    }
+    return sd->contains(key);
+}
+
+// clang-format off
+static PySequenceMethods sorted_dict_type_sequence = {
+    nullptr,                    // sq_length
+    nullptr,                    // sq_concat;
+    nullptr,                    // sq_repeat;
+    nullptr,                    // sq_item;
+    nullptr,                    // was_sq_slice;
+    nullptr,                    // sq_ass_item;
+    nullptr,                    // was_sq_ass_slice;
+    sorted_dict_type_contains,  // sq_contains;
+    nullptr,                    // sq_inplace_concat;
+    nullptr,                    // sq_inplace_repeat;
+};
+// clang-format on
 
 /**
  * Obtain the number of keys.
@@ -451,7 +500,7 @@ static PyTypeObject sorted_dict_type = {
     nullptr,                                // tp_as_async
     nullptr,                                // tp_repr
     nullptr,                                // tp_as_number
-    nullptr,                                // tp_as_sequence
+    &sorted_dict_type_sequence,             // tp_as_sequence
     &sorted_dict_type_mapping,              // tp_as_mapping
     PyObject_HashNotImplemented,            // tp_hash
     nullptr,                                // tp_call
