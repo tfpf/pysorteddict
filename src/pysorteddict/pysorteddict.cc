@@ -60,28 +60,26 @@ struct PyObject_CustomCompare
     }
 };
 
-// clang-format off
 struct SortedDictType
 {
-    PyObject_HEAD
+    PyObject_HEAD;
 
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
-    std::map<PyObject *, PyObject*, PyObject_CustomCompare> *map = nullptr;
+    std::map<PyObject*, PyObject*, PyObject_CustomCompare>* map = nullptr;
 
     // The type of each key.
-    PyObject *key_type = nullptr;
+    PyObject* key_type = nullptr;
 
     // These methods are named after the Python functions they emulate.
     bool is_type_key_type(PyObject*, bool);
     int contains(PyObject*);
-    PyObject *getitem(PyObject*);
+    PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
     PyObject* str(void);
-    PyObject *clear(void);
+    PyObject* clear(void);
 };
-// clang-format on
 
 /**
  * Check whether a Python object has the correct type for use as a key.
@@ -277,15 +275,15 @@ static int sorted_dict_type_contains(PyObject* self, PyObject* key)
 // clang-format off
 static PySequenceMethods sorted_dict_type_sequence = {
     nullptr,                    // sq_length
-    nullptr,                    // sq_concat;
-    nullptr,                    // sq_repeat;
-    nullptr,                    // sq_item;
-    nullptr,                    // was_sq_slice;
-    nullptr,                    // sq_ass_item;
-    nullptr,                    // was_sq_ass_slice;
-    sorted_dict_type_contains,  // sq_contains;
-    nullptr,                    // sq_inplace_concat;
-    nullptr,                    // sq_inplace_repeat;
+    nullptr,                    // sq_concat
+    nullptr,                    // sq_repeat
+    nullptr,                    // sq_item
+    nullptr,                    // was_sq_slice
+    nullptr,                    // sq_ass_item
+    nullptr,                    // was_sq_ass_slice
+    sorted_dict_type_contains,  // sq_contains
+    nullptr,                    // sq_inplace_concat
+    nullptr,                    // sq_inplace_repeat
 };
 // clang-format on
 
