@@ -72,13 +72,20 @@ struct SortedDictType
     // The type of each key.
     PyObject* key_type = nullptr;
 
-    // These methods are named after the Python functions they emulate.
+    // These methods are named after the (Python or Python C API) functions
+    // they are related to. Wherever there is no documentation comment above a
+    // method, it means that that method is a proxy for the related function.
+    // In this scenario, the related function will be the caller of the method,
+    // and will have a similar name.
     bool is_type_key_type(PyObject*, bool);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
     PyObject* str(void);
     PyObject* clear(void);
+    PyObject* items(void);
+    PyObject* keys(void);
+    PyObject* values(void);
 };
 
 /**
@@ -194,9 +201,6 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     return 0;
 }
 
-/**
- * Stringify.
- */
 PyObject* SortedDictType::str(void)
 {
     char const* delimiter = "";
@@ -238,6 +242,63 @@ PyObject* SortedDictType::clear(void)
     Py_RETURN_NONE;
 }
 
+PyObject* SortedDictType::items(void)
+{
+    PyObject* pyitems = PyList_New(this->map->size());  // New reference.
+    if (pyitems == nullptr)
+    {
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *this->map)
+    {
+        PyObject* pyitem = PyTuple_New(2);  // New reference.
+        if (pyitem == nullptr)
+        {
+            Py_DECREF(pyitems);
+            return nullptr;
+        }
+        PyTuple_SET_ITEM(pyitem, 0, item.first);
+        Py_INCREF(item.first);
+        PyTuple_SET_ITEM(pyitem, 1, item.second);
+        Py_INCREF(item.second);
+        PyList_SET_ITEM(pyitems, idx++, pyitem);
+    }
+    return pyitems;
+}
+
+PyObject* SortedDictType::keys(void)
+{
+    PyObject* pykeys = PyList_New(this->map->size());  // New reference.
+    if (pykeys == nullptr)
+    {
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *this->map)
+    {
+        PyList_SET_ITEM(pykeys, idx++, item.first);
+        Py_INCREF(item.first);
+    }
+    return pykeys;
+}
+
+PyObject* SortedDictType::values(void)
+{
+    PyObject* pyvalues = PyList_New(this->map->size());  // New reference.
+    if (pyvalues == nullptr)
+    {
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *this->map)
+    {
+        PyList_SET_ITEM(pyvalues, idx++, item.second);
+        Py_INCREF(item.second);
+    }
+    return pyvalues;
+}
+
 /******************************************************************************
  * Code required to define the Python module and class can be found below this
  * point. Everything referenced therein is defined above in C++ style.
@@ -250,11 +311,7 @@ static void sorted_dict_type_dealloc(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     Py_DECREF(sd->key_type);
-    for (auto& item : *sd->map)
-    {
-        Py_DECREF(item.first);
-        Py_DECREF(item.second);
-    }
+    sd->clear();
     delete sd->map;
     Py_TYPE(self)->tp_free(self);
 }
@@ -361,27 +418,7 @@ PyDoc_STRVAR(
 static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    PyObject* pyitems = PyList_New(sd->map->size());  // New reference.
-    if (pyitems == nullptr)
-    {
-        return nullptr;
-    }
-    Py_ssize_t idx = 0;
-    for (auto& item : *sd->map)
-    {
-        PyObject* pyitem = PyTuple_New(2);  // New reference.
-        if (pyitem == nullptr)
-        {
-            Py_DECREF(pyitems);
-            return nullptr;
-        }
-        PyTuple_SET_ITEM(pyitem, 0, item.first);
-        Py_INCREF(item.first);
-        PyTuple_SET_ITEM(pyitem, 1, item.second);
-        Py_INCREF(item.second);
-        PyList_SET_ITEM(pyitems, idx++, pyitem);
-    }
-    return pyitems;
+    return sd->items();
 }
 
 PyDoc_STRVAR(
@@ -393,18 +430,7 @@ PyDoc_STRVAR(
 static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    PyObject* pykeys = PyList_New(sd->map->size());  // New reference.
-    if (pykeys == nullptr)
-    {
-        return nullptr;
-    }
-    Py_ssize_t idx = 0;
-    for (auto& item : *sd->map)
-    {
-        PyList_SET_ITEM(pykeys, idx++, item.first);
-        Py_INCREF(item.first);
-    }
-    return pykeys;
+    return sd->keys();
 }
 
 PyDoc_STRVAR(
@@ -417,18 +443,7 @@ PyDoc_STRVAR(
 static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    PyObject* pyvalues = PyList_New(sd->map->size());  // New reference.
-    if (pyvalues == nullptr)
-    {
-        return nullptr;
-    }
-    Py_ssize_t idx = 0;
-    for (auto& item : *sd->map)
-    {
-        PyList_SET_ITEM(pyvalues, idx++, item.second);
-        Py_INCREF(item.second);
-    }
-    return pyvalues;
+    return sd->values();
 }
 
 // clang-format off
