@@ -60,6 +60,10 @@ Create a new sorted dictionary in which the keys are of type `key_type`. As of t
 
 ### Magic Methods
 
+#### `key in d`
+
+Return whether `key` is present in the sorted dictionary `d`.
+
 #### `len(d)`
 
 Return the number of key-value pairs in the sorted dictionary `d`.
