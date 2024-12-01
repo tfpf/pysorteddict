@@ -79,7 +79,6 @@ struct SortedDictType
     PyObject *getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
     PyObject* str(void);
-    PyObject *clear(void);
 };
 // clang-format on
 
@@ -229,15 +228,6 @@ PyObject* SortedDictType::str(void)
     return PyUnicode_FromStringAndSize(this_as_string.data(), this_as_string.size());  // New reference.
 }
 
-PyObject *SortedDictType::clear(void)
-{
-    for(auto& item: *this->map){
-        Py_DECREF(item.first);
-        Py_DECREF(item.second);
-    }
-    this->map->clear();
-}
-
 /******************************************************************************
  * Code required to define the Python module and class can be found below this
  * point. Everything referenced therein is defined above in C++ style.
@@ -343,18 +333,6 @@ static PyObject* sorted_dict_type_str(PyObject* self)
 }
 
 PyDoc_STRVAR(
-    sorted_dict_type_clear_doc,
-    "d.clear()\n"
-    "Remove all key-value pairs in the sorted dictionary ``d``."
-);
-
-static PyObject* sorted_dict_type_clear(PyObject* self, PyObject* args)
-{
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->clear();
-}
-
-PyDoc_STRVAR(
     sorted_dict_type_items_doc,
     "d.items() -> list[tuple[object, object]]\n"
     "Create and return a new list containing the key-value pairs in the sorted dictionary ``d``. "
@@ -437,22 +415,16 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
 // clang-format off
 static PyMethodDef sorted_dict_type_methods[] = {
     {
-        "clear",                      // ml_name
-        sorted_dict_type_clear,       // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_clear_doc,   // ml_doc
+        "items",                     // ml_name
+        sorted_dict_type_items,      // ml_meth
+        METH_NOARGS,                 // ml_flags
+        sorted_dict_type_items_doc,  // ml_doc
     },
     {
-        "items",                      // ml_name
-        sorted_dict_type_items,       // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_items_doc,   // ml_doc
-    },
-    {
-        "keys",                       // ml_name
-        sorted_dict_type_keys,        // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_keys_doc,    // ml_doc
+        "keys",                     // ml_name
+        sorted_dict_type_keys,      // ml_meth
+        METH_NOARGS,                // ml_flags
+        sorted_dict_type_keys_doc,  // ml_doc
     },
     {
         "values",                     // ml_name
