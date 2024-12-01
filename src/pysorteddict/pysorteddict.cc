@@ -110,8 +110,7 @@ bool SortedDictType::is_type_key_type(PyObject* ob, bool raise = true)
 }
 
 /**
- * Check whether a Python object is present as a key without checking the type
- * of the object.
+ * Check whether a key is present without checking the type of the key.
  *
  * @param ob Python object.
  *
