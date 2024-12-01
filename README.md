@@ -94,6 +94,10 @@ Return a human-readable representation of the sorted dictionary `d`.
 
 ### Other Methods
 
+#### `d.clear()`
+
+Remove all key-value pairs in the sorted dictionary `d`.
+
 #### `d.items() -> list[tuple[object, object]]`
 
 Create and return a new list containing the key-value pairs in the sorted dictionary ``d``. This list will be sorted.
