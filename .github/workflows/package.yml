@@ -14,6 +14,7 @@ jobs:
       with:
         output-dir: wheelhouse
       env:
+        CIBW_BUILD: pp*
         CIBW_TEST_COMMAND: python -m unittest discover -s {package}/tests -t {package}
     - uses: actions/upload-artifact@v4
       with:
