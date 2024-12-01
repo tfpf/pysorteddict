@@ -74,10 +74,10 @@ struct SortedDictType
     PyObject *key_type = nullptr;
 
     // These methods are named after the Python functions they emulate.
-    bool is_type_key_type(PyObject *, bool);
+    bool is_type_key_type(PyObject*, bool);
     int contains(PyObject*);
-    PyObject *getitem(PyObject *);
-    int setitem(PyObject *, PyObject*);
+    PyObject *getitem(PyObject*);
+    int setitem(PyObject*, PyObject*);
     PyObject* str(void);
 };
 // clang-format on
@@ -116,9 +116,9 @@ bool SortedDictType::is_type_key_type(PyObject* ob, bool raise = true)
  *
  * @return 1 if it is present, else 0.
  */
-int SortedDictType::contains(PyObject* ob)
+int SortedDictType::contains(PyObject* key)
 {
-    if (this->map->find(ob) == this->map->end())
+    if (this->map->find(key) == this->map->end())
     {
         return 0;
     }
