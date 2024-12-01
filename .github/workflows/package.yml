@@ -10,8 +10,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
-    - run: pipx install cibuildwheel==2.21.3
-    - run: cibuildwheel --output-dir wheelhouse
+    - uses: pypa/cibuildwheel@v2.22.0
+      with:
+        output-dir: wheelhouse
       env:
         CIBW_TEST_COMMAND: python -m unittest discover -s {package}/tests -t {package}
     - uses: actions/upload-artifact@v4
