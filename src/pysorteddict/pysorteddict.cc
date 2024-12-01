@@ -205,7 +205,7 @@ PyObject* SortedDictType::str(void)
 {
     char const* delimiter = "";
     char const* actual_delimiter = ", ";
-    std::string this_as_string = "\x7b";
+    std::string this_str = "\x7b";
     for (auto& item : *this->map)
     {
         PyObject* key_str = PyObject_Str(item.first);  // New reference.
@@ -219,16 +219,13 @@ PyObject* SortedDictType::str(void)
             Py_DECREF(key_str);
             return nullptr;
         }
-        this_as_string.append(delimiter)
-            .append(PyUnicode_AsUTF8(key_str))
-            .append(": ")
-            .append(PyUnicode_AsUTF8(value_str));
+        this_str.append(delimiter).append(PyUnicode_AsUTF8(key_str)).append(": ").append(PyUnicode_AsUTF8(value_str));
         delimiter = actual_delimiter;
         Py_DECREF(key_str);
         Py_DECREF(value_str);
     }
-    this_as_string.append("\x7d");
-    return PyUnicode_FromStringAndSize(this_as_string.data(), this_as_string.size());  // New reference.
+    this_str.append("\x7d");
+    return PyUnicode_FromStringAndSize(this_str.data(), this_str.size());  // New reference.
 }
 
 PyObject* SortedDictType::clear(void)
