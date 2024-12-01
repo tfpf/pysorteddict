@@ -237,6 +237,7 @@ PyObject* SortedDictType::clear(void)
         Py_DECREF(item.second);
     }
     this->map->clear();
+    Py_RETURN_NONE;
 }
 
 /******************************************************************************
