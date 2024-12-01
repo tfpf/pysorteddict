@@ -72,7 +72,11 @@ struct SortedDictType
     // The type of each key.
     PyObject* key_type = nullptr;
 
-    // These methods are named after the Python functions they emulate.
+    // These methods are named after the (Python or Python C API) functions
+    // they are related to. Wherever there is no documentation comment above a
+    // method, it means that that method is a proxy for the related function.
+    // In this scenario, the related function will be the caller of the method,
+    // and will have a similar name.
     bool is_type_key_type(PyObject*, bool);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
@@ -197,9 +201,6 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     return 0;
 }
 
-/**
- * Stringify.
- */
 PyObject* SortedDictType::str(void)
 {
     char const* delimiter = "";
