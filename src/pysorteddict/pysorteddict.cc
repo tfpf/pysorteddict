@@ -239,14 +239,11 @@ PyObject* SortedDictType::str(void)
 static void sorted_dict_type_dealloc(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    Py_XDECREF(sd->key_type);
-    if (sd->map != nullptr)
+    Py_DECREF(sd->key_type);
+    for (auto& item : *sd->map)
     {
-        for (auto& item : *sd->map)
-        {
-            Py_DECREF(item.first);
-            Py_DECREF(item.second);
-        }
+        Py_DECREF(item.first);
+        Py_DECREF(item.second);
     }
     delete sd->map;
     Py_TYPE(self)->tp_free(self);
@@ -443,39 +440,34 @@ static PyMethodDef sorted_dict_type_methods[] = {
  */
 static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    PyObject* self = type->tp_alloc(type, 0);  // New reference.
-    if (self == nullptr)
-    {
-        return nullptr;
-    }
-
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     // Up to Python 3.12, the argument parser below took an array of pointers
     // (with each pointer pointing to a C string) as its fourth argument.
     // However, C++ does not allow converting a string constant to a pointer.
     // Hence, I use a character array to construct the C string, and then place
     // it in an array of pointers.
-    char key_type[] = "key_type";
-    char* args_names[] = { key_type, nullptr };
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", args_names, &sd->key_type))
+    char arg_name[] = "key_type";
+    char* args_names[] = { arg_name, nullptr };
+    PyObject* key_type;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", args_names, &key_type))
     {
-        Py_DECREF(self);
         return nullptr;
     }
 
     // Check the type to use for keys.
-    if (PyObject_RichCompareBool(sd->key_type, reinterpret_cast<PyObject*>(&PyLong_Type), Py_EQ) != 1)
+    if (PyObject_RichCompareBool(key_type, reinterpret_cast<PyObject*>(&PyLong_Type), Py_EQ) != 1)
     {
         PyErr_SetString(PyExc_TypeError, "constructor argument must be a supported type");
-        // I haven't increased its reference count, so the deallocator
-        // shouldn't decrease it. Hence, set it to a null pointer.
-        sd->key_type = nullptr;
-        Py_DECREF(self);
         return nullptr;
     }
 
+    PyObject* self = type->tp_alloc(type, 0);  // New reference.
+    if (self == nullptr)
+    {
+        return nullptr;
+    }
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     sd->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
-    Py_INCREF(sd->key_type);
+    sd->key_type = Py_NewRef(key_type);
     return self;
 }
 
