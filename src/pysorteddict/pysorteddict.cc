@@ -249,14 +249,11 @@ PyObject *SortedDictType::clear(void)
 static void sorted_dict_type_dealloc(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    Py_XDECREF(sd->key_type);
-    if (sd->map != nullptr)
+    Py_DECREF(sd->key_type);
+    for (auto& item : *sd->map)
     {
-        for (auto& item : *sd->map)
-        {
-            Py_DECREF(item.first);
-            Py_DECREF(item.second);
-        }
+        Py_DECREF(item.first);
+        Py_DECREF(item.second);
     }
     delete sd->map;
     Py_TYPE(self)->tp_free(self);
@@ -478,7 +475,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     // it in an array of pointers.
     char arg_name[] = "key_type";
     char* args_names[] = { arg_name, nullptr };
-    PyObject *key_type;
+    PyObject* key_type;
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", args_names, &key_type))
     {
         return nullptr;
