@@ -158,6 +158,8 @@ class TestGenericKeys:
 
     def test_clear(self):
         self.sorted_dict.clear()
+        self.assertEqual("{}", str(self.sorted_dict))
+        self.assertEqual(0, len(self.sorted_dict))
 
         if self.cpython:
             self.keys_refcounts = [3] * len(self.normal_dict)
