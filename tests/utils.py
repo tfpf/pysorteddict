@@ -156,6 +156,13 @@ class TestGenericKeys:
         if self.cpython:
             self.assertEqual(2, sys.getrefcount(self._str))
 
+    def test_clear(self):
+        self.sorted_dict.clear()
+
+        if self.cpython:
+            self.keys_refcounts = [3] * len(self.normal_dict)
+            self.values_refcounts = [3] * len(self.normal_dict)
+
     def test_items(self):
         self.assertEqual(sorted(self.normal_dict.items()), self.sorted_dict.items())
 
