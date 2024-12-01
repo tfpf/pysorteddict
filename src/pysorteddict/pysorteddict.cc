@@ -229,9 +229,10 @@ PyObject* SortedDictType::str(void)
     return PyUnicode_FromStringAndSize(this_as_string.data(), this_as_string.size());  // New reference.
 }
 
-PyObject *SortedDictType::clear(void)
+PyObject* SortedDictType::clear(void)
 {
-    for(auto& item: *this->map){
+    for (auto& item : *this->map)
+    {
         Py_DECREF(item.first);
         Py_DECREF(item.second);
     }
