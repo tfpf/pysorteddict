@@ -206,10 +206,53 @@ class TestGenericKeys:
             self.keys_refcounts = [3] * len(self.normal_dict)
             self.values_refcounts = [3] * len(self.normal_dict)
 
-    def test_empty(self):
-        sorted_dict = SortedDict(self.key_type)
-        self.assertEqual("{}", str(sorted_dict))
-        self.assertEqual(0, len(sorted_dict))
+    def test_stress(self):
+        self.normal_dict = {}
+        self.sorted_dict = SortedDict(self.key_type)
+        for method in self.rg.choices(dir(SortedDict), k=100000):
+            key, value = self.small_key(), self.small_key()
+            match method:
+                case "__contains__":
+                    self.assertEqual(key in self.normal_dict, key in self.sorted_dict)
+
+                case "__delitem__":
+                    try:
+                        del self.normal_dict[key]
+                    except KeyError as exc:
+                        with self.assertRaises(KeyError) as ctx:
+                            del self.sorted_dict[key]
+                        self.assertEqual(exc.args[0], ctx.exception.args[0])
+                    else:
+                        del self.sorted_dict[key]
+
+                case "__getitem__":
+                    try:
+                        value = self.normal_dict[key]
+                    except KeyError as exc:
+                        with self.assertRaises(KeyError) as ctx:
+                            self.sorted_dict[key]
+                        self.assertEqual(exc.args[0], ctx.exception.args[0])
+                    else:
+                        self.assertEqual(value, self.sorted_dict[key])
+
+                case "__setitem__":
+                    self.normal_dict[key] = value
+                    self.sorted_dict[key] = value
+                    self.assertEqual(value, self.sorted_dict[key])
+
+                case "clear":
+                    self.normal_dict.clear()
+                    self.sorted_dict.clear()
+
+            self.assertEqual(len(self.normal_dict), len(self.sorted_dict))
+            self.assertEqual(str(dict(sorted(self.normal_dict.items()))), str(self.sorted_dict))
+            self.assertEqual(sorted(self.normal_dict.items()), self.sorted_dict.items())
+            self.assertEqual(sorted(self.normal_dict.keys()), self.sorted_dict.keys())
+            self.assertEqual([item[1] for item in sorted(self.normal_dict.items())], self.sorted_dict.values())
+
+        if self.cpython:
+            self.keys_refcounts = [3] * len(self.normal_dict)
+            self.values_refcounts = [3] * len(self.normal_dict)
 
     def tearDown(self):
         if self.cpython:
