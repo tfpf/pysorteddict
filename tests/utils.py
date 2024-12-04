@@ -209,7 +209,7 @@ class TestGenericKeys:
     def test_stress(self):
         self.normal_dict = {}
         self.sorted_dict = SortedDict(self.key_type)
-        for method in self.rg.choices(dir(SortedDict), k=1000):
+        for method in self.rg.choices(dir(SortedDict), k=100000):
             key, value = self.small_key(), self.small_key()
             match method:
                 case "__contains__":
@@ -235,11 +235,25 @@ class TestGenericKeys:
                     else:
                         self.assertEqual(value, self.sorted_dict[key])
 
-                case "__len__":
-                    self.assertEqual(len(self.normal_dict), len(self.sorted_dict))
+                case "__setitem__":
+                    self.normal_dict[key] = value
+                    self.sorted_dict[key] = value
+                    self.assertEqual(value, self.sorted_dict[key])
 
-        self.keys_refcounts = [3] * len(self.normal_dict)
-        self.values_refcounts = [3] * len(self.normal_dict)
+                case "clear":
+                    self.normal_dict.clear()
+                    self.sorted_dict.clear()
+
+            # Non-mutating methods are always checked.
+            self.assertEqual(len(self.normal_dict), len(self.sorted_dict))
+            self.assertEqual(str(dict(sorted(self.normal_dict.items()))), str(self.sorted_dict))
+            self.assertEqual(sorted(self.normal_dict.items()), self.sorted_dict.items())
+            self.assertEqual(sorted(self.normal_dict.keys()), self.sorted_dict.keys())
+            self.assertEqual([item[1] for item in sorted(self.normal_dict.items())], self.sorted_dict.values())
+
+        if self.cpython:
+            self.keys_refcounts = [3] * len(self.normal_dict)
+            self.values_refcounts = [3] * len(self.normal_dict)
 
     def tearDown(self):
         if self.cpython:
