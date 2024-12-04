@@ -244,7 +244,6 @@ class TestGenericKeys:
                     self.normal_dict.clear()
                     self.sorted_dict.clear()
 
-            # Non-mutating methods are always checked.
             self.assertEqual(len(self.normal_dict), len(self.sorted_dict))
             self.assertEqual(str(dict(sorted(self.normal_dict.items()))), str(self.sorted_dict))
             self.assertEqual(sorted(self.normal_dict.items()), self.sorted_dict.items())
