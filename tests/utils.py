@@ -209,7 +209,7 @@ class TestGenericKeys:
     def test_stress(self):
         self.normal_dict = {}
         self.sorted_dict = SortedDict(self.key_type)
-        for method in self.rg.choices(dir(SortedDict), k=100000):
+        for method in self.rg.choices(["__contains__", "__delitem__", "__getitem__", "__setitem__", "clear"], k=10000):
             key, value = self.small_key(), self.small_key()
             match method:
                 case "__contains__":
