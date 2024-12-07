@@ -422,6 +422,11 @@ static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     SortedDictType* sd_copy = reinterpret_cast<SortedDictType*>(self_copy);
     sd_copy->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>(*sd->map);
+    for (auto& item : *sd_copy->map)
+    {
+        Py_INCREF(item.first);
+        Py_INCREF(item.second);
+    }
     sd_copy->key_type = Py_NewRef(sd->key_type);
     return self_copy;
 }
