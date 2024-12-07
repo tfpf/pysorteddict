@@ -244,11 +244,13 @@ class TestGenericKeys:
                     self.normal_dict.clear()
                     self.sorted_dict.clear()
 
-            self.assertEqual(len(self.normal_dict), len(self.sorted_dict))
-            self.assertEqual(str(dict(sorted(self.normal_dict.items()))), str(self.sorted_dict))
-            self.assertEqual(sorted(self.normal_dict.items()), self.sorted_dict.items())
-            self.assertEqual(sorted(self.normal_dict.keys()), self.sorted_dict.keys())
-            self.assertEqual([item[1] for item in sorted(self.normal_dict.items())], self.sorted_dict.values())
+            # I know this is bad, but can't think of a better way to avoid
+            # repeating code.
+            self.test_len()
+            self.test_str()
+            self.test_items()
+            self.test_keys()
+            self.test_values()
 
         if self.cpython:
             self.keys_refcounts = [3] * len(self.normal_dict)
