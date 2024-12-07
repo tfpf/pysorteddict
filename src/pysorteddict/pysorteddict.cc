@@ -520,52 +520,52 @@ PyDoc_STRVAR(
 
 // clang-format off
 static PyTypeObject sorted_dict_type = {
-    PyVarObject_HEAD_INIT(&PyType_Type, 0)  // ob_base
-    "SortedDict",                           // tp_name
-    sizeof(SortedDictType),                 // tp_basicsize
-    0,                                      // tp_itemsize
-    sorted_dict_type_dealloc,               // tp_dealloc
-    0,                                      // tp_vectorcall_offset
-    nullptr,                                // tp_getattr
-    nullptr,                                // tp_setattr
-    nullptr,                                // tp_as_async
-    nullptr,                                // tp_repr
-    nullptr,                                // tp_as_number
-    &sorted_dict_type_sequence,             // tp_as_sequence
-    &sorted_dict_type_mapping,              // tp_as_mapping
-    PyObject_HashNotImplemented,            // tp_hash
-    nullptr,                                // tp_call
-    sorted_dict_type_str,                   // tp_str
-    nullptr,                                // tp_getattro
-    nullptr,                                // tp_setattro
-    nullptr,                                // tp_as_buffer
-    Py_TPFLAGS_DEFAULT,                     // tp_flags
-    sorted_dict_type_doc,                   // tp_doc
-    nullptr,                                // tp_traverse
-    nullptr,                                // tp_clear
-    nullptr,                                // tp_richcompare
-    0,                                      // tp_weaklistoffset
-    nullptr,                                // tp_iter
-    nullptr,                                // tp_iternext
-    sorted_dict_type_methods,               // tp_methods
-    nullptr,                                // tp_members
-    nullptr,                                // tp_getset
-    nullptr,                                // tp_base
-    nullptr,                                // tp_dict
-    nullptr,                                // tp_descr_get
-    nullptr,                                // tp_descr_set
-    0,                                      // tp_dictoffset
-    nullptr,                                // tp_init
-    PyType_GenericAlloc,                    // tp_alloc
-    sorted_dict_type_new,                   // tp_new
-    PyObject_Del,                           // tp_free
-    nullptr,                                // tp_is_gc
-    nullptr,                                // tp_bases
-    nullptr,                                // tp_mro
-    nullptr,                                // tp_cache
-    nullptr,                                // tp_subclasses
-    nullptr,                                // tp_weaklist
-    nullptr,                                // tp_del
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)          // ob_base
+    "SortedDict",                                   // tp_name
+    sizeof(SortedDictType),                         // tp_basicsize
+    0,                                              // tp_itemsize
+    sorted_dict_type_dealloc,                       // tp_dealloc
+    0,                                              // tp_vectorcall_offset
+    nullptr,                                        // tp_getattr
+    nullptr,                                        // tp_setattr
+    nullptr,                                        // tp_as_async
+    nullptr,                                        // tp_repr
+    nullptr,                                        // tp_as_number
+    &sorted_dict_type_sequence,                     // tp_as_sequence
+    &sorted_dict_type_mapping,                      // tp_as_mapping
+    PyObject_HashNotImplemented,                    // tp_hash
+    nullptr,                                        // tp_call
+    sorted_dict_type_str,                           // tp_str
+    nullptr,                                        // tp_getattro
+    nullptr,                                        // tp_setattro
+    nullptr,                                        // tp_as_buffer
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,  // tp_flags
+    sorted_dict_type_doc,                           // tp_doc
+    nullptr,                                        // tp_traverse
+    nullptr,                                        // tp_clear
+    nullptr,                                        // tp_richcompare
+    0,                                              // tp_weaklistoffset
+    nullptr,                                        // tp_iter
+    nullptr,                                        // tp_iternext
+    sorted_dict_type_methods,                       // tp_methods
+    nullptr,                                        // tp_members
+    nullptr,                                        // tp_getset
+    nullptr,                                        // tp_base
+    nullptr,                                        // tp_dict
+    nullptr,                                        // tp_descr_get
+    nullptr,                                        // tp_descr_set
+    0,                                              // tp_dictoffset
+    nullptr,                                        // tp_init
+    PyType_GenericAlloc,                            // tp_alloc
+    sorted_dict_type_new,                           // tp_new
+    PyObject_Del,                                   // tp_free
+    nullptr,                                        // tp_is_gc
+    nullptr,                                        // tp_bases
+    nullptr,                                        // tp_mro
+    nullptr,                                        // tp_cache
+    nullptr,                                        // tp_subclasses
+    nullptr,                                        // tp_weaklist
+    nullptr,                                        // tp_del
 };
 // clang-format on
 
