@@ -411,8 +411,19 @@ PyDoc_STRVAR(
     "Return a shallow copy of the sorted dictionary ``d``."
 );
 
-static PyObject *sorted_dict_type_copy(PyObject *self, PyObject *args)
+static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
 {
+    PyTypeObject* type = Py_TYPE(self);
+    PyObject* self_copy = type->tp_alloc(type, 0);  // New reference.
+    if (self_copy == nullptr)
+    {
+        return nullptr;
+    }
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    SortedDictType* sd_copy = reinterpret_cast<SortedDictType*>(self_copy);
+    sd_copy->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>(*sd->map);
+    sd_copy->key_type = Py_NewRef(sd->key_type);
+    return self_copy;
 }
 
 PyDoc_STRVAR(
