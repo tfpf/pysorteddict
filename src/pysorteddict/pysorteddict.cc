@@ -406,6 +406,16 @@ static PyObject* sorted_dict_type_clear(PyObject* self, PyObject* args)
 }
 
 PyDoc_STRVAR(
+    sorted_dict_type_copy_doc,
+    "d.copy() -> SortedDict\n"
+    "Return a shallow copy of the sorted dictionary ``d``."
+);
+
+static PyObject *sorted_dict_type_copy(PyObject *self, PyObject *args)
+{
+}
+
+PyDoc_STRVAR(
     sorted_dict_type_items_doc,
     "d.items() -> list[tuple[object, object]]\n"
     "Create and return a new list containing the key-value pairs in the sorted dictionary ``d``. "
@@ -450,6 +460,12 @@ static PyMethodDef sorted_dict_type_methods[] = {
         sorted_dict_type_clear,       // ml_meth
         METH_NOARGS,                  // ml_flags
         sorted_dict_type_clear_doc,   // ml_doc
+    },
+    {
+        "copy",                       // ml_name
+        sorted_dict_type_copy,        // ml_meth
+        METH_NOARGS,                  // ml_flags
+        sorted_dict_type_copy_doc,    // ml_doc
     },
     {
         "items",                      // ml_name
