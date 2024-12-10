@@ -243,7 +243,7 @@ PyObject* SortedDictType::clear(void)
 PyObject* SortedDictType::copy(void)
 {
     PyTypeObject* type = Py_TYPE(this);
-    SortedDictType *this_copy = reinterpret_cast<SortedDictType*>(type->tp_alloc(type, 0));  // New reference.
+    SortedDictType* this_copy = reinterpret_cast<SortedDictType*>(type->tp_alloc(type, 0));  // New reference.
     if (this_copy == nullptr)
     {
         return nullptr;
