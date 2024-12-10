@@ -243,11 +243,12 @@ PyObject* SortedDictType::clear(void)
 PyObject* SortedDictType::copy(void)
 {
     PyTypeObject* type = Py_TYPE(this);
-    SortedDictType* this_copy = reinterpret_cast<SortedDictType*>(type->tp_alloc(type, 0));  // New reference.
-    if (this_copy == nullptr)
+    PyObject* sd_copy = type->tp_alloc(type, 0);  // New reference.
+    if (sd_copy == nullptr)
     {
         return nullptr;
     }
+    SortedDictType* this_copy = reinterpret_cast<SortedDictType*>(sd_copy);
     this_copy->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>(*this->map);
     for (auto& item : *this_copy->map)
     {
@@ -255,7 +256,7 @@ PyObject* SortedDictType::copy(void)
         Py_INCREF(item.second);
     }
     this_copy->key_type = Py_NewRef(this->key_type);
-    return this_copy;
+    return sd_copy;
 }
 
 PyObject* SortedDictType::items(void)
