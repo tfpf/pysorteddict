@@ -83,6 +83,7 @@ struct SortedDictType
     int setitem(PyObject*, PyObject*);
     PyObject* str(void);
     PyObject* clear(void);
+    PyObject* copy(void);
     PyObject* items(void);
     PyObject* keys(void);
     PyObject* values(void);
@@ -237,6 +238,25 @@ PyObject* SortedDictType::clear(void)
     }
     this->map->clear();
     Py_RETURN_NONE;
+}
+
+PyObject* SortedDictType::copy(void)
+{
+    PyTypeObject* type = Py_TYPE(this);
+    PyObject* sd_copy = type->tp_alloc(type, 0);  // New reference.
+    if (sd_copy == nullptr)
+    {
+        return nullptr;
+    }
+    SortedDictType* this_copy = reinterpret_cast<SortedDictType*>(sd_copy);
+    this_copy->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>(*this->map);
+    for (auto& item : *this_copy->map)
+    {
+        Py_INCREF(item.first);
+        Py_INCREF(item.second);
+    }
+    this_copy->key_type = Py_NewRef(this->key_type);
+    return sd_copy;
 }
 
 PyObject* SortedDictType::items(void)
@@ -406,6 +426,18 @@ static PyObject* sorted_dict_type_clear(PyObject* self, PyObject* args)
 }
 
 PyDoc_STRVAR(
+    sorted_dict_type_copy_doc,
+    "d.copy() -> SortedDict\n"
+    "Return a shallow copy of the sorted dictionary ``d``."
+);
+
+static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->copy();
+}
+
+PyDoc_STRVAR(
     sorted_dict_type_items_doc,
     "d.items() -> list[tuple[object, object]]\n"
     "Create and return a new list containing the key-value pairs in the sorted dictionary ``d``. "
@@ -450,6 +482,12 @@ static PyMethodDef sorted_dict_type_methods[] = {
         sorted_dict_type_clear,       // ml_meth
         METH_NOARGS,                  // ml_flags
         sorted_dict_type_clear_doc,   // ml_doc
+    },
+    {
+        "copy",                       // ml_name
+        sorted_dict_type_copy,        // ml_meth
+        METH_NOARGS,                  // ml_flags
+        sorted_dict_type_copy_doc,    // ml_doc
     },
     {
         "items",                      // ml_name
