@@ -83,6 +83,7 @@ struct SortedDictType
     int setitem(PyObject*, PyObject*);
     PyObject* str(void);
     PyObject* clear(void);
+    PyObject* copy(void);
     PyObject* items(void);
     PyObject* keys(void);
     PyObject* values(void);
@@ -237,6 +238,24 @@ PyObject* SortedDictType::clear(void)
     }
     this->map->clear();
     Py_RETURN_NONE;
+}
+
+PyObject* SortedDictType::copy(void)
+{
+    PyTypeObject* type = Py_TYPE(this);
+    SortedDictType *this_copy = reinterpret_cast<SortedDictType*>(type->tp_alloc(type, 0));  // New reference.
+    if (this_copy == nullptr)
+    {
+        return nullptr;
+    }
+    this_copy->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>(*this->map);
+    for (auto& item : *this_copy->map)
+    {
+        Py_INCREF(item.first);
+        Py_INCREF(item.second);
+    }
+    this_copy->key_type = Py_NewRef(this->key_type);
+    return this_copy;
 }
 
 PyObject* SortedDictType::items(void)
@@ -413,22 +432,8 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
 {
-    PyTypeObject* type = Py_TYPE(self);
-    PyObject* self_copy = type->tp_alloc(type, 0);  // New reference.
-    if (self_copy == nullptr)
-    {
-        return nullptr;
-    }
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    SortedDictType* sd_copy = reinterpret_cast<SortedDictType*>(self_copy);
-    sd_copy->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>(*sd->map);
-    for (auto& item : *sd_copy->map)
-    {
-        Py_INCREF(item.first);
-        Py_INCREF(item.second);
-    }
-    sd_copy->key_type = Py_NewRef(sd->key_type);
-    return self_copy;
+    return sd->copy();
 }
 
 PyDoc_STRVAR(
