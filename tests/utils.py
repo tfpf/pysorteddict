@@ -3,6 +3,7 @@ import random
 import sys
 
 from pysorteddict import SortedDict
+import pytest
 
 
 class TestGenericKeys:
@@ -37,23 +38,25 @@ class TestGenericKeys:
         self.keys = [self.small_key() for _ in range(1000)]
         self.values = [self.small_key() for _ in self.keys]
         self.normal_dict = dict(zip(self.keys, self.values, strict=True))
-        self.sorted_dict = SortedDict(self.key_type)
+        sorted_dict = SortedDict(self.key_type)
         for key, value in zip(self.keys, self.values, strict=True):
-            self.sorted_dict[key] = value
+            sorted_dict[key] = value
+        self.sorted_dicts = [sorted_dict, sorted_dict.copy()]
 
         # Store the reference count of an item in a list at the position at
         # which it appears in the normal dictionary. At this point, the
-        # reference counts are all 3, but querying the reference count
-        # increases it, so I store 4. Whenever a test changes the reference
+        # reference counts are all 4, but querying the reference count
+        # increases it, so I store 5. Whenever a test changes the reference
         # count of any item, I set the new reference count at its index.
         # Remember that reference counting is specific to the CPython
         # implementation.
         if self.cpython:
-            self.keys_refcounts = [4] * len(self.normal_dict)
-            self.values_refcounts = [4] * len(self.normal_dict)
+            self.keys_refcounts = [5] * len(self.normal_dict)
+            self.values_refcounts = [5] * len(self.normal_dict)
 
+    @pytest.mark.parametrize("sorted_dict", self.sorted_dicts)
     def test_contains_wrong_type(self):
-        self.assertTrue(self.key_subtype() not in self.sorted_dict)
+        assert self.key_subtype() not in sorted_dict
 
     def test_contains_false(self):
         key = self.large_key()
