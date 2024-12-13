@@ -19,7 +19,7 @@ def test_superfluous_arguments():
     assert ctx.value.args[0] == too_many_arguments
 
 
-@pytest.mark.parametrize("key_type", [object, object(), 63, 5.31, "valiant effort", b"salt", ["hear", 0x5EE]])
+@pytest.mark.parametrize("key_type", [object, object(), 63, 5.31, "effort", b"salt", ["hear", 0x5EE], (1.61, "taste")])
 def test_wrong_type(key_type):
     with pytest.raises(TypeError) as ctx:
         SortedDict(key_type)
