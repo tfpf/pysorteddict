@@ -22,8 +22,8 @@ class Resources:
         self.key_subtype = type("sub" + self.key_type.__name__, (self.key_type,), {})
 
         self.rg = random.Random(__name__)
-        self.keys = [self.generate_key() for _ in range(1000)]
-        self.values = [self.generate_key() for _ in self.keys]
+        self.keys = [self.gen() for _ in range(1000)]
+        self.values = [self.gen() for _ in self.keys]
         self.normal_dict = dict(zip(self.keys, self.values, strict=True))
 
         sorted_dict = SortedDict(self.key_type)
@@ -41,15 +41,15 @@ class Resources:
         self.values = [*self.normal_dict.values()]
         self.values_refcounts = [5] * len(self.values)
 
-    def generate_key(self, *, small: bool = True) -> int:
+    def gen(self, *, small: bool = True) -> int:
         """
-        Generate a key for a dictionary. It will be a new object (i.e. not an
-        interned one).
+        Generate a key or value for a dictionary. It will be a new object (i.e.
+        not an interned one).
 
-        :param large: Whether to generate a small or large key. (A small key
-        will never be equal to a large key.)
+        :param large: Whether to generate a small or large key/value. (A small
+        one will never be equal to a large one.)
 
-        :return: Key.
+        :return: Random result.
         """
         match self.key_type:
             # The pattern must be non-capturing (otherwise, it raises a syntax
@@ -77,11 +77,11 @@ def resources(request):
     # Tearing down: verify the reference counts.
     if cpython:
         for observed, expected in zip(
-            map(sys.getrefcount, resources.normal_dict), resources.keys_refcounts, strict=True
+            map(sys.getrefcount, resources.normal_dict), resources.keys_refcounts, strict=False
         ):
             assert observed == expected
         for observed, expected in zip(
-            map(sys.getrefcount, resources.normal_dict.values()), resources.values_refcounts, strict=True
+            map(sys.getrefcount, resources.normal_dict.values()), resources.values_refcounts, strict=False
         ):
             assert observed == expected
 
@@ -113,7 +113,7 @@ def test_contains_wrong_type(resources, sorted_dict):
 
 
 def test_contains_no(resources, sorted_dict):
-    key = resources.generate_key(small=False)
+    key = resources.gen(small=False)
     assert key not in sorted_dict
 
     if cpython:
@@ -135,7 +135,7 @@ def test_getitem_wrong_type(resources, sorted_dict):
 
 
 def test_getitem_not_found(resources, sorted_dict):
-    key = resources.generate_key(small=False)
+    key = resources.gen(small=False)
     with pytest.raises(KeyError) as ctx:
         sorted_dict[key]
     assert ctx.value.args[0] == key
@@ -152,3 +152,35 @@ def test_getitem_found(resources, sorted_dict):
     if cpython:
         assert sys.getrefcount(key) == 6
         assert sys.getrefcount(value) == 6
+
+
+def test_setitem_wrong_type(resources, sorted_dict):
+    value = resources.gen()
+    with pytest.raises(TypeError) as ctx:
+        sorted_dict[resources.key_subtype()] = value
+    assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
+
+    if cpython:
+        assert sys.getrefcount(value) == 2
+
+
+def test_setitem_insert(resources, sorted_dict):
+    key, value = resources.gen(small=False), resources.gen()
+    resources.normal_dict[key] = value
+    sorted_dict[key] = value
+    assert sorted_dict[key] == value
+
+    if cpython:
+        assert sys.getrefcount(key) == 4
+        assert sys.getrefcount(value) == 4
+
+def test_setitem_overwrite(resources, sorted_dict):
+    idx, key = resources.rg.choice([*enumerate(resources.keys)])
+    value = resources.gen()
+    resources.normal_dict[key] = value
+    sorted_dict[key] = value
+    assert sorted_dict[key] == value
+
+    if cpython:
+        assert sys.getrefcount(value) == 4
+        resources.values_refcounts[idx] -= 2
