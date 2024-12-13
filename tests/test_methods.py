@@ -7,14 +7,15 @@ import pytest
 
 from pysorteddict import SortedDict
 
+# Reference counting is specific to CPython, so record this for later.
+cpython = platform.python_implementation() == "CPython"
+
 
 class Resources:
     """
     Store resources used to generate similar test cases for different key
     types.
     """
-
-    cpython = platform.python_implementation() == "CPython"
 
     def __init__(self, key_type: type):
         self.key_type = key_type
@@ -36,11 +37,9 @@ class Resources:
         # Whenever a test changes the reference count of any item, I set the
         # new reference count at its index.
         self.keys = [*self.normal_dict]
+        self.keys_refcounts = [5] * len(self.keys)
         self.values = [*self.normal_dict.values()]
-        if self.cpython:
-            # Reference counting is specific to CPython.
-            self.keys_refcounts = [5] * len(self.keys)
-            self.values_refcounts = [5] * len(self.values)
+        self.values_refcounts = [5] * len(self.values)
 
     def generate_key(self, *, small: bool = True) -> int:
         """
@@ -76,7 +75,7 @@ def resources(request):
     yield resources
 
     # Tearing down: verify the reference counts.
-    if resources.cpython:
+    if cpython:
         for observed, expected in zip(
             map(sys.getrefcount, resources.normal_dict), resources.keys_refcounts, strict=True
         ):
@@ -117,7 +116,7 @@ def test_contains_no(resources, sorted_dict):
     key = resources.generate_key(small=False)
     assert key not in sorted_dict
 
-    if resources.cpython:
+    if cpython:
         assert sys.getrefcount(key) == 2
 
 
@@ -125,7 +124,7 @@ def test_contains_yes(resources, sorted_dict):
     key = resources.rg.choice(resources.keys)
     assert key in sorted_dict
 
-    if resources.cpython:
+    if cpython:
         assert sys.getrefcount(key) == 6
 
 
@@ -141,7 +140,7 @@ def test_getitem_not_found(resources, sorted_dict):
         sorted_dict[key]
     assert ctx.value.args[0] == key
 
-    if resources.cpython:
+    if cpython:
         assert sys.getrefcount(key) == 3
 
 
@@ -150,6 +149,6 @@ def test_getitem_found(resources, sorted_dict):
     value = sorted_dict[key]
     assert value == resources.normal_dict[key]
 
-    if resources.cpython:
+    if cpython:
         assert sys.getrefcount(key) == 6
         assert sys.getrefcount(value) == 6
