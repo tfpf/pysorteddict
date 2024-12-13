@@ -75,6 +75,7 @@ def resources(request):
     resources = Resources(request.param)
     yield resources
 
+    # Tearing down: verify the reference counts.
     if resources.cpython:
         for observed, expected in zip(
             map(sys.getrefcount, resources.normal_dict), resources.keys_refcounts, strict=True
@@ -93,7 +94,12 @@ def sorted_dict(request, resources):
     as a parameter to this fixture). The aim is to test both it and its copy
     with the same rigour.
     """
-    return resources.sorted_dicts[request.param]
+    sorted_dict = resources.sorted_dicts[request.param]
+    yield sorted_dict
+
+    # Tearing down: verify some non-mutating methods.
+    assert len(sorted_dict) == len(resources.normal_dict)
+    assert str(sorted_dict) == str(dict(sorted(resources.normal_dict.items())))
 
 
 # Run each test with each key type, and on the sorted dictionary and its copy.
