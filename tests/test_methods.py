@@ -21,27 +21,28 @@ class Resources:
         self.key_subtype = type("sub" + self.key_type.__name__, (self.key_type,), {})
 
         self.rg = random.Random(__name__)
-        keys = [self.generate_key() for _ in range(1000)]
-        values = [self.generate_key() for _ in keys]
-        self.normal_dict = dict(zip(keys, values, strict=True))
+        self.keys = [self.generate_key() for _ in range(1000)]
+        self.values = [self.generate_key() for _ in self.keys]
+        self.normal_dict = dict(zip(self.keys, self.values, strict=True))
 
         self.sorted_dict = SortedDict(self.key_type)
-        for key, value in zip(keys, values, strict=True):
+        for key, value in zip(self.keys, self.values, strict=True):
             self.sorted_dict[key] = value
 
         self.sorted_dict_copy = self.sorted_dict.copy()
 
         # Store the reference count of an item in a list at the position at
         # which it appears in the normal dictionary. At this point, the
-        # reference counts are all 4, and will drop to 3 once all local
-        # variables are destroyed. However, querying the reference count
-        # increases it, so I store 4. Whenever a test changes the reference
+        # reference counts are all 4, but querying the reference count
+        # increases it, so I store 5. Whenever a test changes the reference
         # count of any item, I set the new reference count at its index.
         # Remember that reference counting is specific to the CPython
         # implementation.
+        self.keys = [*self.normal_dict]
+        self.values = [*self.normal_dict.values()]
         if self.cpython:
-            self.keys_refcounts = [4] * len(self.normal_dict)
-            self.values_refcounts = [4] * len(self.normal_dict)
+            self.keys_refcounts = [5] * len(self.keys)
+            self.values_refcounts = [5] * len(self.values)
 
     def generate_key(self, *, small: bool = True) -> object:
         """
@@ -74,7 +75,7 @@ def resources(request):
 
     if resources.cpython:
         for expected, observed in zip(
-            resources.keys_refcounts, map(sys.getrefcount, resources.normal_dict.keys()), strict=True
+            resources.keys_refcounts, map(sys.getrefcount, resources.normal_dict), strict=True
         ):
             assert expected == observed
         for expected, observed in zip(
@@ -83,7 +84,7 @@ def resources(request):
             assert expected == observed
 
 
-# Run each test with each key type. Currently, there is only one key type.
+# Run each test with each key type.
 pytestmark = pytest.mark.parametrize("resources", [int], indirect=True)
 
 
@@ -96,4 +97,12 @@ def test_contains_no(resources):
     assert key not in resources.sorted_dict
 
     if resources.cpython:
-        assert 2 == sys.getrefcount(key)
+        assert sys.getrefcount(key) == 2
+
+
+def test_contains_yes(resources):
+    key = resources.rg.choice(resources.keys)
+    assert key in resources.sorted_dict
+
+    if resources.cpython:
+        assert sys.getrefcount(key) == 6
