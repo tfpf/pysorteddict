@@ -42,6 +42,7 @@ classifiers = [
 dev-mode = false
 dependencies = [
     "pytest",
+    "pytest-xdist",
 ]
 
 [tool.ruff]
