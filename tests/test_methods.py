@@ -134,6 +134,7 @@ def test_getitem_wrong_type(resources, sorted_dict):
         sorted_dict[resources.key_subtype()]
     assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
 
+
 def test_getitem_not_found(resources, sorted_dict):
     key = resources.generate_key(small=False)
     with pytest.raises(KeyError) as ctx:
@@ -142,6 +143,7 @@ def test_getitem_not_found(resources, sorted_dict):
 
     if resources.cpython:
         assert sys.getrefcount(key) == 3
+
 
 def test_getitem_found(resources, sorted_dict):
     key = resources.rg.choice(resources.keys)
