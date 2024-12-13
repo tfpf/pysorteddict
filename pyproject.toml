@@ -36,6 +36,14 @@ classifiers = [
 "Repository" = "https://github.com/tfpf/pysorteddict"
 "Bug Tracker" = "https://github.com/tfpf/pysorteddict/issues"
 
+[tool.cibuildwheel]
+build = "cp* pp*"
+test-command = "pytest -n logical {package}"
+test-requires = [
+    "pytest",
+    "pytest-xdist",
+]
+
 # No use of an editable installation. If the code is edited, it has to be
 # recompiled, and the package has to be reinstalled.
 [tool.hatch.envs.default]
