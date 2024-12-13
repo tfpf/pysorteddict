@@ -41,9 +41,6 @@ classifiers = [
 [tool.hatch.envs.default]
 dev-mode = false
 
-[tool.pytest.ini_options]
-python_classes = "!TestGenericKeys"
-
 [tool.ruff]
 line-length = 119
 
