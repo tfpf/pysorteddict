@@ -99,7 +99,7 @@ def sorted_dict(request, resources):
 # Run each test with each key type, and on the sorted dictionary and its copy.
 pytestmark = [
     pytest.mark.parametrize("resources", [int], indirect=True),
-    pytest.mark.parametrize("sorted_dict", [0, 1], indirect=True),
+    pytest.mark.parametrize("sorted_dict", [0, 1], ids=["original", "copy"], indirect=True),
 ]
 
 
