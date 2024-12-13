@@ -25,26 +25,24 @@ class Resources:
         self.values = [self.generate_key() for _ in self.keys]
         self.normal_dict = dict(zip(self.keys, self.values, strict=True))
 
-        self.sorted_dict = SortedDict(self.key_type)
+        sorted_dict = SortedDict(self.key_type)
         for key, value in zip(self.keys, self.values, strict=True):
-            self.sorted_dict[key] = value
-
-        self.sorted_dict_copy = self.sorted_dict.copy()
+            sorted_dict[key] = value
+        self.sorted_dicts = [sorted_dict, sorted_dict.copy()]
 
         # Store the reference count of an item in a list at the position at
-        # which it appears in the normal dictionary. At this point, the
-        # reference counts are all 4, but querying the reference count
-        # increases it, so I store 5. Whenever a test changes the reference
-        # count of any item, I set the new reference count at its index.
-        # Remember that reference counting is specific to the CPython
-        # implementation.
+        # which it appears in the normal dictionary. The reference counts are
+        # all 4, but querying the reference count increases it, so I store 5.
+        # Whenever a test changes the reference count of any item, I set the
+        # new reference count at its index.
         self.keys = [*self.normal_dict]
         self.values = [*self.normal_dict.values()]
         if self.cpython:
+            # Reference counting is specific to CPython.
             self.keys_refcounts = [5] * len(self.keys)
             self.values_refcounts = [5] * len(self.values)
 
-    def generate_key(self, *, small: bool = True) -> object:
+    def generate_key(self, *, small: bool = True) -> int:
         """
         Generate a key for a dictionary. It will be a new object (i.e. not an
         interned one).
@@ -71,7 +69,7 @@ class Resources:
 @pytest.fixture
 def resources(request):
     """
-    Create test resources for the given key type (passed a parameter to this
+    Create test resources for the given key type (passed as a parameter to this
     fixture).
     """
     resources = Resources(request.param)
@@ -95,13 +93,7 @@ def sorted_dict(request, resources):
     as a parameter to this fixture). The aim is to test both it and its copy
     with the same rigour.
     """
-    match request.param:
-        case 0:
-            return resources.sorted_dict
-        case 1:
-            return resources.sorted_dict_copy
-        case _:
-            raise RuntimeError
+    return resources.sorted_dicts[request.param]
 
 
 # Run each test with each key type, and on the sorted dictionary and its copy.
