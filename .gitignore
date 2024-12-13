@@ -3,3 +3,5 @@
 /dist/
 /src/*.egg-info
 /src/*.so
+
+__pycache__
