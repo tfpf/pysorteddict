@@ -74,14 +74,14 @@ def resources(request):
     yield resources
 
     if resources.cpython:
-        for expected, observed in zip(
-            resources.keys_refcounts, map(sys.getrefcount, resources.normal_dict), strict=True
+        for observed, expected in zip(
+            map(sys.getrefcount, resources.normal_dict), resources.keys_refcounts, strict=True
         ):
-            assert expected == observed
-        for expected, observed in zip(
-            resources.values_refcounts, map(sys.getrefcount, resources.normal_dict.values()), strict=True
+            assert observed == expected
+        for observed, expected in zip(
+            map(sys.getrefcount, resources.normal_dict.values()), resources.values_refcounts, strict=True
         ):
-            assert expected == observed
+            assert observed == expected
 
 
 # Run each test with each key type.
