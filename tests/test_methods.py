@@ -70,6 +70,10 @@ class Resources:
 
 @pytest.fixture
 def resources(request):
+    """
+    Create test resources for the given key type (passed a parameter to this
+    fixture).
+    """
     resources = Resources(request.param)
     yield resources
 
@@ -84,25 +88,44 @@ def resources(request):
             assert observed == expected
 
 
-# Run each test with each key type.
-pytestmark = pytest.mark.parametrize("resources", [int], indirect=True)
+@pytest.fixture
+def sorted_dict(request, resources):
+    """
+    Obtain either the sorted dictionary or its copy based on the index (passed
+    as a parameter to this fixture). The aim is to test both it and its copy
+    with the same rigour.
+    """
+    match request.param:
+        case 0:
+            return resources.sorted_dict
+        case 1:
+            return resources.sorted_dict_copy
+        case _:
+            raise RuntimeError
 
 
-def test_contains_wrong_type(resources):
-    assert resources.key_subtype() not in resources.sorted_dict
+# Run each test with each key type, and on the sorted dictionary and its copy.
+pytestmark = [
+    pytest.mark.parametrize("resources", [int], indirect=True),
+    pytest.mark.parametrize("sorted_dict", [0, 1], indirect=True),
+]
 
 
-def test_contains_no(resources):
+def test_contains_wrong_type(resources, sorted_dict):
+    assert resources.key_subtype() not in sorted_dict
+
+
+def test_contains_no(resources, sorted_dict):
     key = resources.generate_key(small=False)
-    assert key not in resources.sorted_dict
+    assert key not in sorted_dict
 
     if resources.cpython:
         assert sys.getrefcount(key) == 2
 
 
-def test_contains_yes(resources):
+def test_contains_yes(resources, sorted_dict):
     key = resources.rg.choice(resources.keys)
-    assert key in resources.sorted_dict
+    assert key in sorted_dict
 
     if resources.cpython:
         assert sys.getrefcount(key) == 6
