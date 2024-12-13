@@ -40,6 +40,9 @@ classifiers = [
 # recompiled, and the package has to be reinstalled.
 [tool.hatch.envs.default]
 dev-mode = false
+dependencies = [
+    "pytest",
+]
 
 [tool.ruff]
 line-length = 119
