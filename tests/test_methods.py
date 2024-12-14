@@ -172,6 +172,7 @@ def test_delitem_found(resources, sorted_dict):
     idx, key = resources.rg.choice([*enumerate(resources.keys)])
     del resources.normal_dict[key]
     del sorted_dict[key]
+    assert key not in sorted_dict
 
     if cpython:
         resources.keys_refcounts[idx] -= 2
