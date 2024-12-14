@@ -210,3 +210,11 @@ def test_setitem_overwrite(resources, sorted_dict):
     if cpython:
         assert sys.getrefcount(value) == 4
         resources.values_refcounts[idx] -= 2
+
+def test_clear(resources, sorted_dict):
+    resources.normal_dict.clear()
+    sorted_dict.clear()
+
+    if cpython:
+        resources.keys_refcounts = [3] * len(resources.keys)
+        resources.values_refcounts = [3] * len(resources.values)
