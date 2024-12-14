@@ -38,20 +38,14 @@ classifiers = [
 
 [tool.cibuildwheel]
 build = "cp* pp*"
-test-command = "pytest -n logical {package}"
-test-requires = [
-    "pytest",
-    "pytest-xdist",
-]
+test-command = "pytest {package}"
+test-requires = ["pytest"]
 
 # No use of an editable installation. If the code is edited, it has to be
 # recompiled, and the package has to be reinstalled.
 [tool.hatch.envs.default]
 dev-mode = false
-dependencies = [
-    "pytest",
-    "pytest-xdist",
-]
+dependencies = ["pytest"]
 
 [tool.ruff]
 line-length = 119
