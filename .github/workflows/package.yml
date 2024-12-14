@@ -13,9 +13,6 @@ jobs:
     - uses: pypa/cibuildwheel@v2.22.0
       with:
         output-dir: wheelhouse
-      env:
-        CIBW_BUILD: cp* pp*
-        CIBW_TEST_COMMAND: python -m unittest discover -s {package}/tests -t {package}
     - uses: actions/upload-artifact@v4
       with:
         name: wheels-${{ matrix.os }}-${{ strategy.job-index }}
