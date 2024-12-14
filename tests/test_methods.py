@@ -76,12 +76,10 @@ def resources(request):
 
     # Tearing down: verify the reference counts.
     if cpython:
-        for observed, expected in zip(
-            map(sys.getrefcount, resources.normal_dict), resources.keys_refcounts, strict=False
-        ):
+        for observed, expected in zip(map(sys.getrefcount, resources.keys), resources.keys_refcounts, strict=False):
             assert observed == expected
         for observed, expected in zip(
-            map(sys.getrefcount, resources.normal_dict.values()), resources.values_refcounts, strict=False
+            map(sys.getrefcount, resources.values), resources.values_refcounts, strict=False
         ):
             assert observed == expected
 
