@@ -88,6 +88,7 @@ struct SortedDictType
     PyObject* keys(void);
     PyObject* values(void);
     int init(PyObject*, PyObject*);
+    void finalise(void);
 };
 
 /**
@@ -324,20 +325,27 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
     return 0;
 }
 
+void SortedDictType::finalise(void)
+{
+    Py_XDECREF(this->key_type);
+    for (auto& item : *this->map)
+    {
+        Py_DECREF(item.first);
+        Py_DECREF(item.second);
+    }
+    delete this->map;
+}
+
 /******************************************************************************
  * Code required to define the Python module and class can be found below this
  * point. Everything referenced therein is defined above in C++ style.
  *****************************************************************************/
 
 /**
- * Deinitialise and deallocate.
+ * Deallocate.
  */
 static void sorted_dict_type_dealloc(PyObject* self)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    Py_XDECREF(sd->key_type);
-    sd->clear();
-    delete sd->map;
     Py_TYPE(self)->tp_free(self);
 }
 
@@ -530,6 +538,23 @@ static int sorted_dict_type_init(PyObject* self, PyObject* args, PyObject* kwarg
     return sd->init(args, kwargs);
 }
 
+/**
+ * Allocate.
+ */
+static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
+{
+    return type->tp_alloc(type, 0);
+}
+
+/**
+ * Deinitialise.
+ */
+static void sorted_dict_type_finalise(PyObject* self)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    sd->finalise();
+}
+
 PyDoc_STRVAR(
     sorted_dict_type_doc,
     "SortedDict(key_type: type) -> SortedDict\n"
@@ -576,7 +601,7 @@ static PyTypeObject sorted_dict_type = {
     0,                                      // tp_dictoffset
     sorted_dict_type_init,                  // tp_init
     PyType_GenericAlloc,                    // tp_alloc
-    PyType_GenericNew,                      // tp_new
+    sorted_dict_type_new,                   // tp_new
     PyObject_Free,                          // tp_free
     nullptr,                                // tp_is_gc
     nullptr,                                // tp_bases
@@ -586,7 +611,7 @@ static PyTypeObject sorted_dict_type = {
     nullptr,                                // tp_weaklist
     nullptr,                                // tp_del
     0,                                      // tp_version_tag
-    nullptr,                                // tp_finalize
+    sorted_dict_type_finalise,              // tp_finalize
     nullptr,                                // tp_vectorcall
     0,                                      // tp_watched
 };
