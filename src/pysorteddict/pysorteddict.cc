@@ -543,7 +543,7 @@ static int sorted_dict_type_init(PyObject* self, PyObject* args, PyObject* kwarg
  */
 static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    return type->tp_alloc(type, 0);
+    return type->tp_alloc(type, 0);  // New reference.
 }
 
 /**
