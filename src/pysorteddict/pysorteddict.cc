@@ -327,6 +327,10 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
 {
     this->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
     this->key_type = nullptr;
+    if (this->update(args, kwargs) == nullptr)
+    {
+        return -1;
+    }
     return 0;
 }
 
@@ -486,10 +490,9 @@ PyDoc_STRVAR(
     "Update the sorted dictionary ``d`` with the keys and values in ``arg`` and ``kwargs``."
 );
 
-PyObject* sorted_dict_type_update(PyObject* self, PyObject* args, PyObject* kwargs)
+PyObject* sorted_dict_type_update(SortedDictType* self, PyObject* args, PyObject* kwargs)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->update(args, kwargs);
+    return self->update(args, kwargs);
 }
 
 PyDoc_STRVAR(
@@ -508,34 +511,40 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
 // clang-format off
 static PyMethodDef sorted_dict_type_methods[] = {
     {
-        "clear",                      // ml_name
-        sorted_dict_type_clear,       // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_clear_doc,   // ml_doc
+        "clear",                                                 // ml_name
+        sorted_dict_type_clear,                                  // ml_meth
+        METH_NOARGS,                                             // ml_flags
+        sorted_dict_type_clear_doc,                              // ml_doc
     },
     {
-        "copy",                       // ml_name
-        sorted_dict_type_copy,        // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_copy_doc,    // ml_doc
+        "copy",                                                  // ml_name
+        sorted_dict_type_copy,                                   // ml_meth
+        METH_NOARGS,                                             // ml_flags
+        sorted_dict_type_copy_doc,                               // ml_doc
     },
     {
-        "items",                      // ml_name
-        sorted_dict_type_items,       // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_items_doc,   // ml_doc
+        "items",                                                 // ml_name
+        sorted_dict_type_items,                                  // ml_meth
+        METH_NOARGS,                                             // ml_flags
+        sorted_dict_type_items_doc,                              // ml_doc
     },
     {
-        "keys",                       // ml_name
-        sorted_dict_type_keys,        // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_keys_doc,    // ml_doc
+        "keys",                                                  // ml_name
+        sorted_dict_type_keys,                                   // ml_meth
+        METH_NOARGS,                                             // ml_flags
+        sorted_dict_type_keys_doc,                               // ml_doc
     },
     {
-        "values",                     // ml_name
-        sorted_dict_type_values,      // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_values_doc,  // ml_doc
+        "update",                                                // ml_name
+        reinterpret_cast<PyCFunction>(sorted_dict_type_update),  // ml_meth
+        METH_VARARGS | METH_KEYWORDS,                            // ml_flags
+        sorted_dict_type_update_doc,                             // ml_doc
+    },
+    {
+        "values",                                                // ml_name
+        sorted_dict_type_values,                                 // ml_meth
+        METH_NOARGS,                                             // ml_flags
+        sorted_dict_type_values_doc,                             // ml_doc
     },
     {
         nullptr,
