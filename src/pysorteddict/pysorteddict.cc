@@ -302,6 +302,11 @@ PyObject* SortedDictType::keys(void)
     return pykeys;
 }
 
+PyObject* SortedDictType::update(PyObject* args, PyObject* kwargs)
+{
+    Py_RETURN_NONE;
+}
+
 PyObject* SortedDictType::values(void)
 {
     PyObject* pyvalues = PyList_New(this->map->size());  // New reference.
@@ -316,11 +321,6 @@ PyObject* SortedDictType::values(void)
         Py_INCREF(item.second);
     }
     return pyvalues;
-}
-
-PyObject* SortedDictType::update(PyObject* args, PyObject* kwargs)
-{
-    Py_RETURN_NONE;
 }
 
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
