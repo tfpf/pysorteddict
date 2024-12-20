@@ -86,6 +86,7 @@ struct SortedDictType
     PyObject* copy(void);
     PyObject* items(void);
     PyObject* keys(void);
+    PyObject* update(PyObject*, PyObject*);
     PyObject* values(void);
     int init(PyObject*, PyObject*);
 };
@@ -317,6 +318,11 @@ PyObject* SortedDictType::values(void)
     return pyvalues;
 }
 
+PyObject* SortedDictType::update(PyObject* args, PyObject* kwargs)
+{
+    Py_RETURN_NONE;
+}
+
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
 {
     this->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
@@ -475,6 +481,18 @@ static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 }
 
 PyDoc_STRVAR(
+    sorted_dict_type_update_doc,
+    "d.update(arg: Iterable[Iterable[object]], **kwargs)\n"
+    "Update the sorted dictionary ``d`` with the keys and values in ``arg`` and ``kwargs``."
+);
+
+PyObject* sorted_dict_type_update(PyObject* self, PyObject* args, PyObject* kwargs)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->update(args, kwargs);
+}
+
+PyDoc_STRVAR(
     sorted_dict_type_values_doc,
     "d.values() -> list[object]\n"
     "Create and return a new list containing the values in the sorted dictionary ``d``. "
@@ -600,7 +618,6 @@ static PyTypeObject sorted_dict_type = {
     0,                                      // tp_version_tag
     nullptr,                                // tp_finalize
     nullptr,                                // tp_vectorcall
-    0,                                      // tp_watched
 };
 // clang-format on
 
@@ -630,7 +647,7 @@ PyMODINIT_FUNC PyInit_pysorteddict(void)
     {
         return nullptr;
     }
-    PyObject* mod = PyModule_Create(&sorted_dict_module);
+    PyObject* mod = PyModule_Create(&sorted_dict_module);  // New reference.
     if (mod == nullptr)
     {
         return nullptr;
