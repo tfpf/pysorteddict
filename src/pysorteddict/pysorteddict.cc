@@ -86,7 +86,7 @@ struct SortedDictType
     PyObject* copy(void);
     PyObject* items(void);
     PyObject* keys(void);
-    PyObject* update(PyObject*, PyObject*);
+    PyObject* update(PyObject*, PyObject*, char const*);
     PyObject* values(void);
     int init(PyObject*, PyObject*);
 };
@@ -302,8 +302,22 @@ PyObject* SortedDictType::keys(void)
     return pykeys;
 }
 
-PyObject* SortedDictType::update(PyObject* args, PyObject* kwargs)
+/**
+ * Update with the given keys and values.
+ *
+ * @param args Positional arguments.
+ * @param kwargs Keyword arguments.
+ * @param name Python function which called this method. (For error reporting.)
+ *
+ * @return `None` on success, else `nullptr`.
+ */
+PyObject* SortedDictType::update(PyObject* args, PyObject* kwargs, char const* name = "update")
 {
+    PyObject* arg;
+    if (!PyArg_UnpackTuple(args, name, 0, 1, &arg))
+    {
+        return nullptr;
+    }
     Py_RETURN_NONE;
 }
 
@@ -327,7 +341,7 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
 {
     this->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
     this->key_type = nullptr;
-    if (this->update(args, kwargs) == nullptr)
+    if (this->update(args, kwargs, "SortedDict") == nullptr)
     {
         return -1;
     }
