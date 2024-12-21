@@ -84,6 +84,8 @@ struct SortedDictType
     PyObject* items(void);
     PyObject* keys(void);
     PyObject* update(PyObject*, PyObject*, char const*);
+    PyObject* update_from_arg(PyObject*);
+    PyObject* update_from_kwargs(PyObject*);
     PyObject* values(void);
     int init(PyObject*, PyObject*);
 };
@@ -315,7 +317,23 @@ PyObject* SortedDictType::update(PyObject* args, PyObject* kwargs, char const* n
     {
         return nullptr;
     }
+    if (this->update_from_arg(arg) == nullptr)
+    {
+        return nullptr;
+    }
+    if (this->update_from_kwargs(kwargs) == nullptr)
+    {
+        return nullptr;
+    }
     Py_RETURN_NONE;
+}
+
+PyObject* SortedDictType::update_from_arg(PyObject* arg)
+{
+}
+
+PyObject* SortedDictType::update_from_kwargs(PyObject* arg)
+{
 }
 
 PyObject* SortedDictType::values(void)
