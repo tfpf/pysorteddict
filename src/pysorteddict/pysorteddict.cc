@@ -3,25 +3,25 @@
 #include <iterator>
 #include <map>
 #include <string>
-#include <utility>
 
 /**
  * Obtain the Python representation of a Python object.
  *
  * @param ob Python object.
  *
- * @return Pair of a string and a stringification success flag.
+ * @return C string possibly containing null bytes in the middle.
  */
-static std::pair<std::string, bool> repr(PyObject* ob)
+char const* repr(PyObject* ob)
 {
     PyObject* ob_repr = PyObject_Repr(ob);  // New reference.
     if (ob_repr == nullptr)
     {
-        return { "", false };
+        return nullptr;
     }
-    std::pair<std::string, bool> result = { PyUnicode_AsUTF8(ob_repr), true };
+    static std::string result;
+    result = PyUnicode_AsUTF8(ob_repr);
     Py_DECREF(ob_repr);
-    return result;
+    return result.data();
 }
 
 /**
@@ -29,18 +29,19 @@ static std::pair<std::string, bool> repr(PyObject* ob)
  *
  * @param ob Python object.
  *
- * @return Pair of a string and a stringification success flag.
+ * @return C string possibly containing null bytes in the middle.
  */
-static std::pair<std::string, bool> str(PyObject* ob)
+char const* str(PyObject* ob)
 {
     PyObject* ob_str = PyObject_Str(ob);  // New reference.
     if (ob_str == nullptr)
     {
-        return { "", false };
+        return nullptr;
     }
-    std::pair<std::string, bool> result = { PyUnicode_AsUTF8(ob_str), true };
+    static std::string result;
+    result = PyUnicode_AsUTF8(ob_str);
     Py_DECREF(ob_str);
-    return result;
+    return result.data();
 }
 
 /**
