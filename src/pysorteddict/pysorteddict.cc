@@ -5,16 +5,14 @@
 #include <string>
 
 /**
- * Convert a Python object into a C string.
+ * Convert a Python string into a C string.
  *
- * @param ob Python object.
- * @param stringifier Function to use to obtain the intermediate Python string.
+ * @param unicode Python string.
  *
  * @return C string possibly containing null bytes in the middle.
  */
-char const* to_string(PyObject* ob, PyObject* (*stringifier)(PyObject*))
+char const* to_string(PyObject* unicode)
 {
-    PyObject* unicode = stringifier(ob);  // New reference.
     if (unicode == nullptr)
     {
         return nullptr;
@@ -34,7 +32,8 @@ char const* to_string(PyObject* ob, PyObject* (*stringifier)(PyObject*))
  */
 char const* repr(PyObject* ob)
 {
-    return to_string(ob, PyObject_Repr);
+    PyObject* ob_repr = PyObject_Repr(ob);  // New reference.
+    return to_string(ob_repr);
 }
 
 /**
@@ -46,7 +45,8 @@ char const* repr(PyObject* ob)
  */
 char const* str(PyObject* ob)
 {
-    return to_string(ob, PyObject_Str);
+    PyObject* ob_str = PyObject_Str(ob);  // New reference.
+    return to_string(ob_str);
 }
 
 /**
