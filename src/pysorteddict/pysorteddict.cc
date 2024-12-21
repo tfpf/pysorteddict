@@ -18,7 +18,7 @@ char const* repr(PyObject* ob)
     {
         return nullptr;
     }
-    static std::string result;
+    static thread_local std::string result;
     result = PyUnicode_AsUTF8(ob_repr);
     Py_DECREF(ob_repr);
     return result.data();
@@ -38,7 +38,7 @@ char const* str(PyObject* ob)
     {
         return nullptr;
     }
-    static std::string result;
+    static thread_local std::string result;
     result = PyUnicode_AsUTF8(ob_str);
     Py_DECREF(ob_str);
     return result.data();
