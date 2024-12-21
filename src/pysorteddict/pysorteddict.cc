@@ -330,6 +330,38 @@ PyObject* SortedDictType::update(PyObject* args, PyObject* kwargs, char const* n
 
 PyObject* SortedDictType::update_from_arg(PyObject* arg)
 {
+    // Iterate over the keys. Obtain the mapped values.
+    PyObject *keys = PyMapping_Keys(arg); // New reference.
+    if(keys != nullptr){
+        PyObject *iter = PyObject_GetIter(keys); // New reference.
+        Py_DECREF(keys);
+        if(iter == nullptr)
+        {
+            return nullptr;
+        }
+        while(true){
+            PyObject *key = PyIter_Next(iter); // New reference.
+            // This can be a null pointer upon completion or an error. Hence,
+            // check for an error explicitly.
+            if(PyErr_Occurred() != nullptr)
+            {
+                Py_DECREF(iter);
+                return nullptr;
+            }
+            if(key == nullptr){
+                Py_DECREF(iter);
+                Py_RETURN_NONE;
+            }
+            PyObject *value = PyObject_GetItem(arg, key); // New reference.
+            if(value == nullptr){
+                Py_DECREF(key);
+                Py_DECREF(iter);
+                return nullptr;
+            }
+            // I need the getter and setter methods to do the type check.
+            // That should probably be in a separate pull request.
+        }
+    }
 }
 
 PyObject* SortedDictType::update_from_kwargs(PyObject* arg)
