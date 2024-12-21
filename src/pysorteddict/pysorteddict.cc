@@ -5,22 +5,22 @@
 #include <string>
 
 /**
- * Convert a Python string into a C string.
+ * Convert a Python object into a C++ string.
  *
- * @param unicode Python string.
+ * @param ob Python object.
  *
- * @return C string possibly containing null bytes in the middle.
+ * @return C++ string possibly truncated at the first null byte.
  */
-char const* to_string(PyObject* unicode)
+std::string to_string(PyObject* ob, PyObject* (*stringifier)(PyObject*))
 {
+    PyObject* unicode = stringifier(ob);  // New reference.
     if (unicode == nullptr)
     {
         return nullptr;
     }
-    static thread_local std::string result;
-    result = PyUnicode_AsUTF8(unicode);
+    std::string result = PyUnicode_AsUTF8(unicode);
     Py_DECREF(unicode);
-    return result.data();
+    return result;
 }
 
 /**
@@ -28,12 +28,11 @@ char const* to_string(PyObject* unicode)
  *
  * @param ob Python object.
  *
- * @return C string possibly containing null bytes in the middle.
+ * @return C++ string possibly truncated at the first null byte.
  */
-char const* repr(PyObject* ob)
+std::string repr(PyObject* ob)
 {
-    PyObject* ob_repr = PyObject_Repr(ob);  // New reference.
-    return to_string(ob_repr);
+    return to_string(ob, PyObject_Repr);
 }
 
 /**
@@ -41,12 +40,11 @@ char const* repr(PyObject* ob)
  *
  * @param ob Python object.
  *
- * @return C string possibly containing null bytes in the middle.
+ * @return C++ string possibly truncated at the first null byte.
  */
-char const* str(PyObject* ob)
+std::string str(PyObject* ob)
 {
-    PyObject* ob_str = PyObject_Str(ob);  // New reference.
-    return to_string(ob_str);
+    return to_string(ob, PyObject_Str);
 }
 
 /**
