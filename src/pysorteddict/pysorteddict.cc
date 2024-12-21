@@ -5,6 +5,25 @@
 #include <string>
 
 /**
+ * Convert a Python string into a C string.
+ *
+ * @param unicode Python string.
+ *
+ * @return C string possibly containing null bytes in the middle.
+ */
+char const* to_string(PyObject* unicode)
+{
+    if (unicode == nullptr)
+    {
+        return nullptr;
+    }
+    static thread_local std::string result;
+    result = PyUnicode_AsUTF8(unicode);
+    Py_DECREF(unicode);
+    return result.data();
+}
+
+/**
  * Obtain the Python representation of a Python object.
  *
  * @param ob Python object.
@@ -14,14 +33,7 @@
 char const* repr(PyObject* ob)
 {
     PyObject* ob_repr = PyObject_Repr(ob);  // New reference.
-    if (ob_repr == nullptr)
-    {
-        return nullptr;
-    }
-    static thread_local std::string result;
-    result = PyUnicode_AsUTF8(ob_repr);
-    Py_DECREF(ob_repr);
-    return result.data();
+    return to_string(ob_repr);
 }
 
 /**
@@ -34,14 +46,7 @@ char const* repr(PyObject* ob)
 char const* str(PyObject* ob)
 {
     PyObject* ob_str = PyObject_Str(ob);  // New reference.
-    if (ob_str == nullptr)
-    {
-        return nullptr;
-    }
-    static thread_local std::string result;
-    result = PyUnicode_AsUTF8(ob_str);
-    Py_DECREF(ob_str);
-    return result.data();
+    return to_string(ob_str);
 }
 
 /**
