@@ -9,7 +9,7 @@
  *
  * @param ob Python object.
  *
- * @return C++ string possibly truncated at the first null byte.
+ * @return C++ string if successful, else empty string.
  */
 std::string to_string(PyObject* ob, PyObject* (*stringifier)(PyObject*))
 {
@@ -28,7 +28,7 @@ std::string to_string(PyObject* ob, PyObject* (*stringifier)(PyObject*))
  *
  * @param ob Python object.
  *
- * @return C++ string possibly truncated at the first null byte.
+ * @return C++ string if successful, else empty string.
  */
 std::string repr(PyObject* ob)
 {
@@ -40,7 +40,7 @@ std::string repr(PyObject* ob)
  *
  * @param ob Python object.
  *
- * @return C++ string possibly truncated at the first null byte.
+ * @return C++ string if successful, else empty string.
  */
 std::string str(PyObject* ob)
 {
