@@ -3,25 +3,37 @@
 #include <iterator>
 #include <map>
 #include <string>
-#include <utility>
+
+/**
+ * Convert a Python object into a C++ string.
+ *
+ * @param ob Python object.
+ * @param stringifier Function to use to obtain the intermediate Python string.
+ *
+ * @return C++ string if successful, else empty string.
+ */
+std::string to_string(PyObject* ob, PyObject* (*stringifier)(PyObject*))
+{
+    PyObject* unicode = stringifier(ob);  // New reference.
+    if (unicode == nullptr)
+    {
+        return "";
+    }
+    std::string result = PyUnicode_AsUTF8(unicode);
+    Py_DECREF(unicode);
+    return result;
+}
 
 /**
  * Obtain the Python representation of a Python object.
  *
  * @param ob Python object.
  *
- * @return Pair of a string and a stringification success flag.
+ * @return C++ string if successful, else empty string.
  */
-static std::pair<std::string, bool> repr(PyObject* ob)
+std::string repr(PyObject* ob)
 {
-    PyObject* ob_repr = PyObject_Repr(ob);  // New reference.
-    if (ob_repr == nullptr)
-    {
-        return { "", false };
-    }
-    std::pair<std::string, bool> result = { PyUnicode_AsUTF8(ob_repr), true };
-    Py_DECREF(ob_repr);
-    return result;
+    return to_string(ob, PyObject_Repr);
 }
 
 /**
@@ -29,18 +41,11 @@ static std::pair<std::string, bool> repr(PyObject* ob)
  *
  * @param ob Python object.
  *
- * @return Pair of a string and a stringification success flag.
+ * @return C++ string if successful, else empty string.
  */
-static std::pair<std::string, bool> str(PyObject* ob)
+std::string str(PyObject* ob)
 {
-    PyObject* ob_str = PyObject_Str(ob);  // New reference.
-    if (ob_str == nullptr)
-    {
-        return { "", false };
-    }
-    std::pair<std::string, bool> result = { PyUnicode_AsUTF8(ob_str), true };
-    Py_DECREF(ob_str);
-    return result;
+    return to_string(ob, PyObject_Str);
 }
 
 /**
