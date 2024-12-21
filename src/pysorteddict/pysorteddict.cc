@@ -56,11 +56,10 @@ struct PyObject_CustomCompare
     bool operator()(PyObject* a, PyObject* b) const
     {
         // There must exist a total order on the set of possible keys. (Else,
-        // this comparison may error out.) Hence, only instances of the type
-        // passed to the constructor may be used as keys. (Instances of types
-        // derived from that type are not allowed, because comparisons between
-        // them may error out. See the constructor code.) With these
-        // precautions, this comparison should always work.
+        // this comparison may error out.) Hence, only instances of a single
+        // type may be used as keys. (Instances of types derived from it should
+        // not be allowed, because comparisons between them may error out.)
+        // With these precautions, this comparison should always work.
         return PyObject_RichCompareBool(a, b, Py_LT) == 1;
     }
 };
@@ -72,16 +71,14 @@ struct SortedDictType
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
-    std::map<PyObject*, PyObject*, PyObject_CustomCompare>* map = nullptr;
+    std::map<PyObject*, PyObject*, PyObject_CustomCompare>* map;
 
     // The type of each key.
-    PyObject* key_type = nullptr;
+    PyObject* key_type;
 
     // These methods are named after the (Python or Python C API) functions
     // they are related to. Wherever there is no documentation comment above a
     // method, it means that that method is a proxy for the related function.
-    // In this scenario, the related function will be the caller of the method,
-    // and will have a similar name.
     bool is_type_key_type(PyObject*, bool);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
@@ -91,7 +88,11 @@ struct SortedDictType
     PyObject* copy(void);
     PyObject* items(void);
     PyObject* keys(void);
+    PyObject* update(PyObject*, PyObject*, char const*);
+    PyObject* update_from_arg(PyObject*);
+    PyObject* update_from_kwargs(PyObject*);
     PyObject* values(void);
+    int init(PyObject*, PyObject*);
 };
 
 /**
@@ -305,6 +306,73 @@ PyObject* SortedDictType::keys(void)
     return pykeys;
 }
 
+/**
+ * Update with the given keys and values.
+ *
+ * @param args Positional arguments.
+ * @param kwargs Keyword arguments.
+ * @param name Python function which called this method. (For error reporting.)
+ *
+ * @return `None` on success, else `nullptr`.
+ */
+PyObject* SortedDictType::update(PyObject* args, PyObject* kwargs, char const* name = "update")
+{
+    PyObject* arg;
+    if (!PyArg_UnpackTuple(args, name, 0, 1, &arg))
+    {
+        return nullptr;
+    }
+    if (this->update_from_arg(arg) == nullptr)
+    {
+        return nullptr;
+    }
+    if (this->update_from_kwargs(kwargs) == nullptr)
+    {
+        return nullptr;
+    }
+    Py_RETURN_NONE;
+}
+
+PyObject* SortedDictType::update_from_arg(PyObject* arg)
+{
+    // Iterate over the keys. Obtain the mapped values.
+    PyObject *keys = PyMapping_Keys(arg); // New reference.
+    if(keys != nullptr){
+        PyObject *iter = PyObject_GetIter(keys); // New reference.
+        Py_DECREF(keys);
+        if(iter == nullptr)
+        {
+            return nullptr;
+        }
+        while(true){
+            PyObject *key = PyIter_Next(iter); // New reference.
+            // This can be a null pointer upon completion or an error. Hence,
+            // check for an error explicitly.
+            if(PyErr_Occurred() != nullptr)
+            {
+                Py_DECREF(iter);
+                return nullptr;
+            }
+            if(key == nullptr){
+                Py_DECREF(iter);
+                Py_RETURN_NONE;
+            }
+            PyObject *value = PyObject_GetItem(arg, key); // New reference.
+            if(value == nullptr){
+                Py_DECREF(key);
+                Py_DECREF(iter);
+                return nullptr;
+            }
+            // I need the getter and setter methods to do the type check.
+            // That should probably be in a separate pull request.
+        }
+    }
+}
+
+PyObject* SortedDictType::update_from_kwargs(PyObject* arg)
+{
+}
+
 PyObject* SortedDictType::values(void)
 {
     PyObject* pyvalues = PyList_New(this->map->size());  // New reference.
@@ -321,6 +389,17 @@ PyObject* SortedDictType::values(void)
     return pyvalues;
 }
 
+int SortedDictType::init(PyObject* args, PyObject* kwargs)
+{
+    this->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
+    this->key_type = nullptr;
+    if (this->update(args, kwargs, "SortedDict") == nullptr)
+    {
+        return -1;
+    }
+    return 0;
+}
+
 /******************************************************************************
  * Code required to define the Python module and class can be found below this
  * point. Everything referenced therein is defined above in C++ style.
@@ -332,8 +411,12 @@ PyObject* SortedDictType::values(void)
 static void sorted_dict_type_dealloc(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    Py_DECREF(sd->key_type);
-    sd->clear();
+    Py_XDECREF(sd->key_type);
+    for (auto& item : *sd->map)
+    {
+        Py_DECREF(item.first);
+        Py_DECREF(item.second);
+    }
     delete sd->map;
     Py_TYPE(self)->tp_free(self);
 }
@@ -468,6 +551,17 @@ static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 }
 
 PyDoc_STRVAR(
+    sorted_dict_type_update_doc,
+    "d.update(arg: Iterable[Iterable[object]], **kwargs)\n"
+    "Update the sorted dictionary ``d`` with the keys and values in ``arg`` and ``kwargs``."
+);
+
+PyObject* sorted_dict_type_update(SortedDictType* self, PyObject* args, PyObject* kwargs)
+{
+    return self->update(args, kwargs);
+}
+
+PyDoc_STRVAR(
     sorted_dict_type_values_doc,
     "d.values() -> list[object]\n"
     "Create and return a new list containing the values in the sorted dictionary ``d``. "
@@ -483,34 +577,40 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
 // clang-format off
 static PyMethodDef sorted_dict_type_methods[] = {
     {
-        "clear",                      // ml_name
-        sorted_dict_type_clear,       // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_clear_doc,   // ml_doc
+        "clear",                                                 // ml_name
+        sorted_dict_type_clear,                                  // ml_meth
+        METH_NOARGS,                                             // ml_flags
+        sorted_dict_type_clear_doc,                              // ml_doc
     },
     {
-        "copy",                       // ml_name
-        sorted_dict_type_copy,        // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_copy_doc,    // ml_doc
+        "copy",                                                  // ml_name
+        sorted_dict_type_copy,                                   // ml_meth
+        METH_NOARGS,                                             // ml_flags
+        sorted_dict_type_copy_doc,                               // ml_doc
     },
     {
-        "items",                      // ml_name
-        sorted_dict_type_items,       // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_items_doc,   // ml_doc
+        "items",                                                 // ml_name
+        sorted_dict_type_items,                                  // ml_meth
+        METH_NOARGS,                                             // ml_flags
+        sorted_dict_type_items_doc,                              // ml_doc
     },
     {
-        "keys",                       // ml_name
-        sorted_dict_type_keys,        // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_keys_doc,    // ml_doc
+        "keys",                                                  // ml_name
+        sorted_dict_type_keys,                                   // ml_meth
+        METH_NOARGS,                                             // ml_flags
+        sorted_dict_type_keys_doc,                               // ml_doc
     },
     {
-        "values",                     // ml_name
-        sorted_dict_type_values,      // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_values_doc,  // ml_doc
+        "update",                                                // ml_name
+        reinterpret_cast<PyCFunction>(sorted_dict_type_update),  // ml_meth
+        METH_VARARGS | METH_KEYWORDS,                            // ml_flags
+        sorted_dict_type_update_doc,                             // ml_doc
+    },
+    {
+        "values",                                                // ml_name
+        sorted_dict_type_values,                                 // ml_meth
+        METH_NOARGS,                                             // ml_flags
+        sorted_dict_type_values_doc,                             // ml_doc
     },
     {
         nullptr,
@@ -519,39 +619,20 @@ static PyMethodDef sorted_dict_type_methods[] = {
 // clang-format on
 
 /**
- * Allocate and initialise.
+ * Initialise.
+ */
+static int sorted_dict_type_init(PyObject* self, PyObject* args, PyObject* kwargs)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->init(args, kwargs);
+}
+
+/**
+ * Allocate.
  */
 static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    // Up to Python 3.12, the argument parser below took an array of pointers
-    // (with each pointer pointing to a C string) as its fourth argument.
-    // However, C++ does not allow converting a string constant to a pointer.
-    // Hence, I use a character array to construct the C string, and then place
-    // it in an array of pointers.
-    char arg_name[] = "key_type";
-    char* args_names[] = { arg_name, nullptr };
-    PyObject* key_type;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", args_names, &key_type))
-    {
-        return nullptr;
-    }
-
-    // Check the type to use for keys.
-    if (PyObject_RichCompareBool(key_type, reinterpret_cast<PyObject*>(&PyLong_Type), Py_EQ) != 1)
-    {
-        PyErr_SetString(PyExc_TypeError, "constructor argument must be a supported type");
-        return nullptr;
-    }
-
-    PyObject* self = type->tp_alloc(type, 0);  // New reference.
-    if (self == nullptr)
-    {
-        return nullptr;
-    }
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    sd->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
-    sd->key_type = Py_NewRef(key_type);
-    return self;
+    return type->tp_alloc(type, 0);  // New reference.
 }
 
 PyDoc_STRVAR(
@@ -598,10 +679,10 @@ static PyTypeObject sorted_dict_type = {
     nullptr,                                // tp_descr_get
     nullptr,                                // tp_descr_set
     0,                                      // tp_dictoffset
-    nullptr,                                // tp_init
+    sorted_dict_type_init,                  // tp_init
     PyType_GenericAlloc,                    // tp_alloc
     sorted_dict_type_new,                   // tp_new
-    PyObject_Del,                           // tp_free
+    PyObject_Free,                          // tp_free
     nullptr,                                // tp_is_gc
     nullptr,                                // tp_bases
     nullptr,                                // tp_mro
@@ -609,6 +690,9 @@ static PyTypeObject sorted_dict_type = {
     nullptr,                                // tp_subclasses
     nullptr,                                // tp_weaklist
     nullptr,                                // tp_del
+    0,                                      // tp_version_tag
+    nullptr,                                // tp_finalize
+    nullptr,                                // tp_vectorcall
 };
 // clang-format on
 
@@ -638,7 +722,7 @@ PyMODINIT_FUNC PyInit_pysorteddict(void)
     {
         return nullptr;
     }
-    PyObject* mod = PyModule_Create(&sorted_dict_module);
+    PyObject* mod = PyModule_Create(&sorted_dict_module);  // New reference.
     if (mod == nullptr)
     {
         return nullptr;
