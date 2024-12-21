@@ -17,7 +17,7 @@ std::string to_string(PyObject* ob, PyObject* (*stringifier)(PyObject*))
     PyObject* unicode = stringifier(ob);  // New reference.
     if (unicode == nullptr)
     {
-        return nullptr;
+        return "";
     }
     std::string result = PyUnicode_AsUTF8(unicode);
     Py_DECREF(unicode);
