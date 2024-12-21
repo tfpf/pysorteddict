@@ -51,11 +51,10 @@ struct PyObject_CustomCompare
     bool operator()(PyObject* a, PyObject* b) const
     {
         // There must exist a total order on the set of possible keys. (Else,
-        // this comparison may error out.) Hence, only instances of the type
-        // passed to the constructor may be used as keys. (Instances of types
-        // derived from that type are not allowed, because comparisons between
-        // them may error out. See the constructor code.) With these
-        // precautions, this comparison should always work.
+        // this comparison may error out.) Hence, only instances of a single
+        // type may be used as keys. (Instances of types derived from it should
+        // not be allowed, because comparisons between them may error out.)
+        // With these precautions, this comparison should always work.
         return PyObject_RichCompareBool(a, b, Py_LT) == 1;
     }
 };
@@ -75,8 +74,6 @@ struct SortedDictType
     // These methods are named after the (Python or Python C API) functions
     // they are related to. Wherever there is no documentation comment above a
     // method, it means that that method is a proxy for the related function.
-    // In this scenario, the related function will be the caller of the method,
-    // and will have a similar name.
     bool is_type_key_type(PyObject*, bool);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
