@@ -8,6 +8,7 @@
  * Convert a Python object into a C++ string.
  *
  * @param ob Python object.
+ * @param stringifier Function to use to obtain the intermediate Python string.
  *
  * @return C++ string if successful, else empty string.
  */
