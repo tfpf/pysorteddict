@@ -92,6 +92,7 @@ struct SortedDictType
     PyObject* items(void);
     PyObject* keys(void);
     PyObject* values(void);
+    static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 };
 
 /**
@@ -321,6 +322,11 @@ PyObject* SortedDictType::values(void)
     return pyvalues;
 }
 
+PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
+{
+    return type->tp_alloc(type, 0);
+}
+
 /******************************************************************************
  * Code required to define the Python module and class can be found below this
  * point. Everything referenced therein is defined above in C++ style.
@@ -519,10 +525,12 @@ static PyMethodDef sorted_dict_type_methods[] = {
 // clang-format on
 
 /**
- * Allocate and initialise.
+ * Allocate.
  */
 static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
+    return SortedDictType::New(type, args, kwargs);
+}
     // Up to Python 3.12, the argument parser below took an array of pointers
     // (with each pointer pointing to a C string) as its fourth argument.
     // However, C++ does not allow converting a string constant to a pointer.
@@ -598,7 +606,7 @@ static PyTypeObject sorted_dict_type = {
     nullptr,                                // tp_descr_get
     nullptr,                                // tp_descr_set
     0,                                      // tp_dictoffset
-    nullptr,                                // tp_init
+    sorted_dict_type_init,                  // tp_init
     PyType_GenericAlloc,                    // tp_alloc
     sorted_dict_type_new,                   // tp_new
     PyObject_Del,                           // tp_free
@@ -638,7 +646,7 @@ PyMODINIT_FUNC PyInit_pysorteddict(void)
     {
         return nullptr;
     }
-    PyObject* mod = PyModule_Create(&sorted_dict_module); // New reference.
+    PyObject* mod = PyModule_Create(&sorted_dict_module);  // New reference.
     if (mod == nullptr)
     {
         return nullptr;
