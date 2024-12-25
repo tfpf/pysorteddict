@@ -2,7 +2,7 @@
 # The Apple linker does not recognise `-Bsymbolic-functions`, one of the
 # arguments passed to it on macOS when building wheels for PyPy. Using an older
 # version of setuptools fixes this problem.
-requires = ["setuptools==70.0.0"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
