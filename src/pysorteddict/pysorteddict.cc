@@ -327,7 +327,7 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
 {
     // Python's default allocator claims to initialise the contents of the
     // allocated memory to null, but actually writes zeros to it. Hence,
-    // explicitly initialise them to null (if required).
+    // explicitly initialise them.
     this->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
     this->key_type = nullptr;
 
