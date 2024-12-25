@@ -77,11 +77,7 @@ struct SortedDictType
     // The type of each key.
     PyObject* key_type;
 
-    // These methods are named after the (Python or Python C API) functions
-    // they are related to. Wherever there is no documentation comment above a
-    // method, it means that that method is a proxy for the related function.
-    // In this scenario, the related function will be the caller of the method,
-    // and will have a similar name.
+    void deinit(void);
     bool is_type_key_type(PyObject*, bool);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
@@ -95,6 +91,17 @@ struct SortedDictType
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 };
+
+void SortedDictType::deinit(void)
+{
+    Py_XDECREF(this->key_type);
+    for (auto& item : *this->map)
+    {
+        Py_DECREF(item.first);
+        Py_DECREF(item.second);
+    }
+    delete this->map;
+}
 
 /**
  * Check whether a Python object has the correct type for use as a key.
@@ -370,10 +377,13 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
  */
 static void sorted_dict_type_dealloc(PyObject* self)
 {
+    // I could have separated deinitialisation and deallocation the way I
+    // separated allocation and initialisation using the Python type methods,
+    // but it looks like the deinitialisation (finalisation) function is not
+    // automatically called prior to deallocation. Further, the documentation
+    // recommends doing both here.
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    Py_XDECREF(sd->key_type);
-    sd->clear();
-    delete sd->map;
+    sd->deinit();
     Py_TYPE(self)->tp_free(self);
 }
 
@@ -621,7 +631,7 @@ static PyTypeObject sorted_dict_type = {
     sorted_dict_type_init,                  // tp_init
     PyType_GenericAlloc,                    // tp_alloc
     sorted_dict_type_new,                   // tp_new
-    PyObject_Del,                           // tp_free
+    PyObject_Free,                          // tp_free
     nullptr,                                // tp_is_gc
     nullptr,                                // tp_bases
     nullptr,                                // tp_mro
