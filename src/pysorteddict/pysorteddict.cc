@@ -72,10 +72,10 @@ struct SortedDictType
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
-    std::map<PyObject*, PyObject*, PyObject_CustomCompare>* map = nullptr;
+    std::map<PyObject*, PyObject*, PyObject_CustomCompare>* map;
 
     // The type of each key.
-    PyObject* key_type = nullptr;
+    PyObject* key_type;
 
     // These methods are named after the (Python or Python C API) functions
     // they are related to. Wherever there is no documentation comment above a
@@ -92,6 +92,8 @@ struct SortedDictType
     PyObject* items(void);
     PyObject* keys(void);
     PyObject* values(void);
+    int init(PyObject*, PyObject*);
+    static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 };
 
 /**
@@ -321,6 +323,43 @@ PyObject* SortedDictType::values(void)
     return pyvalues;
 }
 
+int SortedDictType::init(PyObject* args, PyObject* kwargs)
+{
+    // Python's default allocator claims to initialise the contents of the
+    // allocated memory to null, but actually writes zeros to it. Hence,
+    // explicitly initialise them.
+    this->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
+    this->key_type = nullptr;
+
+    // Up to Python 3.12, the argument parser below took an array of pointers
+    // (with each pointer pointing to a C string) as its fourth argument.
+    // However, C++ does not allow converting a string constant to a pointer.
+    // Hence, I use a character array to construct the C string, and then place
+    // it in an array of pointers.
+    char arg_name[] = "key_type";
+    char* args_names[] = { arg_name, nullptr };
+    PyObject* key_type;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", args_names, &key_type))
+    {
+        return -1;
+    }
+
+    // Check the type to use for keys.
+    if (PyObject_RichCompareBool(key_type, reinterpret_cast<PyObject*>(&PyLong_Type), Py_EQ) != 1)
+    {
+        PyErr_SetString(PyExc_TypeError, "constructor argument must be a supported type");
+        return -1;
+    }
+
+    this->key_type = Py_NewRef(key_type);
+    return 0;
+}
+
+PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
+{
+    return type->tp_alloc(type, 0);
+}
+
 /******************************************************************************
  * Code required to define the Python module and class can be found below this
  * point. Everything referenced therein is defined above in C++ style.
@@ -332,7 +371,7 @@ PyObject* SortedDictType::values(void)
 static void sorted_dict_type_dealloc(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    Py_DECREF(sd->key_type);
+    Py_XDECREF(sd->key_type);
     sd->clear();
     delete sd->map;
     Py_TYPE(self)->tp_free(self);
@@ -519,39 +558,20 @@ static PyMethodDef sorted_dict_type_methods[] = {
 // clang-format on
 
 /**
- * Allocate and initialise.
+ * Initialise.
+ */
+static int sorted_dict_type_init(PyObject* self, PyObject* args, PyObject* kwargs)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->init(args, kwargs);
+}
+
+/**
+ * Allocate.
  */
 static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    // Up to Python 3.12, the argument parser below took an array of pointers
-    // (with each pointer pointing to a C string) as its fourth argument.
-    // However, C++ does not allow converting a string constant to a pointer.
-    // Hence, I use a character array to construct the C string, and then place
-    // it in an array of pointers.
-    char arg_name[] = "key_type";
-    char* args_names[] = { arg_name, nullptr };
-    PyObject* key_type;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", args_names, &key_type))
-    {
-        return nullptr;
-    }
-
-    // Check the type to use for keys.
-    if (PyObject_RichCompareBool(key_type, reinterpret_cast<PyObject*>(&PyLong_Type), Py_EQ) != 1)
-    {
-        PyErr_SetString(PyExc_TypeError, "constructor argument must be a supported type");
-        return nullptr;
-    }
-
-    PyObject* self = type->tp_alloc(type, 0);  // New reference.
-    if (self == nullptr)
-    {
-        return nullptr;
-    }
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    sd->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
-    sd->key_type = Py_NewRef(key_type);
-    return self;
+    return SortedDictType::New(type, args, kwargs);
 }
 
 PyDoc_STRVAR(
@@ -598,7 +618,7 @@ static PyTypeObject sorted_dict_type = {
     nullptr,                                // tp_descr_get
     nullptr,                                // tp_descr_set
     0,                                      // tp_dictoffset
-    nullptr,                                // tp_init
+    sorted_dict_type_init,                  // tp_init
     PyType_GenericAlloc,                    // tp_alloc
     sorted_dict_type_new,                   // tp_new
     PyObject_Del,                           // tp_free
@@ -638,7 +658,7 @@ PyMODINIT_FUNC PyInit_pysorteddict(void)
     {
         return nullptr;
     }
-    PyObject* mod = PyModule_Create(&sorted_dict_module);
+    PyObject* mod = PyModule_Create(&sorted_dict_module);  // New reference.
     if (mod == nullptr)
     {
         return nullptr;
