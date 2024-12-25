@@ -566,7 +566,6 @@ static int sorted_dict_type_init(PyObject* self, PyObject* args, PyObject* kwarg
     return sd->init(args, kwargs);
 }
 
-
 /**
  * Allocate.
  */
