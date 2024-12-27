@@ -78,6 +78,7 @@ struct SortedDictType
     PyObject* key_type;
 
     void deinit(void);
+    bool validate_key_type(PyObject*, bool);
     bool is_type_key_type(PyObject*, bool);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
@@ -104,30 +105,41 @@ void SortedDictType::deinit(void)
 }
 
 /**
- * Check whether a Python object has the correct type for use as a key.
+ * Validate that the key type member of this instance is non-null, and that it
+ * matches the type of the key provided. (I know, smartly named, right?)
  *
- * @param ob Python object.
- * @param raise Whether to set a Python exception if the type is wrong.
+ * @param key Key.
+ * @param raise Whether to set a Python exception on failure.
  *
- * @return `true` if its type is the same as the key type, else `false`.
+ * @return `true` if the key is okay for use with this instance, else `false`.
  */
-bool SortedDictType::is_type_key_type(PyObject* ob, bool raise = true)
+bool SortedDictType::validate_key_type(PyObject* key, bool raise = true)
 {
-    if (Py_IS_TYPE(ob, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0)
+    // There is scope for optimisation here. This check will always pass when
+    // something is inserted for the first time, so it can be skipped.
+    if (this->key_type == nullptr)
     {
-        return true;
-    }
-    if (raise)
-    {
-        PyObject* key_type_repr = PyObject_Repr(this->key_type);  // New reference.
-        if (key_type_repr == nullptr)
+        if (raise)
         {
-            return false;
+            PyErr_SetString(PyExc_RuntimeError, "key type cannot be validated; no items have been inserted");
         }
-        PyErr_Format(PyExc_TypeError, "key must be of type %s", PyUnicode_AsUTF8(key_type_repr));
-        Py_DECREF(key_type_repr);
+        return false;
     }
-    return false;
+
+    if (Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0)
+    {
+        if (raise)
+        {
+            PyObject* key_type_repr = PyObject_Repr(this->key_type);  // New reference.
+            if (key_type_repr == nullptr)
+            {
+                return false;
+            }
+            PyErr_Format(PyExc_TypeError, "key type must be %s", PyUnicode_AsUTF8(key_type_repr));
+            Py_DECREF(key_type_repr);
+        }
+        return false;
+    }
 }
 
 /**
