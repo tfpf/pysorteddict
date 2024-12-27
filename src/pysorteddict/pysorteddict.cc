@@ -124,7 +124,6 @@ bool SortedDictType::validate_key_type(PyObject* key, bool raise = true)
         }
         return false;
     }
-
     if (Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0)
     {
         if (raise)
@@ -139,17 +138,15 @@ bool SortedDictType::validate_key_type(PyObject* key, bool raise = true)
         }
         return false;
     }
+    return true;
 }
 
-/**
- * Check whether a key is present without checking the type of the key.
- *
- * @param ob Python object.
- *
- * @return 1 if it is present, else 0.
- */
 int SortedDictType::contains(PyObject* key)
 {
+    if (!this->validate_key_type(key, false))
+    {
+        return 0;
+    }
     if (this->map->find(key) == this->map->end())
     {
         return 0;
@@ -157,16 +154,12 @@ int SortedDictType::contains(PyObject* key)
     return 1;
 }
 
-/**
- * Find the value mapped to a key without checking the type of the key. If not
- * found, set a Python exception.
- *
- * @param key Key.
- *
- * @return Value if found, else `nullptr`.
- */
 PyObject* SortedDictType::getitem(PyObject* key)
 {
+    if (!this->validate_key_type(key))
+    {
+        return nullptr;
+    }
     auto it = this->map->find(key);
     if (it == this->map->end())
     {
@@ -176,25 +169,21 @@ PyObject* SortedDictType::getitem(PyObject* key)
     return Py_NewRef(it->second);
 }
 
-/**
- * Map a value to a key or remove a key-value pair without checking the type of
- * the key. If not removed when removal was requested, set a Python exception.
- *
- * @param key Key.
- * @param value Value.
- *
- * @return 0 if mapped or removed, else -1.
- */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
+    if (!this->validate_key_type(key))
+    {
+        return -1;
+    }
+
     // Insertion will be faster if the approximate location is known. Hence,
     // look for the nearest match.
     auto it = this->map->lower_bound(key);
     bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
 
-    // Remove the key-value pair.
     if (value == nullptr)
     {
+        // Remove the key-value pair.
         if (!found)
         {
             PyErr_SetObject(PyExc_KeyError, key);
@@ -404,10 +393,6 @@ static void sorted_dict_type_dealloc(PyObject* self)
 static int sorted_dict_type_contains(PyObject* self, PyObject* key)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    if (!sd->is_type_key_type(key, false))
-    {
-        return 0;
-    }
     return sd->contains(key);
 }
 
@@ -441,10 +426,6 @@ static Py_ssize_t sorted_dict_type_len(PyObject* self)
 static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    if (!sd->is_type_key_type(key))
-    {
-        return nullptr;
-    }
     return sd->getitem(key);
 }
 
@@ -454,10 +435,6 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* value)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    if (!sd->is_type_key_type(key))
-    {
-        return -1;
-    }
     return sd->setitem(key, value);
 }
 
