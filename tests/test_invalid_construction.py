@@ -2,6 +2,9 @@ import pytest
 
 from pysorteddict import SortedDict
 
+# Update and enable these tests once the constructor is updated to function the
+# same way the constructor of Python's native dictionary does.
+
 
 @pytest.mark.skip
 def test_no_arguments():
