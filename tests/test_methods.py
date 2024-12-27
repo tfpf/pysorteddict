@@ -26,7 +26,7 @@ class Resources:
         self.values = [self.gen() for _ in self.keys]
         self.normal_dict = dict(zip(self.keys, self.values, strict=True))
 
-        sorted_dict = SortedDict(self.key_type)
+        sorted_dict = SortedDict()
         for key, value in zip(self.keys, self.values, strict=True):
             sorted_dict[key] = value
         self.sorted_dicts = [sorted_dict, sorted_dict.copy()]
@@ -132,7 +132,7 @@ def test_contains_yes(resources, sorted_dict):
 def test_getitem_wrong_type(resources, sorted_dict):
     with pytest.raises(TypeError) as ctx:
         sorted_dict[resources.key_subtype()]
-    assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
+    assert ctx.value.args[0] == f"key type must be {resources.key_type!r}"
 
 
 def test_getitem_missing(resources, sorted_dict):
@@ -158,7 +158,7 @@ def test_getitem_found(resources, sorted_dict):
 def test_delitem_wrong_type(resources, sorted_dict):
     with pytest.raises(TypeError) as ctx:
         del sorted_dict[resources.key_subtype()]
-    assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
+    assert ctx.value.args[0] == f"key type must be {resources.key_type!r}"
 
 
 def test_delitem_missing(resources, sorted_dict):
@@ -186,7 +186,7 @@ def test_setitem_wrong_type(resources, sorted_dict):
     value = resources.gen()
     with pytest.raises(TypeError) as ctx:
         sorted_dict[resources.key_subtype()] = value
-    assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
+    assert ctx.value.args[0] == f"key type must be {resources.key_type!r}"
 
     if cpython:
         assert sys.getrefcount(value) == 2
