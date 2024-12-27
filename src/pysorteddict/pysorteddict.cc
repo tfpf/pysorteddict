@@ -79,7 +79,6 @@ struct SortedDictType
 
     void deinit(void);
     bool validate_key_type(PyObject*, bool);
-    bool is_type_key_type(PyObject*, bool);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
