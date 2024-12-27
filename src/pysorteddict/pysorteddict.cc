@@ -201,7 +201,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
         static PyTypeObject* allowed_key_types[] = {
             &PyLong_Type,
         };
-        PyTypeObject* key_type = reinterpret_cast<PyObject*>(Py_TYPE(key));
+        PyObject* key_type = reinterpret_cast<PyObject*>(Py_TYPE(key));
         for (auto allowed_key_type : allowed_key_types)
         {
             if (PyObject_RichCompareBool(reinterpret_cast<PyObject*>(allowed_key_type), key_type, Py_EQ) == 1)
