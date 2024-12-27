@@ -194,6 +194,29 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
+    if (this->key_type == nullptr)
+    {
+        // It is the first time something is being inserted. Set the key type
+        // member.
+        static PyTypeObject* allowed_key_types[] = {
+            &PyLong_Type,
+        };
+        PyTypeObject* key_type = Py_TYPE(key);
+        for (auto allowed_key_type : allowed_key_types)
+        {
+            if (PyObject_RichCompareBool(allowed_key_type, key_type, Py_EQ) == 1)
+            {
+                this->key_type = Py_NewRef(key_type);
+                break;
+            }
+        }
+        if (this->key_type == nullptr)
+        {
+            PyErr_SetString(PyExc_TypeError, "key type is unsupported");
+            return -1;
+        }
+    }
+
     if (!this->validate_key_type(key))
     {
         return -1;
