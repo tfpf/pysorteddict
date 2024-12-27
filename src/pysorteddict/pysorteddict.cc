@@ -141,6 +141,13 @@ bool SortedDictType::validate_key_type(PyObject* key, bool raise = true)
     return true;
 }
 
+/**
+ * Check whether a key is present.
+ *
+ * @param ob Python object.
+ *
+ * @return 1 if it is present, else 0.
+ */
 int SortedDictType::contains(PyObject* key)
 {
     if (!this->validate_key_type(key, false))
@@ -154,6 +161,13 @@ int SortedDictType::contains(PyObject* key)
     return 1;
 }
 
+/**
+ * Find the value mapped to a key. If not found, set a Python exception.
+ *
+ * @param key Key.
+ *
+ * @return Value if found, else `nullptr`.
+ */
 PyObject* SortedDictType::getitem(PyObject* key)
 {
     if (!this->validate_key_type(key))
@@ -169,6 +183,15 @@ PyObject* SortedDictType::getitem(PyObject* key)
     return Py_NewRef(it->second);
 }
 
+/**
+ * Map a value to a key or remove a key-value pair. If not removed when removal
+ * was requested, set a Python exception.
+ *
+ * @param key Key.
+ * @param value Value.
+ *
+ * @return 0 if mapped or removed, else -1.
+ */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
     if (!this->validate_key_type(key))
