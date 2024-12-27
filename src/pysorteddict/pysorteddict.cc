@@ -201,10 +201,10 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
         static PyTypeObject* allowed_key_types[] = {
             &PyLong_Type,
         };
-        PyTypeObject* key_type = Py_TYPE(key);
+        PyTypeObject* key_type = reinterpret_cast<PyObject*>(Py_TYPE(key));
         for (auto allowed_key_type : allowed_key_types)
         {
-            if (PyObject_RichCompareBool(allowed_key_type, key_type, Py_EQ) == 1)
+            if (PyObject_RichCompareBool(reinterpret_cast<PyObject*>(allowed_key_type), key_type, Py_EQ) == 1)
             {
                 this->key_type = Py_NewRef(key_type);
                 break;
@@ -383,28 +383,6 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
     // explicitly initialise them.
     this->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
     this->key_type = nullptr;
-
-    // Up to Python 3.12, the argument parser below took an array of pointers
-    // (with each pointer pointing to a C string) as its fourth argument.
-    // However, C++ does not allow converting a string constant to a pointer.
-    // Hence, I use a character array to construct the C string, and then place
-    // it in an array of pointers.
-    char arg_name[] = "key_type";
-    char* args_names[] = { arg_name, nullptr };
-    PyObject* key_type;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|", args_names, &key_type))
-    {
-        return -1;
-    }
-
-    // Check the type to use for keys.
-    if (PyObject_RichCompareBool(key_type, reinterpret_cast<PyObject*>(&PyLong_Type), Py_EQ) != 1)
-    {
-        PyErr_SetString(PyExc_TypeError, "constructor argument must be a supported type");
-        return -1;
-    }
-
-    this->key_type = Py_NewRef(key_type);
     return 0;
 }
 
