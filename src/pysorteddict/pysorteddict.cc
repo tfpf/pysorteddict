@@ -383,6 +383,7 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
     // explicitly initialise them.
     this->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
     this->key_type = nullptr;
+    // This is a stub. Will implement it later.
     return 0;
 }
 
