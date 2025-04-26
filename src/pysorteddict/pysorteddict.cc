@@ -5,6 +5,8 @@
 #include <memory>
 #include <string>
 
+#define LEFT_PARENTHESIS "\u0028"
+#define RIGHT_PARENTHESIS "\u0029"
 #define LEFT_CURLY_BRACKET "\u007B"
 #define RIGHT_CURLY_BRACKET "\u007D"
 
@@ -137,7 +139,7 @@ PyObject* SortedDictType::repr(void)
 {
     char const* delimiter = "";
     char const* actual_delimiter = ", ";
-    std::string this_repr = LEFT_CURLY_BRACKET;
+    std::string this_repr = "SortedDict" LEFT_PARENTHESIS LEFT_CURLY_BRACKET;
     for (auto& item : *this->map)
     {
         PyObjectWrapper key_repr(PyObject_Repr(item.first));  // 🆕
@@ -156,7 +158,7 @@ PyObject* SortedDictType::repr(void)
             .append(PyUnicode_AsUTF8(value_repr.get()));
         delimiter = actual_delimiter;
     }
-    this_repr.append(RIGHT_CURLY_BRACKET);
+    this_repr.append(RIGHT_CURLY_BRACKET).append(RIGHT_PARENTHESIS);
     return PyUnicode_FromStringAndSize(this_repr.data(), this_repr.size());  // 🆕
 }
 
