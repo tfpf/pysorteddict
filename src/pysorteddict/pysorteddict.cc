@@ -5,7 +5,7 @@
 #include <string>
 
 /**
- * An RAII-based Python object wrapper which, upon destruction, decrements the
+ * C++-style Python object wrapper which, upon destruction, decrements the
  * reference count of the underlying Python object. Meant for stringifying
  * Python objects without having to clean up the intermediate Python string
  * which has to be created.
