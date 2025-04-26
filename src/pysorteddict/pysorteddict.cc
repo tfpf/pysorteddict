@@ -321,14 +321,15 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    // Python's default allocator claims to initialise the contents of the
-    // allocated memory to null, but actually writes zeros to it. Hence,
-    // explicitly initialise them.
     PyObject* self = type->tp_alloc(type, 0);
     if (self == nullptr)
     {
         return nullptr;
     }
+
+    // Python's default allocator claims to initialise the contents of the
+    // allocated memory to null, but actually writes zeros to it. Hence,
+    // explicitly initialise them.
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     sd->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
     sd->key_type = nullptr;
