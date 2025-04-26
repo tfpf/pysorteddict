@@ -499,7 +499,7 @@ static PyTypeObject sorted_dict_type = {
     nullptr,                                // tp_getattro
     nullptr,                                // tp_setattro
     nullptr,                                // tp_as_buffer
-    Py_TPFLAGS_DICT_SUBCLASS,                     // tp_flags
+    Py_TPFLAGS_DEFAULT,                     // tp_flags
     sorted_dict_type_doc,                   // tp_doc
     nullptr,                                // tp_traverse
     nullptr,                                // tp_clear
