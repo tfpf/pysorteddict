@@ -54,10 +54,10 @@ struct SortedDictType
     bool is_key_type_set(bool);
     bool can_use_as_key(PyObject*, bool);
     bool are_key_type_and_key_valid(PyObject*, bool);
+    PyObject* repr(void);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
-    PyObject* str(void);
     PyObject* clear(void);
     PyObject* copy(void);
     int init(PyObject*, PyObject*);
@@ -131,6 +131,33 @@ bool SortedDictType::can_use_as_key(PyObject* ob, bool raise)
 bool SortedDictType::are_key_type_and_key_valid(PyObject* ob, bool raise = true)
 {
     return this->is_key_type_set(raise) && this->can_use_as_key(ob, raise);
+}
+
+PyObject* SortedDictType::repr(void)
+{
+    char const* delimiter = "";
+    char const* actual_delimiter = ", ";
+    std::string this_str = LEFT_CURLY_BRACKET;
+    for (auto& item : *this->map)
+    {
+        PyObjectWrapper key_str(PyObject_Repr(item.first));  // 🆕
+        if (key_str == nullptr)
+        {
+            return nullptr;
+        }
+        PyObjectWrapper value_str(PyObject_Repr(item.second));  // 🆕
+        if (value_str == nullptr)
+        {
+            return nullptr;
+        }
+        this_str.append(delimiter)
+            .append(PyUnicode_AsUTF8(key_str.get()))
+            .append(": ")
+            .append(PyUnicode_AsUTF8(value_str.get()));
+        delimiter = actual_delimiter;
+    }
+    this_str.append(RIGHT_CURLY_BRACKET);
+    return PyUnicode_FromStringAndSize(this_str.data(), this_str.size());  // 🆕
 }
 
 /**
@@ -239,33 +266,6 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     return 0;
 }
 
-PyObject* SortedDictType::str(void)
-{
-    char const* delimiter = "";
-    char const* actual_delimiter = ", ";
-    std::string this_str = LEFT_CURLY_BRACKET;
-    for (auto& item : *this->map)
-    {
-        PyObjectWrapper key_str(PyObject_Str(item.first));  // 🆕
-        if (key_str == nullptr)
-        {
-            return nullptr;
-        }
-        PyObjectWrapper value_str(PyObject_Str(item.second));  // 🆕
-        if (value_str == nullptr)
-        {
-            return nullptr;
-        }
-        this_str.append(delimiter)
-            .append(PyUnicode_AsUTF8(key_str.get()))
-            .append(": ")
-            .append(PyUnicode_AsUTF8(value_str.get()));
-        delimiter = actual_delimiter;
-    }
-    this_str.append(RIGHT_CURLY_BRACKET);
-    return PyUnicode_FromStringAndSize(this_str.data(), this_str.size());  // 🆕
-}
-
 PyObject* SortedDictType::clear(void)
 {
     for (auto& item : *this->map)
@@ -280,7 +280,7 @@ PyObject* SortedDictType::clear(void)
 PyObject* SortedDictType::copy(void)
 {
     PyTypeObject* type = Py_TYPE(this);
-    PyObject* sd_copy = type->tp_alloc(type, 0);  // New reference.
+    PyObject* sd_copy = type->tp_alloc(type, 0);  // 🆕
     if (sd_copy == nullptr)
     {
         return nullptr;
@@ -292,7 +292,7 @@ PyObject* SortedDictType::copy(void)
         Py_INCREF(item.first);
         Py_INCREF(item.second);
     }
-    this_copy->key_type = Py_XNewRef(this->key_type);
+    this_copy->key_type = Py_XNewRef(this->key_type);  // 🆕
     return sd_copy;
 }
 
@@ -306,7 +306,7 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    PyObject* self = type->tp_alloc(type, 0);
+    PyObject* self = type->tp_alloc(type, 0);  // 🆕
     if (self == nullptr)
     {
         return nullptr;
@@ -339,6 +339,15 @@ static void sorted_dict_type_dealloc(PyObject* self)
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     sd->deinit();
     Py_TYPE(self)->tp_free(self);
+}
+
+/**
+ * Stringify.
+ */
+static PyObject* sorted_dict_type_repr(PyObject* self)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->repr();
 }
 
 /**
@@ -399,15 +408,6 @@ static PyMappingMethods sorted_dict_type_mapping = {
     sorted_dict_type_setitem,  // mp_ass_subscript
 };
 // clang-format on
-
-/**
- * Stringify.
- */
-static PyObject* sorted_dict_type_str(PyObject* self)
-{
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->str();
-}
 
 PyDoc_STRVAR(
     sorted_dict_type_clear_doc,
@@ -487,13 +487,13 @@ static PyTypeObject sorted_dict_type = {
     nullptr,                                // tp_getattr
     nullptr,                                // tp_setattr
     nullptr,                                // tp_as_async
-    nullptr,                                // tp_repr
+    sorted_dict_type_repr,                  // tp_repr
     nullptr,                                // tp_as_number
     &sorted_dict_type_sequence,             // tp_as_sequence
     &sorted_dict_type_mapping,              // tp_as_mapping
     PyObject_HashNotImplemented,            // tp_hash
     nullptr,                                // tp_call
-    sorted_dict_type_str,                   // tp_str
+    null,                                   // tp_str
     nullptr,                                // tp_getattro
     nullptr,                                // tp_setattro
     nullptr,                                // tp_as_buffer
