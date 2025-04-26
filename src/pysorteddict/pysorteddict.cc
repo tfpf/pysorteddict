@@ -5,47 +5,38 @@
 #include <string>
 
 /**
- * Convert a Python object into a C++ string.
+ * An RAII-based Python object wrapper which, upon destruction, decrements the
+ * reference count of the underlying Python object. Meant for stringifying
+ * Python objects without having to clean up the intermediate Python string
+ * which has to be created.
+ */
+class PyObjectWrapper
+{
+private:
+    PyObject* ob;
+
+public:
+    PyObjectWrapper(PyObject*);
+    ~PyObjectWrapper();
+};
+
+/**
+ * Constructor. Store the given Python object without incrementing its
+ * reference count.
  *
  * @param ob Python object.
- * @param stringifier Function to use to obtain the intermediate Python string.
- *
- * @return C++ string if successful, else empty string.
  */
-std::string to_string(PyObject* ob, PyObject* (*stringifier)(PyObject*))
+PyObjectWrapper::PyObjectWrapper(PyObject* ob)
 {
-    PyObject* unicode = stringifier(ob);  // New reference.
-    if (unicode == nullptr)
-    {
-        return "";
-    }
-    std::string result = PyUnicode_AsUTF8(unicode);
-    Py_DECREF(unicode);
-    return result;
+    this->ob = ob;
 }
 
 /**
- * Obtain the Python representation of a Python object.
- *
- * @param ob Python object.
- *
- * @return C++ string if successful, else empty string.
+ * Destructor. Decrement the reference count of the stored Python object.
  */
-std::string repr(PyObject* ob)
+PyObjectWrapper::~PyObjectWrapper()
 {
-    return to_string(ob, PyObject_Repr);
-}
-
-/**
- * Obtain a human-readable string representation of a Python object.
- *
- * @param ob Python object.
- *
- * @return C++ string if successful, else empty string.
- */
-std::string str(PyObject* ob)
-{
-    return to_string(ob, PyObject_Str);
+    Py_XDECREF(this->ob);
 }
 
 /**
