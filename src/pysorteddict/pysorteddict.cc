@@ -78,7 +78,9 @@ struct SortedDictType
     PyObject* key_type;
 
     void deinit(void);
-    bool validate_key_type(PyObject*, bool);
+    bool is_key_type_set(bool);
+    bool can_use_as_key(PyObject*, bool);
+    bool are_key_type_and_key_valid(PyObject*, bool);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
@@ -101,33 +103,61 @@ void SortedDictType::deinit(void)
 }
 
 /**
- * Check whether the key type of this sorted dictionary is set. Also check
- * whether the given Python object has the correct type for use as a key in it.
+ * Check whether the key type of this sorted dictionary is set.
  *
- * @param ob Python object.
- * @param raise Whether to set a Python exception if the type is wrong.
+ * @param raise Whether to set a Python exception if the check fails.
  *
  * @return `true` if the check succeeds, else `false`.
  */
-bool SortedDictType::validate_key_type(PyObject* ob, bool raise = true)
+bool SortedDictType::is_key_type_set(bool raise)
 {
-    if (this->key_type == nullptr)
+    if (this->key_type != nullptr)
     {
-        if (raise)
-        {
-            PyErr_SetString(PyExc_ValueError, "key type not set; no items have been inserted");
-        }
-        return false;
+        return true;
     }
-    if (Py_IS_TYPE(ob, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0)
+    if (raise)
     {
-        if (raise)
-        {
-            PyErr_SetString(PyExc_TypeError, "key is of the wrong type");
-        }
-        return false;
+        PyErr_SetString(PyExc_ValueError, "key type not set");
     }
-    return true;
+    return false;
+}
+
+/**
+ * Check whether the given object can be used as a key in this sorted
+ * dictionary.
+ *
+ * The caller must ensure that the key type of this sorted dictionary is set
+ * prior to calling this method.
+ *
+ * @param raise Whether to set a Python exception if the check fails.
+ *
+ * @return `true` if the check succeeds, else `false`.
+ */
+bool SortedDictType::can_use_as_key(PyObject* ob, bool raise)
+{
+    if (Py_IS_TYPE(ob, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0)
+    {
+        return true;
+    }
+    if (raise)
+    {
+        PyErr_SetString(PyExc_TypeError, "key is of wrong type");
+    }
+    return false;
+}
+
+/**
+ * Check whether the key type of this sorted dictionary is set and whether the
+ * given object can be used as a key in this sorted dictionary.
+ *
+ * @param ob Python object.
+ * @param raise Whether to set a Python exception if the check fails.
+ *
+ * @return `true` if the check succeeds, else `false`.
+ */
+bool SortedDictType::are_key_type_and_key_valid(PyObject* ob, bool raise = true)
+{
+    return this->is_key_type_set(raise) && this->can_use_as_key(ob, raise);
 }
 
 /**
@@ -139,7 +169,7 @@ bool SortedDictType::validate_key_type(PyObject* ob, bool raise = true)
  */
 int SortedDictType::contains(PyObject* key)
 {
-    if (!this->validate_key_type(key, false) || this->map->find(key) == this->map->end())
+    if (!this->are_key_type_and_key_valid(key, false) || this->map->find(key) == this->map->end())
     {
         return 0;
     }
@@ -156,7 +186,7 @@ int SortedDictType::contains(PyObject* key)
  */
 PyObject* SortedDictType::getitem(PyObject* key)
 {
-    if (!this->validate_key_type(key))
+    if (!this->are_key_type_and_key_valid(key))
     {
         return nullptr;
     }
@@ -181,7 +211,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
-    if (!this->validate_key_type(key))
+    if (!this->are_key_type_and_key_valid(key))
     {
         return -1;
     }
