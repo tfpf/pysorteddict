@@ -486,8 +486,8 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
 
 PyDoc_STRVAR(
     sorted_dict_type_doc,
-    "SortedDict() -> SortedDict\n"
-    "Create a new sorted dictionary."
+    "SortedDict(*args, **kwargs) -> SortedDict\n"
+    "Create an empty sorted dictionary."
 );
 
 // clang-format off
