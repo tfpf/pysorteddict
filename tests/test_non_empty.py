@@ -21,7 +21,7 @@ class Resources:
         self.key_type = key_type
         self.available_types = {bytes, complex, float, frozenset, int, str, tuple}
         self.available_types.add(type("sub" + self.key_type.__name__, (self.key_type,), {}))
-        self.wrong_types = self.available_types.difference(self.key_type)
+        self.wrong_types = self.available_types.difference({self.key_type})
 
         self.rg = random.Random(__name__)
         self.keys = [self.gen() for _ in range(1000)]
@@ -227,3 +227,9 @@ def test_clear(resources, sorted_dict):
     if cpython:
         resources.keys_refcounts = [3] * len(resources.keys)
         resources.values_refcounts = [3] * len(resources.values)
+
+
+def test_empty_sorted_dictionary(resources, sorted_dict):
+    sorted_dict = SortedDict()
+    for available_type in resources.available_types:
+        assert available_type() not in sorted_dict
