@@ -115,7 +115,7 @@ bool SortedDictType::validate_key_type(PyObject* ob, bool raise = true)
     {
         if (raise)
         {
-            PyErr_SetString(PyExc_ValueError, "key type not set because no items have been inserted");
+            PyErr_SetString(PyExc_ValueError, "key type not set; no items have been inserted");
         }
         return false;
     }
