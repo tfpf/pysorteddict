@@ -111,15 +111,18 @@ void SortedDictType::deinit(void)
  */
 bool SortedDictType::validate_key_type(PyObject* ob, bool raise = true)
 {
-    if(this->key_type == nullptr){
-        if(raise){
+    if (this->key_type == nullptr)
+    {
+        if (raise)
+        {
             PyErr_SetString(PyExc_ValueError, "key type not set because no items have been inserted");
         }
         return false;
     }
     if (Py_IS_TYPE(ob, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0)
     {
-        if(raise){
+        if (raise)
+        {
             PyErr_SetString(PyExc_TypeError, "key is of the wrong type");
         }
         return false;
@@ -136,7 +139,8 @@ bool SortedDictType::validate_key_type(PyObject* ob, bool raise = true)
  */
 int SortedDictType::contains(PyObject* key)
 {
-    if(!this->validate_key_type(key, false) || this->map->find(key) == this->map->end()){
+    if (!this->validate_key_type(key, false) || this->map->find(key) == this->map->end())
+    {
         return 0;
     }
     return 1;
@@ -152,7 +156,8 @@ int SortedDictType::contains(PyObject* key)
  */
 PyObject* SortedDictType::getitem(PyObject* key)
 {
-    if(!this->validate_key_type(key)){
+    if (!this->validate_key_type(key))
+    {
         return nullptr;
     }
     auto it = this->map->find(key);
@@ -176,7 +181,8 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
-    if(!this->validate_key_type(key)){
+    if (!this->validate_key_type(key))
+    {
         return -1;
     }
 
