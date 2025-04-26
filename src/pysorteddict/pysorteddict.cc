@@ -215,7 +215,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
         PyObject* key_type = reinterpret_cast<PyObject*>(Py_TYPE(key));
         if (PyObject_RichCompareBool(key_type, reinterpret_cast<PyObject*>(&PyLong_Type), Py_EQ) != 1)
         {
-            PyErr_SetString(PyExc_TypeError, "unsupported type");
+            PyErr_SetString(PyExc_TypeError, "unsupported key type");
             return -1;
         }
         this->key_type = Py_NewRef(key_type);
