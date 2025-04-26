@@ -5,39 +5,15 @@
 #include <string>
 
 /**
- * C++-style Python object wrapper which, upon destruction, decrements the
- * reference count of the underlying Python object. Meant for stringifying
- * Python objects without having to clean up the intermediate Python string
- * which has to be created.
+ * C++-style clean-up implementation for Python objects.
  */
-class PyObjectWrapper
-{
-private:
-    PyObject* ob;
-
-public:
-    PyObjectWrapper(PyObject*);
-    ~PyObjectWrapper();
+struct PyObject_Delete{
+    void operator()(PyObject*ob){
+        Py_XDECREF(ob);
+    }
 };
 
-/**
- * Constructor. Store the given Python object without incrementing its
- * reference count.
- *
- * @param ob Python object.
- */
-PyObjectWrapper::PyObjectWrapper(PyObject* ob)
-{
-    this->ob = ob;
-}
-
-/**
- * Destructor. Decrement the reference count of the stored Python object.
- */
-PyObjectWrapper::~PyObjectWrapper()
-{
-    Py_XDECREF(this->ob);
-}
+using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
 
 /**
  * C++-style comparison implementation for Python objects.
@@ -264,7 +240,7 @@ PyObject* SortedDictType::str(void)
     std::string this_str = "\x7b";
     for (auto& item : *this->map)
     {
-        PyObject* key_str = PyObject_Str(item.first);  // New reference.
+        PyObjectWrapper key_str(PyObject_Str(item.first)); // Fresh reference.
         if (key_str == nullptr)
         {
             return nullptr;
