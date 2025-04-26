@@ -98,7 +98,7 @@ def sorted_dict(request, resources):
 
     # Tearing down: verify some non-mutating methods.
     assert len(sorted_dict) == len(resources.normal_dict)
-    assert str(sorted_dict) == "SortedDict(" + str(dict(sorted(resources.normal_dict.items()))) + ")"
+    assert str(sorted_dict) == f"SortedDict({dict(sorted(resources.normal_dict.items()))})"
 
 
 # Run each test with each key type, and on the sorted dictionary and its copy.
