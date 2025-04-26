@@ -94,13 +94,10 @@ struct SortedDictType
 void SortedDictType::deinit(void)
 {
     Py_XDECREF(this->key_type);
-    if (this->map != nullptr)
+    for (auto& item : *this->map)
     {
-        for (auto& item : *this->map)
-        {
-            Py_DECREF(item.first);
-            Py_DECREF(item.second);
-        }
+        Py_DECREF(item.first);
+        Py_DECREF(item.second);
     }
     delete this->map;
 }
@@ -316,17 +313,26 @@ PyObject* SortedDictType::copy(void)
 
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
 {
-    // Python's default allocator claims to initialise the contents of the
-    // allocated memory to null, but actually writes zeros to it. Hence,
-    // explicitly initialise them.
-    this->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
-    this->key_type = nullptr;
+    // All initialisation is done immediately after allocation in order to
+    // avoid leaving essential members uninitialised. This method is kept to
+    // allow adding functionality in the future.
     return 0;
 }
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    return type->tp_alloc(type, 0);
+    // Python's default allocator claims to initialise the contents of the
+    // allocated memory to null, but actually writes zeros to it. Hence,
+    // explicitly initialise them.
+    PyObject* self = type->tp_alloc(type, 0);
+    if (self == nullptr)
+    {
+        return nullptr;
+    }
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    sd->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
+    sd->key_type = nullptr;
+    return self;
 }
 
 /******************************************************************************
