@@ -19,7 +19,11 @@ class Resources:
 
     def __init__(self, key_type: type):
         self.key_type = key_type
-        self.wrong_types = {bytes, complex, float, frozenset, int, str, tuple, type("sub" + self.key_type.__name__, (self.key_type,), {})} - {self.key_type}
+        self.wrong_types = (
+            {bytes, complex, float, frozenset, int, str, tuple}
+            - {self.key_type}
+            + {type("sub" + self.key_type.__name__, (self.key_type,), {})}
+        )
 
         self.rg = random.Random(__name__)
         self.keys = [self.gen() for _ in range(1000)]
@@ -187,7 +191,7 @@ def test_setitem_wrong_type(resources, sorted_dict):
     for wrong_type in resources.wrong_types:
         with pytest.raises(TypeError) as ctx:
             sorted_dict[wrong_type()] = value
-        assert ctx.value.args == ('key is of wrong type',)
+        assert ctx.value.args == ("key is of wrong type",)
 
     if cpython:
         assert sys.getrefcount(value) == 2
