@@ -66,12 +66,12 @@ struct SortedDictType
 
 void SortedDictType::deinit(void)
 {
-    Py_XDECREF(this->key_type);
     for (auto& item : *this->map)
     {
         Py_DECREF(item.first);
         Py_DECREF(item.second);
     }
+    Py_XDECREF(this->key_type);
     delete this->map;
 }
 
@@ -497,7 +497,7 @@ static PyTypeObject sorted_dict_type = {
     nullptr,                                // tp_getattro
     nullptr,                                // tp_setattro
     nullptr,                                // tp_as_buffer
-    Py_TPFLAGS_DEFAULT,                     // tp_flags
+    Py_TPFLAGS_DICT_SUBCLASS,                     // tp_flags
     sorted_dict_type_doc,                   // tp_doc
     nullptr,                                // tp_traverse
     nullptr,                                // tp_clear
