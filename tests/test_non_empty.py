@@ -19,11 +19,9 @@ class Resources:
 
     def __init__(self, key_type: type):
         self.key_type = key_type
-        self.wrong_types = (
-            {bytes, complex, float, frozenset, int, str, tuple}
-            - {self.key_type}
-            + {type("sub" + self.key_type.__name__, (self.key_type,), {})}
-        )
+        self.available_types = {bytes, complex, float, frozenset, int, str, tuple}
+        self.available_types.add(type("sub" + self.key_type.__name__, (self.key_type,), {}))
+        self.wrong_types = self.available_types.difference(self.key_type)
 
         self.rg = random.Random(__name__)
         self.keys = [self.gen() for _ in range(1000)]
