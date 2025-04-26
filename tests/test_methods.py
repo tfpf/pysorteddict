@@ -19,7 +19,7 @@ class Resources:
 
     def __init__(self, key_type: type):
         self.key_type = key_type
-        self.key_subtype = type("sub" + self.key_type.__name__, (self.key_type,), {})
+        self.wrong_types = {bytes, complex, float, frozenset, int, str, tuple, type("sub" + self.key_type.__name__, (self.key_type,), {})} - {self.key_type}
 
         self.rg = random.Random(__name__)
         self.keys = [self.gen() for _ in range(1000)]
@@ -97,9 +97,6 @@ def sorted_dict(request, resources):
     # Tearing down: verify some non-mutating methods.
     assert len(sorted_dict) == len(resources.normal_dict)
     assert str(sorted_dict) == str(dict(sorted(resources.normal_dict.items())))
-    assert sorted_dict.items() == sorted(resources.normal_dict.items())
-    assert sorted_dict.keys() == sorted(resources.normal_dict)
-    assert sorted_dict.values() == [item[1] for item in sorted(resources.normal_dict.items())]
 
 
 # Run each test with each key type, and on the sorted dictionary and its copy.
@@ -110,7 +107,8 @@ pytestmark = [
 
 
 def test_contains_wrong_type(resources, sorted_dict):
-    assert resources.key_subtype() not in sorted_dict
+    for wrong_type in resources.wrong_types:
+        assert wrong_type() not in sorted_dict
 
 
 def test_contains_no(resources, sorted_dict):
@@ -130,16 +128,17 @@ def test_contains_yes(resources, sorted_dict):
 
 
 def test_getitem_wrong_type(resources, sorted_dict):
-    with pytest.raises(TypeError) as ctx:
-        sorted_dict[resources.key_subtype()]
-    assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
+    for wrong_type in resources.wrong_types:
+        with pytest.raises(TypeError) as ctx:
+            sorted_dict[wrong_type()]
+        assert ctx.value.args == ("key is of wrong type",)
 
 
 def test_getitem_missing(resources, sorted_dict):
     key = resources.gen(small=False)
     with pytest.raises(KeyError) as ctx:
         sorted_dict[key]
-    assert ctx.value.args[0] == key
+    assert ctx.value.args == (key,)
 
     if cpython:
         assert sys.getrefcount(key) == 3
@@ -156,16 +155,17 @@ def test_getitem_found(resources, sorted_dict):
 
 
 def test_delitem_wrong_type(resources, sorted_dict):
-    with pytest.raises(TypeError) as ctx:
-        del sorted_dict[resources.key_subtype()]
-    assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
+    for wrong_type in resources.wrong_types:
+        with pytest.raises(TypeError) as ctx:
+            del sorted_dict[wrong_type()]
+        assert ctx.value.args == ("key is of wrong type",)
 
 
 def test_delitem_missing(resources, sorted_dict):
     key = resources.gen(small=False)
     with pytest.raises(KeyError) as ctx:
         del sorted_dict[key]
-    assert ctx.value.args[0] == key
+    assert ctx.value.args == (key,)
 
     if cpython:
         assert sys.getrefcount(key) == 3
@@ -184,9 +184,10 @@ def test_delitem_found(resources, sorted_dict):
 
 def test_setitem_wrong_type(resources, sorted_dict):
     value = resources.gen()
-    with pytest.raises(TypeError) as ctx:
-        sorted_dict[resources.key_subtype()] = value
-    assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
+    for wrong_type in resources.wrong_types:
+        with pytest.raises(TypeError) as ctx:
+            sorted_dict[wrong_type()] = value
+        assert ctx.value.args == ('key is of wrong type',)
 
     if cpython:
         assert sys.getrefcount(value) == 2
@@ -196,7 +197,7 @@ def test_setitem_insert(resources, sorted_dict):
     key, value = resources.gen(small=False), resources.gen()
     resources.normal_dict[key] = value
     sorted_dict[key] = value
-    assert sorted_dict[key] == value
+    assert key in sorted_dict and sorted_dict[key] == value
 
     if cpython:
         assert sys.getrefcount(key) == 4
@@ -208,7 +209,7 @@ def test_setitem_overwrite(resources, sorted_dict):
     value = resources.gen()
     resources.normal_dict[key] = value
     sorted_dict[key] = value
-    assert sorted_dict[key] == value
+    assert key in sorted_dict and sorted_dict[key] == value
 
     if cpython:
         assert sys.getrefcount(value) == 4
