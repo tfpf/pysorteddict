@@ -553,7 +553,7 @@ PyMODINIT_FUNC PyInit_pysorteddict(void)
     {
         return nullptr;
     }
-    PyObject* mod = PyModule_Create(&sorted_dict_module);  // New reference.
+    PyObject* mod = PyModule_Create(&sorted_dict_module);  // 🆕
     if (mod == nullptr)
     {
         return nullptr;
