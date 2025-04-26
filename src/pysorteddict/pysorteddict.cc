@@ -2,6 +2,7 @@
 #include <Python.h>
 #include <iterator>
 #include <map>
+#include <memory>
 #include <string>
 
 /**
