@@ -94,10 +94,13 @@ struct SortedDictType
 void SortedDictType::deinit(void)
 {
     Py_XDECREF(this->key_type);
-    for (auto& item : *this->map)
+    if (this->map != nullptr)
     {
-        Py_DECREF(item.first);
-        Py_DECREF(item.second);
+        for (auto& item : *this->map)
+        {
+            Py_DECREF(item.first);
+            Py_DECREF(item.second);
+        }
     }
     delete this->map;
 }
@@ -177,8 +180,7 @@ int SortedDictType::contains(PyObject* key)
 }
 
 /**
- * Find the value mapped to a key. If the key is invalid or not found, set a
- * Python exception.
+ * Find the value mapped to a key. On failure, set a Python exception.
  *
  * @param key Key.
  *
@@ -200,14 +202,13 @@ PyObject* SortedDictType::getitem(PyObject* key)
 }
 
 /**
- * Map a value to a key or remove a key-value pair. If the key is invalid or
- * if, when removal was requested, removal was unsuccessful, set a Python
+ * Map a value to a key or remove a key-value pair. On failure, set a Python
  * exception.
  *
  * @param key Key.
  * @param value Value.
  *
- * @return 0 if mapped or removed, else -1.
+ * @return 0 if a key-value pair was inserted or removed, else -1.
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
