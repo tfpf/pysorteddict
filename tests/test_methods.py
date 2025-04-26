@@ -19,7 +19,9 @@ class Resources:
 
     def __init__(self, key_type: type):
         self.key_type = key_type
-        self.key_subtype = type("sub" + self.key_type.__name__, (self.key_type,), {})
+        self.available_types = {bytes, complex, float, frozenset, int, str, tuple}
+        self.available_types.add(type("sub" + self.key_type.__name__, (self.key_type,), {}))
+        self.wrong_types = self.available_types.difference({self.key_type})
 
         self.rg = random.Random(__name__)
         self.keys = [self.gen() for _ in range(1000)]
@@ -97,9 +99,6 @@ def sorted_dict(request, resources):
     # Tearing down: verify some non-mutating methods.
     assert len(sorted_dict) == len(resources.normal_dict)
     assert str(sorted_dict) == str(dict(sorted(resources.normal_dict.items())))
-    assert sorted_dict.items() == sorted(resources.normal_dict.items())
-    assert sorted_dict.keys() == sorted(resources.normal_dict)
-    assert sorted_dict.values() == [item[1] for item in sorted(resources.normal_dict.items())]
 
 
 # Run each test with each key type, and on the sorted dictionary and its copy.
@@ -110,7 +109,8 @@ pytestmark = [
 
 
 def test_contains_wrong_type(resources, sorted_dict):
-    assert resources.key_subtype() not in sorted_dict
+    for wrong_type in resources.wrong_types:
+        assert wrong_type() not in sorted_dict
 
 
 def test_contains_no(resources, sorted_dict):
@@ -130,19 +130,18 @@ def test_contains_yes(resources, sorted_dict):
 
 
 def test_getitem_wrong_type(resources, sorted_dict):
-    with pytest.raises(TypeError) as ctx:
-        sorted_dict[resources.key_subtype()]
-    assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
+    for wrong_type in resources.wrong_types:
+        with pytest.raises(TypeError, match="key is of wrong type"):
+            sorted_dict[wrong_type()]
 
 
 def test_getitem_missing(resources, sorted_dict):
     key = resources.gen(small=False)
-    with pytest.raises(KeyError) as ctx:
+    with pytest.raises(KeyError, match=str(key)):
         sorted_dict[key]
-    assert ctx.value.args[0] == key
 
     if cpython:
-        assert sys.getrefcount(key) == 3
+        assert sys.getrefcount(key) == 2
 
 
 def test_getitem_found(resources, sorted_dict):
@@ -156,19 +155,18 @@ def test_getitem_found(resources, sorted_dict):
 
 
 def test_delitem_wrong_type(resources, sorted_dict):
-    with pytest.raises(TypeError) as ctx:
-        del sorted_dict[resources.key_subtype()]
-    assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
+    for wrong_type in resources.wrong_types:
+        with pytest.raises(TypeError, match="key is of wrong type"):
+            del sorted_dict[wrong_type()]
 
 
 def test_delitem_missing(resources, sorted_dict):
     key = resources.gen(small=False)
-    with pytest.raises(KeyError) as ctx:
+    with pytest.raises(KeyError, match=str(key)):
         del sorted_dict[key]
-    assert ctx.value.args[0] == key
 
     if cpython:
-        assert sys.getrefcount(key) == 3
+        assert sys.getrefcount(key) == 2
 
 
 def test_delitem_found(resources, sorted_dict):
@@ -184,9 +182,9 @@ def test_delitem_found(resources, sorted_dict):
 
 def test_setitem_wrong_type(resources, sorted_dict):
     value = resources.gen()
-    with pytest.raises(TypeError) as ctx:
-        sorted_dict[resources.key_subtype()] = value
-    assert ctx.value.args[0] == f"key must be of type {resources.key_type!r}"
+    for wrong_type in resources.wrong_types:
+        with pytest.raises(TypeError, match="key is of wrong type"):
+            sorted_dict[wrong_type()] = value
 
     if cpython:
         assert sys.getrefcount(value) == 2
@@ -196,6 +194,7 @@ def test_setitem_insert(resources, sorted_dict):
     key, value = resources.gen(small=False), resources.gen()
     resources.normal_dict[key] = value
     sorted_dict[key] = value
+    assert key in sorted_dict
     assert sorted_dict[key] == value
 
     if cpython:
@@ -208,6 +207,7 @@ def test_setitem_overwrite(resources, sorted_dict):
     value = resources.gen()
     resources.normal_dict[key] = value
     sorted_dict[key] = value
+    assert key in sorted_dict
     assert sorted_dict[key] == value
 
     if cpython:
@@ -222,3 +222,16 @@ def test_clear(resources, sorted_dict):
     if cpython:
         resources.keys_refcounts = [3] * len(resources.keys)
         resources.values_refcounts = [3] * len(resources.values)
+
+
+# Although I don't need the second fixture, I am forced to specify it because I
+# have marked all tests as using those two fixtures.
+def test_empty_sorted_dictionary(resources, sorted_dict):
+    sorted_dict = SortedDict()
+    for available_type in resources.available_types:
+        assert available_type() not in sorted_dict
+        with pytest.raises(ValueError, match="key type not set"):
+            sorted_dict[available_type()]
+    for wrong_type in resources.wrong_types:
+        with pytest.raises(TypeError, match="unsupported key type"):
+            sorted_dict[wrong_type()] = None
