@@ -137,27 +137,27 @@ PyObject* SortedDictType::repr(void)
 {
     char const* delimiter = "";
     char const* actual_delimiter = ", ";
-    std::string this_str = LEFT_CURLY_BRACKET;
+    std::string this_repr = LEFT_CURLY_BRACKET;
     for (auto& item : *this->map)
     {
-        PyObjectWrapper key_str(PyObject_Repr(item.first));  // 🆕
-        if (key_str == nullptr)
+        PyObjectWrapper key_repr(PyObject_Repr(item.first));  // 🆕
+        if (key_repr == nullptr)
         {
             return nullptr;
         }
-        PyObjectWrapper value_str(PyObject_Repr(item.second));  // 🆕
-        if (value_str == nullptr)
+        PyObjectWrapper value_repr(PyObject_Repr(item.second));  // 🆕
+        if (value_repr == nullptr)
         {
             return nullptr;
         }
-        this_str.append(delimiter)
-            .append(PyUnicode_AsUTF8(key_str.get()))
+        this_repr.append(delimiter)
+            .append(PyUnicode_AsUTF8(key_repr.get()))
             .append(": ")
-            .append(PyUnicode_AsUTF8(value_str.get()));
+            .append(PyUnicode_AsUTF8(value_repr.get()));
         delimiter = actual_delimiter;
     }
-    this_str.append(RIGHT_CURLY_BRACKET);
-    return PyUnicode_FromStringAndSize(this_str.data(), this_str.size());  // 🆕
+    this_repr.append(RIGHT_CURLY_BRACKET);
+    return PyUnicode_FromStringAndSize(this_repr.data(), this_repr.size());  // 🆕
 }
 
 /**
