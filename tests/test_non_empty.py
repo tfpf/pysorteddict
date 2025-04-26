@@ -229,7 +229,16 @@ def test_clear(resources, sorted_dict):
         resources.values_refcounts = [3] * len(resources.values)
 
 
+# Although I don't need the second fixture, I am forced to specify it because I
+# have marked all tests as using those two fixtures.
 def test_empty_sorted_dictionary(resources, sorted_dict):
     sorted_dict = SortedDict()
     for available_type in resources.available_types:
         assert available_type() not in sorted_dict
+        with pytest.raises(ValueError) as ctx:
+            sorted_dict[available_type()]
+        assert ctx.value.args == ('key type not set',)
+    for wrong_type in resources.wrong_types:
+        with pytest.raises(TypeError) as ctx:
+            sorted_dict[wrong_type()] = None
+        assert ctx.value.args == ("unsupported key type",)
