@@ -197,7 +197,8 @@ def test_setitem_insert(resources, sorted_dict):
     key, value = resources.gen(small=False), resources.gen()
     resources.normal_dict[key] = value
     sorted_dict[key] = value
-    assert key in sorted_dict and sorted_dict[key] == value
+    assert key in sorted_dict
+    assert sorted_dict[key] == value
 
     if cpython:
         assert sys.getrefcount(key) == 4
@@ -209,7 +210,8 @@ def test_setitem_overwrite(resources, sorted_dict):
     value = resources.gen()
     resources.normal_dict[key] = value
     sorted_dict[key] = value
-    assert key in sorted_dict and sorted_dict[key] == value
+    assert key in sorted_dict
+    assert sorted_dict[key] == value
 
     if cpython:
         assert sys.getrefcount(value) == 4
