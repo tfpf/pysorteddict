@@ -131,16 +131,14 @@ def test_contains_yes(resources, sorted_dict):
 
 def test_getitem_wrong_type(resources, sorted_dict):
     for wrong_type in resources.wrong_types:
-        with pytest.raises(TypeError) as ctx:
+        with pytest.raises(TypeError, match="key is of wrong type") as ctx:
             sorted_dict[wrong_type()]
-        assert ctx.value.args == ("key is of wrong type",)
 
 
 def test_getitem_missing(resources, sorted_dict):
     key = resources.gen(small=False)
-    with pytest.raises(KeyError) as ctx:
+    with pytest.raises(KeyError, match=str(key)) as ctx:
         sorted_dict[key]
-    assert ctx.value.args == (key,)
 
     if cpython:
         assert sys.getrefcount(key) == 3
@@ -158,16 +156,14 @@ def test_getitem_found(resources, sorted_dict):
 
 def test_delitem_wrong_type(resources, sorted_dict):
     for wrong_type in resources.wrong_types:
-        with pytest.raises(TypeError) as ctx:
+        with pytest.raises(TypeError, match="key is of wrong type") as ctx:
             del sorted_dict[wrong_type()]
-        assert ctx.value.args == ("key is of wrong type",)
 
 
 def test_delitem_missing(resources, sorted_dict):
     key = resources.gen(small=False)
-    with pytest.raises(KeyError) as ctx:
+    with pytest.raises(KeyError, match=str(key)) as ctx:
         del sorted_dict[key]
-    assert ctx.value.args == (key,)
 
     if cpython:
         assert sys.getrefcount(key) == 3
@@ -187,9 +183,8 @@ def test_delitem_found(resources, sorted_dict):
 def test_setitem_wrong_type(resources, sorted_dict):
     value = resources.gen()
     for wrong_type in resources.wrong_types:
-        with pytest.raises(TypeError) as ctx:
+        with pytest.raises(TypeError, match="key is of wrong type") as ctx:
             sorted_dict[wrong_type()] = value
-        assert ctx.value.args == ("key is of wrong type",)
 
     if cpython:
         assert sys.getrefcount(value) == 2
@@ -235,10 +230,8 @@ def test_empty_sorted_dictionary(resources, sorted_dict):
     sorted_dict = SortedDict()
     for available_type in resources.available_types:
         assert available_type() not in sorted_dict
-        with pytest.raises(ValueError) as ctx:
+        with pytest.raises(ValueError, match="key type not set") as ctx:
             sorted_dict[available_type()]
-        assert ctx.value.args == ('key type not set',)
     for wrong_type in resources.wrong_types:
-        with pytest.raises(TypeError) as ctx:
+        with pytest.raises(TypeError, match="unsupported key type") as ctx:
             sorted_dict[wrong_type()] = None
-        assert ctx.value.args == ("unsupported key type",)
