@@ -493,7 +493,7 @@ static PyTypeObject sorted_dict_type = {
     &sorted_dict_type_mapping,              // tp_as_mapping
     PyObject_HashNotImplemented,            // tp_hash
     nullptr,                                // tp_call
-    null,                                   // tp_str
+    nullptr,                                // tp_str
     nullptr,                                // tp_getattro
     nullptr,                                // tp_setattro
     nullptr,                                // tp_as_buffer
