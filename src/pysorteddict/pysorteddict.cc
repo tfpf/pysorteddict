@@ -7,8 +7,10 @@
 /**
  * C++-style clean-up implementation for Python objects.
  */
-struct PyObject_Delete{
-    void operator()(PyObject*ob){
+struct PyObject_Delete
+{
+    void operator()(PyObject* ob)
+    {
         Py_XDECREF(ob);
     }
 };
@@ -240,7 +242,7 @@ PyObject* SortedDictType::str(void)
     std::string this_str = "\x7b";
     for (auto& item : *this->map)
     {
-        PyObjectWrapper key_str(PyObject_Str(item.first)); // Fresh reference.
+        PyObjectWrapper key_str(PyObject_Str(item.first));  // Fresh reference.
         if (key_str == nullptr)
         {
             return nullptr;
