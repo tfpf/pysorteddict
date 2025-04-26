@@ -5,6 +5,9 @@
 #include <memory>
 #include <string>
 
+#define LEFT_CURLY_BRACKET "\u007B"
+#define RIGHT_CURLY_BRACKET "\u007D"
+
 /**
  * C++-style clean-up implementation for Python objects.
  */
@@ -240,27 +243,27 @@ PyObject* SortedDictType::str(void)
 {
     char const* delimiter = "";
     char const* actual_delimiter = ", ";
-    std::string this_str = "\x7b";
+    std::string this_str = LEFT_CURLY_BRACKET;
     for (auto& item : *this->map)
     {
-        PyObjectWrapper key_str(PyObject_Str(item.first));  // Fresh reference.
+        PyObjectWrapper key_str(PyObject_Str(item.first));  // 🆕
         if (key_str == nullptr)
         {
             return nullptr;
         }
-        PyObject* value_str = PyObject_Str(item.second);  // New reference.
+        PyObjectWrapper value_str(PyObject_Str(item.second));  // 🆕
         if (value_str == nullptr)
         {
-            Py_DECREF(key_str);
             return nullptr;
         }
-        this_str.append(delimiter).append(PyUnicode_AsUTF8(key_str)).append(": ").append(PyUnicode_AsUTF8(value_str));
+        this_str.append(delimiter)
+            .append(PyUnicode_AsUTF8(key_str.get()))
+            .append(": ")
+            .append(PyUnicode_AsUTF8(value_str.get()));
         delimiter = actual_delimiter;
-        Py_DECREF(key_str);
-        Py_DECREF(value_str);
     }
-    this_str.append("\x7d");
-    return PyUnicode_FromStringAndSize(this_str.data(), this_str.size());  // New reference.
+    this_str.append(RIGHT_CURLY_BRACKET);
+    return PyUnicode_FromStringAndSize(this_str.data(), this_str.size());  // 🆕
 }
 
 PyObject* SortedDictType::clear(void)
