@@ -576,7 +576,8 @@ PyMODINIT_FUNC PyInit_pysorteddict(void)
     {
         return nullptr;
     }
-    if (PyModule_AddObjectRef(mod, "SortedDict", reinterpret_cast<PyObject*>(&sorted_dict_type)) < 0)
+    if (PyModule_Add(mod, "__version__", PyUnicode_FromString("0.2.1")) < 0
+        || PyModule_AddObjectRef(mod, "SortedDict", reinterpret_cast<PyObject*>(&sorted_dict_type)) < 0)
     {
         Py_DECREF(mod);
         return nullptr;
