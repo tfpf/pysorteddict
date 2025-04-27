@@ -214,7 +214,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
-    static constexpr PyTypeObject* allowed_key_types[] = {
+    static PyTypeObject* allowed_key_types[] = {
         &PyLong_Type,
     };
 
