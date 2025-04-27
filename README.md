@@ -42,7 +42,7 @@ sorted_dict["losing"] = ["weight"]
 print(json.dumps(sorted_dict, indent=2, sort_keys=False))
 ```
 
-Running the above Python script will output the keys in ascending order.
+The above Python script will output the keys in ascending order.
 
 ```json
 {
