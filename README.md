@@ -26,23 +26,34 @@ command.
 
 ## Usage
 
-All keys in a sorted dictionary must be of the same type, which must be passed to the constructor. The values, though,
-can be of any type.
+All keys in a sorted dictionary must be of the same type, which is determined when the first key-value pair is inserted
+into it. The values, though, can be of any type.
 
 ```python
+import json
+
 from pysorteddict import SortedDict
 
-sorted_dict = SortedDict(int)
-sorted_dict[5659] = "gaining weight is"
-sorted_dict[1992] = 31.692
-sorted_dict[24274] = "times easier than"
-sorted_dict[9765] = ["losing", "weight"]
-print(sorted_dict)
+sorted_dict = SortedDict()
+sorted_dict["honestly"] = "weight"
+sorted_dict["gain is"] = 31.692
+sorted_dict["times"] = "easier than"
+sorted_dict["losing"] = ["weight"]
+print(json.dumps(sorted_dict, indent=2, sort_keys=False))
 ```
 
-This program should output
-`{1992: 31.692, 5659: 'gaining weight is', 9765: ['losing', 'weight'], 24274: 'times easier than'}`. Note that the keys
-are in ascending order.
+When run, this program will output the keys in ascending order.
+
+```json
+{
+  "gain is": 31.692,
+  "honestly": "weight",
+  "losing": [
+    "weight"
+  ],
+  "times": "easier than"
+}
+```
 
 ## Implementation Details
 
