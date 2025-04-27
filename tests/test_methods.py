@@ -1,6 +1,7 @@
 import builtins
 import platform
 import random
+import re
 import string
 import sys
 
@@ -22,7 +23,7 @@ class Resources:
         self.key_type = key_type
         self.available_types = {bytes, complex, float, frozenset, int, str, tuple}
         self.available_types.add(type("sub" + self.key_type.__name__, (self.key_type,), {}))
-        self.unsupported_types = self.available_types.difference({int, str})
+        self.unsupported_types = self.available_types.difference({bytes, int, str})
         self.wrong_types = self.available_types.difference({self.key_type})
 
         self.rg = random.Random(__name__)
@@ -60,12 +61,15 @@ class Resources:
             # error because the remaining patterns become unreachable). Hence,
             # whenever the pattern is an existing name which can be shadowed,
             # it has to be written like this.
-            case builtins.int:
-                lo, hi = (1000, 2000) if small else (2000, 3000)
-                return self.rg.randrange(lo, hi)
+            case builtins.bytes:
+                lo, hi = (10, 20) if small else (20, 30)
+                return self.rg.randbytes(self.rg.randrange(lo, hi))
             case builtins.str:
                 lo, hi = (10, 20) if small else (20, 30)
                 return "".join(self.rg.choices(string.ascii_lowercase, k=self.rg.randrange(lo, hi)))
+            case builtins.int:
+                lo, hi = (1000, 2000) if small else (2000, 3000)
+                return self.rg.randrange(lo, hi)
             case _:
                 raise RuntimeError
 
@@ -106,7 +110,7 @@ def sorted_dict(request, resources):
 
 # Run each test with each key type, and on the sorted dictionary and its copy.
 pytestmark = [
-    pytest.mark.parametrize("resources", [int, str], indirect=True),
+    pytest.mark.parametrize("resources", [bytes, int, str], indirect=True),
     pytest.mark.parametrize("sorted_dict", [0, 1], ids=["original", "copy"], indirect=True),
 ]
 
@@ -140,11 +144,11 @@ def test_getitem_wrong_type(resources, sorted_dict):
 
 def test_getitem_missing(resources, sorted_dict):
     key = resources.gen(small=False)
-    with pytest.raises(KeyError, match=str(key)):
+    with pytest.raises(KeyError, match=re.escape(str(key))):
         sorted_dict[key]
 
-    # For some types, the reference count is mysteriously higher than expected.
-    # I don't know why. Disable the check for those types.
+    # The reference count is higher for strings because the regular expression
+    # gets compiled. Disable the check for strings.
     if cpython and resources.key_type != str:
         assert sys.getrefcount(key) == 2
 
@@ -167,7 +171,7 @@ def test_delitem_wrong_type(resources, sorted_dict):
 
 def test_delitem_missing(resources, sorted_dict):
     key = resources.gen(small=False)
-    with pytest.raises(KeyError, match=str(key)):
+    with pytest.raises(KeyError, match=re.escape(str(key))):
         del sorted_dict[key]
 
     if cpython:
