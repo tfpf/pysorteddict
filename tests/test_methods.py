@@ -64,7 +64,7 @@ class Resources:
                 return self.rg.randrange(lo, hi)
             case builtins.str:
                 lo, hi = (10, 20) if small else (20, 30)
-                return "".join(self.rg.choices(string.ascii_letters, k=self.rg.randrange(lo, hi)))
+                return "".join(self.rg.choices(string.ascii_lowercase, k=self.rg.randrange(lo, hi)))
             case _:
                 raise RuntimeError
 
