@@ -12,7 +12,7 @@ from pysorteddict import SortedDict
 # Reference counting is specific to CPython, so record this for later.
 cpython = platform.python_implementation() == "CPython"
 
-supported_types = {int}
+supported_types = {bytes, int, str}
 available_types = {bool, bytearray, bytes, complex, dict, float, frozenset, int, list, set, str, tuple}
 
 

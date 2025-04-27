@@ -215,7 +215,9 @@ PyObject* SortedDictType::getitem(PyObject* key)
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
     static PyTypeObject* allowed_key_types[] = {
+        &PyBytes_Type,
         &PyLong_Type,
+        &PyUnicode_Type,
     };
 
     if (this->key_type == nullptr && value != nullptr)
