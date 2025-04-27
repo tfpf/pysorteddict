@@ -152,10 +152,13 @@ PyObject* SortedDictType::repr(void)
         {
             return nullptr;
         }
+        Py_ssize_t key_repr_size, value_repr_size;
+        char const* key_repr_utf8 = PyUnicode_AsUTF8AndSize(key_repr.get(), &key_repr_size);
+        char const* value_repr_utf8 = PyUnicode_AsUTF8AndSize(value_repr.get(), &value_repr_size);
         this_repr.append(delimiter)
-            .append(PyUnicode_AsUTF8(key_repr.get()))
+            .append(key_repr_utf8, key_repr_size)
             .append(": ")
-            .append(PyUnicode_AsUTF8(value_repr.get()));
+            .append(value_repr_utf8, value_repr_size);
         delimiter = actual_delimiter;
     }
     this_repr.append(RIGHT_CURLY_BRACKET RIGHT_PARENTHESIS);
