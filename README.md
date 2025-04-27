@@ -188,7 +188,7 @@ del d["foo"]
 
 ```
 Traceback (most recent call last):
-  File "/home/tfpf/Documents/projects/pysorteddict/examples/errors.py", line 3, in <module>
+  File "…", line 3, in <module>
     del d["foo"]
         ~^^^^^^^
 ValueError: key type not set: insert at least one item first
@@ -205,7 +205,7 @@ del d[0xC0FFEE]
 
 ```
 Traceback (most recent call last):
-  File "/home/tfpf/Documents/projects/pysorteddict/examples/errors.py", line 4, in <module>
+  File "…", line 4, in <module>
     del d[0xC0FFEE]
         ~^^^^^^^^^^
 TypeError: wrong key type: want <class 'str'>, got <class 'int'>
@@ -222,7 +222,7 @@ del d["spam"]
 
 ```
 Traceback (most recent call last):
-  File "/home/tfpf/Documents/projects/pysorteddict/examples/errors.py", line 4, in <module>
+  File "…", line 4, in <module>
     del d["spam"]
         ~^^^^^^^^
 KeyError: 'spam'
