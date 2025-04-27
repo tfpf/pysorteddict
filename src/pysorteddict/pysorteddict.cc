@@ -158,7 +158,7 @@ PyObject* SortedDictType::repr(void)
             .append(PyUnicode_AsUTF8(value_repr.get()));
         delimiter = actual_delimiter;
     }
-    this_repr.append(RIGHT_CURLY_BRACKET).append(RIGHT_PARENTHESIS);
+    this_repr.append(RIGHT_CURLY_BRACKET RIGHT_PARENTHESIS);
     return PyUnicode_FromStringAndSize(this_repr.data(), this_repr.size());  // 🆕
 }
 
