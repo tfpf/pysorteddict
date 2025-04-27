@@ -451,6 +451,15 @@ static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
     return sd->copy();
 }
 
+static PyObject*sorted_dict_type_items(PyObject*self, PyObject*args){
+    PyObject *t = PyTuple_New(2);
+    PyTuple_SET_ITEM(t, 0, Py_None);
+    PyTuple_SET_ITEM(t, 1, Py_None);
+    PyObject *l = PyList_New(1);
+    PyList_SET_ITEM(l, 0, t);
+    return l;
+}
+
 // clang-format off
 static PyMethodDef sorted_dict_type_methods[] = {
     {
@@ -464,6 +473,11 @@ static PyMethodDef sorted_dict_type_methods[] = {
         sorted_dict_type_copy,        // ml_meth
         METH_NOARGS,                  // ml_flags
         sorted_dict_type_copy_doc,    // ml_doc
+    },
+    {
+        "items",                       // ml_name
+        sorted_dict_type_items,        // ml_meth
+        METH_NOARGS,                  // ml_flags
     },
     {
         nullptr,
@@ -515,7 +529,7 @@ static PyTypeObject sorted_dict_type = {
     nullptr,                                // tp_getattro
     nullptr,                                // tp_setattro
     nullptr,                                // tp_as_buffer
-    Py_TPFLAGS_DEFAULT,                     // tp_flags
+    Py_TPFLAGS_DICT_SUBCLASS,                     // tp_flags
     sorted_dict_type_doc,                   // tp_doc
     nullptr,                                // tp_traverse
     nullptr,                                // tp_clear
