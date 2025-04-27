@@ -62,6 +62,9 @@ struct SortedDictType
     int setitem(PyObject*, PyObject*);
     PyObject* clear(void);
     PyObject* copy(void);
+    PyObject* items(void);
+    PyObject* keys(void);
+    PyObject* values(void);
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 };
@@ -314,6 +317,63 @@ PyObject* SortedDictType::copy(void)
     return sd_copy;
 }
 
+PyObject* SortedDictType::items(void)
+{
+    PyObject* sd_items = PyList_New(this->map->size());  // 🆕
+    if (sd_items == nullptr)
+    {
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *this->map)
+    {
+        PyObject* sd_item = PyTuple_New(2);  // 🆕
+        if (sd_item == nullptr)
+        {
+            Py_DECREF(sd_items);
+            return nullptr;
+        }
+        PyTuple_SET_ITEM(sd_item, 0, item.first);
+        Py_INCREF(item.first);
+        PyTuple_SET_ITEM(sd_item, 1, item.second);
+        Py_INCREF(item.second);
+        PyList_SET_ITEM(sd_items, idx++, sd_item);
+    }
+    return sd_items;
+}
+
+PyObject* SortedDictType::keys(void)
+{
+    PyObject* sd_keys = PyList_New(this->map->size());  // 🆕
+    if (sd_keys == nullptr)
+    {
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *this->map)
+    {
+        PyList_SET_ITEM(sd_keys, idx++, item.first);
+        Py_INCREF(item.first);
+    }
+    return sd_keys;
+}
+
+PyObject* SortedDictType::values(void)
+{
+    PyObject* sd_values = PyList_New(this->map->size());  // 🆕
+    if (sd_values == nullptr)
+    {
+        return nullptr;
+    }
+    Py_ssize_t idx = 0;
+    for (auto& item : *this->map)
+    {
+        PyList_SET_ITEM(sd_values, idx++, item.second);
+        Py_INCREF(item.second);
+    }
+    return sd_values;
+}
+
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
 {
     // All initialisation is done immediately after allocation in order to
@@ -445,20 +505,49 @@ PyDoc_STRVAR(
     "Return a shallow copy of the sorted dictionary ``d``."
 );
 
+PyDoc_STRVAR(
+    sorted_dict_type_items_doc,
+    "d.items() -> list[tuple[object, object]]\n"
+    "Return a list containing the key-value pairs in the sorted dictionary ``d``. This list will be sorted. "
+    "It exists independently of ``d``; it is not a view on the items of ``d``."
+);
+
+static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->items();
+}
+
+PyDoc_STRVAR(
+    sorted_dict_type_keys_doc,
+    "d.keys() -> list[object]\n"
+    "Return a list containing the keys in the sorted dictionary ``d``. This list will be sorted. "
+    "It exists independently of ``d``; it is not a view on the keys of ``d``."
+);
+
+static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->keys();
+}
+
+PyDoc_STRVAR(
+    sorted_dict_type_values_doc,
+    "d.values() -> list[object]\n"
+    "Return a list containing the values in the sorted dictionary ``d``. This list will be sorted by the mapped keys. "
+    "It exists independently of ``d``; it is not a view on the values of ``d``."
+);
+
+static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->values();
+}
+
 static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     return sd->copy();
-}
-
-static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
-{
-    PyObject* t = PyTuple_New(2);
-    PyTuple_SET_ITEM(t, 0, Py_None);
-    PyTuple_SET_ITEM(t, 1, Py_None);
-    PyObject* l = PyList_New(1);
-    PyList_SET_ITEM(l, 0, t);
-    return l;
 }
 
 // clang-format off
@@ -476,9 +565,22 @@ static PyMethodDef sorted_dict_type_methods[] = {
         sorted_dict_type_copy_doc,    // ml_doc
     },
     {
-        "items",                       // ml_name
-        sorted_dict_type_items,        // ml_meth
+        "items",                      // ml_name
+        sorted_dict_type_items,       // ml_meth
         METH_NOARGS,                  // ml_flags
+        sorted_dict_type_items_doc,   // ml_doc
+    },
+    {
+        "keys",                       // ml_name
+        sorted_dict_type_keys,        // ml_meth
+        METH_NOARGS,                  // ml_flags
+        sorted_dict_type_keys_doc,    // ml_doc
+    },
+    {
+        "values",                     // ml_name
+        sorted_dict_type_values,      // ml_meth
+        METH_NOARGS,                  // ml_flags
+        sorted_dict_type_values_doc,  // ml_doc
     },
     {
         nullptr,
