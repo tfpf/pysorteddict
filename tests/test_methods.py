@@ -12,6 +12,8 @@ from pysorteddict import SortedDict
 # Reference counting is specific to CPython, so record this for later.
 cpython = platform.python_implementation() == "CPython"
 
+supported_types = [bytes, int, str]
+
 
 class Resources:
     """
@@ -23,7 +25,7 @@ class Resources:
         self.key_type = key_type
         self.available_types = {bytes, complex, float, frozenset, int, str, tuple}
         self.available_types.add(type("sub" + self.key_type.__name__, (self.key_type,), {}))
-        self.unsupported_types = self.available_types.difference({bytes, int, str})
+        self.unsupported_types = self.available_types.difference(supported_types)
         self.wrong_types = self.available_types.difference({self.key_type})
 
         self.rg = random.Random(__name__)
@@ -110,7 +112,7 @@ def sorted_dict(request, resources):
 
 # Run each test with each key type, and on the sorted dictionary and its copy.
 pytestmark = [
-    pytest.mark.parametrize("resources", [bytes, int, str], indirect=True),
+    pytest.mark.parametrize("resources", supported_types, indirect=True),
     pytest.mark.parametrize("sorted_dict", [0, 1], ids=["original", "copy"], indirect=True),
 ]
 
