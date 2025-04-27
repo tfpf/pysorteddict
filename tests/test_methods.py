@@ -12,7 +12,8 @@ from pysorteddict import SortedDict
 # Reference counting is specific to CPython, so record this for later.
 cpython = platform.python_implementation() == "CPython"
 
-supported_types = [bytes, int, str]
+supported_types = {bytes, int, str}
+available_types = {bytes, complex, float, frozenset, int, str, tuple}
 
 
 class Resources:
@@ -23,8 +24,7 @@ class Resources:
 
     def __init__(self, key_type: type):
         self.key_type = key_type
-        self.available_types = {bytes, complex, float, frozenset, int, str, tuple}
-        self.available_types.add(type("sub" + self.key_type.__name__, (self.key_type,), {}))
+        self.available_types = available_types.union({type("sub" + self.key_type.__name__, (self.key_type,), {})})
         self.unsupported_types = self.available_types.difference(supported_types)
         self.wrong_types = self.available_types.difference({self.key_type})
 
