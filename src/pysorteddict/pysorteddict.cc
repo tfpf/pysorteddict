@@ -508,7 +508,7 @@ PyDoc_STRVAR(
 PyDoc_STRVAR(
     sorted_dict_type_items_doc,
     "d.items() -> list[tuple[object, object]]\n"
-    "Return a list containing the key-value pairs in the sorted dictionary ``d``. This list will be sorted. "
+    "Return the key-value pairs in the sorted dictionary ``d``. The list will be sorted. "
     "It exists independently of ``d``; it is not a view on the items of ``d``."
 );
 
@@ -521,7 +521,7 @@ static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
 PyDoc_STRVAR(
     sorted_dict_type_keys_doc,
     "d.keys() -> list[object]\n"
-    "Return a list containing the keys in the sorted dictionary ``d``. This list will be sorted. "
+    "Return the keys in the sorted dictionary ``d``. The list will be sorted. "
     "It exists independently of ``d``; it is not a view on the keys of ``d``."
 );
 
@@ -534,7 +534,7 @@ static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 PyDoc_STRVAR(
     sorted_dict_type_values_doc,
     "d.values() -> list[object]\n"
-    "Return a list containing the values in the sorted dictionary ``d``. This list will be sorted by the mapped keys. "
+    "Return the values in the sorted dictionary ``d``. The list will be sorted by the keys the values are mapped to. "
     "It exists independently of ``d``; it is not a view on the values of ``d``."
 );
 
