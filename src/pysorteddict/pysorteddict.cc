@@ -500,12 +500,6 @@ static PyObject* sorted_dict_type_clear(PyObject* self, PyObject* args)
 }
 
 PyDoc_STRVAR(
-    sorted_dict_type_copy_doc,
-    "d.copy() -> SortedDict\n"
-    "Return a shallow copy of the sorted dictionary ``d``."
-);
-
-PyDoc_STRVAR(
     sorted_dict_type_items_doc,
     "d.items() -> list[tuple[object, object]]\n"
     "Return the key-value pairs in the sorted dictionary ``d``. The list will be sorted. "
@@ -543,6 +537,12 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     return sd->values();
 }
+
+PyDoc_STRVAR(
+    sorted_dict_type_copy_doc,
+    "d.copy() -> SortedDict\n"
+    "Return a shallow copy of the sorted dictionary ``d``."
+);
 
 static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
 {
