@@ -95,7 +95,7 @@ bool SortedDictType::is_key_type_set(bool raise)
     }
     if (raise)
     {
-        PyErr_SetString(PyExc_ValueError, "key type not set");
+        PyErr_SetString(PyExc_ValueError, "key type not set: insert at least one item first");
     }
     return false;
 }
@@ -119,7 +119,7 @@ bool SortedDictType::can_use_as_key(PyObject* ob, bool raise)
     }
     if (raise)
     {
-        PyErr_SetString(PyExc_TypeError, "key is of wrong type");
+        PyErr_Format(PyExc_TypeError, "wrong key type: want %R, got %R", this->key_type, Py_TYPE(ob));
     }
     return false;
 }
@@ -237,7 +237,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
         }
         if (this->key_type == nullptr)
         {
-            PyErr_SetString(PyExc_TypeError, "unsupported key type");
+            PyErr_Format(PyExc_TypeError, "unsupported key type: %R", key_type);
             return -1;
         }
     }

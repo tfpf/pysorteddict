@@ -3,14 +3,14 @@ import platform
 import random
 import re
 import string
-import sys
 
 import pytest
 
 from pysorteddict import SortedDict
 
-# Reference counting is specific to CPython, so record this for later.
-cpython = platform.python_implementation() == "CPython"
+# Reference counting is specific to CPython.
+if cpython := platform.python_implementation() == "CPython":
+    from sys import getrefcount
 
 supported_types = {bytes, int, str}
 available_types = {bool, bytearray, bytes, complex, dict, float, frozenset, int, list, set, str, tuple}
@@ -87,11 +87,9 @@ def resources(request):
 
     # Tearing down: verify the reference counts.
     if cpython:
-        for observed, expected in zip(map(sys.getrefcount, resources.keys), resources.keys_refcounts, strict=False):
+        for observed, expected in zip(map(getrefcount, resources.keys), resources.keys_refcounts, strict=True):
             assert observed == expected
-        for observed, expected in zip(
-            map(sys.getrefcount, resources.values), resources.values_refcounts, strict=False
-        ):
+        for observed, expected in zip(map(getrefcount, resources.values), resources.values_refcounts, strict=True):
             assert observed == expected
 
 
@@ -130,7 +128,7 @@ def test_contains_no(resources, sorted_dict):
     assert key not in sorted_dict
 
     if cpython:
-        assert sys.getrefcount(key) == 2
+        assert getrefcount(key) == 2
 
 
 def test_contains_yes(resources, sorted_dict):
@@ -138,12 +136,12 @@ def test_contains_yes(resources, sorted_dict):
     assert key in sorted_dict
 
     if cpython:
-        assert sys.getrefcount(key) == 6
+        assert getrefcount(key) == 6
 
 
 def test_getitem_wrong_type(resources, sorted_dict):
     for wrong_type in resources.wrong_types:
-        with pytest.raises(TypeError, match="key is of wrong type"):
+        with pytest.raises(TypeError, match=f"wrong key type: want {resources.key_type!r}, got {wrong_type!r}"):
             sorted_dict[wrong_type()]
 
 
@@ -153,7 +151,7 @@ def test_getitem_missing(resources, sorted_dict):
         sorted_dict[key]
 
     if cpython:
-        assert sys.getrefcount(key) == 2
+        assert getrefcount(key) == 2
 
 
 def test_getitem_found(resources, sorted_dict):
@@ -162,13 +160,13 @@ def test_getitem_found(resources, sorted_dict):
     assert value == resources.normal_dict[key]
 
     if cpython:
-        assert sys.getrefcount(key) == 6
-        assert sys.getrefcount(value) == 6
+        assert getrefcount(key) == 6
+        assert getrefcount(value) == 6
 
 
 def test_delitem_wrong_type(resources, sorted_dict):
     for wrong_type in resources.wrong_types:
-        with pytest.raises(TypeError, match="key is of wrong type"):
+        with pytest.raises(TypeError, match=f"wrong key type: want {resources.key_type!r}, got {wrong_type!r}"):
             del sorted_dict[wrong_type()]
 
 
@@ -178,7 +176,7 @@ def test_delitem_missing(resources, sorted_dict):
         del sorted_dict[key]
 
     if cpython:
-        assert sys.getrefcount(key) == 2
+        assert getrefcount(key) == 2
 
 
 def test_delitem_found(resources, sorted_dict):
@@ -195,11 +193,11 @@ def test_delitem_found(resources, sorted_dict):
 def test_setitem_wrong_type(resources, sorted_dict):
     value = resources.gen()
     for wrong_type in resources.wrong_types:
-        with pytest.raises(TypeError, match="key is of wrong type"):
+        with pytest.raises(TypeError, match=f"wrong key type: want {resources.key_type!r}, got {wrong_type!r}"):
             sorted_dict[wrong_type()] = value
 
     if cpython:
-        assert sys.getrefcount(value) == 2
+        assert getrefcount(value) == 2
 
 
 def test_setitem_insert(resources, sorted_dict):
@@ -210,8 +208,8 @@ def test_setitem_insert(resources, sorted_dict):
     assert sorted_dict[key] == value
 
     if cpython:
-        assert sys.getrefcount(key) == 4
-        assert sys.getrefcount(value) == 4
+        assert getrefcount(key) == 4
+        assert getrefcount(value) == 4
 
 
 def test_setitem_overwrite(resources, sorted_dict):
@@ -223,7 +221,7 @@ def test_setitem_overwrite(resources, sorted_dict):
     assert sorted_dict[key] == value
 
     if cpython:
-        assert sys.getrefcount(value) == 4
+        assert getrefcount(value) == 4
         resources.values_refcounts[idx] -= 2
 
 
@@ -242,10 +240,10 @@ def test_empty_sorted_dictionary(resources, sorted_dict):
     sorted_dict = SortedDict()
     for available_type in resources.available_types:
         assert available_type() not in sorted_dict
-        with pytest.raises(ValueError, match="key type not set"):
+        with pytest.raises(ValueError, match="key type not set: insert at least one item first"):
             sorted_dict[available_type()]
     for unsupported_type in resources.unsupported_types:
-        with pytest.raises(TypeError, match="unsupported key type"):
+        with pytest.raises(TypeError, match=f"unsupported key type: {unsupported_type!r}"):
             sorted_dict[unsupported_type()] = None
 
 
