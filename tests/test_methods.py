@@ -147,9 +147,7 @@ def test_getitem_missing(resources, sorted_dict):
     with pytest.raises(KeyError, match=re.escape(str(key))):
         sorted_dict[key]
 
-    # The reference count is higher for strings because the regular expression
-    # gets compiled. Disable the check for strings.
-    if cpython and resources.key_type != str:
+    if cpython:
         assert sys.getrefcount(key) == 2
 
 
