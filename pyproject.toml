@@ -37,7 +37,7 @@ classifiers = [
 "Bug Tracker" = "https://github.com/tfpf/pysorteddict/issues"
 
 [tool.cibuildwheel]
-build = "cp* pp*"
+enable = ["pypy"]
 test-command = "pytest {package}"
 test-requires = ["pytest"]
 
