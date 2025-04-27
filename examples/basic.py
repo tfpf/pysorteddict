@@ -1,13 +1,12 @@
 #! /usr/bin/env python3
 
+import json
+
 from pysorteddict import SortedDict
 
-sd = SortedDict(int)
-
-sd[100] = "wut"
-sd[1] = "ok"
-sd[1] = "notok"
-print(sd, len(sd))
-print(sd[1])
-print(sd.keys(), sd.values(), sd.items())
-del sd
+sorted_dict = SortedDict(int)
+sorted_dict[5659] = "gaining weight is"
+sorted_dict[1992] = 31.692
+sorted_dict[24274] = "times easier than"
+sorted_dict[9765] = ["losing", "weight"]
+print(json.dumps(sorted_dict, indent=2))
