@@ -220,7 +220,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     {
         // The first key-value pair is being inserted. Register the key type.
         PyObject* key_type = reinterpret_cast<PyObject*>(Py_TYPE(key));
-        for (void* allowed_key_type : allowed_key_types)
+        for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
             if (PyObject_RichCompareBool(key_type, reinterpret_cast<PyObject*>(allowed_key_type), Py_EQ) == 1)
             {
@@ -228,8 +228,11 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
                 break;
             }
         }
-        PyErr_SetString(PyExc_TypeError, "unsupported key type");
-        return -1;
+        if (this->key_type == nullptr)
+        {
+            PyErr_SetString(PyExc_TypeError, "unsupported key type");
+            return -1;
+        }
     }
 
     if (!this->are_key_type_and_key_valid(key))
