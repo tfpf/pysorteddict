@@ -13,7 +13,7 @@ from pysorteddict import SortedDict
 cpython = platform.python_implementation() == "CPython"
 
 supported_types = {bytes, int, str}
-available_types = {bytes, complex, float, frozenset, int, str, tuple}
+available_types = {bool, bytearray, bytes, complex, dict, float, frozenset, int, list, set, str, tuple}
 
 
 class Resources:
