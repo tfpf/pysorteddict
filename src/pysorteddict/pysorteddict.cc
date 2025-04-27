@@ -614,7 +614,7 @@ PyDoc_STRVAR(
 // clang-format off
 static PyTypeObject sorted_dict_type = {
     PyVarObject_HEAD_INIT(&PyType_Type, 0)          // ob_base
-    "SortedDict",                                   // tp_name
+    "pysorteddict.SortedDict",                      // tp_name
     sizeof(SortedDictType),                         // tp_basicsize
     0,                                              // tp_itemsize
     sorted_dict_type_dealloc,                       // tp_dealloc
