@@ -240,7 +240,7 @@ def test_empty_sorted_dictionary(resources, sorted_dict):
     sorted_dict = SortedDict()
     for available_type in resources.available_types:
         assert available_type() not in sorted_dict
-        with pytest.raises(ValueError, match="key type not set"):
+        with pytest.raises(ValueError, match="key type not set: insert at least one item first"):
             sorted_dict[available_type()]
     for unsupported_type in resources.unsupported_types:
         with pytest.raises(TypeError, match=f"unsupported key type: {unsupported_type!r}"):
