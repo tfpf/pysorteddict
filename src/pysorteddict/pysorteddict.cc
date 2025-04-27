@@ -152,13 +152,16 @@ PyObject* SortedDictType::repr(void)
         {
             return nullptr;
         }
+        Py_ssize_t key_repr_size, value_repr_size;
+        char const* key_repr_utf8 = PyUnicode_AsUTF8AndSize(key_repr.get(), &key_repr_size);
+        char const* value_repr_utf8 = PyUnicode_AsUTF8AndSize(value_repr.get(), &value_repr_size);
         this_repr.append(delimiter)
-            .append(PyUnicode_AsUTF8(key_repr.get()))
+            .append(key_repr_utf8, key_repr_size)
             .append(": ")
-            .append(PyUnicode_AsUTF8(value_repr.get()));
+            .append(value_repr_utf8, value_repr_size);
         delimiter = actual_delimiter;
     }
-    this_repr.append(RIGHT_CURLY_BRACKET).append(RIGHT_PARENTHESIS);
+    this_repr.append(RIGHT_CURLY_BRACKET RIGHT_PARENTHESIS);
     return PyUnicode_FromStringAndSize(this_repr.data(), this_repr.size());  // 🆕
 }
 
@@ -211,16 +214,29 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
+    static PyTypeObject* allowed_key_types[] = {
+        &PyBytes_Type,
+        &PyLong_Type,
+        &PyUnicode_Type,
+    };
+
     if (this->key_type == nullptr && value != nullptr)
     {
         // The first key-value pair is being inserted. Register the key type.
         PyObject* key_type = reinterpret_cast<PyObject*>(Py_TYPE(key));
-        if (PyObject_RichCompareBool(key_type, reinterpret_cast<PyObject*>(&PyLong_Type), Py_EQ) != 1)
+        for (PyTypeObject* allowed_key_type : allowed_key_types)
+        {
+            if (PyObject_RichCompareBool(key_type, reinterpret_cast<PyObject*>(allowed_key_type), Py_EQ) == 1)
+            {
+                this->key_type = Py_NewRef(key_type);
+                break;
+            }
+        }
+        if (this->key_type == nullptr)
         {
             PyErr_SetString(PyExc_TypeError, "unsupported key type");
             return -1;
         }
-        this->key_type = Py_NewRef(key_type);
     }
 
     if (!this->are_key_type_and_key_valid(key))

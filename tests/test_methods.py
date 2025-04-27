@@ -1,6 +1,8 @@
 import builtins
 import platform
 import random
+import re
+import string
 import sys
 
 import pytest
@@ -9,6 +11,9 @@ from pysorteddict import SortedDict
 
 # Reference counting is specific to CPython, so record this for later.
 cpython = platform.python_implementation() == "CPython"
+
+supported_types = {bytes, int, str}
+available_types = {bool, bytearray, bytes, complex, dict, float, frozenset, int, list, set, str, tuple}
 
 
 class Resources:
@@ -19,8 +24,8 @@ class Resources:
 
     def __init__(self, key_type: type):
         self.key_type = key_type
-        self.available_types = {bytes, complex, float, frozenset, int, str, tuple}
-        self.available_types.add(type("sub" + self.key_type.__name__, (self.key_type,), {}))
+        self.available_types = available_types.union({type("sub" + self.key_type.__name__, (self.key_type,), {})})
+        self.unsupported_types = self.available_types.difference(supported_types)
         self.wrong_types = self.available_types.difference({self.key_type})
 
         self.rg = random.Random(__name__)
@@ -58,11 +63,15 @@ class Resources:
             # error because the remaining patterns become unreachable). Hence,
             # whenever the pattern is an existing name which can be shadowed,
             # it has to be written like this.
+            case builtins.bytes:
+                lo, hi = (8, 16) if small else (16, 32)
+                return self.rg.randbytes(self.rg.randrange(lo, hi))
+            case builtins.str:
+                lo, hi = (10, 20) if small else (20, 30)
+                return "".join(self.rg.choices(string.ascii_lowercase, k=self.rg.randrange(lo, hi)))
             case builtins.int:
-                if small:
-                    return self.rg.randrange(1000, 2000)
-                return self.rg.randrange(2000, 3000)
-
+                lo, hi = (1000, 2000) if small else (2000, 3000)
+                return self.rg.randrange(lo, hi)
             case _:
                 raise RuntimeError
 
@@ -103,7 +112,7 @@ def sorted_dict(request, resources):
 
 # Run each test with each key type, and on the sorted dictionary and its copy.
 pytestmark = [
-    pytest.mark.parametrize("resources", [int], indirect=True),
+    pytest.mark.parametrize("resources", supported_types, indirect=True),
     pytest.mark.parametrize("sorted_dict", [0, 1], ids=["original", "copy"], indirect=True),
 ]
 
@@ -137,7 +146,7 @@ def test_getitem_wrong_type(resources, sorted_dict):
 
 def test_getitem_missing(resources, sorted_dict):
     key = resources.gen(small=False)
-    with pytest.raises(KeyError, match=str(key)):
+    with pytest.raises(KeyError, match=re.escape(str(key))):
         sorted_dict[key]
 
     if cpython:
@@ -162,7 +171,7 @@ def test_delitem_wrong_type(resources, sorted_dict):
 
 def test_delitem_missing(resources, sorted_dict):
     key = resources.gen(small=False)
-    with pytest.raises(KeyError, match=str(key)):
+    with pytest.raises(KeyError, match=re.escape(str(key))):
         del sorted_dict[key]
 
     if cpython:
@@ -232,6 +241,10 @@ def test_empty_sorted_dictionary(resources, sorted_dict):
         assert available_type() not in sorted_dict
         with pytest.raises(ValueError, match="key type not set"):
             sorted_dict[available_type()]
-    for wrong_type in resources.wrong_types:
+    for unsupported_type in resources.unsupported_types:
         with pytest.raises(TypeError, match="unsupported key type"):
-            sorted_dict[wrong_type()] = None
+            sorted_dict[unsupported_type()] = None
+
+
+if __name__ == "__main__":
+    pytest.main()
