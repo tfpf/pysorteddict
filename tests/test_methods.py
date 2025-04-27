@@ -62,7 +62,7 @@ class Resources:
             # whenever the pattern is an existing name which can be shadowed,
             # it has to be written like this.
             case builtins.bytes:
-                lo, hi = (10, 20) if small else (20, 30)
+                lo, hi = (8, 16) if small else (16, 32)
                 return self.rg.randbytes(self.rg.randrange(lo, hi))
             case builtins.str:
                 lo, hi = (10, 20) if small else (20, 30)
