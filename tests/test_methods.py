@@ -3,14 +3,14 @@ import platform
 import random
 import re
 import string
-from sys import getrefcount
 
 import pytest
 
 from pysorteddict import SortedDict
 
-# Reference counting is specific to CPython, so record this for later.
-cpython = platform.python_implementation() == "CPython"
+# Reference counting is specific to CPython.
+if cpython := platform.python_implementation() == "CPython":
+    from sys import getrefcount
 
 supported_types = {bytes, int, str}
 available_types = {bool, bytearray, bytes, complex, dict, float, frozenset, int, list, set, str, tuple}
