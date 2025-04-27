@@ -95,7 +95,7 @@ bool SortedDictType::is_key_type_set(bool raise)
     }
     if (raise)
     {
-        PyErr_SetString(PyExc_ValueError, "key type not set");
+        PyErr_SetString(PyExc_ValueError, "key type not set: insert at least one item first");
     }
     return false;
 }
