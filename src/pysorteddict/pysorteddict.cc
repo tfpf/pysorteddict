@@ -211,6 +211,9 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
+    static PyObject* allowed_key_types[] = {
+        PyLong_Type,
+    };
     if (this->key_type == nullptr && value != nullptr)
     {
         // The first key-value pair is being inserted. Register the key type.

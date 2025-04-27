@@ -1,4 +1,5 @@
 import builtins
+import string
 import platform
 import random
 import sys
@@ -59,10 +60,11 @@ class Resources:
             # whenever the pattern is an existing name which can be shadowed,
             # it has to be written like this.
             case builtins.int:
-                if small:
-                    return self.rg.randrange(1000, 2000)
-                return self.rg.randrange(2000, 3000)
-
+                lo, hi = (1000, 2000) if small else (2000, 3000)
+                return self.rg.randrange(lo, hi)
+            case builtins.str:
+                lo, hi = (10, 20) if small else (20, 30)
+                return "".join(self.rg.choices(string.ascii_letters, k=self.rg.randrange(lo, hi)))
             case _:
                 raise RuntimeError
 
@@ -103,7 +105,7 @@ def sorted_dict(request, resources):
 
 # Run each test with each key type, and on the sorted dictionary and its copy.
 pytestmark = [
-    pytest.mark.parametrize("resources", [int], indirect=True),
+    pytest.mark.parametrize("resources", [int, str], indirect=True),
     pytest.mark.parametrize("sorted_dict", [0, 1], ids=["original", "copy"], indirect=True),
 ]
 
