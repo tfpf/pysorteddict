@@ -238,3 +238,7 @@ def test_empty_sorted_dictionary(resources, sorted_dict):
     for unsupported_type in resources.unsupported_types:
         with pytest.raises(TypeError, match="unsupported key type"):
             sorted_dict[unsupported_type()] = None
+
+
+if __name__ == "__main__":
+    pytest.main()
