@@ -1,7 +1,7 @@
 import builtins
-import string
 import platform
 import random
+import string
 import sys
 
 import pytest
@@ -22,6 +22,7 @@ class Resources:
         self.key_type = key_type
         self.available_types = {bytes, complex, float, frozenset, int, str, tuple}
         self.available_types.add(type("sub" + self.key_type.__name__, (self.key_type,), {}))
+        self.unsupported_types = self.available_types.difference({int, str})
         self.wrong_types = self.available_types.difference({self.key_type})
 
         self.rg = random.Random(__name__)
@@ -234,6 +235,6 @@ def test_empty_sorted_dictionary(resources, sorted_dict):
         assert available_type() not in sorted_dict
         with pytest.raises(ValueError, match="key type not set"):
             sorted_dict[available_type()]
-    for wrong_type in resources.wrong_types:
+    for unsupported_type in resources.unsupported_types:
         with pytest.raises(TypeError, match="unsupported key type"):
-            sorted_dict[wrong_type()] = None
+            sorted_dict[unsupported_type()] = None
