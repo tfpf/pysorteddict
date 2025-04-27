@@ -42,7 +42,7 @@ sorted_dict["losing"] = ["weight"]
 print(json.dumps(sorted_dict, indent=2, sort_keys=False))
 ```
 
-When run, this program will output the keys in ascending order.
+Running the above Python script will output the keys in ascending order.
 
 ```json
 {
@@ -86,25 +86,147 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 
 Return the value mapped to `key` in the sorted dictionary `d`.
 
-* If no key-value pairs have been inserted into `d` yet, raise `ValueError`.
-* If `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
-* If `key` is not present in `d`, raise `KeyError`.
+If no key-value pairs have been inserted into `d` yet, raise `ValueError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"]
+```
+
+```
+Traceback (most recent call last):
+  File "…", line 3, in <module>
+    d["foo"]
+    ~^^^^^^^
+ValueError: key type not set: insert at least one item first
+```
+
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ("bar", "baz")
+d[0xC0FFEE]
+```
+
+```
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    d[0xC0FFEE]
+    ~^^^^^^^^^^
+TypeError: wrong key type: want <class 'str'>, got <class 'int'>
+```
+
+Otherwise, if `key` is not present in `d`, raise `KeyError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ("bar", "baz")
+d["spam"]
+```
+
+```
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    d["spam"]
+    ~^^^^^^^^
+KeyError: 'spam'
+```
 
 #### `d[key] = value`
 
 Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
 
-* If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`,
-  `int` and `str`), raise `TypeError`.
-* If `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`, `int`
+and `str`), raise `TypeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d[["eggs"]] = None
+```
+
+```
+Traceback (most recent call last):
+  File "…", line 3, in <module>
+    d[["eggs"]] = None
+    ~^^^^^^^^^^
+TypeError: unsupported key type: <class 'list'>
+```
+
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ("bar", "baz")
+d[0xC0FFEE] = "spam"
+```
+
+```
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    d[0xC0FFEE] = "spam"
+    ~^^^^^^^^^^
+TypeError: wrong key type: want <class 'str'>, got <class 'int'>
+```
 
 #### `del d[key]`
 
 Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
-* If no key-value pairs have been inserted into `d` yet, raise `ValueError`.
-* If `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
-* If `key` is not present in `d`, raise `KeyError`.
+If no key-value pairs have been inserted into `d` yet, raise `ValueError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+del d["foo"]
+```
+
+```
+Traceback (most recent call last):
+  File "/home/tfpf/Documents/projects/pysorteddict/examples/errors.py", line 3, in <module>
+    del d["foo"]
+        ~^^^^^^^
+ValueError: key type not set: insert at least one item first
+```
+
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ("bar", "baz")
+del d[0xC0FFEE]
+```
+
+```
+Traceback (most recent call last):
+  File "/home/tfpf/Documents/projects/pysorteddict/examples/errors.py", line 4, in <module>
+    del d[0xC0FFEE]
+        ~^^^^^^^^^^
+TypeError: wrong key type: want <class 'str'>, got <class 'int'>
+```
+
+Otherwise, if `key` is not present in `d`, raise `KeyError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ("bar", "baz")
+del d["spam"]
+```
+
+```
+Traceback (most recent call last):
+  File "/home/tfpf/Documents/projects/pysorteddict/examples/errors.py", line 4, in <module>
+    del d["spam"]
+        ~^^^^^^^^
+KeyError: 'spam'
+```
 
 ### Other Methods
 
