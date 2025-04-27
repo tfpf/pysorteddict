@@ -333,10 +333,8 @@ PyObject* SortedDictType::items(void)
             Py_DECREF(sd_items);
             return nullptr;
         }
-        PyTuple_SET_ITEM(sd_item, 0, item.first);
-        Py_INCREF(item.first);
-        PyTuple_SET_ITEM(sd_item, 1, item.second);
-        Py_INCREF(item.second);
+        PyTuple_SET_ITEM(sd_item, 0, Py_NewRef(item.first));
+        PyTuple_SET_ITEM(sd_item, 1, Py_NewRef(item.second));
         PyList_SET_ITEM(sd_items, idx++, sd_item);
     }
     return sd_items;
@@ -352,8 +350,7 @@ PyObject* SortedDictType::keys(void)
     Py_ssize_t idx = 0;
     for (auto& item : *this->map)
     {
-        PyList_SET_ITEM(sd_keys, idx++, item.first);
-        Py_INCREF(item.first);
+        PyList_SET_ITEM(sd_keys, idx++, Py_NewRef(item.first));
     }
     return sd_keys;
 }
@@ -368,8 +365,7 @@ PyObject* SortedDictType::values(void)
     Py_ssize_t idx = 0;
     for (auto& item : *this->map)
     {
-        PyList_SET_ITEM(sd_values, idx++, item.second);
-        Py_INCREF(item.second);
+        PyList_SET_ITEM(sd_values, idx++, Py_NewRef(item.second));
     }
     return sd_values;
 }
