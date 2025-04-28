@@ -433,20 +433,9 @@ static int sorted_dict_type_contains(PyObject* self, PyObject* key)
     return sd->contains(key);
 }
 
-// clang-format off
 static PySequenceMethods sorted_dict_type_sequence = {
-    nullptr,                    // sq_length
-    nullptr,                    // sq_concat
-    nullptr,                    // sq_repeat
-    nullptr,                    // sq_item
-    nullptr,                    // was_sq_slice
-    nullptr,                    // sq_ass_item
-    nullptr,                    // was_sq_ass_slice
-    sorted_dict_type_contains,  // sq_contains
-    nullptr,                    // sq_inplace_concat
-    nullptr,                    // sq_inplace_repeat
+    .sq_contains = sorted_dict_type_contains,
 };
-// clang-format on
 
 /**
  * Obtain the number of keys.
