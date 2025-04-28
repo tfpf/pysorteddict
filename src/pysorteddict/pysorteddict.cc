@@ -464,13 +464,11 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     return sd->setitem(key, value);
 }
 
-// clang-format off
 static PyMappingMethods sorted_dict_type_mapping = {
-    sorted_dict_type_len,      // mp_length
-    sorted_dict_type_getitem,  // mp_subscript
-    sorted_dict_type_setitem,  // mp_ass_subscript
+    .mp_length = sorted_dict_type_len,
+    .mp_subscript = sorted_dict_type_getitem,
+    .mp_ass_subscript = sorted_dict_type_setitem,
 };
-// clang-format on
 
 PyDoc_STRVAR(
     sorted_dict_type_clear_doc,
