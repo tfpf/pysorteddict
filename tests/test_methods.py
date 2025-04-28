@@ -48,12 +48,12 @@ class Resources:
         self.values = [*self.normal_dict.values()]
         self.values_refcounts = [5] * len(self.values)
 
-    def gen(self, *, small: bool = True) -> int:
+    def gen(self, *, small: bool = True) -> bytes | str | int:
         """
         Generate a key or value for a dictionary. It will be a new object (i.e.
         not an interned one).
 
-        :param large: Whether to generate a small or large key/value. (A small
+        :param small: Whether to generate a small or large key/value. (A small
         one will never be equal to a large one.)
 
         :return: Random result.
