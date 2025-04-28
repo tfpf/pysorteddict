@@ -617,19 +617,12 @@ PyDoc_STRVAR(
     "a Python dictionary in which the keys are always in ascending order."
 );
 
-// clang-format off
 static PyModuleDef sorted_dict_module = {
-    PyModuleDef_HEAD_INIT,   // m_base
-    "pysorteddict",          // m_name
-    sorted_dict_module_doc,  // m_doc
-    -1,                      // m_size
-    nullptr,                 // m_methods
-    nullptr,                 // m_slots
-    nullptr,                 // m_traverse
-    nullptr,                 // m_clear
-    nullptr,                 // m_free
+    .m_base = PyModuleDef_HEAD_INIT,
+    .m_name = "pysorteddict",
+    .m_doc = sorted_dict_module_doc,
+    .m_size = -1,
 };
-// clang-format on
 
 PyMODINIT_FUNC PyInit_pysorteddict(void)
 {
