@@ -533,43 +533,39 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
     return sd->values();
 }
 
-// clang-format off
-static PyMethodDef sorted_dict_type_methods[] = {
-    {
-        "clear",                      // ml_name
-        sorted_dict_type_clear,       // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_clear_doc,   // ml_doc
-    },
-    {
-        "copy",                       // ml_name
-        sorted_dict_type_copy,        // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_copy_doc,    // ml_doc
-    },
-    {
-        "items",                      // ml_name
-        sorted_dict_type_items,       // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_items_doc,   // ml_doc
-    },
-    {
-        "keys",                       // ml_name
-        sorted_dict_type_keys,        // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_keys_doc,    // ml_doc
-    },
-    {
-        "values",                     // ml_name
-        sorted_dict_type_values,      // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_values_doc,  // ml_doc
-    },
-    {
-        nullptr,
-    }
-};
-// clang-format on
+static PyMethodDef sorted_dict_type_methods[] = { {
+                                                      .ml_name = "clear",
+                                                      .ml_meth = sorted_dict_type_clear,
+                                                      .ml_flags = METH_NOARGS,
+                                                      .ml_doc = sorted_dict_type_clear_doc,
+                                                  },
+                                                  {
+                                                      .ml_name = "copy",
+                                                      .ml_meth = sorted_dict_type_copy,
+                                                      .ml_flags = METH_NOARGS,
+                                                      .ml_doc = sorted_dict_type_copy_doc,
+                                                  },
+                                                  {
+                                                      .ml_name = "items",
+                                                      .ml_meth = sorted_dict_type_items,
+                                                      .ml_flags = METH_NOARGS,
+                                                      .ml_doc = sorted_dict_type_items_doc,
+                                                  },
+                                                  {
+                                                      .ml_name = "keys",
+                                                      .ml_meth = sorted_dict_type_keys,
+                                                      .ml_flags = METH_NOARGS,
+                                                      .ml_doc = sorted_dict_type_keys_doc,
+                                                  },
+                                                  {
+                                                      .ml_name = "values",
+                                                      .ml_meth = sorted_dict_type_values,
+                                                      .ml_flags = METH_NOARGS,
+                                                      .ml_doc = sorted_dict_type_values_doc,
+                                                  },
+                                                  {
+                                                      nullptr,
+                                                  } };
 
 /**
  * Initialise.
