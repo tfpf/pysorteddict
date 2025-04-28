@@ -433,20 +433,9 @@ static int sorted_dict_type_contains(PyObject* self, PyObject* key)
     return sd->contains(key);
 }
 
-// clang-format off
 static PySequenceMethods sorted_dict_type_sequence = {
-    nullptr,                    // sq_length
-    nullptr,                    // sq_concat
-    nullptr,                    // sq_repeat
-    nullptr,                    // sq_item
-    nullptr,                    // was_sq_slice
-    nullptr,                    // sq_ass_item
-    nullptr,                    // was_sq_ass_slice
-    sorted_dict_type_contains,  // sq_contains
-    nullptr,                    // sq_inplace_concat
-    nullptr,                    // sq_inplace_repeat
+    .sq_contains = sorted_dict_type_contains,
 };
-// clang-format on
 
 /**
  * Obtain the number of keys.
@@ -475,13 +464,11 @@ static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* val
     return sd->setitem(key, value);
 }
 
-// clang-format off
 static PyMappingMethods sorted_dict_type_mapping = {
-    sorted_dict_type_len,      // mp_length
-    sorted_dict_type_getitem,  // mp_subscript
-    sorted_dict_type_setitem,  // mp_ass_subscript
+    .mp_length = sorted_dict_type_len,
+    .mp_subscript = sorted_dict_type_getitem,
+    .mp_ass_subscript = sorted_dict_type_setitem,
 };
-// clang-format on
 
 PyDoc_STRVAR(
     sorted_dict_type_clear_doc,
@@ -546,43 +533,39 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
     return sd->values();
 }
 
-// clang-format off
-static PyMethodDef sorted_dict_type_methods[] = {
-    {
-        "clear",                      // ml_name
-        sorted_dict_type_clear,       // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_clear_doc,   // ml_doc
-    },
-    {
-        "copy",                       // ml_name
-        sorted_dict_type_copy,        // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_copy_doc,    // ml_doc
-    },
-    {
-        "items",                      // ml_name
-        sorted_dict_type_items,       // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_items_doc,   // ml_doc
-    },
-    {
-        "keys",                       // ml_name
-        sorted_dict_type_keys,        // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_keys_doc,    // ml_doc
-    },
-    {
-        "values",                     // ml_name
-        sorted_dict_type_values,      // ml_meth
-        METH_NOARGS,                  // ml_flags
-        sorted_dict_type_values_doc,  // ml_doc
-    },
-    {
-        nullptr,
-    }
-};
-// clang-format on
+static PyMethodDef sorted_dict_type_methods[] = { {
+                                                      .ml_name = "clear",
+                                                      .ml_meth = sorted_dict_type_clear,
+                                                      .ml_flags = METH_NOARGS,
+                                                      .ml_doc = sorted_dict_type_clear_doc,
+                                                  },
+                                                  {
+                                                      .ml_name = "copy",
+                                                      .ml_meth = sorted_dict_type_copy,
+                                                      .ml_flags = METH_NOARGS,
+                                                      .ml_doc = sorted_dict_type_copy_doc,
+                                                  },
+                                                  {
+                                                      .ml_name = "items",
+                                                      .ml_meth = sorted_dict_type_items,
+                                                      .ml_flags = METH_NOARGS,
+                                                      .ml_doc = sorted_dict_type_items_doc,
+                                                  },
+                                                  {
+                                                      .ml_name = "keys",
+                                                      .ml_meth = sorted_dict_type_keys,
+                                                      .ml_flags = METH_NOARGS,
+                                                      .ml_doc = sorted_dict_type_keys_doc,
+                                                  },
+                                                  {
+                                                      .ml_name = "values",
+                                                      .ml_meth = sorted_dict_type_values,
+                                                      .ml_flags = METH_NOARGS,
+                                                      .ml_doc = sorted_dict_type_values_doc,
+                                                  },
+                                                  {
+                                                      nullptr,
+                                                  } };
 
 /**
  * Initialise.
@@ -607,56 +590,26 @@ PyDoc_STRVAR(
     "Create an empty sorted dictionary. `args` and `kwargs` are ignored."
 );
 
-// clang-format off
 static PyTypeObject sorted_dict_type = {
-    PyVarObject_HEAD_INIT(&PyType_Type, 0)          // ob_base
-    "pysorteddict.SortedDict",                      // tp_name
-    sizeof(SortedDictType),                         // tp_basicsize
-    0,                                              // tp_itemsize
-    sorted_dict_type_dealloc,                       // tp_dealloc
-    0,                                              // tp_vectorcall_offset
-    nullptr,                                        // tp_getattr
-    nullptr,                                        // tp_setattr
-    nullptr,                                        // tp_as_async
-    sorted_dict_type_repr,                          // tp_repr
-    nullptr,                                        // tp_as_number
-    &sorted_dict_type_sequence,                     // tp_as_sequence
-    &sorted_dict_type_mapping,                      // tp_as_mapping
-    PyObject_HashNotImplemented,                    // tp_hash
-    nullptr,                                        // tp_call
-    nullptr,                                        // tp_str
-    nullptr,                                        // tp_getattro
-    nullptr,                                        // tp_setattro
-    nullptr,                                        // tp_as_buffer
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,  // tp_flags
-    sorted_dict_type_doc,                           // tp_doc
-    nullptr,                                        // tp_traverse
-    nullptr,                                        // tp_clear
-    nullptr,                                        // tp_richcompare
-    0,                                              // tp_weaklistoffset
-    nullptr,                                        // tp_iter
-    nullptr,                                        // tp_iternext
-    sorted_dict_type_methods,                       // tp_methods
-    nullptr,                                        // tp_members
-    nullptr,                                        // tp_getset
-    nullptr,                                        // tp_base
-    nullptr,                                        // tp_dict
-    nullptr,                                        // tp_descr_get
-    nullptr,                                        // tp_descr_set
-    0,                                              // tp_dictoffset
-    sorted_dict_type_init,                          // tp_init
-    PyType_GenericAlloc,                            // tp_alloc
-    sorted_dict_type_new,                           // tp_new
-    PyObject_Free,                                  // tp_free
-    nullptr,                                        // tp_is_gc
-    nullptr,                                        // tp_bases
-    nullptr,                                        // tp_mro
-    nullptr,                                        // tp_cache
-    nullptr,                                        // tp_subclasses
-    nullptr,                                        // tp_weaklist
-    nullptr,                                        // tp_del
+    // clang-format off
+    .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    .tp_name = "pysorteddict.SortedDict",
+    // clang-format on
+    .tp_basicsize = sizeof(SortedDictType),
+    .tp_dealloc = sorted_dict_type_dealloc,
+    .tp_repr = sorted_dict_type_repr,
+    .tp_as_sequence = &sorted_dict_type_sequence,
+    .tp_as_mapping = &sorted_dict_type_mapping,
+    .tp_hash = PyObject_HashNotImplemented,
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,
+    .tp_doc = sorted_dict_type_doc,
+    .tp_methods = sorted_dict_type_methods,
+    .tp_init = sorted_dict_type_init,
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_new = sorted_dict_type_new,
+    .tp_free = PyObject_Free,
 };
-// clang-format on
 
 PyDoc_STRVAR(
     sorted_dict_module_doc,
@@ -664,19 +617,12 @@ PyDoc_STRVAR(
     "a Python dictionary in which the keys are always in ascending order."
 );
 
-// clang-format off
 static PyModuleDef sorted_dict_module = {
-    PyModuleDef_HEAD_INIT,   // m_base
-    "pysorteddict",          // m_name
-    sorted_dict_module_doc,  // m_doc
-    -1,                      // m_size
-    nullptr,                 // m_methods
-    nullptr,                 // m_slots
-    nullptr,                 // m_traverse
-    nullptr,                 // m_clear
-    nullptr,                 // m_free
+    .m_base = PyModuleDef_HEAD_INIT,
+    .m_name = "pysorteddict",
+    .m_doc = sorted_dict_module_doc,
+    .m_size = -1,
 };
-// clang-format on
 
 PyMODINIT_FUNC PyInit_pysorteddict(void)
 {
