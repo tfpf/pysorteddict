@@ -376,7 +376,7 @@ PyObject* SortedDictType::get_key_type(void)
     {
         Py_RETURN_NONE;
     }
-    return reinterpret_cast<PyObject*>(this->key_type);
+    return Py_NewRef(this->key_type);
 }
 
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
