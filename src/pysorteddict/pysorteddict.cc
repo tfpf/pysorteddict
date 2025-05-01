@@ -46,6 +46,7 @@ struct SortedDictType
 public:
     PyObject_HEAD;
 
+private:
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
@@ -61,6 +62,7 @@ public:
     void deinit(void);
     PyObject* repr(void);
     int contains(PyObject*);
+    Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
     PyObject* clear(void);
@@ -206,6 +208,11 @@ int SortedDictType::contains(PyObject* key)
         return 0;
     }
     return 1;
+}
+
+Py_ssize_t SortedDictType::len(void)
+{
+    return this->map->size();
 }
 
 /**
@@ -447,12 +454,12 @@ static PySequenceMethods sorted_dict_type_sequence = {
 };
 
 /**
- * Obtain the number of keys.
+ * Obtain the number of key-value pairs.
  */
 static Py_ssize_t sorted_dict_type_len(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->map->size();
+    return sd->len();
 }
 
 /**
