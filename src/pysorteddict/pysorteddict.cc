@@ -82,6 +82,7 @@ void SortedDictType::deinit(void)
  * Check whether the key type of this sorted dictionary is set and whether the
  * given key-value pair can be inserted into this sorted dictionary. If the
  * value is not supplied, check whether it is valid to get or delete the key.
+ * On failure, set a Python exception.
  *
  * @param key Key.
  * @param value Value.
