@@ -42,6 +42,7 @@ struct PyObject_CustomCompare
 
 struct SortedDictType
 {
+public:
     PyObject_HEAD;
 
     // Pointer to an object on the heap. Can't be the object itself, because
@@ -52,10 +53,11 @@ struct SortedDictType
     // The type of each key.
     PyObject* key_type;
 
+private:
+    bool are_key_type_and_key_value_pair_okay(PyObject*, PyObject*);
+
+public:
     void deinit(void);
-    bool is_key_type_set(bool);
-    bool can_use_as_key(PyObject*, bool);
-    bool are_key_type_and_key_valid(PyObject*, bool);
     PyObject* repr(void);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
@@ -81,61 +83,56 @@ void SortedDictType::deinit(void)
 }
 
 /**
- * Check whether the key type of this sorted dictionary is set.
- *
- * @param raise Whether to set a Python exception if the check fails.
- *
- * @return `true` if the check succeeds, else `false`.
- */
-bool SortedDictType::is_key_type_set(bool raise)
-{
-    if (this->key_type != nullptr)
-    {
-        return true;
-    }
-    if (raise)
-    {
-        PyErr_SetString(PyExc_ValueError, "key type not set: insert at least one item first");
-    }
-    return false;
-}
-
-/**
- * Check whether the given object can be used as a key in this sorted
- * dictionary.
- *
- * The caller must ensure that the key type of this sorted dictionary is set
- * prior to calling this method.
- *
- * @param raise Whether to set a Python exception if the check fails.
- *
- * @return `true` if the check succeeds, else `false`.
- */
-bool SortedDictType::can_use_as_key(PyObject* ob, bool raise)
-{
-    if (Py_IS_TYPE(ob, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0)
-    {
-        return true;
-    }
-    if (raise)
-    {
-        PyErr_Format(PyExc_TypeError, "wrong key type: want %R, got %R", this->key_type, Py_TYPE(ob));
-    }
-    return false;
-}
-
-/**
  * Check whether the key type of this sorted dictionary is set and whether the
- * given object can be used as a key in this sorted dictionary.
+ * given key-value pair can be inserted into this sorted dictionary. If the
+ * value is not supplied, check whether it is valid to get or delete the key.
+ * On failure, set a Python exception.
  *
- * @param ob Python object.
- * @param raise Whether to set a Python exception if the check fails.
+ * @param key Key.
+ * @param value Value.
  *
  * @return `true` if the check succeeds, else `false`.
  */
-bool SortedDictType::are_key_type_and_key_valid(PyObject* ob, bool raise = true)
+bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObject* value = nullptr)
 {
-    return this->is_key_type_set(raise) && this->can_use_as_key(ob, raise);
+    bool key_check_pending = true;
+    if (this->key_type == nullptr)
+    {
+        if (value == nullptr)
+        {
+            // No key-value pairs have been inserted, so can't get or delete
+            // anything.
+            PyErr_SetString(PyExc_ValueError, "key type not set: insert at least one item first");
+            return false;
+        }
+
+        // The first key-value pair is being inserted.
+        static PyTypeObject* allowed_key_types[] = {
+            &PyBytes_Type,
+            &PyLong_Type,
+            &PyUnicode_Type,
+        };
+        for (PyTypeObject* allowed_key_type : allowed_key_types)
+        {
+            if (Py_IS_TYPE(key, allowed_key_type) != 0)
+            {
+                this->key_type = Py_NewRef(allowed_key_type);
+                key_check_pending = false;
+                break;
+            }
+        }
+        if (this->key_type == nullptr)
+        {
+            PyErr_Format(PyExc_TypeError, "unsupported key type: %R", Py_TYPE(key));
+            return false;
+        }
+    }
+    if (key_check_pending && Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0)
+    {
+        PyErr_Format(PyExc_TypeError, "wrong key type: want %R, got %R", this->key_type, Py_TYPE(key));
+        return false;
+    }
+    return true;
 }
 
 PyObject* SortedDictType::repr(void)
@@ -177,7 +174,8 @@ PyObject* SortedDictType::repr(void)
  */
 int SortedDictType::contains(PyObject* key)
 {
-    if (!this->are_key_type_and_key_valid(key, false) || this->map->find(key) == this->map->end())
+    if (this->key_type == nullptr || Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0
+        || this->map->find(key) == this->map->end())
     {
         return 0;
     }
@@ -193,7 +191,7 @@ int SortedDictType::contains(PyObject* key)
  */
 PyObject* SortedDictType::getitem(PyObject* key)
 {
-    if (!this->are_key_type_and_key_valid(key))
+    if (!this->are_key_type_and_key_value_pair_okay(key))
     {
         return nullptr;
     }
@@ -217,32 +215,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
-    static PyTypeObject* allowed_key_types[] = {
-        &PyBytes_Type,
-        &PyLong_Type,
-        &PyUnicode_Type,
-    };
-
-    if (this->key_type == nullptr && value != nullptr)
-    {
-        // The first key-value pair is being inserted. Register the key type.
-        PyObject* key_type = reinterpret_cast<PyObject*>(Py_TYPE(key));
-        for (PyTypeObject* allowed_key_type : allowed_key_types)
-        {
-            if (PyObject_RichCompareBool(key_type, reinterpret_cast<PyObject*>(allowed_key_type), Py_EQ) == 1)
-            {
-                this->key_type = Py_NewRef(key_type);
-                break;
-            }
-        }
-        if (this->key_type == nullptr)
-        {
-            PyErr_Format(PyExc_TypeError, "unsupported key type: %R", key_type);
-            return -1;
-        }
-    }
-
-    if (!this->are_key_type_and_key_valid(key))
+    if (!this->are_key_type_and_key_value_pair_okay(key, value))
     {
         return -1;
     }
