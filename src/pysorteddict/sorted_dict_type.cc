@@ -412,4 +412,3 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     sd->key_type = nullptr;
     return self;
 }
-
