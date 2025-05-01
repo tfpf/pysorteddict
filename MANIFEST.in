@@ -1,1 +1,1 @@
-include src/pysorteddict
+include src/pysorteddict/*
