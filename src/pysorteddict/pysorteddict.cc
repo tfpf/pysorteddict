@@ -68,6 +68,7 @@ public:
     PyObject* items(void);
     PyObject* keys(void);
     PyObject* values(void);
+    PyObject* get_key_type(void);
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 };
@@ -367,6 +368,15 @@ PyObject* SortedDictType::values(void)
         PyList_SET_ITEM(sd_values, idx++, Py_NewRef(item.second));
     }
     return sd_values;
+}
+
+PyObject* SortedDictType::get_key_type(void)
+{
+    if (this->key_type == nullptr)
+    {
+        Py_RETURN_NONE;
+    }
+    return this->key_type;
 }
 
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
