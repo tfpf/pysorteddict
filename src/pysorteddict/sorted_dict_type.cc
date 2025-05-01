@@ -96,7 +96,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
 
     // At this point, the key (argument) is guaranteed to be of the correct
     // type.
-    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AsDouble(key)))
+    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key)))
     {
         PyErr_Format(PyExc_ValueError, "bad key: %R", key);
         if (key_type_set_here)
