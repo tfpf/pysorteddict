@@ -36,6 +36,7 @@ from pysorteddict import SortedDict
 
 sorted_dict = SortedDict()
 sorted_dict["honestly"] = "weight"
+assert sorted_dict.key_type is str
 sorted_dict["gain is"] = 31.692
 sorted_dict["times"] = "easier than"
 sorted_dict["losing"] = ["weight"]
@@ -55,6 +56,13 @@ The above Python script will output the keys in ascending order.
 }
 ```
 
+The following key types are supported.
+
+* `bytes`
+* `float`
+* `int`
+* `str`
+
 ## Implementation Details
 
 pysorteddict is implemented entirely in C++. `SortedDict` provides a Python interface to
@@ -67,6 +75,12 @@ pysorteddict is implemented entirely in C++. `SortedDict` provides a Python inte
 #### `SortedDict(*args, **kwargs) -> SortedDict`
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
+
+### Properties
+
+#### `d.key_type: type | None`
+
+Return the key type of the sorted dictionary `d`, or `None` if no key-value pairs have been inserted in it.
 
 ### Magic Methods
 
@@ -119,6 +133,23 @@ Traceback (most recent call last):
 TypeError: wrong key type: want <class 'str'>, got <class 'int'>
 ```
 
+Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d[1.1] = ("racecar",)
+d[float("nan")]
+```
+
+```
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    d[float("nan")]
+    ~^^^^^^^^^^^^^^
+ValueError: bad key: nan
+```
+
 Otherwise, if `key` is not present in `d`, raise `KeyError`.
 
 ```python
@@ -140,8 +171,8 @@ KeyError: 'spam'
 
 Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
 
-If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`, `int`
-and `str`), raise `TypeError`.
+If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`,
+`float`, `int` and `str`), raise `TypeError`.
 
 ```python
 from pysorteddict import *
@@ -172,6 +203,23 @@ Traceback (most recent call last):
     d[0xC0FFEE] = "spam"
     ~^^^^^^^^^^
 TypeError: wrong key type: want <class 'str'>, got <class 'int'>
+```
+
+Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d[1.1] = ("racecar",)
+d[float("nan")] = {}
+```
+
+```
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    d[float("nan")] = {}
+    ~^^^^^^^^^^^^^^
+ValueError: bad key: nan
 ```
 
 #### `del d[key]`
@@ -209,6 +257,23 @@ Traceback (most recent call last):
     del d[0xC0FFEE]
         ~^^^^^^^^^^
 TypeError: wrong key type: want <class 'str'>, got <class 'int'>
+```
+
+Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d[1.1] = ("racecar",)
+del d[float("nan")]
+```
+
+```
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    del d[float("nan")]
+        ~^^^^^^^^^^^^^^
+ValueError: bad key: nan
 ```
 
 Otherwise, if `key` is not present in `d`, raise `KeyError`.

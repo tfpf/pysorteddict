@@ -6,6 +6,7 @@ from pysorteddict import SortedDict
 
 sorted_dict = SortedDict()
 sorted_dict["honestly"] = "weight"
+assert sorted_dict.key_type is str
 sorted_dict["gain is"] = 31.692
 sorted_dict["times"] = "easier than"
 sorted_dict["losing"] = ["weight"]
