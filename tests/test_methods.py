@@ -12,7 +12,7 @@ from pysorteddict import SortedDict
 if cpython := platform.python_implementation() == "CPython":
     from sys import getrefcount
 
-supported_types = {bytes, int, str}
+supported_types = {bytes, float, int, str}
 available_types = {bool, bytearray, bytes, complex, dict, float, frozenset, int, list, set, str, tuple}
 
 
@@ -66,12 +66,16 @@ class Resources:
             case builtins.bytes:
                 lo, hi = (8, 16) if small else (16, 32)
                 return self.rg.randbytes(self.rg.randrange(lo, hi))
-            case builtins.str:
-                lo, hi = (10, 20) if small else (20, 30)
-                return "".join(self.rg.choices(string.ascii_lowercase, k=self.rg.randrange(lo, hi)))
+            case builtins.float:
+                if small:
+                    return self.rg.uniform(0, 1) if self.rg.randrange(10) > 0 else -float("inf")
+                return self.rg.uniform(10, 100) if self.rg.randrange(10) > 0 else float("inf")
             case builtins.int:
                 lo, hi = (1000, 2000) if small else (2000, 3000)
                 return self.rg.randrange(lo, hi)
+            case builtins.str:
+                lo, hi = (10, 20) if small else (20, 30)
+                return "".join(self.rg.choices(string.ascii_lowercase, k=self.rg.randrange(lo, hi)))
             case _:
                 raise RuntimeError
 
