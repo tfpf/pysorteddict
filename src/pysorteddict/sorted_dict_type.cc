@@ -265,7 +265,7 @@ PyObject* SortedDictType::copy(void)
         return nullptr;
     }
     SortedDictType* this_copy = reinterpret_cast<SortedDictType*>(sd_copy);
-    this_copy->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>(*this->map);
+    this_copy->map = new std::map<PyObject*, PyObject*, SortedDictTypeKeyCompare>(*this->map);
     for (auto& item : *this_copy->map)
     {
         Py_INCREF(item.first);
@@ -358,7 +358,7 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     // allocated memory to null, but actually writes zeros to it. Hence,
     // explicitly initialise them.
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    sd->map = new std::map<PyObject*, PyObject*, PyObject_CustomCompare>;
+    sd->map = new std::map<PyObject*, PyObject*, SortedDictTypeKeyCompare>;
     sd->key_type = nullptr;
     return self;
 }
