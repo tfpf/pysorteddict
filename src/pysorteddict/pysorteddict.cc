@@ -55,7 +55,7 @@ struct SortedDictType
     void deinit(void);
     bool is_key_type_set(bool);
     bool can_use_as_key(PyObject*, bool);
-    bool are_key_type_and_key_valid(PyObject*, bool);
+    bool are_key_type_and_key_value_pair_valid(PyObject*, PyObject*);
     PyObject* repr(void);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
@@ -126,16 +126,30 @@ bool SortedDictType::can_use_as_key(PyObject* ob, bool raise)
 
 /**
  * Check whether the key type of this sorted dictionary is set and whether the
- * given object can be used as a key in this sorted dictionary.
+ * given key-value pair can be inserted into this sorted dictionary. If the
+ * value is not supplied, check whether it is valid to read from or delete the
+ * key.
  *
- * @param ob Python object.
- * @param raise Whether to set a Python exception if the check fails.
+ * @param key Key.
+ * @param value Value.
  *
  * @return `true` if the check succeeds, else `false`.
  */
-bool SortedDictType::are_key_type_and_key_valid(PyObject* ob, bool raise = true)
+bool SortedDictType::are_key_type_and_key_value_pair_valid(PyObject* key, PyObject* value = nullptr)
 {
-    return this->is_key_type_set(raise) && this->can_use_as_key(ob, raise);
+    if (this->key_type == nullptr)
+    {
+        if (value == nullptr)
+        {
+            PyErr_SetString(PyExc_ValueError, "key type not set: insert at least one item first");
+            return false;
+        }
+        static PyTypeObject* allowed_key_types[] = {
+            &PyBytes_Type,
+            &PyLong_Type,
+            &PyUnicode_Type,
+        };
+    }
 }
 
 PyObject* SortedDictType::repr(void)
@@ -194,7 +208,7 @@ int SortedDictType::contains(PyObject* key)
  */
 PyObject* SortedDictType::getitem(PyObject* key)
 {
-    if (!this->are_key_type_and_key_valid(key))
+    if (!this->are_key_type_and_key_value_pair_valid(key))
     {
         return nullptr;
     }
@@ -243,7 +257,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
         }
     }
 
-    if (!this->are_key_type_and_key_valid(key))
+    if (!this->are_key_type_and_key_value_pair_valid(key))
     {
         return -1;
     }
