@@ -68,6 +68,7 @@ public:
     PyObject* items(void);
     PyObject* keys(void);
     PyObject* values(void);
+    PyObject* get_key_type(void);
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 };
@@ -369,6 +370,15 @@ PyObject* SortedDictType::values(void)
     return sd_values;
 }
 
+PyObject* SortedDictType::get_key_type(void)
+{
+    if (this->key_type == nullptr)
+    {
+        Py_RETURN_NONE;
+    }
+    return Py_NewRef(this->key_type);
+}
+
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
 {
     // All initialisation is done immediately after allocation in order to
@@ -532,39 +542,60 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
     return sd->values();
 }
 
-static PyMethodDef sorted_dict_type_methods[] = { {
-                                                      .ml_name = "clear",
-                                                      .ml_meth = sorted_dict_type_clear,
-                                                      .ml_flags = METH_NOARGS,
-                                                      .ml_doc = sorted_dict_type_clear_doc,
-                                                  },
-                                                  {
-                                                      .ml_name = "copy",
-                                                      .ml_meth = sorted_dict_type_copy,
-                                                      .ml_flags = METH_NOARGS,
-                                                      .ml_doc = sorted_dict_type_copy_doc,
-                                                  },
-                                                  {
-                                                      .ml_name = "items",
-                                                      .ml_meth = sorted_dict_type_items,
-                                                      .ml_flags = METH_NOARGS,
-                                                      .ml_doc = sorted_dict_type_items_doc,
-                                                  },
-                                                  {
-                                                      .ml_name = "keys",
-                                                      .ml_meth = sorted_dict_type_keys,
-                                                      .ml_flags = METH_NOARGS,
-                                                      .ml_doc = sorted_dict_type_keys_doc,
-                                                  },
-                                                  {
-                                                      .ml_name = "values",
-                                                      .ml_meth = sorted_dict_type_values,
-                                                      .ml_flags = METH_NOARGS,
-                                                      .ml_doc = sorted_dict_type_values_doc,
-                                                  },
-                                                  {
-                                                      nullptr,
-                                                  } };
+static PyMethodDef sorted_dict_type_methods[] = {
+    {
+        .ml_name = "clear",
+        .ml_meth = sorted_dict_type_clear,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_type_clear_doc,
+    },
+    {
+        .ml_name = "copy",
+        .ml_meth = sorted_dict_type_copy,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_type_copy_doc,
+    },
+    {
+        .ml_name = "items",
+        .ml_meth = sorted_dict_type_items,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_type_items_doc,
+    },
+    {
+        .ml_name = "keys",
+        .ml_meth = sorted_dict_type_keys,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_type_keys_doc,
+    },
+    {
+        .ml_name = "values",
+        .ml_meth = sorted_dict_type_values,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_type_values_doc,
+    },
+    { nullptr },
+};
+
+PyDoc_STRVAR(
+    sorted_dict_type_get_key_type_doc,
+    "d.key_type: type | None\n"
+    "Return the key type of the sorted dictionary ``d``, or ``None`` if no key-value pairs have been inserted in it."
+);
+
+static PyObject* sorted_dict_type_get_key_type(PyObject* self, void* closure)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->get_key_type();
+}
+
+static PyGetSetDef sorted_dict_type_getset[] = {
+    {
+        .name = "key_type",
+        .get = sorted_dict_type_get_key_type,
+        .doc = sorted_dict_type_get_key_type_doc,
+    },
+    { nullptr },
+};
 
 /**
  * Initialise.
@@ -604,6 +635,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,
     .tp_doc = sorted_dict_type_doc,
     .tp_methods = sorted_dict_type_methods,
+    .tp_getset = sorted_dict_type_getset,
     .tp_init = sorted_dict_type_init,
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = sorted_dict_type_new,

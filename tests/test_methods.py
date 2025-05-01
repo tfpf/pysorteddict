@@ -108,11 +108,12 @@ def sorted_dict(request, resources):
     yield sorted_dict
 
     # Tearing down: verify some non-mutating methods.
+    assert repr(sorted_dict) == f"SortedDict({dict(sorted(resources.normal_dict.items()))})"
     assert len(sorted_dict) == len(resources.normal_dict)
     assert sorted_dict.items() == sorted(resources.normal_dict.items())
     assert sorted_dict.keys() == sorted(resources.normal_dict)
     assert sorted_dict.values() == [item[1] for item in sorted(resources.normal_dict.items())]
-    assert repr(sorted_dict) == f"SortedDict({dict(sorted(resources.normal_dict.items()))})"
+    assert sorted_dict.key_type is resources.key_type
 
 
 # Run each test with each key type, and on the sorted dictionary and its copy.
@@ -242,13 +243,16 @@ def test_clear(resources, sorted_dict):
 # have marked all tests as using those two fixtures.
 def test_empty_sorted_dictionary(resources, sorted_dict):
     sorted_dict = SortedDict()
+    assert sorted_dict.key_type is None
     for available_type in resources.available_types:
         assert available_type() not in sorted_dict
         with pytest.raises(ValueError, match="key type not set: insert at least one item first"):
             sorted_dict[available_type()]
+        assert sorted_dict.key_type is None
     for unsupported_type in resources.unsupported_types:
         with pytest.raises(TypeError, match=f"unsupported key type: {unsupported_type!r}"):
             sorted_dict[unsupported_type()] = None
+        assert sorted_dict.key_type is None
 
 
 if __name__ == "__main__":
