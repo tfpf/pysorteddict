@@ -6,8 +6,8 @@
 #include <memory>
 #include <string>
 
-#include "sorted_dict_type_key_compare.hh"
 #include "sorted_dict_type.hh"
+#include "sorted_dict_type_key_compare.hh"
 
 #define LEFT_PARENTHESIS "\u0028"
 #define RIGHT_PARENTHESIS "\u0029"

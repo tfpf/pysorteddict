@@ -2,8 +2,8 @@
 #define SORTED_DICT_TYPE_HH_
 
 #define PY_SSIZE_T_CLEAN
-#include <map>
 #include <Python.h>
+#include <map>
 
 #include "sorted_dict_type_key_compare.hh"
 
