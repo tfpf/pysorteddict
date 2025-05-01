@@ -45,7 +45,6 @@ struct SortedDictType
 public:
     PyObject_HEAD;
 
-private:
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
