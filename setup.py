@@ -1,3 +1,4 @@
+import glob
 import os
 import sysconfig
 
@@ -11,7 +12,7 @@ setuptools.setup(
         setuptools.Extension(
             name="pysorteddict",
             extra_compile_args=[cxx_standard_arg],
-            sources=["src/pysorteddict/pysorteddict.cc"],
+            sources=glob.glob("src/pysorteddict/*"),
             py_limited_api=True,
         )
     ]
