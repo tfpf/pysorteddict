@@ -32,10 +32,10 @@ struct PyObject_CustomCompare
     {
         // There must exist a total order on the set of possible keys. (Else,
         // this comparison may error out.) Hence, only instances of the type
-        // passed to the constructor may be used as keys. (Instances of types
+        // of the first key inserted may be used as keys. (Instances of types
         // derived from that type are not allowed, because comparisons between
-        // them may error out. See the constructor code.) With these
-        // precautions, this comparison should always work.
+        // them can be customised to error out. See the constructor code.) With
+        // these precautions, this comparison should always work.
         return PyObject_RichCompareBool(a, b, Py_LT) == 1;
     }
 };
