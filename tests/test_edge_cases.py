@@ -11,6 +11,8 @@ def test_bad_keys():
             sorted_dict[bad_key]
         with pytest.raises(ValueError, match=f"bad key: {bad_key}"):
             sorted_dict[bad_key] = None
+        sorted_dict[0] = 0  # To ensure that the key type didn't get set on unsuccessful insertion.
+        sorted_dict = SortedDict()
         sorted_dict[type(bad_key)()] = None
         with pytest.raises(ValueError, match=f"bad key: {bad_key}"):
             sorted_dict[bad_key] = None
