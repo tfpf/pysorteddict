@@ -532,39 +532,48 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
     return sd->values();
 }
 
-static PyMethodDef sorted_dict_type_methods[] = { {
-                                                      .ml_name = "clear",
-                                                      .ml_meth = sorted_dict_type_clear,
-                                                      .ml_flags = METH_NOARGS,
-                                                      .ml_doc = sorted_dict_type_clear_doc,
-                                                  },
-                                                  {
-                                                      .ml_name = "copy",
-                                                      .ml_meth = sorted_dict_type_copy,
-                                                      .ml_flags = METH_NOARGS,
-                                                      .ml_doc = sorted_dict_type_copy_doc,
-                                                  },
-                                                  {
-                                                      .ml_name = "items",
-                                                      .ml_meth = sorted_dict_type_items,
-                                                      .ml_flags = METH_NOARGS,
-                                                      .ml_doc = sorted_dict_type_items_doc,
-                                                  },
-                                                  {
-                                                      .ml_name = "keys",
-                                                      .ml_meth = sorted_dict_type_keys,
-                                                      .ml_flags = METH_NOARGS,
-                                                      .ml_doc = sorted_dict_type_keys_doc,
-                                                  },
-                                                  {
-                                                      .ml_name = "values",
-                                                      .ml_meth = sorted_dict_type_values,
-                                                      .ml_flags = METH_NOARGS,
-                                                      .ml_doc = sorted_dict_type_values_doc,
-                                                  },
-                                                  {
-                                                      nullptr,
-                                                  } };
+static PyMethodDef sorted_dict_type_methods[] = {
+    {
+        .ml_name = "clear",
+        .ml_meth = sorted_dict_type_clear,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_type_clear_doc,
+    },
+    {
+        .ml_name = "copy",
+        .ml_meth = sorted_dict_type_copy,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_type_copy_doc,
+    },
+    {
+        .ml_name = "items",
+        .ml_meth = sorted_dict_type_items,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_type_items_doc,
+    },
+    {
+        .ml_name = "keys",
+        .ml_meth = sorted_dict_type_keys,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_type_keys_doc,
+    },
+    {
+        .ml_name = "values",
+        .ml_meth = sorted_dict_type_values,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_type_values_doc,
+    },
+    { nullptr },
+};
+
+static PyGetSetDef sorted_dict_type_getset[] = {
+    {
+        .name = "key_type",
+        .getter = sorted_dict_type_get_key_type,
+        .doc = sorted_dict_type_get_key_type_doc,
+    },
+    { nullptr },
+};
 
 /**
  * Initialise.
@@ -604,6 +613,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,
     .tp_doc = sorted_dict_type_doc,
     .tp_methods = sorted_dict_type_methods,
+    .tp_getset = sorted_dict_type_getset,
     .tp_init = sorted_dict_type_init,
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = sorted_dict_type_new,
