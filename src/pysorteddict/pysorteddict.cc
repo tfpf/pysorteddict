@@ -591,7 +591,7 @@ static PyObject* sorted_dict_type_get_key_type(PyObject* self, void* closure)
 static PyGetSetDef sorted_dict_type_getset[] = {
     {
         .name = "key_type",
-        .getter = sorted_dict_type_get_key_type,
+        .get = sorted_dict_type_get_key_type,
         .doc = sorted_dict_type_get_key_type_doc,
     },
     { nullptr },
