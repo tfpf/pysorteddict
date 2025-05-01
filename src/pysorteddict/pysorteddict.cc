@@ -177,7 +177,8 @@ PyObject* SortedDictType::repr(void)
  */
 int SortedDictType::contains(PyObject* key)
 {
-    if (!this->are_key_type_and_key_valid(key, false) || this->map->find(key) == this->map->end())
+    if (this->key_type == nullptr || Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0
+        || this->map->find(key) == this->map->end())
     {
         return 0;
     }
