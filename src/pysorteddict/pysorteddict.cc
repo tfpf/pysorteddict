@@ -90,7 +90,7 @@ void SortedDictType::deinit(void)
  */
 bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObject* value = nullptr)
 {
-    bool key_already_checked = false;
+    bool key_check_pending = true;
     if (this->key_type == nullptr)
     {
         if (value == nullptr)
@@ -112,7 +112,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
             if (Py_IS_TYPE(key, allowed_key_type) != 0)
             {
                 this->key_type = Py_NewRef(allowed_key_type);
-                key_already_checked = true;
+                key_check_pending = false;
                 break;
             }
         }
@@ -122,7 +122,12 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
             return false;
         }
     }
-    return key_already_checked || Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0;
+    if (key_check_pending && Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0)
+    {
+        PyErr_Format(PyExc_TypeError, "wrong key type: want %R, got %R", this->key_type, Py_TYPE(key));
+        return false;
+    }
+    return true;
 }
 
 PyObject* SortedDictType::repr(void)
