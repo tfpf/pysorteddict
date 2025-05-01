@@ -42,8 +42,10 @@ struct PyObject_CustomCompare
 
 struct SortedDictType
 {
+public:
     PyObject_HEAD;
 
+private:
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
@@ -52,8 +54,11 @@ struct SortedDictType
     // The type of each key.
     PyObject* key_type;
 
-    void deinit(void);
+private:
     bool are_key_type_and_key_value_pair_okay(PyObject*, PyObject*);
+
+public:
+    void deinit(void);
     PyObject* repr(void);
     int contains(PyObject*);
     PyObject* getitem(PyObject*);
