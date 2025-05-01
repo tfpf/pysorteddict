@@ -1,5 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <cmath>
 #include <iterator>
 #include <map>
 #include <memory>
@@ -95,7 +96,7 @@ void SortedDictType::deinit(void)
  */
 bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObject* value = nullptr)
 {
-    bool key_check_pending = true;
+    bool key_type_set_here = false;
     if (this->key_type == nullptr)
     {
         if (value == nullptr)
@@ -109,6 +110,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
         // The first key-value pair is being inserted.
         static PyTypeObject* allowed_key_types[] = {
             &PyBytes_Type,
+            &PyFloat_Type,
             &PyLong_Type,
             &PyUnicode_Type,
         };
@@ -116,8 +118,10 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
         {
             if (Py_IS_TYPE(key, allowed_key_type) != 0)
             {
-                this->key_type = Py_NewRef(allowed_key_type);
-                key_check_pending = false;
+                // Don't increment the reference count yet. There is one more
+                // check remaining.
+                this->key_type = allowed_key_type;
+                key_type_set_here = true;
                 break;
             }
         }
@@ -127,10 +131,32 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
             return false;
         }
     }
-    if (key_check_pending && Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0)
+
+    // At this point, the key type (member) is guaranteed to be non-null.
+    if (!key_type_set_here && Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0)
     {
         PyErr_Format(PyExc_TypeError, "wrong key type: want %R, got %R", this->key_type, Py_TYPE(key));
         return false;
+    }
+
+    // At this point, the key (argument) is guaranteed to be of the correct
+    // type.
+    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AsDouble(key)))
+    {
+        PyErr_Format(PyExc_TypeError, "bad key: %R", key);
+        if (key_type_set_here)
+        {
+            // Insertion of the key-value pair was unsuccessful, so discard the
+            // registered key type.
+            this->key_type = nullptr;
+        }
+        return false;
+    }
+
+    if (!key_type_set_here)
+    {
+        // Increment the reference count, since this wasn't done above.
+        Py_INCREF(this->key_type);
     }
     return true;
 }
