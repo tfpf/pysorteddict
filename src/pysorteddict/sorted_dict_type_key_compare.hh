@@ -1,10 +1,13 @@
+#ifndef SORTED_DICT_TYPE_KEY_COMPARE_HH_
+#define SORTED_DICT_TYPE_KEY_COMPARE_HH_
+
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 /**
  * C++-style comparison implementation for Python objects.
  */
-struct SortedDictKeyCompare
+struct SortedDictTypeKeyCompare
 {
     bool operator()(PyObject* a, PyObject* b) const
     {
@@ -18,3 +21,5 @@ struct SortedDictKeyCompare
         return PyObject_RichCompareBool(a, b, Py_LT) == 1;
     }
 };
+
+#endif

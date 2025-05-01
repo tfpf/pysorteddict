@@ -26,23 +26,6 @@ struct PyObject_Delete
 
 using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
 
-/**
- * C++-style comparison implementation for Python objects.
- */
-struct PyObject_CustomCompare
-{
-    bool operator()(PyObject* a, PyObject* b) const
-    {
-        // There must exist a total order on the set of possible keys. (Else,
-        // this comparison may error out.) Hence, only instances of the type
-        // of the first key inserted may be used as keys. (Instances of types
-        // derived from that type are not allowed, because comparisons between
-        // them can be customised to error out. See the constructor code.) With
-        // these precautions, this comparison should always work.
-        return PyObject_RichCompareBool(a, b, Py_LT) == 1;
-    }
-};
-
 struct SortedDictType
 {
 public:
