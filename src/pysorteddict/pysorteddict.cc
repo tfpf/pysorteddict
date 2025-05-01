@@ -120,7 +120,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
             {
                 // Don't increment the reference count yet. There is one more
                 // check remaining.
-                this->key_type = allowed_key_type;
+                this->key_type = reinterpret_cast<PyObject*>(allowed_key_type);
                 key_type_set_here = true;
                 break;
             }
@@ -141,7 +141,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
 
     // At this point, the key (argument) is guaranteed to be of the correct
     // type.
-    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AsDouble(key)))
+    if (this->key_type == reinterpret_cast<PyObject*>(&PyFloat_Type) && std::isnan(PyFloat_AsDouble(key)))
     {
         PyErr_Format(PyExc_TypeError, "bad key: %R", key);
         if (key_type_set_here)
