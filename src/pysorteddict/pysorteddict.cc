@@ -122,7 +122,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
             return false;
         }
     }
-    return key_already_checked || Py_IS_TYPE(key, this->key_type) != 0;
+    return key_already_checked || Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) != 0;
 }
 
 PyObject* SortedDictType::repr(void)
