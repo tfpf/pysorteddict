@@ -52,7 +52,7 @@ public:
     std::map<PyObject*, PyObject*, PyObject_CustomCompare>* map;
 
     // The type of each key.
-    PyObject* key_type;
+    PyTypeObject* key_type;
 
 private:
     bool are_key_type_and_key_value_pair_okay(PyObject*, PyObject*);
@@ -120,7 +120,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
             {
                 // Don't increment the reference count yet. There is one more
                 // check remaining.
-                this->key_type = reinterpret_cast<PyObject*>(allowed_key_type);
+                this->key_type = allowed_key_type;
                 key_type_set_here = true;
                 break;
             }
@@ -133,7 +133,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
     }
 
     // At this point, the key type (member) is guaranteed to be non-null.
-    if (!key_type_set_here && Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0)
+    if (!key_type_set_here && Py_IS_TYPE(key, this->key_type) == 0)
     {
         PyErr_Format(PyExc_TypeError, "wrong key type: want %R, got %R", this->key_type, Py_TYPE(key));
         return false;
@@ -141,19 +141,19 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
 
     // At this point, the key (argument) is guaranteed to be of the correct
     // type.
-    if (this->key_type == reinterpret_cast<PyObject*>(&PyFloat_Type) && std::isnan(PyFloat_AsDouble(key)))
+    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AsDouble(key)))
     {
-        PyErr_Format(PyExc_TypeError, "bad key: %R", key);
+        PyErr_Format(PyExc_ValueError, "bad key: %R", key);
         if (key_type_set_here)
         {
-            // Insertion of the key-value pair was unsuccessful, so discard the
-            // registered key type.
+            // Insertion of the key-value pair was unsuccessful, so clear the
+            // key type.
             this->key_type = nullptr;
         }
         return false;
     }
 
-    if (!key_type_set_here)
+    if (key_type_set_here)
     {
         // Increment the reference count, since this wasn't done above.
         Py_INCREF(this->key_type);
@@ -200,8 +200,7 @@ PyObject* SortedDictType::repr(void)
  */
 int SortedDictType::contains(PyObject* key)
 {
-    if (this->key_type == nullptr || Py_IS_TYPE(key, reinterpret_cast<PyTypeObject*>(this->key_type)) == 0
-        || this->map->find(key) == this->map->end())
+    if (this->key_type == nullptr || Py_IS_TYPE(key, this->key_type) == 0 || this->map->find(key) == this->map->end())
     {
         return 0;
     }
@@ -312,7 +311,8 @@ PyObject* SortedDictType::copy(void)
         Py_INCREF(item.first);
         Py_INCREF(item.second);
     }
-    this_copy->key_type = Py_XNewRef(this->key_type);  // 🆕
+    this_copy->key_type = this->key_type;
+    Py_XINCREF(this_copy->key_type);
     return sd_copy;
 }
 
