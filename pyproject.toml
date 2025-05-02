@@ -2,12 +2,13 @@
 # The Apple linker does not recognise `-Bsymbolic-functions`, one of the
 # arguments passed to it on macOS when building wheels for PyPy. Using an older
 # version of setuptools fixes this problem.
-requires = ["setuptools==70.0.0"]
+requires = ["setuptools>=75.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysorteddict"
-version = "0.4.1"
+version = "0.4.2"
+license = "GPL-3.0-only"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
@@ -17,7 +18,6 @@ requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX",
