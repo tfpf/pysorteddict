@@ -1,8 +1,12 @@
 [build-system]
 # The Apple linker does not recognise `-Bsymbolic-functions`, one of the
 # arguments passed to it on macOS when building wheels for PyPy. Using an older
-# version of setuptools fixes this problem.
-requires = ["setuptools>=75.0.0"]
+# version of setuptools fixes this problem. On other systems (including my main
+# system), I allow newer versions, so that I am notified about deprecations.
+requires = [
+    "setuptools==70.0.0; platform_system == 'Darwin'",
+    "setuptools>=75.0.0; platform_system != 'Darwin'",
+]
 build-backend = "setuptools.build_meta"
 
 [project]
