@@ -40,8 +40,8 @@ void SortedDictType::deinit(void)
 
 /**
  * Check whether the given key can be inserted into this sorted dictionary. For
- * instance, NaN cannot be compared with other floating-point numbers, making
- * it unsuitable for insertion.
+ * instance, NaN cannot be compared with other floating-point numbers, so it
+ * cannot be inserted.
  *
  * The caller should ensure that the key type is set and that it matches the
  * type of the given key prior to calling this method.
