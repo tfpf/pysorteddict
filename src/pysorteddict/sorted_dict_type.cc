@@ -50,8 +50,10 @@ void SortedDictType::deinit(void)
  *
  * @return `true` if the check succeeds, else `false`.
  */
-bool SortedDictType::is_key_good(PyObject* key){
-    if(this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key))){
+bool SortedDictType::is_key_good(PyObject* key)
+{
+    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key)))
+    {
         return false;
     }
     return true;
@@ -115,7 +117,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
 
     // At this point, the key is guaranteed to be of the correct type. Hence,
     // it is safe to call this method.
-    if(!this->is_key_good(key)){
+    if (!this->is_key_good(key))
     {
         PyErr_Format(PyExc_ValueError, "bad key: %R", key);
         if (key_type_set_here)
