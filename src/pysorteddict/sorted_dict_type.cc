@@ -65,7 +65,7 @@ bool SortedDictType::is_key_good(PyObject* key){
  *
  * @return `true` if the check succeeds, else `false`.
  */
-bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObject* value = nullptr)
+bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObject* value = nullptr)
 {
     bool key_type_set_here = false;
     if (this->key_type == nullptr)
@@ -192,7 +192,7 @@ Py_ssize_t SortedDictType::len(void)
  */
 PyObject* SortedDictType::getitem(PyObject* key)
 {
-    if (!this->are_key_type_and_key_value_pair_okay(key))
+    if (!this->are_key_type_and_key_value_pair_good(key))
     {
         return nullptr;
     }
@@ -216,7 +216,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
-    if (!this->are_key_type_and_key_value_pair_okay(key, value))
+    if (!this->are_key_type_and_key_value_pair_good(key, value))
     {
         return -1;
     }
