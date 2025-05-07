@@ -27,17 +27,6 @@ struct PyObject_Delete
 
 using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
 
-void SortedDictType::deinit(void)
-{
-    for (auto& item : *this->map)
-    {
-        Py_DECREF(item.first);
-        Py_DECREF(item.second);
-    }
-    Py_XDECREF(this->key_type);
-    delete this->map;
-}
-
 /**
  * Check whether the given key can be inserted into this sorted dictionary. For
  * instance, NaN cannot be compared with other floating-point numbers, so it
@@ -135,6 +124,17 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         Py_INCREF(this->key_type);
     }
     return true;
+}
+
+void SortedDictType::deinit(void)
+{
+    for (auto& item : *this->map)
+    {
+        Py_DECREF(item.first);
+        Py_DECREF(item.second);
+    }
+    Py_XDECREF(this->key_type);
+    delete this->map;
 }
 
 PyObject* SortedDictType::repr(void)
