@@ -39,8 +39,9 @@ void SortedDictType::deinit(void)
 }
 
 /**
- * Check whether the given key is comparable. For instance, NaN is not good
- * because it cannot be compared with other floating-point numbers.
+ * Check whether the given key can be inserted into this sorted dictionary. For
+ * instance, NaN cannot be compared with other floating-point numbers, making
+ * it an unsuitable key.
  *
  * The caller should ensure that the key type is set and that it matches the
  * type of the given key prior to calling this method.
