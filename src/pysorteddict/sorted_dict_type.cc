@@ -39,6 +39,21 @@ void SortedDictType::deinit(void)
 }
 
 /**
+ * Check whether the given key is comparable. For instance, NaN is not good
+ * because it cannot be compared with other floating-point numbers.
+ *
+ * The caller should ensure that the key type is set and that it matches the
+ * type of the given key prior to calling this method.
+ *
+ * @param key Key.
+ *
+ * @return `true` if the check succeeds, else `false`.
+ */
+bool SortedDictType::is_key_good(PyObject* key){
+    return this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key));
+}
+
+/**
  * Check whether the key type of this sorted dictionary is set and whether the
  * given key-value pair can be inserted into this sorted dictionary. If the
  * value is not supplied, check whether it is valid to get or delete the key.
@@ -87,16 +102,16 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
         }
     }
 
-    // At this point, the key type (member) is guaranteed to be non-null.
+    // At this point, the key type is guaranteed to be non-null.
     if (!key_type_set_here && Py_IS_TYPE(key, this->key_type) == 0)
     {
         PyErr_Format(PyExc_TypeError, "wrong key type: want %R, got %R", this->key_type, Py_TYPE(key));
         return false;
     }
 
-    // At this point, the key (argument) is guaranteed to be of the correct
-    // type.
-    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key)))
+    // At this point, the key is guaranteed to be of the correct type. Hence,
+    // it is safe to call this method.
+    if(!this->is_key_good(key)){
     {
         PyErr_Format(PyExc_ValueError, "bad key: %R", key);
         if (key_type_set_here)
