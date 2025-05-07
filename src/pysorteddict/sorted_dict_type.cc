@@ -51,7 +51,10 @@ void SortedDictType::deinit(void)
  * @return `true` if the check succeeds, else `false`.
  */
 bool SortedDictType::is_key_good(PyObject* key){
-    return this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key));
+    if(this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key))){
+        return false;
+    }
+    return true;
 }
 
 /**
