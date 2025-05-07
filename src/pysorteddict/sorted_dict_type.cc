@@ -27,15 +27,25 @@ struct PyObject_Delete
 
 using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
 
-void SortedDictType::deinit(void)
+/**
+ * Check whether the given key can be inserted into this sorted dictionary. For
+ * instance, NaN cannot be compared with other floating-point numbers, so it
+ * cannot be inserted.
+ *
+ * The caller should ensure that the key type is set and that it matches the
+ * type of the given key prior to calling this method.
+ *
+ * @param key Key.
+ *
+ * @return `true` if the check succeeds, else `false`.
+ */
+bool SortedDictType::is_key_good(PyObject* key)
 {
-    for (auto& item : *this->map)
+    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key)))
     {
-        Py_DECREF(item.first);
-        Py_DECREF(item.second);
+        return false;
     }
-    Py_XDECREF(this->key_type);
-    delete this->map;
+    return true;
 }
 
 /**
@@ -49,7 +59,7 @@ void SortedDictType::deinit(void)
  *
  * @return `true` if the check succeeds, else `false`.
  */
-bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObject* value = nullptr)
+bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObject* value = nullptr)
 {
     bool key_type_set_here = false;
     if (this->key_type == nullptr)
@@ -87,16 +97,16 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
         }
     }
 
-    // At this point, the key type (member) is guaranteed to be non-null.
+    // At this point, the key type is guaranteed to be non-null.
     if (!key_type_set_here && Py_IS_TYPE(key, this->key_type) == 0)
     {
         PyErr_Format(PyExc_TypeError, "wrong key type: want %R, got %R", this->key_type, Py_TYPE(key));
         return false;
     }
 
-    // At this point, the key (argument) is guaranteed to be of the correct
-    // type.
-    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key)))
+    // At this point, the key is guaranteed to be of the correct type. Hence,
+    // it is safe to call this method.
+    if (!this->is_key_good(key))
     {
         PyErr_Format(PyExc_ValueError, "bad key: %R", key);
         if (key_type_set_here)
@@ -114,6 +124,17 @@ bool SortedDictType::are_key_type_and_key_value_pair_okay(PyObject* key, PyObjec
         Py_INCREF(this->key_type);
     }
     return true;
+}
+
+void SortedDictType::deinit(void)
+{
+    for (auto& item : *this->map)
+    {
+        Py_DECREF(item.first);
+        Py_DECREF(item.second);
+    }
+    Py_XDECREF(this->key_type);
+    delete this->map;
 }
 
 PyObject* SortedDictType::repr(void)
@@ -155,7 +176,8 @@ PyObject* SortedDictType::repr(void)
  */
 int SortedDictType::contains(PyObject* key)
 {
-    if (this->key_type == nullptr || Py_IS_TYPE(key, this->key_type) == 0 || this->map->find(key) == this->map->end())
+    if (this->key_type == nullptr || Py_IS_TYPE(key, this->key_type) == 0 || !this->is_key_good(key)
+        || this->map->find(key) == this->map->end())
     {
         return 0;
     }
@@ -176,7 +198,7 @@ Py_ssize_t SortedDictType::len(void)
  */
 PyObject* SortedDictType::getitem(PyObject* key)
 {
-    if (!this->are_key_type_and_key_value_pair_okay(key))
+    if (!this->are_key_type_and_key_value_pair_good(key))
     {
         return nullptr;
     }
@@ -200,7 +222,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
-    if (!this->are_key_type_and_key_value_pair_okay(key, value))
+    if (!this->are_key_type_and_key_value_pair_good(key, value))
     {
         return -1;
     }

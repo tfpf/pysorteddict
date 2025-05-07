@@ -22,7 +22,8 @@ private:
     PyTypeObject* key_type;
 
 private:
-    bool are_key_type_and_key_value_pair_okay(PyObject*, PyObject*);
+    bool is_key_good(PyObject*);
+    bool are_key_type_and_key_value_pair_good(PyObject*, PyObject*);
 
 public:
     void deinit(void);
