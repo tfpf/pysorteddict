@@ -21,12 +21,20 @@ class TestFuzzy:
 
     def _gen(self, key_type: type | None = None):
         match key_type or self.key_type:
+            case builtins.bool:
+                return bool(self._rg.getrandbits(1))
+            case builtins.bytearray | builtins.frozenset | builtins.list | builtins.set | builtins.tuple:
+                return key_type(self._gen(bytes))
+            case builtins.complex:
+                return self._gen(float) + self._gen(float) * 1j
             case builtins.bytes:
                 return self._rg.randbytes(self._rg.randrange(16, 32))
+            case builtins.dict:
+                return {s: s for s in self._gen(str)}
             case builtins.int:
                 return self._rg.randrange(1_000, 2_000)
             case builtins.float:
-                return self._rg.choice([f / 1_000 for f in range(1_000)] + [-math.inf, math.inf])
+                return self._rg.choice([f / 1_000 for f in range(1_000)] + [-math.inf, math.inf, math.nan])
             case builtins.str:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
             case key_type:
@@ -54,7 +62,15 @@ class TestFuzzy:
                 delattr(self.sorted_dict, attr)
 
     def _test_contains(self):
-        pass
+        for key_type in supported_types.union(unsupported_types):
+            if key_type is not self.key_type:
+                assert self._gen(key_type) not in self.sorted_dict
+                continue
+            if self.normal_dict:
+                key = self._rg.choice(self.normal_dict)
+                assert key in self.sorted_dict
+            key = self._gen()
+            assert (key in self.sorted_dict) == (key in self.normal_dict)
 
 
 if __name__ == "__main__":
