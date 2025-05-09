@@ -5,6 +5,8 @@ import pytest
 from pysorteddict import SortedDict
 
 rg = random.Random(__name__)
+supported_types = {bytes, int, float, str}
+unsupported_types = {bool, bytearray, complex, dict, frozenset, list, set, tuple}
 
 
 class TestFuzzy:
