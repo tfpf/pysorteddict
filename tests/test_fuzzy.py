@@ -7,19 +7,20 @@ rg = random.Random(__name__)
 
 class TestFuzzy:
 
-    def set_up(self):
+    def _set_up(self):
         self.key_type = str
 
-    def _test_contains(self):
-        pass
-
     def test_fuzzy(self):
-        self.set_up()
+        self._set_up()
 
         attrs = dir(SortedDict)
-        for _ in range(10):
-            match rg.choice(attrs):
+        for attr in rg.choices(attrs):
+            match attr:
                 case "__contains__":
                     self._test_contains()
                 case attr:
                     raise RuntimeError(attr)
+
+    def _test_contains(self):
+        pass
+
