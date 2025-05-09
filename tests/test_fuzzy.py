@@ -19,8 +19,8 @@ class TestFuzzy:
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
 
-    def _gen(self):
-        match self.key_type:
+    def _gen(self, key_type: type | None = None):
+        match key_type or self.key_type:
             case builtins.bytes:
                 return self._rg.randbytes(self._rg.randrange(16, 32))
             case builtins.int:
