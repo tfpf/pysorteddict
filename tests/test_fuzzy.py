@@ -1,5 +1,6 @@
 import builtins
 import math
+import os
 import random
 import string
 
@@ -13,13 +14,6 @@ all_types = unsupported_types.union(supported_types)
 
 
 class TestFuzzy:
-    _rg = random.Random(__name__)
-
-    def _set_up(self):
-        self.key_type = self._rg.choice([*supported_types])
-        self.normal_dict = {}
-        self.sorted_dict = SortedDict()
-
     def _gen(self, key_type: type | None = None):
         match key_type or self.key_type:
             case builtins.bool:
@@ -41,10 +35,14 @@ class TestFuzzy:
             case key_type:
                 raise RuntimeError(key_type)
 
-    def test_fuzzy(self):
-        self._set_up()
+    @pytest.mark.parametrize("idx", range(os.cpu_count()))
+    def test_fuzzy(self, idx: int):
+        self._rg = random.Random(f"{__name__}-{idx}")
+        self.key_type = self._rg.choice([*supported_types])
+        self.normal_dict = {}
+        self.sorted_dict = SortedDict()
 
-        for attr in self._rg.choices(dir(SortedDict), k=1_000):
+        for attr in self._rg.choices(dir(SortedDict), k=100_000):
             match attr:
                 case "__delattr__":
                     self._test_delattr()
