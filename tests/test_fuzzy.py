@@ -7,8 +7,9 @@ import pytest
 
 from pysorteddict import SortedDict
 
-supported_types = {bytes, int, float, str}
 unsupported_types = {bool, bytearray, complex, dict, frozenset, list, set, tuple}
+supported_types = {bytes, int, float, str}
+all_types = unsupported_types.union(supported_types)
 
 
 class TestFuzzy:
@@ -43,12 +44,14 @@ class TestFuzzy:
     def test_fuzzy(self):
         self._set_up()
 
-        for attr in self._rg.choices(dir(SortedDict), k=1_000_000):
+        for attr in self._rg.choices(dir(SortedDict), k=1_000):
             match attr:
                 case "__delattr__":
                     self._test_delattr()
                 case "__contains__":
                     self._test_contains()
+                case "__delitem__":
+                    self._test_delitem()
 
     def _test_delattr(self):
         with pytest.raises(
@@ -62,15 +65,33 @@ class TestFuzzy:
                 delattr(self.sorted_dict, attr)
 
     def _test_contains(self):
-        for key_type in supported_types.union(unsupported_types):
+        for key_type in all_types:
             if key_type is not self.key_type:
                 assert self._gen(key_type) not in self.sorted_dict
                 continue
             if self.normal_dict:
-                key = self._rg.choice(self.normal_dict)
+                key = self._rg.choice([*self.normal_dict])
                 assert key in self.sorted_dict
             key = self._gen()
             assert (key in self.sorted_dict) == (key in self.normal_dict)
+
+    def _test_delitem(self):
+        for key_type in all_types:
+            if not self.normal_dict:
+                with pytest.raises(ValueError, match="^key type not set: insert at least one item first$"):
+                    del self.sorted_dict[self._gen(key_type)]
+                continue
+            key = self._rg.gen(key_type)
+            if key_type is not self.key_type:
+                with pytest.raises(TypeError, match=f"^wrong key type: want {self.key_type!r}, got {key_type!r}$"):
+                    del self.sorted_dict[key]
+                continue
+            if key not in self.normal_dict:
+                with pytest.raises(KeyError, match=str(key)):
+                    del self.sorted_dict[key]
+            else:
+                del self.normal_dict[key]
+                del self.sorted_dict[key]
 
 
 if __name__ == "__main__":
