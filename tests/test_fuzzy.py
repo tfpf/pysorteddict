@@ -87,9 +87,9 @@ class TestFuzzy:
             if key not in self.normal_dict:
                 with pytest.raises(KeyError, match=str(key)):
                     del self.sorted_dict[key]
-            else:
-                del self.normal_dict[key]
-                del self.sorted_dict[key]
+                continue
+            del self.normal_dict[key]
+            del self.sorted_dict[key]
 
 
 if __name__ == "__main__":
