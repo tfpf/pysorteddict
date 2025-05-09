@@ -13,8 +13,7 @@ class TestFuzzy:
     def test_fuzzy(self):
         self._set_up()
 
-        attrs = dir(SortedDict)
-        for attr in rg.choices(attrs):
+        for attr in rg.choices(dir(SortedDict)):
             match attr:
                 case "__contains__":
                     self._test_contains()
