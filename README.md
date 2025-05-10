@@ -4,9 +4,7 @@ Provides `SortedDict`, which is a Python sorted dictionary: a Python dictionary 
 ascending order.
 
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
-
-[![style](https://github.com/tfpf/pysorteddict/actions/workflows/style.yml/badge.svg)](https://github.com/tfpf/pysorteddict/actions/workflows/style.yml)
-[![package](https://github.com/tfpf/pysorteddict/actions/workflows/package.yml/badge.svg)](https://github.com/tfpf/pysorteddict/actions/workflows/package.yml)
+[![ci](https://github.com/tfpf/pysorteddict/actions/workflows/ci.yml/badge.svg)](https://github.com/tfpf/pysorteddict/actions/workflows/ci.yml)
 
 <p align="center">
  <img src="https://github.com/user-attachments/assets/e9d1e78e-c0fd-4d87-93f6-e293ddef31ba" />
@@ -15,7 +13,7 @@ ascending order.
 ## Installation
 
 [pysorteddict is available on PyPI.](https://pypi.org/project/pysorteddict/) It requires Python 3.10 or newer. Built
-distributions (binary wheels) are provided for Linux, macOS and Windows, so installing is straightforward.
+distributions (binary wheels) are provided for 64-bit Linux, macOS and Windows, so installing is straightforward.
 
 ```shell
 pip install pysorteddict

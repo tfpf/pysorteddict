@@ -43,6 +43,7 @@ classifiers = [
 "Bug Tracker" = "https://github.com/tfpf/pysorteddict/issues"
 
 [tool.cibuildwheel]
+archs = ["auto64"]
 enable = ["pypy"]
 test-command = "pytest -n auto {package}"
 test-requires = ["pytest-xdist"]
