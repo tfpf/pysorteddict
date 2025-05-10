@@ -129,7 +129,7 @@ class TestFuzz:
                 with pytest.raises(KeyError, match=re.escape(str(key))):
                     self.sorted_dict[key]
                 continue
-            assert self.normal_dict[key] == self.sorted_dict[key]
+            assert self.sorted_dict[key] == self.normal_dict[key]
 
     def _test___setitem__(self):
         for key_type in all_types:
@@ -152,7 +152,8 @@ class TestFuzz:
                 self.is_sorted_dict_new = False
 
     def _test_clear(self):
-        pass
+        self.normal_dict.clear()
+        self.sorted_dict.clear()
 
 
 if __name__ == "__main__":

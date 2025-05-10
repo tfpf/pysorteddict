@@ -44,14 +44,14 @@ classifiers = [
 
 [tool.cibuildwheel]
 enable = ["pypy"]
-test-command = "pytest {package}"
-test-requires = ["pytest"]
+test-command = "pytest -n auto {package}"
+test-requires = ["pytest-xdist"]
 
 # No use of an editable installation. If the code is edited, it has to be
 # recompiled, and the package has to be reinstalled.
 [tool.hatch.envs.default]
 dev-mode = false
-dependencies = ["pytest"]
+dependencies = ["pytest-xdist"]
 
 [tool.ruff]
 line-length = 119
