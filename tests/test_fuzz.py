@@ -47,16 +47,21 @@ class TestFuzz:
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
 
-        for attr in self._rg.choices(dir(SortedDict), k=100_000):
-            match attr:
-                case "__delattr__":
-                    self._test_delattr()
-                case "__contains__":
-                    self._test_contains()
-                case "__delitem__":
-                    self._test_delitem()
+        attrs = {*dir(SortedDict)}.difference(['__class__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__len__', '__lt__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__setitem__', '__sizeof__', '__str__', '__subclasshook__', 'clear', 'copy', 'items', 'key_type', 'keys', 'values'])
+        for attr in self._rg.choices([*attrs], k=10_000):
+            getattr(self, f"_test_{attr}")()
 
-    def _test_delattr(self):
+    def _test___contains__(self):
+        for key_type in all_types:
+            key = self._gen(key_type)
+            if key_type is not self.key_type:
+                assert key not in self.sorted_dict
+                continue
+            if self.normal_dict:
+                assert self._rg.choice([*self.normal_dict]) in self.sorted_dict
+            assert (key in self.sorted_dict) == (key in self.normal_dict)
+
+    def _test___delattr__(self):
         with pytest.raises(
             AttributeError, match="^attribute 'key_type' of 'pysorteddict.SortedDict' objects is not writable$"
         ):
@@ -67,17 +72,7 @@ class TestFuzz:
             ):
                 delattr(self.sorted_dict, attr)
 
-    def _test_contains(self):
-        for key_type in all_types:
-            key = self._gen(key_type)
-            if key_type is not self.key_type:
-                assert key not in self.sorted_dict
-                continue
-            if self.normal_dict:
-                assert self._rg.choice([*self.normal_dict]) in self.sorted_dict
-            assert (key in self.sorted_dict) == (key in self.normal_dict)
-
-    def _test_delitem(self):
+    def _test___delitem__(self):
         for key_type in all_types:
             key = self._gen(key_type)
             if not self.normal_dict:
