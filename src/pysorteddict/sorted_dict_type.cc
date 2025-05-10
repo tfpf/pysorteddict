@@ -141,7 +141,7 @@ PyObject* SortedDictType::repr(void)
 {
     char const* delimiter = "";
     char const* actual_delimiter = ", ";
-    std::string this_repr = "SortedDict" LEFT_PARENTHESIS LEFT_CURLY_BRACKET;
+    std::string this_repr_utf8 = "SortedDict" LEFT_PARENTHESIS LEFT_CURLY_BRACKET;
     for (auto& item : *this->map)
     {
         PyObjectWrapper key_repr(PyObject_Repr(item.first));  // 🆕
@@ -157,14 +157,14 @@ PyObject* SortedDictType::repr(void)
         Py_ssize_t key_repr_size, value_repr_size;
         char const* key_repr_utf8 = PyUnicode_AsUTF8AndSize(key_repr.get(), &key_repr_size);
         char const* value_repr_utf8 = PyUnicode_AsUTF8AndSize(value_repr.get(), &value_repr_size);
-        this_repr.append(delimiter)
+        this_repr_utf8.append(delimiter)
             .append(key_repr_utf8, key_repr_size)
             .append(": ")
             .append(value_repr_utf8, value_repr_size);
         delimiter = actual_delimiter;
     }
-    this_repr.append(RIGHT_CURLY_BRACKET RIGHT_PARENTHESIS);
-    return PyUnicode_FromStringAndSize(this_repr.data(), this_repr.size());  // 🆕
+    this_repr_utf8.append(RIGHT_CURLY_BRACKET RIGHT_PARENTHESIS);
+    return PyUnicode_FromStringAndSize(this_repr_utf8.data(), this_repr_utf8.size());  // 🆕
 }
 
 /**
