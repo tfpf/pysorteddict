@@ -15,7 +15,7 @@ all_types = [*unsupported_types.union(supported_types)]
 
 class TestFuzz:
     def _gen(self, key_type: type | None = None):
-        key_type = key_type or self._rg.choice(all_types)
+        key_type = key_type or self._rg.choice((frozenset, list, set, tuple))
         match key_type:
             case builtins.bool:
                 return bool(self._rg.getrandbits(1))
@@ -102,7 +102,25 @@ class TestFuzz:
             del self.sorted_dict[key]
 
     def _test___getitem__(self):
-        pass
+        for key_type in all_types:
+            key = self._gen(key_type)
+            if self.is_sorted_dict_new:
+                with pytest.raises(ValueError, match="^key type not set: insert at least one item first$"):
+                    self.sorted_dict[key]
+                continue
+            if key_type is not self.key_type:
+                with pytest.raises(TypeError, match=f"^wrong key type: want {self.key_type!r}, got {key_type!r}$"):
+                    self.sorted_dict[key]
+                continue
+            if key_type is float and math.isnan(key):
+                with pytest.raises(ValueError, match=f"^bad key: {key!r}$"):
+                    self.sorted_dict[key]
+                continue
+            if key not in self.normal_dict:
+                with pytest.raises(KeyError, match=re.escape(str(key))):
+                    self.sorted_dict[key]
+                continue
+            assert self.normal_dict[key] == self.sorted_dict[key]
 
     def _test___setitem__(self):
         for key_type in all_types:
