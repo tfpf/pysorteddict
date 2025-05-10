@@ -1,4 +1,5 @@
 import builtins
+import re
 import math
 import random
 import string
@@ -90,7 +91,7 @@ class TestFuzz:
                     del self.sorted_dict[key]
                 continue
             if key not in self.normal_dict:
-                with pytest.raises(KeyError, match=str(key)):
+                with pytest.raises(KeyError, match=re.escape(str(key))):
                     del self.sorted_dict[key]
                 continue
             del self.normal_dict[key]
@@ -104,6 +105,19 @@ class TestFuzz:
                 with pytest.raises(TypeError, match=f"^unsupported key type: {key_type!r}$"):
                     self.sorted_dict[key] = value
                 continue
+            if not self.is_sorted_dict_new and key_type is not self.key_type:
+                with pytest.raises(TypeError, match=f"^wrong key type: want {self.key_type!r}, got {key_type!r}$"):
+                    self.sorted_dict[key] = value
+                continue
+            with open("f", "a") as w: print(key_type, self.key_type, self.is_sorted_dict_new, key, file=w)
+            if key_type is float and (self.key_type is float or self.is_sorted_dict_new) and math.isnan(key):
+                with pytest.raises(ValueError, match=f"^bad key: {key!r}$"):
+                    self.sorted_dict[key] = value
+                continue
+            if key_type is self.key_type:
+                self.normal_dict[key] = value
+                self.sorted_dict[key] = value
+                self.is_sorted_dict_new = False
 
 
 if __name__ == "__main__":
