@@ -58,6 +58,20 @@ class TestFuzz:
         for attr in self._rg.choices([*attrs], k=10_000):
             getattr(self, f"_test_{attr}")()
 
+        with pytest.raises(TypeError, match="^unhashable type: 'pysorteddict.SortedDict'$"):
+            hash(self.sorted_dict)
+        if self.is_sorted_dict_new:
+            assert self.sorted_dict.key_type is None
+        else:
+            assert self.sorted_dict.key_type is self.key_type
+
+        sorted_normal_dict = dict(sorted(self.normal_dict.items()))
+        assert len(self.sorted_dict) == len(sorted_normal_dict)
+        assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
+        assert self.sorted_dict.items() == [*sorted_normal_dict.items()]
+        assert self.sorted_dict.keys() == [*sorted_normal_dict.keys()]
+        assert self.sorted_dict.values() == [*sorted_normal_dict.values()]
+
     def _test___contains__(self):
         for key_type in all_types:
             key = self._gen(key_type)
