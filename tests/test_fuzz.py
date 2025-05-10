@@ -46,6 +46,7 @@ class TestFuzz:
         self.key_type = key_type
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
+        self.is_sorted_dict_new = True
 
         attrs = {*dir(SortedDict)}.difference([
             "__class__", "__dir__", "__doc__", "__eq__", "__format__", "__ge__", "__getattribute__", "__getitem__",
@@ -80,7 +81,7 @@ class TestFuzz:
     def _test___delitem__(self):
         for key_type in all_types:
             key = self._gen(key_type)
-            if not self.normal_dict:
+            if self.is_sorted_dict_new:
                 with pytest.raises(ValueError, match="^key type not set: insert at least one item first$"):
                     del self.sorted_dict[key]
                 continue
@@ -99,10 +100,11 @@ class TestFuzz:
         for key_type in all_types:
             key = self._gen(key_type)
             value = self._gen()
-            if not self.normal_dict and key_type in unsupported_types:
+            if self.is_sorted_dict_new and key_type in unsupported_types:
                 with pytest.raises(TypeError, match=f"^unsupported key type: {key_type!r}$"):
                     self.sorted_dict[key] = value
                 continue
+
 
 if __name__ == "__main__":
     pytest.main()
