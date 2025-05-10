@@ -1,6 +1,5 @@
 import builtins
 import math
-import os
 import random
 import string
 
@@ -32,7 +31,7 @@ class TestFuzz:
                 return self._rg.randrange(1_000, 2_000)
             case builtins.float:
                 # I want a non-negligible repetition chance. Hence the kludge.
-                return self._rg.choices([*range(1_000)] + [-math.inf, math.inf, math.nan], weights=[1] * 1_002 + [100])[0] / 1_000
+                return float(self._rg.choices([*range(1_000), -math.inf, math.inf, math.nan], [1] * 1_002 + [100])[0])
             case builtins.str:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
             case builtins.type:
@@ -47,7 +46,12 @@ class TestFuzz:
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
 
-        attrs = {*dir(SortedDict)}.difference(['__class__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__len__', '__lt__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__setitem__', '__sizeof__', '__str__', '__subclasshook__', 'clear', 'copy', 'items', 'key_type', 'keys', 'values'])
+        attrs = {*dir(SortedDict)}.difference([
+            "__class__", "__dir__", "__doc__", "__eq__", "__format__", "__ge__", "__getattribute__", "__getitem__",
+            "__getstate__", "__gt__", "__hash__", "__init__", "__init_subclass__", "__le__", "__len__", "__lt__",
+            "__ne__", "__new__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__", "__setitem__", "__sizeof__",
+            "__str__", "__subclasshook__", "clear", "copy", "items", "key_type", "keys", "values",
+        ])  # fmt: skip
         for attr in self._rg.choices([*attrs], k=10_000):
             getattr(self, f"_test_{attr}")()
 
