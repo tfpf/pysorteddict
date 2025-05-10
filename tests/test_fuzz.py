@@ -103,8 +103,7 @@ class TestFuzz:
 
     def _test___setitem__(self):
         for key_type in all_types:
-            key = self._gen(key_type)
-            value = self._gen()
+            key, value = self._gen(key_type), self._gen()
             if self.is_sorted_dict_new and key_type in unsupported_types:
                 with pytest.raises(TypeError, match=f"^unsupported key type: {key_type!r}$"):
                     self.sorted_dict[key] = value
