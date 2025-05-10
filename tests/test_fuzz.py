@@ -7,14 +7,15 @@ import pytest
 
 from pysorteddict import SortedDict
 
-unsupported_types = (bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type)
-supported_types = (bytes, int, float, str)
-all_types = unsupported_types + supported_types
+unsupported_types = {bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
+supported_types = {bytes, int, float, str}
+all_types = [*unsupported_types.union(supported_types)]
 
 
 class TestFuzz:
     def _gen(self, key_type: type | None = None):
-        match key_type or self.key_type:
+        key_type = key_type or self._rg.choice(all_types)
+        match key_type:
             case builtins.bool:
                 return bool(self._rg.getrandbits(1))
             case builtins.bytearray | builtins.frozenset | builtins.list | builtins.set | builtins.tuple:
@@ -36,7 +37,7 @@ class TestFuzz:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
             case builtins.type:
                 return self._rg.choice(all_types)
-            case key_type:
+            case _:
                 raise RuntimeError(key_type)
 
     @pytest.mark.parametrize("key_type", supported_types)
@@ -94,6 +95,14 @@ class TestFuzz:
             del self.normal_dict[key]
             del self.sorted_dict[key]
 
+    def _test___setitem__(self):
+        for key_type in all_types:
+            key = self._gen(key_type)
+            value = self._gen()
+            if not self.normal_dict and key_type in unsupported_types:
+                with pytest.raises(TypeError, match=f"^unsupported key type: {key_type!r}$"):
+                    self.sorted_dict[key] = value
+                continue
 
 if __name__ == "__main__":
     pytest.main()
