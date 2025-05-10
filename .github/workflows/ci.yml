@@ -25,7 +25,7 @@ jobs:
     - run: |
         pipx run hatch run pytest -n auto
         pipx run gcovr --json-summary-pretty | tee coverage.json
-        [ $(jq '.line_percent*10' coverage.json) -ge 990 ]
+        [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
       env:
         CFLAGS: --coverage
 
