@@ -15,7 +15,7 @@ all_types = [*unsupported_types.union(supported_types)]
 
 class TestFuzz:
     def _gen(self, key_type: type | None = None):
-        match key_type := key_type or self._rg.choice((frozenset, list, set, tuple)):
+        match key_type := key_type or self._rg.choice((bytes, frozenset, int, list, set, tuple, str)):
             case builtins.bool:
                 return bool(self._rg.getrandbits(1))
             case builtins.bytearray | builtins.frozenset | builtins.list | builtins.set | builtins.tuple:
