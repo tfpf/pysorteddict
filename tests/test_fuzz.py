@@ -65,22 +65,21 @@ class TestFuzz:
 
     def _test_contains(self):
         for key_type in all_types:
+            key = self._gen(key_type)
             if key_type is not self.key_type:
-                assert self._gen(key_type) not in self.sorted_dict
+                assert key not in self.sorted_dict
                 continue
             if self.normal_dict:
-                key = self._rg.choice([*self.normal_dict])
-                assert key in self.sorted_dict
-            key = self._gen()
+                assert self._rg.choice([*self.normal_dict]) in self.sorted_dict
             assert (key in self.sorted_dict) == (key in self.normal_dict)
 
     def _test_delitem(self):
         for key_type in all_types:
+            key = self._gen(key_type)
             if not self.normal_dict:
                 with pytest.raises(ValueError, match="^key type not set: insert at least one item first$"):
-                    del self.sorted_dict[self._gen(key_type)]
+                    del self.sorted_dict[key]
                 continue
-            key = self._rg.gen(key_type)
             if key_type is not self.key_type:
                 with pytest.raises(TypeError, match=f"^wrong key type: want {self.key_type!r}, got {key_type!r}$"):
                     del self.sorted_dict[key]
