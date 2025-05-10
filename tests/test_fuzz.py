@@ -25,20 +25,21 @@ class TestFuzz:
             case builtins.bytes:
                 return self._rg.randbytes(self._rg.randrange(16, 32))
             case builtins.dict:
-                return {s: s for s in self._gen(str)}
+                return {b: b for b in self._gen(bytes)}
             case builtins.int:
                 return self._rg.randrange(1_000, 2_000)
             case builtins.float:
-                return self._rg.choice([f / 1_000 for f in range(1_000)] + [-math.inf, math.inf, math.nan])
+                # I want a non-negligible repetition chance. Hence the kludge.
+                return self._rg.choices([*range(1_000)] + [-math.inf, math.inf, math.nan], weights=[1] * 1_002 + [100])[0] / 1_000
             case builtins.str:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
             case key_type:
                 raise RuntimeError(key_type)
 
-    @pytest.mark.parametrize("idx", range(os.cpu_count()))
-    def test_fuzz(self, idx: int):
-        self._rg = random.Random(f"{__name__}-{idx}")
-        self.key_type = self._rg.choice(supported_types)
+    @pytest.mark.parametrize("key_type", supported_types)
+    def test_fuzz(self, key_type: type):
+        self._rg = random.Random(f"{__name__}-{key_type.__name__}")
+        self.key_type = key_type
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
 
