@@ -51,8 +51,9 @@ class TestFuzz:
         attrs = {*dir(SortedDict)}.difference((
             "__class__", "__dict__", "__dir__", "__doc__", "__eq__", "__format__", "__ge__", "__getattr__",
             "__getattribute__", "__getstate__", "__gt__", "__hash__", "__init__", "__init_subclass__", "__le__",
-            "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__", "__sizeof__",
-            "__str__", "__subclasshook__", "__weakref__", "clear", "copy", "items", "key_type", "keys", "values",
+            "__len__", "__lt__", "__ne__", "__new__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__",
+            "__sizeof__", "__str__", "__subclasshook__", "__weakref__", "clear", "copy", "items", "key_type", "keys",
+            "values",
         ))  # fmt: skip
         for attr in self._rg.choices([*attrs], k=10_000):
             getattr(self, f"_test_{attr}")()
@@ -109,9 +110,6 @@ class TestFuzz:
                 continue
             del self.normal_dict[key]
             del self.sorted_dict[key]
-
-    def _test___new__(self):
-        pass
 
     def _test___getitem__(self):
         for key_type in all_types:
