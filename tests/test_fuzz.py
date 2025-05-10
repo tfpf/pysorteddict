@@ -8,9 +8,9 @@ import pytest
 
 from pysorteddict import SortedDict
 
-unsupported_types = {bool, bytearray, complex, dict, frozenset, list, set, tuple}
-supported_types = {bytes, int, float, str}
-all_types = unsupported_types.union(supported_types)
+unsupported_types = (bool, bytearray, complex, dict, frozenset, list, set, tuple)
+supported_types = (bytes, int, float, str)
+all_types = unsupported_types + supported_types
 
 
 class TestFuzz:
@@ -38,7 +38,7 @@ class TestFuzz:
     @pytest.mark.parametrize("idx", range(os.cpu_count()))
     def test_fuzz(self, idx: int):
         self._rg = random.Random(f"{__name__}-{idx}")
-        self.key_type = self._rg.choice([*supported_types])
+        self.key_type = self._rg.choice(supported_types)
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
 
