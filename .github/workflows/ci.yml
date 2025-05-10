@@ -1,8 +1,23 @@
-name: package
+name: ci
 on: [push, workflow_dispatch]
 
 jobs:
+  cxx-style:
+    name: format C++
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - run: ./clang-format.bash check
+
+  python-style:
+    name: format and lint Python
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - run: pipx run hatch fmt --check
+
   build:
+    needs: [cxx-style, python-style]
     strategy:
       matrix:
         os: ['macos-13', 'macos-14', 'ubuntu-22.04', 'windows-2022']
