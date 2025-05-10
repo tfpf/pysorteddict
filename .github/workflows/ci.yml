@@ -16,8 +16,21 @@ jobs:
     - uses: actions/checkout@v4
     - run: pipx run hatch fmt --check
 
-  build:
+  coverage:
     needs: [cxx-style, python-style]
+    name: check code coverage
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+        pipx run hatch -vv run pytest -n auto
+        pipx run gcovr --json-summary-pretty | tee coverage.json
+        [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
+      env:
+        CFLAGS: --coverage
+
+  build:
+    needs: [coverage]
     strategy:
       matrix:
         os: ['macos-13', 'macos-14', 'ubuntu-22.04', 'windows-2022']
