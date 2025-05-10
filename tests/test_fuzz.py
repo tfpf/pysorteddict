@@ -1,7 +1,7 @@
 import builtins
-import re
 import math
 import random
+import re
 import string
 
 import pytest
@@ -90,6 +90,10 @@ class TestFuzz:
                 with pytest.raises(TypeError, match=f"^wrong key type: want {self.key_type!r}, got {key_type!r}$"):
                     del self.sorted_dict[key]
                 continue
+            if key_type is float and math.isnan(key):
+                with pytest.raises(ValueError, match=f"^bad key: {key!r}$"):
+                    del self.sorted_dict[key]
+                continue
             if key not in self.normal_dict:
                 with pytest.raises(KeyError, match=re.escape(str(key))):
                     del self.sorted_dict[key]
@@ -109,8 +113,7 @@ class TestFuzz:
                 with pytest.raises(TypeError, match=f"^wrong key type: want {self.key_type!r}, got {key_type!r}$"):
                     self.sorted_dict[key] = value
                 continue
-            with open("f", "a") as w: print(key_type, self.key_type, self.is_sorted_dict_new, key, file=w)
-            if key_type is float and (self.key_type is float or self.is_sorted_dict_new) and math.isnan(key):
+            if key_type is float and math.isnan(key) and (self.is_sorted_dict_new or self.key_type is float):
                 with pytest.raises(ValueError, match=f"^bad key: {key!r}$"):
                     self.sorted_dict[key] = value
                 continue
