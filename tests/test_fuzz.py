@@ -8,7 +8,7 @@ import pytest
 
 from pysorteddict import SortedDict
 
-unsupported_types = (bool, bytearray, complex, dict, frozenset, list, set, tuple, type)
+unsupported_types = (bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type)
 supported_types = (bytes, int, float, str)
 all_types = unsupported_types + supported_types
 
@@ -26,6 +26,8 @@ class TestFuzz:
                 return self._rg.randbytes(self._rg.randrange(16, 32))
             case builtins.dict:
                 return {b: b for b in self._gen(bytes)}
+            case builtins.Exception:
+                return Exception()
             case builtins.int:
                 return self._rg.randrange(1_000, 2_000)
             case builtins.float:
