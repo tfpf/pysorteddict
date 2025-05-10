@@ -8,7 +8,7 @@ import pytest
 
 from pysorteddict import SortedDict
 
-unsupported_types = (bool, bytearray, complex, dict, frozenset, list, set, tuple)
+unsupported_types = (bool, bytearray, complex, dict, frozenset, list, set, tuple, type)
 supported_types = (bytes, int, float, str)
 all_types = unsupported_types + supported_types
 
@@ -33,6 +33,8 @@ class TestFuzz:
                 return self._rg.choices([*range(1_000)] + [-math.inf, math.inf, math.nan], weights=[1] * 1_002 + [100])[0] / 1_000
             case builtins.str:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
+            case builtins.type:
+                return self._rg.choice(all_types)
             case key_type:
                 raise RuntimeError(key_type)
 
