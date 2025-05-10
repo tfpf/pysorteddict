@@ -13,7 +13,7 @@ supported_types = {bytes, int, float, str}
 all_types = unsupported_types.union(supported_types)
 
 
-class TestFuzzy:
+class TestFuzz:
     def _gen(self, key_type: type | None = None):
         match key_type or self.key_type:
             case builtins.bool:
@@ -36,7 +36,7 @@ class TestFuzzy:
                 raise RuntimeError(key_type)
 
     @pytest.mark.parametrize("idx", range(os.cpu_count()))
-    def test_fuzzy(self, idx: int):
+    def test_fuzz(self, idx: int):
         self._rg = random.Random(f"{__name__}-{idx}")
         self.key_type = self._rg.choice([*supported_types])
         self.normal_dict = {}
