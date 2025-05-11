@@ -12,7 +12,7 @@ ascending order.
 
 ## Documentation
 
-[View the documentation on GitHub Pages.](https://pypi.org/project/pysorteddict/)
+[View the documentation on GitHub Pages.](https://tfpf.github.io/pysorteddict/)
 
 ## Installation
 
