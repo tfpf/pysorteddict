@@ -94,7 +94,14 @@ class TestFuzz:
                     del self.sorted_dict[key]
                 continue
             if key_type is not self.key_type:
-                with pytest.raises(TypeError, match="^"+re.escape(f"wrong key type: got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}")+"$"):
+                with pytest.raises(
+                    TypeError,
+                    match="^"
+                    + re.escape(
+                        f"wrong key type: got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"
+                    )
+                    + "$",
+                ):
                     del self.sorted_dict[key]
                 continue
             if key_type is float and math.isnan(key):
@@ -116,7 +123,14 @@ class TestFuzz:
                     self.sorted_dict[key]
                 continue
             if key_type is not self.key_type:
-                with pytest.raises(TypeError, match="^"+re.escape(f"wrong key type: got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}")+"$"):
+                with pytest.raises(
+                    TypeError,
+                    match="^"
+                    + re.escape(
+                        f"wrong key type: got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"
+                    )
+                    + "$",
+                ):
                     self.sorted_dict[key]
                 continue
             if key_type is float and math.isnan(key):
@@ -138,11 +152,21 @@ class TestFuzz:
         for key_type in all_types:
             key, value = self._gen(key_type), self._gen()
             if self.is_sorted_dict_new and key_type in unsupported_types:
-                with pytest.raises(TypeError, match="^"+re.escape(f"unsupported key type: got key {key!r} of type {key_type!r}")+"$"):
+                with pytest.raises(
+                    TypeError,
+                    match="^" + re.escape(f"unsupported key type: got key {key!r} of type {key_type!r}") + "$",
+                ):
                     self.sorted_dict[key] = value
                 continue
             if not self.is_sorted_dict_new and key_type is not self.key_type:
-                with pytest.raises(TypeError, match="^"+re.escape(f"wrong key type: got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}")+"$"):
+                with pytest.raises(
+                    TypeError,
+                    match="^"
+                    + re.escape(
+                        f"wrong key type: got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"
+                    )
+                    + "$",
+                ):
                     self.sorted_dict[key] = value
                 continue
             if key_type is float and math.isnan(key) and (self.is_sorted_dict_new or self.key_type is float):
