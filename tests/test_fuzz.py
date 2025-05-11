@@ -109,7 +109,7 @@ class TestFuzz:
                     del self.sorted_dict[key]
                 continue
             if key not in self.normal_dict:
-                with pytest.raises(KeyError, match=re.escape(str(key))):
+                with pytest.raises(KeyError, match="^" + re.escape(f"{key!r}") + "$"):
                     del self.sorted_dict[key]
                 continue
             del self.normal_dict[key]
@@ -138,7 +138,7 @@ class TestFuzz:
                     self.sorted_dict[key]
                 continue
             if key not in self.normal_dict:
-                with pytest.raises(KeyError, match=re.escape(str(key))):
+                with pytest.raises(KeyError, match="^" + re.escape(f"{key!r}") + "$"):
                     self.sorted_dict[key]
                 continue
             assert self.sorted_dict[key] == self.normal_dict[key]
