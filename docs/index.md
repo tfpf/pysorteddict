@@ -1,9 +1,15 @@
 This page documents pysorteddict v0.4.4.
 
-`SortedDict` is available via import.
+`SortedDict` may be imported explicitly:
 
 ```python
 from pysorteddict import SortedDict
+```
+
+or implicitly using the wildcard (though this is not recommended).
+
+```python
+from pysorteddict import *
 ```
 
 # Constructor
@@ -17,6 +23,14 @@ Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 ## `d.key_type: type | None`
 
 Return the key type of the sorted dictionary `d`, or `None` if no key-value pairs have been inserted in it.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+assert d.key_type is None
+d[b"foo"] = ()
+assert d.key_type is bytes
+```
 
 # Magic Methods
 
