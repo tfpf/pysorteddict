@@ -96,14 +96,12 @@ class TestFuzz:
             if key_type is not self.key_type:
                 with pytest.raises(
                     TypeError,
-                    match=re.escape(
-                        f"wrong key type: got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"
-                    ),
+                    match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
                 ):
                     del self.sorted_dict[key]
                 continue
             if key_type is float and math.isnan(key):
-                with pytest.raises(ValueError, match=f"^bad key: {key!r}$"):
+                with pytest.raises(ValueError, match=f"^got bad key {key!r}$"):
                     del self.sorted_dict[key]
                 continue
             if key not in self.normal_dict:
@@ -123,14 +121,12 @@ class TestFuzz:
             if key_type is not self.key_type:
                 with pytest.raises(
                     TypeError,
-                    match=re.escape(
-                        f"wrong key type: got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"
-                    ),
+                    match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
                 ):
                     self.sorted_dict[key]
                 continue
             if key_type is float and math.isnan(key):
-                with pytest.raises(ValueError, match=f"^bad key: {key!r}$"):
+                with pytest.raises(ValueError, match=f"^got bad key {key!r}$"):
                     self.sorted_dict[key]
                 continue
             if key not in self.normal_dict:
@@ -150,21 +146,19 @@ class TestFuzz:
             if self.is_sorted_dict_new and key_type in unsupported_types:
                 with pytest.raises(
                     TypeError,
-                    match=re.escape(f"unsupported key type: got key {key!r} of type {key_type!r}"),
+                    match=re.escape(f"got key {key!r} of unsupported type {key_type!r}"),
                 ):
                     self.sorted_dict[key] = value
                 continue
             if not self.is_sorted_dict_new and key_type is not self.key_type:
                 with pytest.raises(
                     TypeError,
-                    match=re.escape(
-                        f"wrong key type: got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"
-                    ),
+                    match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
                 ):
                     self.sorted_dict[key] = value
                 continue
             if key_type is float and math.isnan(key) and (self.is_sorted_dict_new or self.key_type is float):
-                with pytest.raises(ValueError, match=f"^bad key: {key!r}$"):
+                with pytest.raises(ValueError, match=f"^got bad key {key!r}$"):
                     self.sorted_dict[key] = value
                 continue
             if key_type is self.key_type:
