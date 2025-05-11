@@ -10,6 +10,8 @@ ascending order.
  <img src="https://github.com/user-attachments/assets/e9d1e78e-c0fd-4d87-93f6-e293ddef31ba" />
 </p>
 
+[View the documentation on GitHub Pages.](https://pypi.org/project/pysorteddict/)
+
 ## Installation
 
 [pysorteddict is available on PyPI.](https://pypi.org/project/pysorteddict/) It requires Python 3.10 or newer. Built
@@ -65,7 +67,3 @@ The following key types are supported.
 
 pysorteddict is implemented entirely in C++. `SortedDict` provides a Python interface to
 `std::map<PyObject*, PyObject*, _>`.
-
-## Documentation
-
-[View the documentation on GitHub Pages.](https://pypi.org/project/pysorteddict/).
