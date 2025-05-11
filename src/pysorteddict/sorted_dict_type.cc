@@ -208,7 +208,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
         PyErr_SetObject(PyExc_KeyError, key);
         return nullptr;
     }
-    return Py_NewRef(it->second);
+    return Py_NewRef(it->second);  // 🆕
 }
 
 /**
@@ -357,7 +357,7 @@ PyObject* SortedDictType::get_key_type(void)
     {
         Py_RETURN_NONE;
     }
-    return Py_NewRef(this->key_type);
+    return Py_NewRef(this->key_type);  // 🆕
 }
 
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
