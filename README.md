@@ -10,6 +10,8 @@ ascending order.
  <img src="https://github.com/user-attachments/assets/e9d1e78e-c0fd-4d87-93f6-e293ddef31ba" />
 </p>
 
+## Documentation
+
 [View the documentation on GitHub Pages.](https://pypi.org/project/pysorteddict/)
 
 ## Installation
