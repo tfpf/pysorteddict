@@ -108,7 +108,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
     // it is safe to call this method.
     if (!this->is_key_good(key))
     {
-        PyErr_Format(PyExc_ValueError, "got bad key %R", key);
+        PyErr_Format(PyExc_ValueError, "got bad key %R of type %R", key, Py_TYPE(key));
         if (key_type_set_here)
         {
             // Insertion of the key-value pair was unsuccessful, so clear the
