@@ -92,7 +92,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         }
         if (this->key_type == nullptr)
         {
-            PyErr_Format(PyExc_TypeError, "unsupported key type: got key %R of type %R", key, Py_TYPE(key));
+            PyErr_Format(PyExc_TypeError, "got key %R of unsupported type %R", key, Py_TYPE(key));
             return false;
         }
     }
@@ -100,10 +100,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
     // At this point, the key type is guaranteed to be non-null.
     if (!key_type_set_here && Py_IS_TYPE(key, this->key_type) == 0)
     {
-        PyErr_Format(
-            PyExc_TypeError, "wrong key type: got key %R of type %R, want key of type %R", key, Py_TYPE(key),
-            this->key_type
-        );
+        PyErr_Format(PyExc_TypeError, "got key %R of type %R, want key of type %R", key, Py_TYPE(key), this->key_type);
         return false;
     }
 
@@ -111,7 +108,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
     // it is safe to call this method.
     if (!this->is_key_good(key))
     {
-        PyErr_Format(PyExc_ValueError, "bad key: %R", key);
+        PyErr_Format(PyExc_ValueError, "got bad key %R", key);
         if (key_type_set_here)
         {
             // Insertion of the key-value pair was unsuccessful, so clear the
