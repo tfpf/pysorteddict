@@ -1,4 +1,6 @@
-This page documents pysorteddict v0.4.5.
+This page documents pysorteddict v0.4.5. Looking for the documentation of an older version? Use one of the links below.
+
+• [v0.4.4](https://github.com/tfpf/pysorteddict/blob/v0.4.4/docs/index.md)
 
 `SortedDict` may be imported explicitly:
 
