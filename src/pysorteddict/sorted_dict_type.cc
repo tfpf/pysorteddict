@@ -68,7 +68,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         {
             // No key-value pairs have been inserted, so can't get or delete
             // anything.
-            PyErr_SetString(PyExc_ValueError, "key type not set: insert at least one item first");
+            PyErr_SetString(PyExc_RuntimeError, "key type not set: insert at least one item first");
             return false;
         }
 

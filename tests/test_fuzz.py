@@ -90,7 +90,7 @@ class TestFuzz:
         for key_type in all_types:
             key = self._gen(key_type)
             if self.is_sorted_dict_new:
-                with pytest.raises(ValueError, match="^key type not set: insert at least one item first$"):
+                with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
                     del self.sorted_dict[key]
                 continue
             if key_type is not self.key_type:
@@ -115,7 +115,7 @@ class TestFuzz:
         for key_type in all_types:
             key = self._gen(key_type)
             if self.is_sorted_dict_new:
-                with pytest.raises(ValueError, match="^key type not set: insert at least one item first$"):
+                with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
                     self.sorted_dict[key]
                 continue
             if key_type is not self.key_type:

@@ -54,7 +54,7 @@ Return the value mapped to `key` in the sorted dictionary `d`.
 
 ### Exceptions
 
-If no key-value pairs have been inserted into `d` yet, raise `ValueError`.
+If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
 
 ```python
 from pysorteddict import *
@@ -67,7 +67,7 @@ Traceback (most recent call last):
   File "…", line 3, in <module>
     d["foo"]
     ~^^^^^^^
-ValueError: key type not set: insert at least one item first
+RuntimeError: key type not set: insert at least one item first
 ```
 
 Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
@@ -184,7 +184,7 @@ Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
 ### Exceptions
 
-If no key-value pairs have been inserted into `d` yet, raise `ValueError`.
+If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
 
 ```python
 from pysorteddict import *
@@ -197,7 +197,7 @@ Traceback (most recent call last):
   File "…", line 3, in <module>
     del d["foo"]
         ~^^^^^^^
-ValueError: key type not set: insert at least one item first
+RuntimeError: key type not set: insert at least one item first
 ```
 
 Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
