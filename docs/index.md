@@ -1,4 +1,4 @@
-This page documents pysorteddict v0.4.4.
+This page documents pysorteddict v0.4.5.
 
 `SortedDict` may be imported explicitly:
 
