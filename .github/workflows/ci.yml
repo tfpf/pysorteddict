@@ -6,28 +6,28 @@ jobs:
     name: format C++
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
-    - run: ./clang-format.bash check
+     - uses: actions/checkout@v4
+     - run: ./clang-format.bash check
 
   python-style:
     name: format and lint Python
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
-    - run: pipx run hatch fmt --check
+     - uses: actions/checkout@v4
+     - run: pipx run hatch fmt --check
 
   coverage:
     needs: [cxx-style, python-style]
     name: check code coverage
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
-    - run: |
-        pipx run hatch -vv run pytest -n auto
-        pipx run gcovr --json-summary-pretty | tee coverage.json
-        [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
-      env:
-        CFLAGS: --coverage
+      - uses: actions/checkout@v4
+      - run: |
+          pipx run hatch -vv run pytest -n auto
+          pipx run gcovr --json-summary-pretty | tee coverage.json
+          [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
+        env:
+          CFLAGS: --coverage
 
   build:
     needs: [cxx-style, python-style]
