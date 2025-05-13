@@ -64,7 +64,7 @@ d["foo"]
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 3, in <module>
+  File "…", line 3, in <module>
     d["foo"]
     ~^^^^^^^
 ValueError: key type not set: insert at least one item first
@@ -81,7 +81,7 @@ d[100]
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 4, in <module>
+  File "…", line 4, in <module>
     d[100]
     ~^^^^^
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
@@ -98,7 +98,7 @@ d[float("nan")]
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 4, in <module>
+  File "…", line 4, in <module>
     d[float("nan")]
     ~^^^^^^^^^^^^^^
 ValueError: got bad key nan of type <class 'float'>
@@ -115,7 +115,7 @@ d["spam"]
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 4, in <module>
+  File "…", line 4, in <module>
     d["spam"]
     ~^^^^^^^^
 KeyError: 'spam'
@@ -138,7 +138,7 @@ d[["eggs"]] = None
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 3, in <module>
+  File "…", line 3, in <module>
     d[["eggs"]] = None
     ~^^^^^^^^^^
 TypeError: got key ['eggs'] of unsupported type <class 'list'>
@@ -155,7 +155,7 @@ d[100] = "spam"
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 4, in <module>
+  File "…", line 4, in <module>
     d[100] = "spam"
     ~^^^^^
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
@@ -172,7 +172,7 @@ d[float("nan")] = {}
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 4, in <module>
+  File "…", line 4, in <module>
     d[float("nan")] = {}
     ~^^^^^^^^^^^^^^
 ValueError: got bad key nan of type <class 'float'>
@@ -194,7 +194,7 @@ del d["foo"]
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 3, in <module>
+  File "…", line 3, in <module>
     del d["foo"]
         ~^^^^^^^
 ValueError: key type not set: insert at least one item first
@@ -211,7 +211,7 @@ del d[100]
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 4, in <module>
+  File "…", line 4, in <module>
     del d[100]
         ~^^^^^
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
@@ -228,7 +228,7 @@ del d[float("nan")]
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 4, in <module>
+  File "…", line 4, in <module>
     del d[float("nan")]
         ~^^^^^^^^^^^^^^
 ValueError: got bad key nan of type <class 'float'>
@@ -245,7 +245,7 @@ del d["spam"]
 
 ```
 Traceback (most recent call last):
-  File "C:/Users/vpaij/Documents/projects/pysorteddict/examples/basic.py", line 4, in <module>
+  File "…", line 4, in <module>
     del d["spam"]
         ~^^^^^^^^
 KeyError: 'spam'
