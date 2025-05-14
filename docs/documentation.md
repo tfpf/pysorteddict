@@ -1,6 +1,13 @@
-This page documents pysorteddict v0.4.5. Looking for the documentation of an older version? Use one of the links below.
+# Documentation
 
-• [v0.4.4](https://github.com/tfpf/pysorteddict/blob/v0.4.4/docs/index.md)
+<details style="background-color: #E7FFE6; padding: 10px">
+
+<summary>Looking for the documentation of an older version?</summary>
+
+▸ [v0.4.5](https://github.com/tfpf/pysorteddict/blob/v0.4.5/docs/index.md)
+▸ [v0.4.4](https://github.com/tfpf/pysorteddict/blob/v0.4.4/docs/index.md)
+
+</details>
 
 `SortedDict` may be imported explicitly:
 
@@ -14,15 +21,15 @@ or implicitly using the wildcard (though this is not recommended).
 from pysorteddict import *
 ```
 
-# Constructor
+## Constructor
 
-## `SortedDict(*args, **kwargs) -> SortedDict`
+### `SortedDict(*args, **kwargs) -> SortedDict`
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 
-# Properties
+## Properties
 
-## `d.key_type: type | None`
+### `d.key_type: type | None`
 
 Return the key type of the sorted dictionary `d`, or `None` if no key-value pairs have been inserted in it.
 
@@ -34,25 +41,25 @@ d[b"foo"] = ()
 assert d.key_type is bytes
 ```
 
-# Magic Methods
+## Magic Methods
 
-## `repr(d)`
+### `repr(d)`
 
 Return a human-readable representation of the sorted dictionary `d`.
 
-## `key in d`
+### `key in d`
 
 Return whether `key` is present in the sorted dictionary `d`.
 
-## `len(d)`
+### `len(d)`
 
 Return the number of key-value pairs in the sorted dictionary `d`.
 
-## `d[key]`
+### `d[key]`
 
 Return the value mapped to `key` in the sorted dictionary `d`.
 
-### Exceptions
+#### Exceptions
 
 If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
 
@@ -62,7 +69,7 @@ d = SortedDict()
 d["foo"]
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 3, in <module>
     d["foo"]
@@ -79,7 +86,7 @@ d["foo"] = ("bar", "baz")
 d[100]
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 4, in <module>
     d[100]
@@ -96,7 +103,7 @@ d[1.1] = ("racecar",)
 d[float("nan")]
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 4, in <module>
     d[float("nan")]
@@ -113,7 +120,7 @@ d["foo"] = ("bar", "baz")
 d["spam"]
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 4, in <module>
     d["spam"]
@@ -121,11 +128,11 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-## `d[key] = value`
+### `d[key] = value`
 
 Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
 
-### Exceptions
+#### Exceptions
 
 If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`,
 `float`, `int` and `str`), raise `TypeError`.
@@ -136,7 +143,7 @@ d = SortedDict()
 d[["eggs"]] = None
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 3, in <module>
     d[["eggs"]] = None
@@ -153,7 +160,7 @@ d["foo"] = ("bar", "baz")
 d[100] = "spam"
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 4, in <module>
     d[100] = "spam"
@@ -170,7 +177,7 @@ d[1.1] = ("racecar",)
 d[float("nan")] = {}
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 4, in <module>
     d[float("nan")] = {}
@@ -178,11 +185,11 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
-## `del d[key]`
+### `del d[key]`
 
 Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
-### Exceptions
+#### Exceptions
 
 If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
 
@@ -192,7 +199,7 @@ d = SortedDict()
 del d["foo"]
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 3, in <module>
     del d["foo"]
@@ -209,7 +216,7 @@ d["foo"] = ("bar", "baz")
 del d[100]
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 4, in <module>
     del d[100]
@@ -226,7 +233,7 @@ d[1.1] = ("racecar",)
 del d[float("nan")]
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 4, in <module>
     del d[float("nan")]
@@ -243,7 +250,7 @@ d["foo"] = ("bar", "baz")
 del d["spam"]
 ```
 
-```
+```text
 Traceback (most recent call last):
   File "…", line 4, in <module>
     del d["spam"]
@@ -251,27 +258,28 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-# Other Methods
+## Other Methods
 
-## `d.clear()`
+### `d.clear()`
 
 Remove all key-value pairs in the sorted dictionary `d`.
 
-## `d.copy() -> SortedDict`
+### `d.copy() -> SortedDict`
 
 Return a shallow copy of the sorted dictionary `d`.
 
-## `d.items() -> list[tuple[object, object]]`
+### `d.items() -> list[tuple[object, object]]`
 
 Return the key-value pairs in the sorted dictionary `d`. The list will be sorted. It will exist independently of `d`;
 it won't be a view on its items.
 
-## `d.keys() -> list[object]`
+### `d.keys() -> list[object]`
 
 Return the keys in the sorted dictionary `d`. The list will be sorted. It will exist independently of ``d``; it won't
 be a view on its keys.
 
-## `d.values() -> list[object]`
+### `d.values() -> list[object]`
 
 Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
 exist independently of `d`; it won't be a view on its values.
+
