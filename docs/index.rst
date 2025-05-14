@@ -8,4 +8,6 @@ ascending order.
    :maxdepth: 2
    :caption: Contents:
 
+   installation
    usage
+   documentation
