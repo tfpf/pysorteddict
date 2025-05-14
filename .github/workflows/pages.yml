@@ -1,4 +1,4 @@
-name: docs
+name: pages
 
 on:
   push:
@@ -14,7 +14,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  docs:
+  deploy:
+    name: deploy project homepage
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -22,8 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      - run: sudo apt install python3-sphinx python3-myst-parser
-      - run: sphinx-build . _build
+      - run: sudo apt install python3-myst-parser python3-sphinx && sphinx-build . _build
         working-directory: docs/
       - uses: actions/upload-pages-artifact@v3
         with:
