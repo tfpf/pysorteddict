@@ -3,6 +3,8 @@
 Provides `SortedDict`, which is a Python sorted dictionary: a Python dictionary in which the keys are always in
 ascending order.
 
+[View the project on PyPI.](https://pypi.org/project/pysorteddict/)
+
 [Visit the homepage for more information.](https://tfpf.github.io/pysorteddict/)
 
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)

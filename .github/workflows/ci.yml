@@ -48,7 +48,7 @@ jobs:
 
   release:
     if: github.ref_type == 'tag'
-    needs: [build]
+    needs: [coverage, build]
     runs-on: ubuntu-22.04
     permissions: write-all
     steps:
