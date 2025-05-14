@@ -4,6 +4,7 @@
 
 <summary>View the documentation of older versions.</summary>
 
+• [v0.4.5](https://github.com/tfpf/pysorteddict/blob/v0.4.5/docs/index.md)
 • [v0.4.4](https://github.com/tfpf/pysorteddict/blob/v0.4.4/docs/index.md)
 
 </details>

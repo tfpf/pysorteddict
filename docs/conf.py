@@ -1,4 +1,4 @@
-release = "v0.4.5"
+release = "v0.4.6"
 html_title = project = f"pysorteddict {release}"
 copyright = "2025, Vishal Pankaj Chandratreya"
 author = "Vishal Pankaj Chandratreya"
