@@ -9,7 +9,6 @@ pysorteddict is implemented entirely in C++. ``SortedDict`` provides a Python in
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    installation
    usage
