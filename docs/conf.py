@@ -10,3 +10,5 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build"]
 
 html_theme = "alabaster"
+html_theme_options = {"fixed_sidebar": True, "page_width": "70%"}
+html_use_index = False
