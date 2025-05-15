@@ -22,7 +22,7 @@ private:
     PyTypeObject* key_type;
 
 private:
-    static PyTypeObject* import_decimal_type(void);
+    static PyTypeObject* import_type_from_python(char const*, char const*);
     bool is_key_good(PyObject*);
     bool are_key_type_and_key_value_pair_good(PyObject*, PyObject*);
 

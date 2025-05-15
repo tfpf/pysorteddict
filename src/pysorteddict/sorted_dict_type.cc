@@ -28,18 +28,32 @@ struct PyObject_Delete
 using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
 
 /**
- * Import Python's `decimal.Decimal`.
+ * Import a Python type object.
  *
- * @return `decimal.Decimal` type object if successful, else `nullptr`.
+ * The caller should ensure that the module and type names actually name a
+ * Python type object.
+ *
+ * @param module_name Name of the module to import the type object from.
+ * @param type_name Name of the type object to import.
+ *
+ * @return Python type object if successful, else `nullptr`.
  */
-static PyTypeObject* SortedDictType::import_decimal_type(void)
+PyTypeObject* SortedDictType::import_type_from_python(char const* module_name, char const* type_name)
 {
-    PyObjectWrapper decimal_module(PyImport_ImportModule("decimal"));  // 🆕
-    if (decimal_module == nullptr)
+    PyObject* module_ob = PyImport_ImportModule(module_name);  // 🆕
+    if (module_ob == nullptr)
     {
+        PyErr_Clear();
         return nullptr;
     }
-    return reinterpret_cast<PyTypeObject*>(PyObject_GetAttrString(decimal_module.get(), "Decimal"));  // 🆕
+    PyObject* type_ob = PyObject_GetAttrString(module_ob, type_name);  // 🆕
+    Py_DECREF(module_ob);
+    if (type_ob == nullptr)
+    {
+        PyErr_Clear();
+        return nullptr;
+    }
+    return reinterpret_cast<PyTypeObject*>(type_ob);
 }
 
 /**
@@ -88,9 +102,12 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         }
 
         // The first key-value pair is being inserted.
-        static PyDec_Type = this->import_decimal_type();
-        static PyTypeObject* PyDec_Type = static PyTypeObject * allowed_key_types[] = {
-            &PyBytes_Type, &PyDec_Type, &PyFloat_Type, &PyLong_Type, &PyUnicode_Type,
+        static PyTypeObject* allowed_key_types[] = {
+            &PyBytes_Type,
+            &PyFloat_Type,
+            &PyLong_Type,
+            &PyUnicode_Type,
+            this->import_type_from_python("decimal", "Decimal"),
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
