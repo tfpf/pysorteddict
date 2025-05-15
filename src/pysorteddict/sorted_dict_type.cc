@@ -422,7 +422,7 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     {
         SortedDictType::PyDec_Type = SortedDictType::import_type_from_python("decimal", "Decimal");
         return true;
-    };
+    }();
 
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
     if (self == nullptr)
