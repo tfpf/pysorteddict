@@ -1,4 +1,5 @@
 import builtins
+import decimal
 import math
 import random
 import re
@@ -9,7 +10,8 @@ import pytest
 from pysorteddict import SortedDict
 
 unsupported_types = {bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
-supported_types = [bytes, int, float, str]  # Need ordering. See https://github.com/pytest-dev/pytest-xdist/issues/432.
+# Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
+supported_types = [bytes, int, float, str, decimal.Decimal]
 all_types = [*unsupported_types.union(supported_types)]
 
 
@@ -30,9 +32,9 @@ class TestFuzz:
                 return Exception()
             case builtins.int:
                 return self._rg.randrange(1_000, 2_000)
-            case builtins.float:
+            case builtins.float | decimal.Decimal:
                 # I want a non-negligible repetition chance. Hence the kludge.
-                return float(self._rg.choices([*range(1_000), -math.inf, math.inf, math.nan], [1] * 1_002 + [100])[0])
+                return key_type(self._rg.choices([*range(1_000), "nan"], [1] * 1_000 + [100])[0])
             case builtins.str:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
             case builtins.type:
@@ -100,7 +102,7 @@ class TestFuzz:
                 ):
                     del self.sorted_dict[key]
                 continue
-            if key_type is float and math.isnan(key):
+            if (key_type in float or key_type is decimal.Decimal) and math.isnan(key):
                 with pytest.raises(ValueError, match=f"^got bad key {key!r} of type {key_type!r}$"):
                     del self.sorted_dict[key]
                 continue
@@ -125,7 +127,7 @@ class TestFuzz:
                 ):
                     self.sorted_dict[key]
                 continue
-            if key_type is float and math.isnan(key):
+            if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
                 with pytest.raises(ValueError, match=f"^got bad key {key!r} of type {key_type!r}$"):
                     self.sorted_dict[key]
                 continue
@@ -157,7 +159,11 @@ class TestFuzz:
                 ):
                     self.sorted_dict[key] = value
                 continue
-            if key_type is float and math.isnan(key) and (self.is_sorted_dict_new or self.key_type is float):
+            if (
+                (key_type is float or key_type is decimal.Decimal)
+                and math.isnan(key)
+                and (self.is_sorted_dict_new or self.key_type is key_type)
+            ):
                 with pytest.raises(ValueError, match=f"^got bad key {key!r} of type {key_type!r}$"):
                     self.sorted_dict[key] = value
                 continue
