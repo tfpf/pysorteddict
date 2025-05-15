@@ -28,13 +28,13 @@ struct PyObject_Delete
 using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
 
 /**
- * Import a Python type object.
+ * Import a Python type.
  *
  * The caller should ensure that the module and type names actually name a
- * Python type object.
+ * Python type.
  *
- * @param module_name Name of the module to import the type object from.
- * @param type_name Name of the type object to import.
+ * @param module_name Name of the module to import the type from.
+ * @param type_name Name of the type to import.
  *
  * @return Python type object if successful, else `nullptr`.
  */
