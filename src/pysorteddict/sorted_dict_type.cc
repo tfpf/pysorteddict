@@ -71,7 +71,7 @@ bool SortedDictType::is_key_good(PyObject* key)
 {
     if (this->key_type == &PyFloat_Type)
     {
-        return !std::isnan(PyFloat_AS_DOUBLE(key);
+        return !std::isnan(PyFloat_AS_DOUBLE(key));
     }
     if (this->key_type == SortedDictType::PyDec_Type)
     {
