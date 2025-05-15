@@ -40,14 +40,13 @@ using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
  */
 PyTypeObject* SortedDictType::import_type_from_python(char const* module_name, char const* type_name)
 {
-    PyObject* module_ob = PyImport_ImportModule(module_name);  // 🆕
+    PyObjectWrapper module_ob(PyImport_ImportModule(module_name));  // 🆕
     if (module_ob == nullptr)
     {
         PyErr_Clear();
         return nullptr;
     }
-    PyObject* type_ob = PyObject_GetAttrString(module_ob, type_name);  // 🆕
-    Py_DECREF(module_ob);
+    PyObject* type_ob = PyObject_GetAttrString(module_ob.get(), type_name);  // 🆕
     if (type_ob == nullptr)
     {
         PyErr_Clear();
@@ -70,9 +69,31 @@ PyTypeObject* SortedDictType::import_type_from_python(char const* module_name, c
  */
 bool SortedDictType::is_key_good(PyObject* key)
 {
-    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key)))
+    if (this->key_type == &PyFloat_Type)
     {
-        return false;
+        return !std::isnan(PyFloat_AS_DOUBLE(key);
+    }
+    if (this->key_type == SortedDictType::PyDec_Type)
+    {
+        PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));
+        if (key_is_nan_callable == nullptr)
+        {
+            PyErr_Clear();
+            return false;
+        }
+        PyObjectWrapper key_is_nan_result(PyObject_CallNoArgs(key_is_nan_callable.get()));
+        if (key_is_nan_result == nullptr)
+        {
+            PyErr_Clear();
+            return false;
+        }
+        int key_is_nan = PyObject_IsTrue(key_is_nan_result.get());
+        if (key_is_nan == -1)
+        {
+            PyErr_Clear();
+            return false;
+        }
+        return key_is_nan == 1;
     }
     return true;
 }
@@ -103,11 +124,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
 
         // The first key-value pair is being inserted.
         static PyTypeObject* allowed_key_types[] = {
-            &PyBytes_Type,
-            &PyFloat_Type,
-            &PyLong_Type,
-            &PyUnicode_Type,
-            this->import_type_from_python("decimal", "Decimal"),
+            &PyBytes_Type, &PyFloat_Type, &PyLong_Type, &PyUnicode_Type, SortedDictType::PyDec_Type,
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
@@ -400,6 +417,13 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
+    // Trick to initialise some members only once.
+    static bool _ = []
+    {
+        SortedDictType::PyDec_Type = SortedDictType::import_type_from_python("decimal", "Decimal");
+        return true;
+    };
+
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
     if (self == nullptr)
     {
