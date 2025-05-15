@@ -1,10 +1,10 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <cmath>
-#include <new>
 #include <iterator>
 #include <map>
 #include <memory>
+#include <new>
 #include <string>
 
 #include "sorted_dict_type.hh"
@@ -381,8 +381,9 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     // allocated memory to null, but actually writes zeros to it. Hence,
     // explicitly initialise them.
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    sd->map = new(std::nothrow) std::map<PyObject*, PyObject*, SortedDictTypeKeyCompare>;
-    if(sd->map == nullptr){
+    sd->map = new (std::nothrow) std::map<PyObject*, PyObject*, SortedDictTypeKeyCompare>;
+    if (sd->map == nullptr)
+    {
         return PyErr_NoMemory();
     }
     sd->key_type = nullptr;
