@@ -28,6 +28,21 @@ struct PyObject_Delete
 using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
 
 /**
+ * Import Python's `decimal.Decimal`.
+ *
+ * @return `decimal.Decimal` type object if successful, else `nullptr`.
+ */
+static PyTypeObject* SortedDictType::import_decimal_type(void)
+{
+    PyObjectWrapper decimal_module(PyImport_ImportModule("decimal"));  // 🆕
+    if (decimal_module == nullptr)
+    {
+        return nullptr;
+    }
+    return reinterpret_cast<PyTypeObject*>(PyObject_GetAttrString(decimal_module.get(), "Decimal"));  // 🆕
+}
+
+/**
  * Check whether the given key can be inserted into this sorted dictionary. For
  * instance, NaN cannot be compared with other floating-point numbers, so it
  * cannot be inserted.
@@ -73,15 +88,13 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         }
 
         // The first key-value pair is being inserted.
-        static PyTypeObject* allowed_key_types[] = {
-            &PyBytes_Type,
-            &PyFloat_Type,
-            &PyLong_Type,
-            &PyUnicode_Type,
+        static PyDec_Type = this->import_decimal_type();
+        static PyTypeObject* PyDec_Type = static PyTypeObject * allowed_key_types[] = {
+            &PyBytes_Type, &PyDec_Type, &PyFloat_Type, &PyLong_Type, &PyUnicode_Type,
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
-            if (Py_IS_TYPE(key, allowed_key_type) != 0)
+            if (allowed_key_type != nullptr && Py_IS_TYPE(key, allowed_key_type) != 0)
             {
                 // Don't increment the reference count yet. There is one more
                 // check remaining.
