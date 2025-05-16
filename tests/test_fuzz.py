@@ -34,7 +34,7 @@ class TestFuzz:
                 return self._rg.randrange(1_000, 2_000)
             case builtins.float | decimal.Decimal:
                 # I want a non-negligible repetition chance. Hence the kludge.
-                return key_type(self._rg.choices([*range(1_000), "nan"], [1] * 1_000 + [100])[0])
+                return key_type(self._rg.choices([*range(1_000), "-inf", "inf", "nan"], [1] * 1_002 + [100])[0])
             case builtins.str:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
             case builtins.type:
