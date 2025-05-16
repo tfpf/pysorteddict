@@ -38,3 +38,4 @@ The following key types are supported.
 * `float`
 * `int`
 * `str`
+* `decimal.Decimal`

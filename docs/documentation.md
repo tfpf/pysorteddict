@@ -4,8 +4,9 @@
 
 <summary>Looking for the documentation of an older version?</summary>
 
-▸ [v0.4.5](https://github.com/tfpf/pysorteddict/blob/v0.4.5/docs/index.md)
-▸ [v0.4.4](https://github.com/tfpf/pysorteddict/blob/v0.4.4/docs/index.md)
+▸ [0.4.6](https://github.com/tfpf/pysorteddict/blob/v0.4.6/docs/documentation.md)
+▸ [0.4.5](https://github.com/tfpf/pysorteddict/blob/v0.4.5/docs/index.md)
+▸ [0.4.4](https://github.com/tfpf/pysorteddict/blob/v0.4.4/docs/index.md)
 
 </details>
 
@@ -26,6 +27,30 @@ from pysorteddict import *
 ### `SortedDict(*args, **kwargs) -> SortedDict`
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
+
+#### Exceptions
+
+If `decimal.Decimal` cannot be imported (which might be a symptom of a corrupt or damaged Python installation), raise
+`ImportError` or a subclass thereof, or `AttributeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 2, in <module>
+    d = SortedDict()
+ModuleNotFoundError: No module named 'decimal'
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 2, in <module>
+    d = SortedDict()
+AttributeError: module 'decimal' has no attribute 'Decimal'
+```
 
 ## Properties
 
@@ -135,7 +160,7 @@ Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapp
 #### Exceptions
 
 If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`,
-`float`, `int` and `str`), raise `TypeError`.
+`float`, `int`, `str` and `decimal.Decimal`), raise `TypeError`.
 
 ```python
 from pysorteddict import *
