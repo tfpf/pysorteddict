@@ -41,9 +41,9 @@ using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
  */
 bool SortedDictType::is_key_good(PyObject* key)
 {
-    if (this->key_type == &PyFloat_Type && std::isnan(PyFloat_AS_DOUBLE(key)))
+    if (this->key_type == &PyFloat_Type)
     {
-        return false;
+        return !std::isnan(PyFloat_AS_DOUBLE(key));
     }
     return true;
 }
