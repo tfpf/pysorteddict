@@ -2,7 +2,7 @@
 
 <details style="background-color: #E7FFE6; padding: 10px">
 
-<summary>Looking for the documentation of an older version?</summary>
+<summary style="cursor: pointer">Looking for the documentation of an older version?</summary>
 
 ▸ [0.4.6](https://github.com/tfpf/pysorteddict/blob/v0.4.6/docs/documentation.md)
 ▸ [0.4.5](https://github.com/tfpf/pysorteddict/blob/v0.4.5/docs/index.md)
