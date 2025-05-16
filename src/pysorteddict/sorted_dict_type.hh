@@ -21,11 +21,7 @@ private:
     // The type of each key.
     PyTypeObject* key_type;
 
-    // Key types which have to be imported explicitly.
-    static PyTypeObject* PyDec_Type;
-
 private:
-    static PyTypeObject* import_type_from_python(char const*, char const*);
     bool is_key_good(PyObject*);
     bool are_key_type_and_key_value_pair_good(PyObject*, PyObject*);
 

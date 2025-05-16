@@ -38,7 +38,7 @@ using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
  *
  * @return Python type object if successful, else `nullptr`.
  */
-PyTypeObject* SortedDictType::import_type_from_python(char const* module_name, char const* type_name)
+static PyTypeObject* import_type_from_python(char const* module_name, char const* type_name)
 {
     PyObjectWrapper module_ob(PyImport_ImportModule(module_name));  // 🆕
     if (module_ob == nullptr)
@@ -54,6 +54,9 @@ PyTypeObject* SortedDictType::import_type_from_python(char const* module_name, c
     }
     return reinterpret_cast<PyTypeObject*>(type_ob);
 }
+
+// Key types which have to be imported explicitly
+static PyTypeObject *PyDec_Type = nullptr;
 
 /**
  * Check whether the given key can be inserted into this sorted dictionary. For
@@ -73,7 +76,7 @@ bool SortedDictType::is_key_good(PyObject* key)
     {
         return !std::isnan(PyFloat_AS_DOUBLE(key));
     }
-    if (this->key_type == SortedDictType::PyDec_Type)
+    if (this->key_type == PyDec_Type)
     {
         PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));
         if (key_is_nan_callable == nullptr)
@@ -124,7 +127,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
 
         // The first key-value pair is being inserted.
         static PyTypeObject* allowed_key_types[] = {
-            &PyBytes_Type, &PyFloat_Type, &PyLong_Type, &PyUnicode_Type, SortedDictType::PyDec_Type,
+            &PyBytes_Type, &PyFloat_Type, &PyLong_Type, &PyUnicode_Type, PyDec_Type,
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
@@ -420,7 +423,7 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     // Trick to initialise some members only once.
     static bool _ = []
     {
-        SortedDictType::PyDec_Type = SortedDictType::import_type_from_python("decimal", "Decimal");
+        PyDec_Type = import_type_from_python("decimal", "Decimal");
         return true;
     }();
 

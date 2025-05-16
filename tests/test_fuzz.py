@@ -102,7 +102,7 @@ class TestFuzz:
                 ):
                     del self.sorted_dict[key]
                 continue
-            if (key_type in float or key_type is decimal.Decimal) and math.isnan(key):
+            if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
                 with pytest.raises(ValueError, match=f"^got bad key {key!r} of type {key_type!r}$"):
                     del self.sorted_dict[key]
                 continue
