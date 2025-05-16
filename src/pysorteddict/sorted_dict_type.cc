@@ -126,7 +126,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
-            if (allowed_key_type != nullptr && Py_IS_TYPE(key, allowed_key_type) != 0)
+            if (Py_IS_TYPE(key, allowed_key_type) != 0)
             {
                 // Don't increment the reference count yet. There is one more
                 // check remaining.
@@ -418,8 +418,11 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     // Trick to initialise only once.
     static bool import_types_from_python_succeeded = []
     {
-        PyDecimal_Type = import_type_from_python("decimal", "Decimal");
-        return PyDecimal_Type != nullptr;
+        if ((PyDecimal_Type = import_type_from_python("decimal", "Decimal")) == nullptr)
+        {
+            return false;
+        }
+        return true;
     }();
     if (!import_types_from_python_succeeded)
     {
