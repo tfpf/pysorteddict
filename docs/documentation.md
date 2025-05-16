@@ -27,6 +27,30 @@ from pysorteddict import *
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 
+#### Exceptions
+
+If `decimal.Decimal` cannot be imported (which might be a symptom of a corrupt or damaged Python installation), raise
+`ImportError` or a subclass thereof, or `AttributeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 2, in <module>
+    d = SortedDict()
+ModuleNotFoundError: No module named 'decimal'
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 2, in <module>
+    d = SortedDict()
+AttributeError: module 'decimal' has no attribute 'Decimal'
+```
+
 ## Properties
 
 ### `d.key_type: type | None`
