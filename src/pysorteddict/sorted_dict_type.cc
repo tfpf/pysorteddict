@@ -28,6 +28,35 @@ struct PyObject_Delete
 using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
 
 /**
+ * Import a Python type.
+ *
+ * The caller should ensure that the module and type names actually name a
+ * Python type.
+ *
+ * @param module_name Name of the module to import the type from.
+ * @param type_name Name of the type to import.
+ *
+ * @return Python type object if successful, else `nullptr`.
+ */
+static PyTypeObject* import_type_from_python(char const* module_name, char const* type_name)
+{
+    PyObjectWrapper module_ob(PyImport_ImportModule(module_name));  // 🆕
+    if (module_ob == nullptr)
+    {
+        return nullptr;
+    }
+    PyObject* type_ob = PyObject_GetAttrString(module_ob.get(), type_name);  // 🆕
+    if (type_ob == nullptr)
+    {
+        return nullptr;
+    }
+    return reinterpret_cast<PyTypeObject*>(type_ob);
+}
+
+// Key types which have to be imported explicitly using the above function.
+static PyTypeObject* PyDecimal_Type;
+
+/**
  * Check whether the given key can be inserted into this sorted dictionary. For
  * instance, NaN cannot be compared with other floating-point numbers, so it
  * cannot be inserted.
@@ -44,6 +73,20 @@ bool SortedDictType::is_key_good(PyObject* key)
     if (this->key_type == &PyFloat_Type)
     {
         return !std::isnan(PyFloat_AS_DOUBLE(key));
+    }
+    if (this->key_type == PyDecimal_Type)
+    {
+        PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));
+        if (key_is_nan_callable == nullptr)
+        {
+            return false;
+        }
+        PyObjectWrapper key_is_nan_result(PyObject_CallNoArgs(key_is_nan_callable.get()));
+        if (key_is_nan_result == nullptr)
+        {
+            return false;
+        }
+        return PyObject_Not(key_is_nan_result.get()) == 1;
     }
     return true;
 }
@@ -78,6 +121,8 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
             &PyFloat_Type,
             &PyLong_Type,
             &PyUnicode_Type,
+            // The following types are not built-in.
+            PyDecimal_Type,
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
@@ -370,6 +415,20 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
+    // Trick to initialise only once.
+    static bool import_types_from_python_succeeded = []
+    {
+        if ((PyDecimal_Type = import_type_from_python("decimal", "Decimal")) == nullptr)
+        {
+            return false;
+        }
+        return true;
+    }();
+    if (!import_types_from_python_succeeded)
+    {
+        return nullptr;
+    }
+
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
     if (self == nullptr)
     {
