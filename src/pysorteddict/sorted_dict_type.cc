@@ -43,20 +43,18 @@ static PyTypeObject* import_type_from_python(char const* module_name, char const
     PyObjectWrapper module_ob(PyImport_ImportModule(module_name));  // 🆕
     if (module_ob == nullptr)
     {
-        PyErr_Clear();
         return nullptr;
     }
     PyObject* type_ob = PyObject_GetAttrString(module_ob.get(), type_name);  // 🆕
     if (type_ob == nullptr)
     {
-        PyErr_Clear();
         return nullptr;
     }
     return reinterpret_cast<PyTypeObject*>(type_ob);
 }
 
 // Key types which have to be imported explicitly
-static PyTypeObject *PyDec_Type = nullptr;
+static PyTypeObject *PyDec_Type;
 
 /**
  * Check whether the given key can be inserted into this sorted dictionary. For
@@ -81,22 +79,14 @@ bool SortedDictType::is_key_good(PyObject* key)
         PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));
         if (key_is_nan_callable == nullptr)
         {
-            PyErr_Clear();
             return false;
         }
         PyObjectWrapper key_is_nan_result(PyObject_CallNoArgs(key_is_nan_callable.get()));
         if (key_is_nan_result == nullptr)
         {
-            PyErr_Clear();
             return false;
         }
-        int key_is_nan = PyObject_IsTrue(key_is_nan_result.get());
-        if (key_is_nan == -1)
-        {
-            PyErr_Clear();
-            return false;
-        }
-        return key_is_nan == 1;
+        return PyObject_Not(key_is_nan_result.get()) == 1;
     }
     return true;
 }
@@ -420,12 +410,15 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    // Trick to initialise some members only once.
-    static bool _ = []
+    // Trick to initialise only once.
+    static bool import_types_from_python_succeeded = []
     {
         PyDec_Type = import_type_from_python("decimal", "Decimal");
-        return true;
+        return PyDec_Type != nullptr;
     }();
+    if(!import_types_from_python_succeeded){
+        return nullptr;
+    }
 
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
     if (self == nullptr)
