@@ -160,7 +160,7 @@ Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapp
 #### Exceptions
 
 If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`,
-`float`, `int` and `str`), raise `TypeError`.
+`float`, `int`, `str` and `decimal.Decimal`), raise `TypeError`.
 
 ```python
 from pysorteddict import *
