@@ -54,7 +54,7 @@ static PyTypeObject* import_type_from_python(char const* module_name, char const
 }
 
 // Key types which have to be imported explicitly
-static PyTypeObject *PyDec_Type;
+static PyTypeObject *PyDecimal_Type;
 
 /**
  * Check whether the given key can be inserted into this sorted dictionary. For
@@ -74,7 +74,7 @@ bool SortedDictType::is_key_good(PyObject* key)
     {
         return !std::isnan(PyFloat_AS_DOUBLE(key));
     }
-    if (this->key_type == PyDec_Type)
+    if (this->key_type == PyDecimal_Type)
     {
         PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));
         if (key_is_nan_callable == nullptr)
@@ -117,7 +117,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
 
         // The first key-value pair is being inserted.
         static PyTypeObject* allowed_key_types[] = {
-            &PyBytes_Type, &PyFloat_Type, &PyLong_Type, &PyUnicode_Type, PyDec_Type,
+            &PyBytes_Type, &PyFloat_Type, &PyLong_Type, &PyUnicode_Type, PyDecimal_Type,
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
@@ -413,8 +413,8 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     // Trick to initialise only once.
     static bool import_types_from_python_succeeded = []
     {
-        PyDec_Type = import_type_from_python("decimal", "Decimal");
-        return PyDec_Type != nullptr;
+        PyDecimal_Type = import_type_from_python("decimal", "Decimal");
+        return PyDecimal_Type != nullptr;
     }();
     if(!import_types_from_python_succeeded){
         return nullptr;
