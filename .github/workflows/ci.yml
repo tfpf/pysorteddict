@@ -50,13 +50,20 @@ jobs:
     if: github.ref_type == 'tag'
     needs: [coverage, build]
     runs-on: ubuntu-22.04
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pysorteddict
     permissions: write-all
     steps:
       - uses: actions/checkout@v4
       - run: pipx run hatch build -t sdist
       - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: dist/
       - run: |
           gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} --generate-notes
-          gh release upload ${{ github.ref_name }} */*.tar.gz */*.whl
+          gh release upload ${{ github.ref_name }} dist/*
         env:
           GH_TOKEN: ${{ github.token }}
+      - uses: pypa/gh-action-pypi-publish@release/v1
