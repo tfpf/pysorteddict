@@ -50,10 +50,10 @@ jobs:
     if: github.ref_type == 'tag'
     needs: [coverage, build]
     runs-on: ubuntu-22.04
-    permissions: write-all
     environment:
       name: pypi
       url: https://pypi.org/p/pysorteddict
+    permissions: write-all
     steps:
       - uses: actions/checkout@v4
       - run: pipx run hatch build -t sdist
