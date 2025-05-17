@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      - run: pip install myst-parser && sphinx-build . _build
+      - run: pip install -r requirements.txt && sphinx-build . _build
         working-directory: docs/
       - uses: actions/upload-pages-artifact@v3
         with:
