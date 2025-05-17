@@ -16,8 +16,8 @@ exclude_patterns = ["_build"]
 html_logo = "logo.jpg"
 html_theme = "furo"
 html_theme_options = {
-    "source_repository": "https://github.com/tfpf/pysorteddict",
     "source_branch": "main",
     "source_directory": "docs",
+    "source_repository": "https://github.com/tfpf/pysorteddict",
 }
 html_use_index = False
