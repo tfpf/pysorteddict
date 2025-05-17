@@ -1,7 +1,2 @@
 myst-parser~=4.0
-furo
-sphinx-book-theme
-pydata-sphinx-theme
-sphinx-press-theme
-piccolo-theme
-python-docs-theme
+furo~=2024.8

@@ -13,6 +13,5 @@ source_suffix = [".md", ".rst"]
 templates_path = ["_templates"]
 exclude_patterns = ["_build"]
 
-html_theme = "python_docs_theme"
-html_theme_options = {"fixed_sidebar": True, "page_width": "70%"}
+html_theme = "furo"
 html_use_index = False
