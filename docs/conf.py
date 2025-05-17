@@ -13,7 +13,7 @@ source_suffix = [".md", ".rst"]
 templates_path = ["_templates"]
 exclude_patterns = ["_build"]
 
-html_logo = "pysorteddict-logo.svg"
+html_logo = "logo.svg"
 html_theme = "furo"
 html_theme_options = {
     "source_branch": "main",
