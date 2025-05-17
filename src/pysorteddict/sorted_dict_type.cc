@@ -3,29 +3,16 @@
 #include <cmath>
 #include <iterator>
 #include <map>
-#include <memory>
 #include <string>
 
 #include "sorted_dict_type.hh"
 #include "sorted_dict_type_key_compare.hh"
+#include "sorted_dict_utils.hh"
 
 #define LEFT_PARENTHESIS "\u0028"
 #define RIGHT_PARENTHESIS "\u0029"
 #define LEFT_CURLY_BRACKET "\u007B"
 #define RIGHT_CURLY_BRACKET "\u007D"
-
-/**
- * C++-style clean-up implementation for Python objects.
- */
-struct PyObject_Delete
-{
-    void operator()(PyObject* ob)
-    {
-        Py_XDECREF(ob);
-    }
-};
-
-using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Delete>;
 
 /**
  * Import a Python type.
