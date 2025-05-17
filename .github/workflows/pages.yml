@@ -24,10 +24,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    container: sphinxdoc/sphinx
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      - run: sudo apt install python3-myst-parser python3-sphinx && sphinx-build . _build
+      - run: pip install myst-parser && sphinx-build . _build
         working-directory: docs/
       - uses: actions/upload-pages-artifact@v3
         with:
