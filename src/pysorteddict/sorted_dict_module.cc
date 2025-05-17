@@ -260,7 +260,7 @@ PyMODINIT_FUNC PyInit_pysorteddict(void)
     {
         return nullptr;
     }
-    if (PyModule_AddObjectRef(mod, "SortedDict", reinterpret_cast<PyObject*>(&sorted_dict_type)) < 0)
+    if (PyModule_AddObjectRef(mod, "SortedDict", reinterpret_cast<PyObject*>(&sorted_dict_type)) < 0)  // 🆕
     {
         Py_DECREF(mod);
         return nullptr;
