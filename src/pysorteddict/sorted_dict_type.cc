@@ -64,18 +64,18 @@ static PyTypeObject* PyDecimal_Type;
  */
 static bool import_supported_key_types(void)
 {
-    // Trick to import each type only once.
-    static bool imports_succeeded = []
+    // Import each type only once.
+    static bool import_decimal = []
     {
-        if ((PyDecimal_Type = import_python_type("decimal", "Decimal")) == nullptr)
-        {
-            PyErr_Clear();
-            PyErr_SetString(PyExc_ImportError, "failed to import decimal.Decimal");
-            return false;
-        }
-        return true;
+        return (PyDecimal_Type = import_python_type("decimal", "Decimal")) != nullptr;
     }();
-    return imports_succeeded;
+    if (!import_decimal)
+    {
+        PyErr_Clear();
+        PyErr_SetString(PyExc_ImportError, "failed to import `decimal.Decimal`");
+        return false;
+    }
+    return true;
 }
 
 /**
