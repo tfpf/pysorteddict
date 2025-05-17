@@ -1,5 +1,9 @@
 name: ci
-on: [push, workflow_dispatch]
+on:
+  push:
+    paths:
+      - '!docs/**'
+  workflow_dispatch:
 
 jobs:
   cxx-style:
