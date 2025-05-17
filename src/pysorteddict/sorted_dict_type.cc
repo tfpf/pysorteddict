@@ -76,12 +76,12 @@ bool SortedDictType::is_key_good(PyObject* key)
     }
     if (this->key_type == PyDecimal_Type)
     {
-        PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));
+        PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));  // 🆕
         if (key_is_nan_callable == nullptr)
         {
             return false;
         }
-        PyObjectWrapper key_is_nan_result(PyObject_CallNoArgs(key_is_nan_callable.get()));
+        PyObjectWrapper key_is_nan_result(PyObject_CallNoArgs(key_is_nan_callable.get()));  // 🆕
         if (key_is_nan_result == nullptr)
         {
             return false;
@@ -300,7 +300,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
         // Insert a new key-value pair. The hint is correct; the key will get
         // inserted just before it.
         it = this->map->emplace_hint(it, key, value);
-        Py_INCREF(it->first);
+        Py_INCREF(it->first);  // 🆕
     }
     else
     {
@@ -308,7 +308,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
         Py_DECREF(it->second);
         it->second = value;
     }
-    Py_INCREF(it->second);
+    Py_INCREF(it->second);  // 🆕
     return 0;
 }
 
@@ -335,8 +335,8 @@ PyObject* SortedDictType::copy(void)
     this_copy->map = new std::map<PyObject*, PyObject*, SortedDictTypeKeyCompare>(*this->map);
     for (auto& item : *this_copy->map)
     {
-        Py_INCREF(item.first);
-        Py_INCREF(item.second);
+        Py_INCREF(item.first);  // 🆕
+        Py_INCREF(item.second);  // 🆕
     }
     this_copy->key_type = this->key_type;
     Py_XINCREF(this_copy->key_type);
@@ -359,8 +359,8 @@ PyObject* SortedDictType::items(void)
             Py_DECREF(sd_items);
             return nullptr;
         }
-        PyTuple_SET_ITEM(sd_item, 0, Py_NewRef(item.first));
-        PyTuple_SET_ITEM(sd_item, 1, Py_NewRef(item.second));
+        PyTuple_SET_ITEM(sd_item, 0, Py_NewRef(item.first));  // 🆕
+        PyTuple_SET_ITEM(sd_item, 1, Py_NewRef(item.second));  // 🆕
         PyList_SET_ITEM(sd_items, idx++, sd_item);
     }
     return sd_items;
@@ -376,7 +376,7 @@ PyObject* SortedDictType::keys(void)
     Py_ssize_t idx = 0;
     for (auto& item : *this->map)
     {
-        PyList_SET_ITEM(sd_keys, idx++, Py_NewRef(item.first));
+        PyList_SET_ITEM(sd_keys, idx++, Py_NewRef(item.first));  // 🆕
     }
     return sd_keys;
 }
@@ -391,7 +391,7 @@ PyObject* SortedDictType::values(void)
     Py_ssize_t idx = 0;
     for (auto& item : *this->map)
     {
-        PyList_SET_ITEM(sd_values, idx++, Py_NewRef(item.second));
+        PyList_SET_ITEM(sd_values, idx++, Py_NewRef(item.second));  // 🆕
     }
     return sd_values;
 }
