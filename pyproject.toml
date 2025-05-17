@@ -41,6 +41,8 @@ classifiers = [
 [project.urls]
 Homepage = "https://tfpf.github.io/pysorteddict/index.html"
 Documentation = "https://tfpf.github.io/pysorteddict/documentation.html"
+Repository = "https://github.com/tfpf/pysorteddict"
+Issues = "https://github.com/tfpf/pysorteddict/issues"
 
 [tool.cibuildwheel]
 archs = ["auto64"]
