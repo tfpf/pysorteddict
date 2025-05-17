@@ -1,6 +1,8 @@
 #ifndef SORTED_DICT_UTILS_HH_
 #define SORTED_DICT_UTILS_HH_
 
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
 #include <memory>
 
 /**
