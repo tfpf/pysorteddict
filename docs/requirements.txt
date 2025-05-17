@@ -1,1 +1,2 @@
+furo~=2024.8
 myst-parser~=4.0
