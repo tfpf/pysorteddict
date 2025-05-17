@@ -175,6 +175,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
     // it is safe to call this method.
     if (!this->is_key_good(key))
     {
+        PyErr_Clear();
         PyErr_Format(PyExc_ValueError, "got bad key %R of type %R", key, Py_TYPE(key));
         if (key_type_set_here)
         {
@@ -239,6 +240,7 @@ int SortedDictType::contains(PyObject* key)
     if (this->key_type == nullptr || Py_IS_TYPE(key, this->key_type) == 0 || !this->is_key_good(key)
         || this->map->find(key) == this->map->end())
     {
+        PyErr_Clear();
         return 0;
     }
     return 1;
