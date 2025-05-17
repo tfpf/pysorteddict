@@ -13,5 +13,11 @@ source_suffix = [".md", ".rst"]
 templates_path = ["_templates"]
 exclude_patterns = ["_build"]
 
+html_logo = "logo.jpg"
 html_theme = "furo"
+html_theme_options = {
+    "source_repository": "https://github.com/tfpf/pysorteddict",
+    "source_branch": "main",
+    "source_directory": "docs",
+}
 html_use_index = False
