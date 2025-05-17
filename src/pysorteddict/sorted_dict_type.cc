@@ -184,12 +184,6 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         }
         return false;
     }
-
-    if (key_type_set_here)
-    {
-        // Increment the reference count, since this wasn't done above.
-        Py_INCREF(this->key_type);
-    }
     return true;
 }
 
@@ -200,7 +194,6 @@ void SortedDictType::deinit(void)
         Py_DECREF(item.first);
         Py_DECREF(item.second);
     }
-    Py_XDECREF(this->key_type);
     delete this->map;
 }
 
@@ -361,7 +354,6 @@ PyObject* SortedDictType::copy(void)
         Py_INCREF(item.second);  // 🆕
     }
     this_copy->key_type = this->key_type;
-    Py_XINCREF(this_copy->key_type);
     return sd_copy;
 }
 
