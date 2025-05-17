@@ -4,6 +4,7 @@
 
 <summary style="cursor: pointer">Looking for the documentation of an older version?</summary>
 
+▸ [0.5.1](https://github.com/tfpf/pysorteddict/blob/v0.5.1/docs/documentation.md)
 ▸ [0.5.0](https://github.com/tfpf/pysorteddict/blob/v0.5.0/docs/documentation.md)
 
 ▸ [0.4.6](https://github.com/tfpf/pysorteddict/blob/v0.4.6/docs/documentation.md)
@@ -32,8 +33,8 @@ Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 
 #### Exceptions
 
-If `decimal.Decimal` cannot be imported (which might be a symptom of a corrupt or damaged Python installation), raise
-`ImportError` or a subclass thereof, or `AttributeError`.
+If any of the supported key types which are not built-in (only `decimal.Decimal` as of this version) cannot be imported
+(which might be a symptom of a corrupt or damaged Python installation), raise `ImportError`.
 
 ```python
 from pysorteddict import *
@@ -44,14 +45,7 @@ d = SortedDict()
 Traceback (most recent call last):
   File "…", line 2, in <module>
     d = SortedDict()
-ModuleNotFoundError: No module named 'decimal'
-```
-
-```text
-Traceback (most recent call last):
-  File "…", line 2, in <module>
-    d = SortedDict()
-AttributeError: module 'decimal' has no attribute 'Decimal'
+ImportError: failed to import `decimal.Decimal`
 ```
 
 ## Properties
