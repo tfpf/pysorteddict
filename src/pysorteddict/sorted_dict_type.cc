@@ -58,7 +58,7 @@ static PyTypeObject* PyDecimal_Type;
 
 /**
  * Import all supported key types from Python which are not built-in. Make them
- * available globally so that their reference count need not be managed.
+ * available globally so that their reference counts need not be managed.
  *
  * @return `true` if successful, else `false`.
  */
