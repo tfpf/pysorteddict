@@ -370,10 +370,9 @@ PyObject* SortedDictType::items(void)
     return sd_items;
 }
 
-PyObject* SortedDictType::keys(void)
+PyObject* SortedDictType::keys(PyTypeObject*type)
 {
-    auto this_keys = new SortedDictKeysType;
-    return reinterpret_cast<PyObject*>(this_keys);
+    return SortedDictKeysType::New(type, this);
 }
 
 PyObject* SortedDictType::values(void)

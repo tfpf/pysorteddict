@@ -10,11 +10,22 @@ static PyTypeObject sorted_dict_keys_type = {
     .tp_name = "pysorteddict.SortedDictKeys",
     // clang-format on
     .tp_basicsize = sizeof(SortedDictKeysType),
+    .tp_dealloc = sorted_dict_keys_type_dealloc,
     .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_alloc = PyType_GenericAlloc,
+    .tp_free = PyObject_Free,
 };
+
+/**
+ * Deinitialise and deallocate.
+ */
+static void sorted_dict_keys_type_dealloc(PyObject*self){
+    SortedDictKeysType*sdk = reinterpret_cast<SortedDictKeysType*>(self);
+    sdk->deinit();
+    Py_TYPE(self)->tp_free(self);
+}
 
 /**
  * Deinitialise and deallocate.
@@ -132,9 +143,8 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 {
-    return sorted_dict_keys_type.tp_alloc(&sorted_dict_keys_type, 0);
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->keys();
+    return sd->keys(&sorted_dict_keys_type);
 }
 
 PyDoc_STRVAR(
