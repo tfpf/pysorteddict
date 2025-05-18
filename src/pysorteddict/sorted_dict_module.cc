@@ -4,6 +4,15 @@
 #include "sorted_dict_type.hh"
 #include "sorted_dict_keys_type.hh"
 
+/**
+ * Deinitialise and deallocate.
+ */
+static void sorted_dict_keys_type_dealloc(PyObject*self){
+    SortedDictKeysType*sdk = reinterpret_cast<SortedDictKeysType*>(self);
+    sdk->deinit();
+    Py_TYPE(self)->tp_free(self);
+}
+
 static PyTypeObject sorted_dict_keys_type = {
     // clang-format off
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -17,15 +26,6 @@ static PyTypeObject sorted_dict_keys_type = {
     .tp_alloc = PyType_GenericAlloc,
     .tp_free = PyObject_Free,
 };
-
-/**
- * Deinitialise and deallocate.
- */
-static void sorted_dict_keys_type_dealloc(PyObject*self){
-    SortedDictKeysType*sdk = reinterpret_cast<SortedDictKeysType*>(self);
-    sdk->deinit();
-    Py_TYPE(self)->tp_free(self);
-}
 
 /**
  * Deinitialise and deallocate.

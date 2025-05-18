@@ -8,7 +8,7 @@ void SortedDictKeysType::deinit(void){
     Py_DECREF(this->sd);
 }
 
-PyObject* New(PyTypeObject*type, SortedDictType*sd){
+PyObject* SortedDictKeysType::New(PyTypeObject*type, SortedDictType*sd){
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
     if (self == nullptr)
     {
@@ -16,6 +16,7 @@ PyObject* New(PyTypeObject*type, SortedDictType*sd){
     }
 
     SortedDictKeysType*sdk = reinterpret_cast<SortedDictKeysType*>(self);
-    sdk->sd = Py_NewRef(sd);
+    sdk->sd = sd;
+    Py_INCREF(sdk->sd);
     return self;
 }
