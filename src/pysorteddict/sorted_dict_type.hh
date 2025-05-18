@@ -5,7 +5,7 @@
 #include <Python.h>
 #include <map>
 
-#include "sorted_dict_type_key_compare.hh"
+#include "sorted_dict_key_compare.hh"
 
 struct SortedDictType
 {
@@ -16,7 +16,7 @@ private:
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
-    std::map<PyObject*, PyObject*, SortedDictTypeKeyCompare>* map;
+    std::map<PyObject*, PyObject*, SortedDictKeyCompare>* map;
 
     // The type of each key.
     PyTypeObject* key_type;

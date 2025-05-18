@@ -1,5 +1,5 @@
-#ifndef SORTED_DICT_TYPE_KEY_COMPARE_HH_
-#define SORTED_DICT_TYPE_KEY_COMPARE_HH_
+#ifndef SORTED_DICT_KEY_COMPARE_HH_
+#define SORTED_DICT_KEY_COMPARE_HH_
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
@@ -7,7 +7,7 @@
 /**
  * C++-style comparison implementation for Python objects.
  */
-struct SortedDictTypeKeyCompare
+struct SortedDictKeyCompare
 {
     bool operator()(PyObject* a, PyObject* b) const
     {

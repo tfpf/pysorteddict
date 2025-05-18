@@ -6,7 +6,7 @@
 #include <string>
 
 #include "sorted_dict_type.hh"
-#include "sorted_dict_type_key_compare.hh"
+#include "sorted_dict_key_compare.hh"
 #include "sorted_dict_utils.hh"
 
 #define LEFT_PARENTHESIS "\u0028"
@@ -336,7 +336,7 @@ PyObject* SortedDictType::copy(void)
         return nullptr;
     }
     SortedDictType* this_copy = reinterpret_cast<SortedDictType*>(sd_copy);
-    this_copy->map = new std::map<PyObject*, PyObject*, SortedDictTypeKeyCompare>(*this->map);
+    this_copy->map = new std::map<PyObject*, PyObject*, SortedDictKeyCompare>(*this->map);
     for (auto& item : *this_copy->map)
     {
         Py_INCREF(item.first);  // 🆕
@@ -433,7 +433,7 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     // allocated memory to null, but actually writes zeros to it. Hence,
     // explicitly initialise them.
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    sd->map = new std::map<PyObject*, PyObject*, SortedDictTypeKeyCompare>;
+    sd->map = new std::map<PyObject*, PyObject*, SortedDictKeyCompare>;
     sd->key_type = nullptr;
     return self;
 }
