@@ -76,18 +76,18 @@ class TestFuzz:
             key = self._gen(key_type)
             if self.is_sorted_dict_new:
                 with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
-                    key in self.sorted_dict
+                    key in self.sorted_dict  # noqa: B015
                 continue
             if key_type is not self.key_type:
                 with pytest.raises(
                     TypeError,
                     match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
                 ):
-                    key in self.sorted_dict
+                    key in self.sorted_dict  # noqa: B015
                 continue
             if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
                 with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
-                    key in self.sorted_dict
+                    key in self.sorted_dict  # noqa: B015
                 continue
             if self.normal_dict:
                 assert self._rg.choice([*self.normal_dict]) in self.sorted_dict
