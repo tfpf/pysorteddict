@@ -222,17 +222,15 @@ PyObject* SortedDictType::repr(void)
  *
  * @param ob Python object.
  *
- * @return 1 if it is present, else 0.
+ * @return -1 on error. 1 if it is present, else 0.
  */
 int SortedDictType::contains(PyObject* key)
 {
-    if (this->key_type == nullptr || Py_IS_TYPE(key, this->key_type) == 0 || !this->is_key_good(key)
-        || this->map->find(key) == this->map->end())
+    if (!this->are_key_type_and_key_value_pair_good(key))
     {
-        PyErr_Clear();
-        return 0;
+        return -1;
     }
-    return 1;
+    return this->map->find(key) == this->map->end() ? 0 : 1;
 }
 
 Py_ssize_t SortedDictType::len(void)

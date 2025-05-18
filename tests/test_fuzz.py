@@ -74,8 +74,20 @@ class TestFuzz:
     def _test___contains__(self):
         for key_type in all_types:
             key = self._gen(key_type)
+            if self.is_sorted_dict_new:
+                with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
+                    key in self.sorted_dict
+                continue
             if key_type is not self.key_type:
-                assert key not in self.sorted_dict
+                with pytest.raises(
+                    TypeError,
+                    match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
+                ):
+                    key in self.sorted_dict
+                continue
+            if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
+                with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
+                    key in self.sorted_dict
                 continue
             if self.normal_dict:
                 assert self._rg.choice([*self.normal_dict]) in self.sorted_dict
