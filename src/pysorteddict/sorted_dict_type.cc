@@ -137,8 +137,6 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         {
             if (Py_IS_TYPE(key, allowed_key_type) != 0)
             {
-                // Don't increment the reference count yet. There is one more
-                // check remaining.
                 this->key_type = allowed_key_type;
                 key_type_set_here = true;
                 break;
