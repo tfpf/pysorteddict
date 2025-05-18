@@ -2,6 +2,19 @@
 #include <Python.h>
 
 #include "sorted_dict_type.hh"
+#include "sorted_dict_keys_type.hh"
+
+static PyTypeObject sorted_dict_keys_type = {
+    // clang-format off
+    .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    .tp_name = "pysorteddict.SortedDictKeys",
+    // clang-format on
+    .tp_basicsize = sizeof(SortedDictKeysType),
+    .tp_hash = PyObject_HashNotImplemented,
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_alloc = PyType_GenericAlloc,
+};
 
 /**
  * Deinitialise and deallocate.
@@ -119,6 +132,7 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 {
+    return sorted_dict_keys_type.tp_alloc(&sorted_dict_keys_type, 0);
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     return sd->keys();
 }

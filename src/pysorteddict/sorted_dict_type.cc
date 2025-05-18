@@ -7,6 +7,7 @@
 
 #include "sorted_dict_key_compare.hh"
 #include "sorted_dict_type.hh"
+#include "sorted_dict_keys_type.hh"
 #include "sorted_dict_utils.hh"
 
 #define LEFT_PARENTHESIS "\u0028"
@@ -371,17 +372,8 @@ PyObject* SortedDictType::items(void)
 
 PyObject* SortedDictType::keys(void)
 {
-    PyObject* sd_keys = PyList_New(this->map->size());  // 🆕
-    if (sd_keys == nullptr)
-    {
-        return nullptr;
-    }
-    Py_ssize_t idx = 0;
-    for (auto& item : *this->map)
-    {
-        PyList_SET_ITEM(sd_keys, idx++, Py_NewRef(item.first));  // 🆕
-    }
-    return sd_keys;
+    auto this_keys = new SortedDictKeysType;
+    return reinterpret_cast<PyObject*>(this_keys);
 }
 
 PyObject* SortedDictType::values(void)
