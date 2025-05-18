@@ -37,6 +37,10 @@ static PyTypeObject* import_python_type(char const* module_name, char const* typ
     {
         return nullptr;
     }
+    if (Py_IS_TYPE(type_ob, &PyType_Type) == 0)
+    {
+        return nullptr;
+    }
     return reinterpret_cast<PyTypeObject*>(type_ob);
 }
 
@@ -59,7 +63,7 @@ static bool import_supported_key_types(void)
     if (!import_decimal)
     {
         PyErr_Clear();
-        PyErr_SetString(PyExc_ImportError, "failed to import `decimal.Decimal`");
+        PyErr_SetString(PyExc_ImportError, "failed to import the `decimal.Decimal` type");
         return false;
     }
     return true;

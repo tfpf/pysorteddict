@@ -45,7 +45,7 @@ d = SortedDict()
 Traceback (most recent call last):
   File "…", line 2, in <module>
     d = SortedDict()
-ImportError: failed to import `decimal.Decimal`
+ImportError: failed to import the `decimal.Decimal` type
 ```
 
 ## Properties
