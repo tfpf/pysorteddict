@@ -5,8 +5,8 @@
 #include <map>
 #include <string>
 
-#include "sorted_dict_type.hh"
 #include "sorted_dict_key_compare.hh"
+#include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"
 
 #define LEFT_PARENTHESIS "\u0028"
