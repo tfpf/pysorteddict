@@ -10,10 +10,7 @@ cxx_standard_arg = "-std=c++14" if os.name != "nt" or sysconfig.get_platform().s
 setuptools.setup(
     ext_modules=[
         setuptools.Extension(
-            name="pysorteddict",
-            extra_compile_args=[cxx_standard_arg],
-            sources=glob.glob("src/pysorteddict/*.cc"),
-            py_limited_api=True,
+            name="pysorteddict", extra_compile_args=[cxx_standard_arg], sources=glob.glob("src/pysorteddict/*.cc")
         )
     ]
 )

@@ -5,6 +5,11 @@
 #include <Python.h>
 #include <memory>
 
+#define LEFT_PARENTHESIS "\u0028"
+#define RIGHT_PARENTHESIS "\u0029"
+#define LEFT_CURLY_BRACKET "\u007B"
+#define RIGHT_CURLY_BRACKET "\u007D"
+
 /**
  * C++-style clean-up implementation for Python objects.
  */
