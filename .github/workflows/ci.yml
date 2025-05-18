@@ -1,8 +1,8 @@
 name: ci
 on:
   push:
-    paths:
-      - '!docs/**'
+    paths-ignore:
+      - 'docs/**'
   workflow_dispatch:
 
 jobs:
