@@ -4,6 +4,7 @@
 
 <summary style="cursor: pointer">Looking for the documentation of an older version?</summary>
 
+▸ [0.5.3](https://github.com/tfpf/pysorteddict/blob/v0.5.3/docs/documentation.md)
 ▸ [0.5.2](https://github.com/tfpf/pysorteddict/blob/v0.5.2/docs/documentation.md)
 ▸ [0.5.1](https://github.com/tfpf/pysorteddict/blob/v0.5.1/docs/documentation.md)
 ▸ [0.5.0](https://github.com/tfpf/pysorteddict/blob/v0.5.0/docs/documentation.md)  
@@ -71,6 +72,55 @@ Return a human-readable representation of the sorted dictionary `d`.
 ### `key in d`
 
 Return whether `key` is present in the sorted dictionary `d`.
+
+#### Exceptions
+
+If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+"foo" in d
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 3, in <module>
+    "foo" in d
+RuntimeError: key type not set: insert at least one item first
+```
+
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ("bar", "baz")
+100 in d
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    100 in d
+TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
+```
+
+Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d[1.1] = ("racecar",)
+float("nan") in d
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    float("nan") in d
+ValueError: got bad key nan of type <class 'float'>
+```
 
 ### `len(d)`
 
