@@ -40,6 +40,8 @@ public:
     PyObject* get_key_type(void);
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
+
+    friend class SortedDictKeysType;
 };
 
 #endif

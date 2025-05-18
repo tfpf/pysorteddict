@@ -15,6 +15,7 @@ private:
 
 public:
     void deinit(void);
+    PyObject* repr(void);
     static PyObject* New(PyTypeObject*, SortedDictType*);
 };
 

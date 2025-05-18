@@ -13,6 +13,14 @@ static void sorted_dict_keys_type_dealloc(PyObject*self){
     Py_TYPE(self)->tp_free(self);
 }
 
+/**
+ * Stringify.
+ */
+static PyObject*sorted_dict_keys_type_repr(PyObject* self){
+    SortedDictKeysType*sdk = reinterpret_cast<SortedDictKeysType*>(self);
+    return sdk->repr();
+}
+
 static PyTypeObject sorted_dict_keys_type = {
     // clang-format off
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -20,6 +28,7 @@ static PyTypeObject sorted_dict_keys_type = {
     // clang-format on
     .tp_basicsize = sizeof(SortedDictKeysType),
     .tp_dealloc = sorted_dict_keys_type_dealloc,
+    .tp_repr = sorted_dict_keys_type_repr,
     .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
