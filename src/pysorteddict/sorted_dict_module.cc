@@ -36,10 +36,7 @@ static PySequenceMethods sorted_dict_keys_type_sequence = {
     .sq_length = sorted_dict_keys_type_len,
 };
 
-PyDoc_STRVAR(
-    sorted_dict_keys_type_doc,
-    "Dynamic view over the keys of a sorted dictionary. Reflects any changes made to the latter."
-);
+PyDoc_STRVAR(sorted_dict_keys_type_doc, "Dynamic view over the keys in a sorted dictionary.");
 
 static PyTypeObject sorted_dict_keys_type = {
     // clang-format off
@@ -49,8 +46,8 @@ static PyTypeObject sorted_dict_keys_type = {
     .tp_basicsize = sizeof(SortedDictKeysType),
     .tp_dealloc = sorted_dict_keys_type_dealloc,
     .tp_repr = sorted_dict_keys_type_repr,
-    .tp_hash = PyObject_HashNotImplemented,
     .tp_as_sequence = &sorted_dict_keys_type_sequence,
+    .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_doc = sorted_dict_keys_type_doc,
@@ -167,9 +164,8 @@ static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
 
 PyDoc_STRVAR(
     sorted_dict_type_keys_doc,
-    "d.keys() -> list[object]\n"
-    "Return the keys in the sorted dictionary ``d``. The list will be sorted. "
-    "It will exist independently of ``d``; it won't be a view on its keys."
+    "d.keys() -> SortedDictKeys\n"
+    "Return a dynamic view over the keys in the sorted dictionary ``d``."
 );
 
 static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
