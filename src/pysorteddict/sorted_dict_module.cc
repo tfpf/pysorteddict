@@ -23,6 +23,24 @@ static PyObject* sorted_dict_keys_type_repr(PyObject* self)
     return sdk->repr();
 }
 
+/**
+ * Obtain the number of keys.
+ */
+Py_ssize_t sorted_dict_keys_type_len(PyObject* self)
+{
+    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
+    return sdk->len();
+}
+
+static PySequenceMethods sorted_dict_keys_type_sequence = {
+    .sq_length = sorted_dict_keys_type_len,
+};
+
+PyDoc_STRVAR(
+    sorted_dict_keys_type_doc,
+    "Dynamic view over the keys of a sorted dictionary. Reflects any changes made to the latter."
+);
+
 static PyTypeObject sorted_dict_keys_type = {
     // clang-format off
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -32,8 +50,10 @@ static PyTypeObject sorted_dict_keys_type = {
     .tp_dealloc = sorted_dict_keys_type_dealloc,
     .tp_repr = sorted_dict_keys_type_repr,
     .tp_hash = PyObject_HashNotImplemented,
+    .tp_as_sequence = &sorted_dict_keys_type_sequence,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_doc = sorted_dict_keys_type_doc,
     .tp_alloc = PyType_GenericAlloc,
     .tp_free = PyObject_Free,
 };

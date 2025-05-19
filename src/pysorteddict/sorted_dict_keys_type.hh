@@ -17,6 +17,7 @@ private:
 public:
     void deinit(void);
     PyObject* repr(void);
+    Py_ssize_t len(void);
     static PyObject* New(PyTypeObject*, SortedDictType*);
 };
 

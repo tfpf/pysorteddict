@@ -34,6 +34,11 @@ PyObject* SortedDictKeysType::repr(void)
     return PyUnicode_FromStringAndSize(this_repr_utf8.data(), this_repr_utf8.size());  // 🆕
 }
 
+Py_ssize_t SortedDictKeysType::len(void)
+{
+    return this->sd->map->size();
+}
+
 PyObject* SortedDictKeysType::New(PyTypeObject* type, SortedDictType* sd)
 {
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
