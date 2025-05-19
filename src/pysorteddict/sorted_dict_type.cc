@@ -6,8 +6,8 @@
 #include <string>
 
 #include "sorted_dict_key_compare.hh"
-#include "sorted_dict_type.hh"
 #include "sorted_dict_keys_type.hh"
+#include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"
 
 /**
@@ -365,7 +365,7 @@ PyObject* SortedDictType::items(void)
     return sd_items;
 }
 
-PyObject* SortedDictType::keys(PyTypeObject*type)
+PyObject* SortedDictType::keys(PyTypeObject* type)
 {
     return SortedDictKeysType::New(type, this);
 }

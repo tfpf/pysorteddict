@@ -1,14 +1,15 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-#include "sorted_dict_type.hh"
 #include "sorted_dict_keys_type.hh"
+#include "sorted_dict_type.hh"
 
 /**
  * Deinitialise and deallocate.
  */
-static void sorted_dict_keys_type_dealloc(PyObject*self){
-    SortedDictKeysType*sdk = reinterpret_cast<SortedDictKeysType*>(self);
+static void sorted_dict_keys_type_dealloc(PyObject* self)
+{
+    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
     sdk->deinit();
     Py_TYPE(self)->tp_free(self);
 }
@@ -16,8 +17,9 @@ static void sorted_dict_keys_type_dealloc(PyObject*self){
 /**
  * Stringify.
  */
-static PyObject*sorted_dict_keys_type_repr(PyObject* self){
-    SortedDictKeysType*sdk = reinterpret_cast<SortedDictKeysType*>(self);
+static PyObject* sorted_dict_keys_type_repr(PyObject* self)
+{
+    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
     return sdk->repr();
 }
 

@@ -6,12 +6,13 @@
 
 #include "sorted_dict_type.hh"
 
-struct SortedDictKeysType {
+struct SortedDictKeysType
+{
 public:
     PyObject_HEAD;
 
 private:
-    SortedDictType*sd;
+    SortedDictType* sd;
 
 public:
     void deinit(void);
