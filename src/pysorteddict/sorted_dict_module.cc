@@ -7,6 +7,41 @@
 /**
  * Deinitialise and deallocate.
  */
+static void sorted_dict_keys_iter_type_dealloc(PyObject* self)
+{
+    SortedDictKeysIterType* sdki = reinterpret_cast<SortedDictKeysIterType*>(self);
+    sdki->deinit();
+    Py_TYPE(self)->tp_free(self);
+}
+
+static PyObject* sorted_dict_keys_iter_type_next(PyObject* self)
+{
+    SortedDictKeysIterType* sdki = reinterpret_cast<SortedDictKeysIterType*>(self);
+    return sdki->next();
+}
+
+PyDoc_STRVAR(sorted_dict_keys_iter_type_doc, "Iterator over the keys in a sorted dictionary.");
+
+static PyTypeObject sorted_dict_keys_iter_type = {
+    // clang-format off
+    .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    .tp_name = "pysorteddict.SortedDictKeysIter",
+    // clang-format on
+    .tp_basicsize = sizeof(SortedDictKeysIterType),
+    .tp_dealloc = sorted_dict_keys_iter_type_dealloc,
+    .tp_hash = PyObject_HashNotImplemented,
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_doc = sorted_dict_keys_iter_type_doc,
+    .tp_iter = PyObject_SelfIter,
+    .tp_iternext = sorted_dict_keys_iter_type_next,
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_free = PyObject_Free,
+};
+
+/**
+ * Deinitialise and deallocate.
+ */
 static void sorted_dict_keys_type_dealloc(PyObject* self)
 {
     SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
@@ -36,6 +71,12 @@ static PySequenceMethods sorted_dict_keys_type_sequence = {
     .sq_length = sorted_dict_keys_type_len,
 };
 
+static PyObject* sorted_dict_keys_type_iter(PyObject* self)
+{
+    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
+    return sdk->iter(&sorted_dict_keys_iter_type);
+}
+
 PyDoc_STRVAR(sorted_dict_keys_type_doc, "Dynamic view on the keys in a sorted dictionary.");
 
 static PyTypeObject sorted_dict_keys_type = {
@@ -51,6 +92,7 @@ static PyTypeObject sorted_dict_keys_type = {
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_doc = sorted_dict_keys_type_doc,
+    .tp_iter = sorted_dict_keys_type_iter,
     .tp_alloc = PyType_GenericAlloc,
     .tp_free = PyObject_Free,
 };

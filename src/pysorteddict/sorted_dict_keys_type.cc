@@ -7,6 +7,12 @@
 #include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"
 
+PyObject* SortedDictKeysIterType::next(void)
+{
+    auto it = this->SortedDictViewIterType::next();
+    return it == nullptr ? nullptr : Py_NewRef(it->first);
+}
+
 PyObject* SortedDictKeysType::repr(void)
 {
     char const* delimiter = "";
