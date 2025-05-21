@@ -4,6 +4,7 @@
 
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
+#include "sorted_dict_view_type.hh"
 
 PyObject* SortedDictKeysIterType::next(void)
 {
