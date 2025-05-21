@@ -10,10 +10,6 @@ void SortedDictViewType::deinit(void)
     Py_DECREF(this->sd);
 }
 
-PyObject* SortedDictViewType::repr(void){
-    return PyUnicode_FromString("Placeholder");  // 🆕
-}
-
 Py_ssize_t SortedDictViewType::len(void)
 {
     return this->sd->map->size();
