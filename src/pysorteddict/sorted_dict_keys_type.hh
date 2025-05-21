@@ -3,12 +3,12 @@
 
 #include "sorted_dict_view_type.hh"
 
-struct SortedDictKeysType: public SortedDictViewType
+struct SortedDictKeysType : public SortedDictViewType
 {
-PyObject* repr(void);
+    PyObject* repr(void);
 };
 
-struct SortedDictKeysIteratorType: public SortedDictViewIteratorType
+struct SortedDictKeysIteratorType : public SortedDictViewIteratorType
 {
 };
 

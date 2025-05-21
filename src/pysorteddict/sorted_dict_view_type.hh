@@ -7,7 +7,8 @@
 
 #include "sorted_dict_type.hh"
 
-struct SortedDictViewType {
+struct SortedDictViewType
+{
 public:
     PyObject_HEAD;
 
@@ -21,14 +22,13 @@ public:
 };
 
 struct SortedDictViewIteratorType
- {
+{
 public:
     PyObject_HEAD;
 
 protected:
     SortedDictType* sd;
-    std::map<PyObject*,PyObject*,SortedDictKeyCompare>::iterator it;
-
+    std::map<PyObject*, PyObject*, SortedDictKeyCompare>::iterator it;
 };
 
 #endif
