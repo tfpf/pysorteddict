@@ -8,7 +8,7 @@ struct SortedDictKeysType : public SortedDictViewType
     PyObject* repr(void);
 };
 
-struct SortedDictKeysIteratorType : public SortedDictViewIteratorType
+struct SortedDictKeysIterType : public SortedDictViewIterType
 {
 };
 

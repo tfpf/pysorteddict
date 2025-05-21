@@ -21,7 +21,7 @@ public:
     static PyObject* New(PyTypeObject*, SortedDictType*);
 };
 
-struct SortedDictViewIteratorType
+struct SortedDictViewIterType
 {
 public:
     PyObject_HEAD;
