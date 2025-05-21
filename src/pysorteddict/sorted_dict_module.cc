@@ -36,7 +36,7 @@ static PySequenceMethods sorted_dict_keys_type_sequence = {
     .sq_length = sorted_dict_keys_type_len,
 };
 
-PyDoc_STRVAR(sorted_dict_keys_type_doc, "Dynamic view over the keys in a sorted dictionary.");
+PyDoc_STRVAR(sorted_dict_keys_type_doc, "Dynamic view on the keys in a sorted dictionary.");
 
 static PyTypeObject sorted_dict_keys_type = {
     // clang-format off
@@ -165,7 +165,7 @@ static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
 PyDoc_STRVAR(
     sorted_dict_type_keys_doc,
     "d.keys() -> SortedDictKeys\n"
-    "Return a dynamic view over the keys in the sorted dictionary ``d``."
+    "Return a dynamic view on the keys in the sorted dictionary ``d``."
 );
 
 static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
