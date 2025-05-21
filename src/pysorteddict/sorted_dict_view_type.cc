@@ -12,7 +12,12 @@ void SortedDictViewIterType::deinit(void)
 
 std::map<PyObject*, PyObject*, SortedDictKeyCompare>::iterator SortedDictViewIterType::next(void)
 {
-    return this->it = this->it->next();
+    auto this_sd_map_end = this->sd->map->end();
+    if (this->it == this_sd_map_end)
+    {
+        return this_sd_map_end;
+    }
+    return this->it++;
 }
 
 PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
