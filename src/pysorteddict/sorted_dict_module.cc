@@ -63,7 +63,7 @@ static PyObject* sorted_dict_keys_type_repr(PyObject* self)
     {
         return nullptr;
     }
-    return PyUnicode_FromFormat("SortedDictKeys(%R)", self_list.get());
+    return PyUnicode_FromFormat("SortedDictKeys(%R)", self_list.get());  // 🆕
 }
 
 /**
