@@ -15,6 +15,9 @@ static void sorted_dict_keys_iter_type_dealloc(PyObject* self)
     Py_TYPE(self)->tp_free(self);
 }
 
+/**
+ * Retrieve the next element.
+ */
 static PyObject* sorted_dict_keys_iter_type_next(PyObject* self)
 {
     SortedDictKeysIterType* sdki = reinterpret_cast<SortedDictKeysIterType*>(self);
@@ -76,6 +79,9 @@ static PySequenceMethods sorted_dict_keys_type_sequence = {
     .sq_length = sorted_dict_keys_type_len,
 };
 
+/**
+ * Create an iterator.
+ */
 static PyObject* sorted_dict_keys_type_iter(PyObject* self)
 {
     SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
