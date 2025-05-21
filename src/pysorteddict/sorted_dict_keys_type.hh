@@ -10,7 +10,6 @@ struct SortedDictKeysIterType : public SortedDictViewIterType
 
 struct SortedDictKeysType : public SortedDictViewType
 {
-    PyObject* repr(void);
 };
 
 #endif
