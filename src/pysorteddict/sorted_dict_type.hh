@@ -41,7 +41,9 @@ public:
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 
+    friend class SortedDictViewIterType;
     friend class SortedDictViewType;
+    friend class SortedDictKeysIterType;
     friend class SortedDictKeysType;
 };
 

@@ -10,7 +10,7 @@
 PyObject* SortedDictKeysIterType::next(void)
 {
     auto it = this->SortedDictViewIterType::next();
-    return it == nullptr ? nullptr : Py_NewRef(it->first);
+    return it == this->sd->map->end() ? nullptr : Py_NewRef(it->first);
 }
 
 PyObject* SortedDictKeysType::repr(void)

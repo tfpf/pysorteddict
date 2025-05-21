@@ -12,11 +12,7 @@ void SortedDictViewIterType::deinit(void)
 
 std::map<PyObject*, PyObject*, SortedDictKeyCompare>::iterator SortedDictViewIterType::next(void)
 {
-    if (this->it == this->sd->end())
-    {
-        return nullptr;
-    }
-    return this->it;
+    return this->it = this->it->next();
 }
 
 PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
@@ -29,8 +25,8 @@ PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
 
     SortedDictViewIterType* sdvi = reinterpret_cast<SortedDictViewIterType*>(self);
     sdvi->sd = sd;
-    sdvi->it = sdvi->sd.begin();
-    Py_INCREF(sdv->sd);
+    sdvi->it = sdvi->sd->map->begin();
+    Py_INCREF(sdvi->sd);
     return self;
 }
 
@@ -44,7 +40,7 @@ Py_ssize_t SortedDictViewType::len(void)
     return this->sd->map->size();
 }
 
-PyObject* iter SortedDictViewType::iter(PyTypeObject* type)
+PyObject* SortedDictViewType::iter(PyTypeObject* type)
 {
     return SortedDictViewIterType::New(type, this->sd);
 }
