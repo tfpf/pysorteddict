@@ -1,7 +1,106 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
+#include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
+
+/**
+ * Deinitialise and deallocate.
+ */
+static void sorted_dict_keys_iter_type_dealloc(PyObject* self)
+{
+    SortedDictKeysIterType* sdki = reinterpret_cast<SortedDictKeysIterType*>(self);
+    sdki->deinit();
+    Py_TYPE(self)->tp_free(self);
+}
+
+/**
+ * Retrieve the next element.
+ */
+static PyObject* sorted_dict_keys_iter_type_next(PyObject* self)
+{
+    SortedDictKeysIterType* sdki = reinterpret_cast<SortedDictKeysIterType*>(self);
+    return sdki->next();
+}
+
+PyDoc_STRVAR(sorted_dict_keys_iter_type_doc, "Iterator over the keys in a sorted dictionary.");
+
+static PyTypeObject sorted_dict_keys_iter_type = {
+    // clang-format off
+    .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    .tp_name = "pysorteddict.SortedDictKeysIter",
+    // clang-format on
+    .tp_basicsize = sizeof(SortedDictKeysIterType),
+    .tp_dealloc = sorted_dict_keys_iter_type_dealloc,
+    .tp_hash = PyObject_HashNotImplemented,
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_doc = sorted_dict_keys_iter_type_doc,
+    .tp_iter = PyObject_SelfIter,
+    .tp_iternext = sorted_dict_keys_iter_type_next,
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_free = PyObject_Free,
+};
+
+/**
+ * Deinitialise and deallocate.
+ */
+static void sorted_dict_keys_type_dealloc(PyObject* self)
+{
+    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
+    sdk->deinit();
+    Py_TYPE(self)->tp_free(self);
+}
+
+/**
+ * Stringify.
+ */
+static PyObject* sorted_dict_keys_type_repr(PyObject* self)
+{
+    return SortedDictViewType::repr("SortedDictKeys", self);
+}
+
+/**
+ * Obtain the number of keys.
+ */
+Py_ssize_t sorted_dict_keys_type_len(PyObject* self)
+{
+    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
+    return sdk->len();
+}
+
+static PySequenceMethods sorted_dict_keys_type_sequence = {
+    .sq_length = sorted_dict_keys_type_len,
+};
+
+/**
+ * Create an iterator.
+ */
+static PyObject* sorted_dict_keys_type_iter(PyObject* self)
+{
+    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
+    return sdk->iter(&sorted_dict_keys_iter_type);
+}
+
+PyDoc_STRVAR(sorted_dict_keys_type_doc, "Dynamic view on the keys in a sorted dictionary.");
+
+static PyTypeObject sorted_dict_keys_type = {
+    // clang-format off
+    .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    .tp_name = "pysorteddict.SortedDictKeys",
+    // clang-format on
+    .tp_basicsize = sizeof(SortedDictKeysType),
+    .tp_dealloc = sorted_dict_keys_type_dealloc,
+    .tp_repr = sorted_dict_keys_type_repr,
+    .tp_as_sequence = &sorted_dict_keys_type_sequence,
+    .tp_hash = PyObject_HashNotImplemented,
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_doc = sorted_dict_keys_type_doc,
+    .tp_iter = sorted_dict_keys_type_iter,
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_free = PyObject_Free,
+};
 
 /**
  * Deinitialise and deallocate.
@@ -112,15 +211,14 @@ static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
 
 PyDoc_STRVAR(
     sorted_dict_type_keys_doc,
-    "d.keys() -> list[object]\n"
-    "Return the keys in the sorted dictionary ``d``. The list will be sorted. "
-    "It will exist independently of ``d``; it won't be a view on its keys."
+    "d.keys() -> SortedDictKeys\n"
+    "Return a dynamic view on the keys in the sorted dictionary ``d``."
 );
 
 static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->keys();
+    return sd->keys(&sorted_dict_keys_type);
 }
 
 PyDoc_STRVAR(

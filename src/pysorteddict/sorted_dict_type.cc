@@ -5,6 +5,7 @@
 #include <string>
 
 #include "sorted_dict_key_compare.hh"
+#include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"
 
@@ -171,6 +172,24 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
     return true;
 }
 
+/**
+ * Check whether this sorted dictionary may be modified.
+ *
+ * @return `true` if the check succeeds, else `false`.
+ */
+bool SortedDictType::is_modifiable(void)
+{
+    if (this->referring_iterators != 0)
+    {
+        PyErr_Format(
+            PyExc_RuntimeError, "modification not permitted: %zd iterator/iterators is/are alive",
+            this->referring_iterators
+        );
+        return false;
+    }
+    return true;
+}
+
 void SortedDictType::deinit(void)
 {
     for (auto& item : *this->map)
@@ -265,7 +284,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
-    if (!this->are_key_type_and_key_value_pair_good(key, value))
+    if (!this->are_key_type_and_key_value_pair_good(key, value) || !this->is_modifiable())
     {
         return -1;
     }
@@ -312,6 +331,10 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
 
 PyObject* SortedDictType::clear(void)
 {
+    if (!this->is_modifiable())
+    {
+        return nullptr;
+    }
     for (auto& item : *this->map)
     {
         Py_DECREF(item.first);
@@ -337,6 +360,7 @@ PyObject* SortedDictType::copy(void)
         Py_INCREF(item.second);  // 🆕
     }
     this_copy->key_type = this->key_type;
+    this_copy->referring_iterators = 0;
     return sd_copy;
 }
 
@@ -363,19 +387,9 @@ PyObject* SortedDictType::items(void)
     return sd_items;
 }
 
-PyObject* SortedDictType::keys(void)
+PyObject* SortedDictType::keys(PyTypeObject* type)
 {
-    PyObject* sd_keys = PyList_New(this->map->size());  // 🆕
-    if (sd_keys == nullptr)
-    {
-        return nullptr;
-    }
-    Py_ssize_t idx = 0;
-    for (auto& item : *this->map)
-    {
-        PyList_SET_ITEM(sd_keys, idx++, Py_NewRef(item.first));  // 🆕
-    }
-    return sd_keys;
+    return SortedDictKeysType::New(type, this);
 }
 
 PyObject* SortedDictType::values(void)
@@ -429,5 +443,6 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     sd->map = new std::map<PyObject*, PyObject*, SortedDictKeyCompare>;
     sd->key_type = nullptr;
+    sd->referring_iterators = 0;
     return self;
 }

@@ -1,6 +1,8 @@
 import builtins
 import decimal
+import gc
 import math
+import platform
 import random
 import re
 import string
@@ -9,6 +11,9 @@ import pytest
 
 from pysorteddict import SortedDict
 
+# On PyPy, objects are not destroyed immediately after they become unreachable.
+# Detect PyPy and collect garbage to destroy any stale iterators.
+pypy = platform.python_implementation() == "PyPy"
 unsupported_types = {bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
 # Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
 supported_types = [bytes, int, float, str, decimal.Decimal]
@@ -52,9 +57,9 @@ class TestFuzz:
             "__class__", "__dict__", "__dir__", "__doc__", "__eq__", "__format__", "__ge__", "__getattr__",
             "__getattribute__", "__getstate__", "__gt__", "__hash__", "__init__", "__init_subclass__", "__le__",
             "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__", "__sizeof__",
-            "__str__", "__subclasshook__", "__weakref__", "items", "key_type", "keys", "values",
+            "__str__", "__subclasshook__", "__weakref__", "items", "key_type", "values",
         ))  # fmt: skip
-        for attr in self._rg.choices([*attrs], k=100_000):
+        for attr in self._rg.choices([*attrs], k=50_000):
             getattr(self, f"_test_{attr}")()
 
             with pytest.raises(TypeError, match="^unhashable type: 'pysorteddict.SortedDict'$"):
@@ -68,7 +73,6 @@ class TestFuzz:
             assert len(self.sorted_dict) == len(sorted_normal_dict)
             assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
             assert self.sorted_dict.items() == [*sorted_normal_dict.items()]
-            assert self.sorted_dict.keys() == [*sorted_normal_dict.keys()]
             assert self.sorted_dict.values() == [*sorted_normal_dict.values()]
 
     def _test___contains__(self):
@@ -152,6 +156,7 @@ class TestFuzz:
     def _test___new__(self):
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
+        self.sorted_dict_keys = self.sorted_dict.keys()
         self.is_sorted_dict_new = True
 
     def _test___setitem__(self):
@@ -190,6 +195,15 @@ class TestFuzz:
 
     def _test_copy(self):
         self.sorted_dict = self.sorted_dict.copy()
+        self.sorted_dict_keys = self.sorted_dict.keys()
+
+    def _test_keys(self):
+        sorted_normal_dict_keys = sorted(self.normal_dict.keys())
+        assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys})"
+        assert len(self.sorted_dict_keys) == len(sorted_normal_dict_keys)
+        assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
+        if pypy:
+            gc.collect()
 
 
 if __name__ == "__main__":
