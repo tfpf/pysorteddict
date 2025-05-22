@@ -5,6 +5,7 @@
 
 #include "sorted_dict_key_compare.hh"
 #include "sorted_dict_type.hh"
+#include "sorted_dict_utils.hh"
 #include "sorted_dict_view_type.hh"
 
 void SortedDictViewIterType::deinit(void)
@@ -36,6 +37,16 @@ PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
 void SortedDictViewType::deinit(void)
 {
     Py_DECREF(this->sd);
+}
+
+PyObject* SortedDictViewType::repr(char const* name, PyObject* ob)
+{
+    PyObjectWrapper ob_list(PySequence_List(ob));  // 🆕
+    if (ob_list == nullptr)
+    {
+        return nullptr;
+    }
+    return PyUnicode_FromFormat("%s(%R)", name, ob_list.get());
 }
 
 Py_ssize_t SortedDictViewType::len(void)

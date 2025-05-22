@@ -58,12 +58,7 @@ static void sorted_dict_keys_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_keys_type_repr(PyObject* self)
 {
-    PyObjectWrapper self_list(PySequence_List(self));
-    if (self_list == nullptr)
-    {
-        return nullptr;
-    }
-    return PyUnicode_FromFormat("SortedDictKeys(%R)", self_list.get());  // 🆕
+    return SortedDictViewType::repr("SortedDictKeys", self);
 }
 
 /**
