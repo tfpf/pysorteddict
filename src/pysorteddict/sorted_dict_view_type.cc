@@ -3,7 +3,6 @@
 #include <map>
 #include <utility>
 
-#include "sorted_dict_key_compare.hh"
 #include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"
 #include "sorted_dict_view_type.hh"
