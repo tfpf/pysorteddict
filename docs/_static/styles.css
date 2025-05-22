@@ -1,6 +1,7 @@
 .notice {
   background: rgba(39, 180, 166, 0.2);
-  border-radius: 5pt;
-  margin: 10pt;
-  padding: 10pt;
+  border-left: 4px solid rgb(39, 180, 166);
+  border-radius: 5px;
+  margin: 10px 0px 10px 0px;
+  padding: 10px;
 }
