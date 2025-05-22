@@ -1,6 +1,8 @@
 import builtins
 import decimal
+import gc
 import math
+import platform
 import random
 import re
 import string
@@ -9,6 +11,7 @@ import pytest
 
 from pysorteddict import SortedDict
 
+cpython = platform.python_implementation() == "CPython"
 unsupported_types = {bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
 # Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
 supported_types = [bytes, int, float, str, decimal.Decimal]
@@ -75,6 +78,11 @@ class TestFuzz:
             assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
 
             assert self.sorted_dict.values() == [*sorted_normal_dict.values()]
+
+            # On PyPy, objects are not destroyed immediately upon becoming
+            # unreachable. Hence, force collection.
+            if cpython:
+                gc.collect()
 
     def _test___contains__(self):
         for key_type in all_types:
