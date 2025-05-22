@@ -73,11 +73,6 @@ class TestFuzz:
             assert self.sorted_dict.items() == [*sorted_normal_dict.items()]
             assert self.sorted_dict.values() == [*sorted_normal_dict.values()]
 
-            # On PyPy, objects are not destroyed immediately upon becoming
-            # unreachable. Hence, force collection.
-            if pypy:
-                gc.collect()
-
     def _test___contains__(self):
         for key_type in all_types:
             key = self._gen(key_type)
@@ -205,6 +200,8 @@ class TestFuzz:
         assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys})"
         assert len(self.sorted_dict_keys) == len(sorted_normal_dict_keys)
         assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
+        if pypy:
+            gc.collect()
 
 
 if __name__ == "__main__":
