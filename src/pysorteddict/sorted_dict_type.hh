@@ -47,7 +47,6 @@ public:
 
     friend class SortedDictViewIterType;
     friend class SortedDictViewType;
-    friend class SortedDictKeysIterType;
 };
 
 #endif
