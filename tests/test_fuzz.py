@@ -55,7 +55,7 @@ class TestFuzz:
             "__class__", "__dict__", "__dir__", "__doc__", "__eq__", "__format__", "__ge__", "__getattr__",
             "__getattribute__", "__getstate__", "__gt__", "__hash__", "__init__", "__init_subclass__", "__le__",
             "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__", "__sizeof__",
-            "__str__", "__subclasshook__", "__weakref__", "items", "key_type", "keys", "values",
+            "__str__", "__subclasshook__", "__weakref__", "items", "key_type", "values",
         ))  # fmt: skip
         for attr in self._rg.choices([*attrs], k=100_000):
             getattr(self, f"_test_{attr}")()
@@ -68,15 +68,9 @@ class TestFuzz:
                 assert self.sorted_dict.key_type is self.key_type
 
             sorted_normal_dict = dict(sorted(self.normal_dict.items()))
-            assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
             assert len(self.sorted_dict) == len(sorted_normal_dict)
+            assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
             assert self.sorted_dict.items() == [*sorted_normal_dict.items()]
-
-            sorted_normal_dict_keys = [*sorted_normal_dict.keys()]
-            assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys})"
-            assert len(self.sorted_dict_keys) == len(sorted_normal_dict_keys)
-            assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
-
             assert self.sorted_dict.values() == [*sorted_normal_dict.values()]
 
             # On PyPy, objects are not destroyed immediately upon becoming
@@ -205,6 +199,12 @@ class TestFuzz:
     def _test_copy(self):
         self.sorted_dict = self.sorted_dict.copy()
         self.sorted_dict_keys = self.sorted_dict.keys()
+
+    def _test_keys(self):
+        sorted_normal_dict_keys = sorted(self.normal_dict.keys())
+        assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys})"
+        assert len(self.sorted_dict_keys) == len(sorted_normal_dict_keys)
+        assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
 
 
 if __name__ == "__main__":
