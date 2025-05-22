@@ -11,7 +11,9 @@ source_suffix = [".md", ".rst"]
 
 exclude_patterns = ["_build"]
 
+html_css_files = ["styles.css"]
 html_logo = "logo.svg"
+html_static_path = ["_static"]
 html_theme = "furo"
 html_theme_options = {
     "source_branch": "main",
