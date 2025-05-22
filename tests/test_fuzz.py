@@ -65,10 +65,15 @@ class TestFuzz:
                 assert self.sorted_dict.key_type is self.key_type
 
             sorted_normal_dict = dict(sorted(self.normal_dict.items()))
-            assert len(self.sorted_dict) == len(sorted_normal_dict)
             assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
+            assert len(self.sorted_dict) == len(sorted_normal_dict)
             assert self.sorted_dict.items() == [*sorted_normal_dict.items()]
-            assert [*self.sorted_dict_keys] == [*sorted_normal_dict.keys()]
+
+            sorted_normal_dict_keys = [*sorted_normal_dict.keys()]
+            assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys})"
+            assert len(self.sorted_dict_keys) == len(sorted_normal_dict_keys)
+            assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
+
             assert self.sorted_dict.values() == [*sorted_normal_dict.values()]
 
     def _test___contains__(self):
