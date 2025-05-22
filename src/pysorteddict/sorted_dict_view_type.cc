@@ -1,6 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <map>
+#include <utility>
 
 #include "sorted_dict_key_compare.hh"
 #include "sorted_dict_type.hh"
@@ -11,9 +12,10 @@ void SortedDictViewIterType::deinit(void)
     Py_DECREF(this->sd);
 }
 
-std::map<PyObject*, PyObject*, SortedDictKeyCompare>::iterator SortedDictViewIterType::next(void)
+std::pair<PyObject*, PyObject*> SortedDictViewIterType::next(void)
 {
-    return this->it == this->sd->map->end() ? this->it : this->it++;
+    static std::pair<PyObject* const, PyObject*> sentinel = { nullptr, nullptr };
+    return this->it == this->sd->map->end() ? sentinel : *this->it++;
 }
 
 PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)

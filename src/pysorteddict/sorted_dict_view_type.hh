@@ -4,6 +4,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <map>
+#include <utility>
 
 #include "sorted_dict_key_compare.hh"
 #include "sorted_dict_type.hh"
@@ -19,7 +20,7 @@ protected:
 
 public:
     void deinit(void);
-    std::map<PyObject*, PyObject*, SortedDictKeyCompare>::iterator next(void);
+    std::pair<PyObject*, PyObject*> next(void);
     static PyObject* New(PyTypeObject*, SortedDictType*);
 };
 
