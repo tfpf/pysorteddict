@@ -21,9 +21,13 @@ private:
     // The type of each key.
     PyTypeObject* key_type;
 
+    // How many iterators hold a reference to this sorted dictionary.
+    Py_ssize_t referring_iterators;
+
 private:
     bool is_key_good(PyObject*);
     bool are_key_type_and_key_value_pair_good(PyObject*, PyObject*);
+    bool is_modifiable(void);
 
 public:
     void deinit(void);

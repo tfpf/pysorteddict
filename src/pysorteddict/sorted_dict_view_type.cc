@@ -10,6 +10,7 @@
 
 void SortedDictViewIterType::deinit(void)
 {
+    --this->sd->referring_iterators;
     Py_DECREF(this->sd);
 }
 
@@ -31,6 +32,7 @@ PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
     sdvi->sd = sd;
     sdvi->it = sdvi->sd->map->begin();
     Py_INCREF(sdvi->sd);
+    ++sdvi->sd->referring_iterators;
     return self;
 }
 
