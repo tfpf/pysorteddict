@@ -11,6 +11,8 @@ import pytest
 
 from pysorteddict import SortedDict
 
+# On PyPy, objects are not destroyed immediately after they become unreachable.
+# Detect PyPy and collect garbage to destroy any stale iterators.
 pypy = platform.python_implementation() == "PyPy"
 unsupported_types = {bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
 # Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
