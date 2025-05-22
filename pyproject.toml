@@ -46,7 +46,7 @@ Repository = "https://github.com/tfpf/pysorteddict"
 [tool.cibuildwheel]
 archs = ["auto64"]
 enable = ["pypy"]
-test-command = "pytest -n 5 {package}"
+test-command = "pytest -n auto {package}"
 test-requires = ["pytest-xdist"]
 
 # No use of an editable installation. If the code is edited, it has to be
