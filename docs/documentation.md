@@ -1,6 +1,6 @@
 # Documentation
 
-<details style="background: rgba(39, 180, 166, 0.2); padding: 10pt; margin: 10pt">
+<details class="notice">
 
 <summary style="cursor: pointer">Looking for the documentation of an older version?</summary>
 

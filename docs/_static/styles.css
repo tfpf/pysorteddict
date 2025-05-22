@@ -1,0 +1,7 @@
+.notice {
+  background: rgba(39, 180, 166, 0.2);
+  border-left: 4px solid rgb(39, 180, 166);
+  border-radius: 6px;
+  margin: 20px 0px 20px 0px;
+  padding: 10px;
+}
