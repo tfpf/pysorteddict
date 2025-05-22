@@ -182,7 +182,7 @@ bool SortedDictType::is_modifiable(void)
     if (this->referring_iterators != 0)
     {
         PyErr_Format(
-            PyExc_RuntimeError, "cannot modify sorted dictionary: %zd iterator/iterators holds/hold a reference to it",
+            PyExc_RuntimeError, "modification not permitted: %zd iterator/iterators is/are alive",
             this->referring_iterators
         );
         return false;
