@@ -68,7 +68,7 @@ class TestFuzz:
             assert len(self.sorted_dict) == len(sorted_normal_dict)
             assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
             assert self.sorted_dict.items() == [*sorted_normal_dict.items()]
-            assert self.sorted_dict.keys() == [*sorted_normal_dict.keys()]
+            assert [*self.sorted_dict_keys] == [*sorted_normal_dict.keys()]
             assert self.sorted_dict.values() == [*sorted_normal_dict.values()]
 
     def _test___contains__(self):
@@ -152,6 +152,7 @@ class TestFuzz:
     def _test___new__(self):
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
+        self.sorted_dict_keys = self.sorted_dict.keys()
         self.is_sorted_dict_new = True
 
     def _test___setitem__(self):
@@ -190,6 +191,7 @@ class TestFuzz:
 
     def _test_copy(self):
         self.sorted_dict = self.sorted_dict.copy()
+        self.sorted_dict_keys = self.sorted_dict.keys()
 
 
 if __name__ == "__main__":
