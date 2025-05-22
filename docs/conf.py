@@ -2,7 +2,6 @@ import re
 
 with open("../pyproject.toml") as reader:
     release = re.search(r'^version = "(.*?)"$', reader.read(), flags=re.MULTILINE).group(1)
-print(repr(release))
 project = f"pysorteddict {release}"
 copyright = "2025, Vishal Pankaj Chandratreya"
 author = "Vishal Pankaj Chandratreya"
