@@ -11,7 +11,7 @@ import pytest
 
 from pysorteddict import SortedDict
 
-cpython = platform.python_implementation() == "CPython"
+pypy = platform.python_implementation() == "PyPy"
 unsupported_types = {bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
 # Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
 supported_types = [bytes, int, float, str, decimal.Decimal]
@@ -81,7 +81,7 @@ class TestFuzz:
 
             # On PyPy, objects are not destroyed immediately upon becoming
             # unreachable. Hence, force collection.
-            if cpython:
+            if pypy:
                 gc.collect()
 
     def _test___contains__(self):
