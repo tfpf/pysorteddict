@@ -33,7 +33,9 @@ from pysorteddict import *
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 
-#### Exceptions
+<div class="extra-info">
+
+#### Errors
 
 If any of the supported key types which are not built-in (only `decimal.Decimal` as of this version) cannot be imported
 (which might be a symptom of a corrupt or damaged Python installation), raise `ImportError`.
@@ -49,6 +51,8 @@ Traceback (most recent call last):
     d = SortedDict()
 ImportError: failed to import the `decimal.Decimal` type
 ```
+
+</div>
 
 ## Properties
 
@@ -74,7 +78,7 @@ Return a human-readable representation of the sorted dictionary `d`.
 
 Return whether `key` is present in the sorted dictionary `d`.
 
-#### Exceptions
+#### Errors
 
 If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
 
@@ -131,7 +135,7 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 
 Return the value mapped to `key` in the sorted dictionary `d`.
 
-#### Exceptions
+#### Errors
 
 If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
 
@@ -204,7 +208,7 @@ KeyError: 'spam'
 
 Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
 
-#### Exceptions
+#### Errors
 
 If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`,
 `float`, `int`, `str` and `decimal.Decimal`), raise `TypeError`.
@@ -261,7 +265,7 @@ ValueError: got bad key nan of type <class 'float'>
 
 Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
-#### Exceptions
+#### Errors
 
 If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
 
