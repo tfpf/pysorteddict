@@ -78,6 +78,8 @@ Return a human-readable representation of the sorted dictionary `d`.
 
 Return whether `key` is present in the sorted dictionary `d`.
 
+<div class="extra-info">
+
 #### Errors
 
 If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
@@ -127,6 +129,8 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
+</div>
+
 ### `len(d)`
 
 Return the number of key-value pairs in the sorted dictionary `d`.
@@ -134,6 +138,8 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 ### `d[key]`
 
 Return the value mapped to `key` in the sorted dictionary `d`.
+
+<div class="extra-info">
 
 #### Errors
 
@@ -204,9 +210,13 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
+</div>
+
 ### `d[key] = value`
 
 Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
+
+<div class="extra-info">
 
 #### Errors
 
@@ -260,6 +270,62 @@ Traceback (most recent call last):
     ~^^^^^^^^^^^^^^
 ValueError: got bad key nan of type <class 'float'>
 ```
+
+Otherwise, if there are any living iterators over the keys of `d`, raise `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    d[k] = "bar"
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 5, in <module>
+    d[k] = "bar"
+    ~^^^
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+<div class="notice">
+
+On PyPy, the above error may be raised even when there are seemingly no iterators alive.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    pass
+d["foo"] = "bar"
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 6, in <module>
+    d["foo"] = "bar"
+    ~^^^^^^^
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+Because of some implementation details of PyPy, garbage collection may have to be forced to prevent this error.
+
+```python
+import gc
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    pass
+gc.collect()
+d["foo"] = "bar"
+```
+
+</div>
+
+</div>
 
 ### `del d[key]`
 
