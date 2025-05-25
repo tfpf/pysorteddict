@@ -507,10 +507,9 @@ Return a shallow copy of the sorted dictionary `d`.
 Return the key-value pairs in the sorted dictionary `d`. The list will be sorted. It will exist independently of `d`;
 it won't be a view on its items.
 
-### `d.keys() -> list[object]`
+### `d.keys() -> SortedDictKeys`
 
-Return the keys in the sorted dictionary `d`. The list will be sorted. It will exist independently of ``d``; it won't
-be a view on its keys.
+Return a dynamic view on the keys in the sorted dictionary `d`.
 
 ### `d.values() -> list[object]`
 
