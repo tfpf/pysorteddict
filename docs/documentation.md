@@ -4,11 +4,11 @@
 
 <summary style="cursor: pointer">Looking for the documentation of an older version?</summary>
 
-▸ [0.6.0](https://github.com/tfpf/pysorteddict/blob/v0.5.3/docs/documentation.md)  
+▸ [0.6.0](https://github.com/tfpf/pysorteddict/blob/v0.5.3/docs/documentation.md)
 ▸ [0.5.3](https://github.com/tfpf/pysorteddict/blob/v0.5.3/docs/documentation.md)
 ▸ [0.5.2](https://github.com/tfpf/pysorteddict/blob/v0.5.2/docs/documentation.md)
 ▸ [0.5.1](https://github.com/tfpf/pysorteddict/blob/v0.5.1/docs/documentation.md)
-▸ [0.5.0](https://github.com/tfpf/pysorteddict/blob/v0.5.0/docs/documentation.md)  
+▸ [0.5.0](https://github.com/tfpf/pysorteddict/blob/v0.5.0/docs/documentation.md)
 ▸ [0.4.6](https://github.com/tfpf/pysorteddict/blob/v0.4.6/docs/documentation.md)
 ▸ [0.4.5](https://github.com/tfpf/pysorteddict/blob/v0.4.5/docs/index.md)
 ▸ [0.4.4](https://github.com/tfpf/pysorteddict/blob/v0.4.4/docs/index.md)
@@ -323,6 +323,8 @@ Uncommenting the commented line makes this error go away.
 
 Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
+<div class="extra-info">
+
 #### Errors
 
 If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
@@ -392,11 +394,109 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
+Otherwise, if there are any living iterators over the keys of `d`, raise `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    del d[k]
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 5, in <module>
+    del d[k]
+        ~^^^
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+<div class="notice">
+
+On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
+alive.
+
+```python
+import gc
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    pass
+# gc.collect()
+del d["foo"]
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 8, in <module>
+    del d["foo"]
+        ~^^^^^^^
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+Uncommenting the commented line makes this error go away.
+
+</div>
+
+</div>
+
 ## Other Methods
 
 ### `d.clear()`
 
 Remove all key-value pairs in the sorted dictionary `d`.
+
+<div class="extra-info">
+
+#### Errors
+
+If there are any living iterators over the keys of `d`, raise `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    d.clear()
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 5, in <module>
+    d.clear()
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+<div class="notice">
+
+On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
+alive.
+
+```python
+import gc
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    pass
+# gc.collect()
+d.clear()
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 8, in <module>
+    d.clear()
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+Uncommenting the commented line makes this error go away.
+
+</div>
+
+</div>
 
 ### `d.copy() -> SortedDict`
 
