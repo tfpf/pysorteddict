@@ -4,6 +4,7 @@
 
 <summary style="cursor: pointer">Looking for the documentation of an older version?</summary>
 
+▸ [0.6.0](https://github.com/tfpf/pysorteddict/blob/v0.5.3/docs/documentation.md)  
 ▸ [0.5.3](https://github.com/tfpf/pysorteddict/blob/v0.5.3/docs/documentation.md)
 ▸ [0.5.2](https://github.com/tfpf/pysorteddict/blob/v0.5.2/docs/documentation.md)
 ▸ [0.5.1](https://github.com/tfpf/pysorteddict/blob/v0.5.1/docs/documentation.md)
@@ -32,7 +33,9 @@ from pysorteddict import *
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 
-#### Exceptions
+<div class="extra-info">
+
+#### Errors
 
 If any of the supported key types which are not built-in (only `decimal.Decimal` as of this version) cannot be imported
 (which might be a symptom of a corrupt or damaged Python installation), raise `ImportError`.
@@ -48,6 +51,8 @@ Traceback (most recent call last):
     d = SortedDict()
 ImportError: failed to import the `decimal.Decimal` type
 ```
+
+</div>
 
 ## Properties
 
@@ -73,7 +78,9 @@ Return a human-readable representation of the sorted dictionary `d`.
 
 Return whether `key` is present in the sorted dictionary `d`.
 
-#### Exceptions
+<div class="extra-info">
+
+#### Errors
 
 If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
 
@@ -122,6 +129,8 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
+</div>
+
 ### `len(d)`
 
 Return the number of key-value pairs in the sorted dictionary `d`.
@@ -130,7 +139,9 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 
 Return the value mapped to `key` in the sorted dictionary `d`.
 
-#### Exceptions
+<div class="extra-info">
+
+#### Errors
 
 If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
 
@@ -199,11 +210,15 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
+</div>
+
 ### `d[key] = value`
 
 Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
 
-#### Exceptions
+<div class="extra-info">
+
+#### Errors
 
 If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`,
 `float`, `int`, `str` and `decimal.Decimal`), raise `TypeError`.
@@ -256,11 +271,61 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
+Otherwise, if there are any living iterators over the keys of `d`, raise `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    d[k] = "bar"
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 5, in <module>
+    d[k] = "bar"
+    ~^^^
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+<div class="notice">
+
+On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
+alive.
+
+```python
+import gc
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    pass
+# gc.collect()
+d["foo"] = "bar"
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 8, in <module>
+    d["foo"] = "bar"
+    ~^^^^^^^
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+Uncommenting the commented line makes this error go away.
+
+</div>
+
+</div>
+
 ### `del d[key]`
 
 Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
-#### Exceptions
+<div class="extra-info">
+
+#### Errors
 
 If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
 
@@ -329,11 +394,109 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
+Otherwise, if there are any living iterators over the keys of `d`, raise `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    del d[k]
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 5, in <module>
+    del d[k]
+        ~^^^
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+<div class="notice">
+
+On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
+alive.
+
+```python
+import gc
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    pass
+# gc.collect()
+del d["foo"]
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 8, in <module>
+    del d["foo"]
+        ~^^^^^^^
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+Uncommenting the commented line makes this error go away.
+
+</div>
+
+</div>
+
 ## Other Methods
 
 ### `d.clear()`
 
 Remove all key-value pairs in the sorted dictionary `d`.
+
+<div class="extra-info">
+
+#### Errors
+
+If there are any living iterators over the keys of `d`, raise `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    d.clear()
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 5, in <module>
+    d.clear()
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+<div class="notice">
+
+On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
+alive.
+
+```python
+import gc
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+for k in d.keys():
+    pass
+# gc.collect()
+d.clear()
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 8, in <module>
+    d.clear()
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+Uncommenting the commented line makes this error go away.
+
+</div>
+
+</div>
 
 ### `d.copy() -> SortedDict`
 
@@ -344,10 +507,9 @@ Return a shallow copy of the sorted dictionary `d`.
 Return the key-value pairs in the sorted dictionary `d`. The list will be sorted. It will exist independently of `d`;
 it won't be a view on its items.
 
-### `d.keys() -> list[object]`
+### `d.keys() -> SortedDictKeys`
 
-Return the keys in the sorted dictionary `d`. The list will be sorted. It will exist independently of ``d``; it won't
-be a view on its keys.
+Return a dynamic view on the keys in the sorted dictionary `d`.
 
 ### `d.values() -> list[object]`
 
