@@ -1,7 +1,5 @@
 #! /usr/bin/env python3
 
-import json
-
 from pysorteddict import SortedDict
 
 sorted_dict = SortedDict()
@@ -12,4 +10,5 @@ sorted_dict["losing"] = ["weight"]
 
 assert sorted_dict.key_type is str
 
-print(json.dumps(sorted_dict, indent=2, sort_keys=False))
+for key, value in sorted_dict.items():
+    print(key, "->", value)
