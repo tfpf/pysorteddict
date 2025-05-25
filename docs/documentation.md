@@ -291,26 +291,8 @@ RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
 
 <div class="notice">
 
-On PyPy, the above error may be raised even when there are seemingly no iterators alive.
-
-```python
-from pysorteddict import *
-d = SortedDict()
-d["foo"] = "bar"
-for k in d.keys():
-    pass
-d["foo"] = "bar"
-```
-
-```text
-Traceback (most recent call last):
-  File "…", line 6, in <module>
-    d["foo"] = "bar"
-    ~^^^^^^^
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
-```
-
-Because of some implementation details of PyPy, garbage collection may have to be forced to prevent this error.
+On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
+alive.
 
 ```python
 import gc
@@ -319,9 +301,19 @@ d = SortedDict()
 d["foo"] = "bar"
 for k in d.keys():
     pass
-gc.collect()
+# gc.collect()
 d["foo"] = "bar"
 ```
+
+```text
+Traceback (most recent call last):
+  File "…", line 8, in <module>
+    d["foo"] = "bar"
+    ~^^^^^^^
+RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+```
+
+Uncommenting the commented line makes this error go away.
 
 </div>
 
