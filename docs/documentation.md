@@ -4,7 +4,7 @@
 
 <summary style="cursor: pointer">Looking for the documentation of an older version?</summary>
 
-▸ [0.6.0](https://github.com/tfpf/pysorteddict/blob/v0.5.3/docs/documentation.md)  
+▸ [0.6.0](https://github.com/tfpf/pysorteddict/blob/v0.6.0/docs/documentation.md)  
 ▸ [0.5.3](https://github.com/tfpf/pysorteddict/blob/v0.5.3/docs/documentation.md)
 ▸ [0.5.2](https://github.com/tfpf/pysorteddict/blob/v0.5.2/docs/documentation.md)
 ▸ [0.5.1](https://github.com/tfpf/pysorteddict/blob/v0.5.1/docs/documentation.md)
