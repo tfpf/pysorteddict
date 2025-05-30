@@ -1,8 +1,14 @@
 name: ci
 on:
   push:
-    paths-ignore:
-      - 'docs/**'
+    paths:
+      - '.github/workflows/ci.yml'
+      - 'src/**'
+      - 'tests/**'
+      - '.clang-format'
+      - 'MANIFEST.in'
+      - 'pyproject.toml'
+      - 'setup.py'
   workflow_dispatch:
 
 jobs:
