@@ -8,8 +8,17 @@
 #include "sorted_dict_key_compare.hh"
 
 struct SortedDictValueType {
+public:
     PyObject *value;
-    Py_ssize_t referring_iterators;
+
+    // Number of objects which hold references to the key-value pair this value
+    // is part of and require access to the internals of the containing sorted
+    // dictionary.
+    Py_ssize_t known_referrers;
+
+public:
+    SortedDictValueType(PyObject*value): value(value), known_referrers(0){
+    }
 };
 
 struct SortedDictType
@@ -21,13 +30,14 @@ private:
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
-    std::map<PyObject*, PyObject*, SortedDictKeyCompare>* map;
+    std::map<PyObject*, SortedDictValueType, SortedDictKeyCompare>* map;
 
     // The type of each key.
     PyTypeObject* key_type;
 
-    // How many iterators hold a reference to this sorted dictionary.
-    Py_ssize_t referring_iterators;
+    // Number of objects which hold references to this sorted dictionary and
+    // require access to its internals.
+    Py_ssize_t known_referrers;
 
 private:
     bool is_key_good(PyObject*);
