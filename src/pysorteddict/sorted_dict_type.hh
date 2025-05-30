@@ -7,6 +7,11 @@
 
 #include "sorted_dict_key_compare.hh"
 
+struct SortedDictValueType {
+    PyObject *value;
+    Py_ssize_t referring_iterators;
+};
+
 struct SortedDictType
 {
 public:
