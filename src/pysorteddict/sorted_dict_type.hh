@@ -27,8 +27,8 @@ struct SortedDictValueType {
 public:
     PyObject *value;
 
-    // Number of objects which hold references to the key-value pair this value
-    // is part of and require access to the internals of the containing sorted
+    // Number of objects which require access to the key-value pair this value
+    // is part of. They will all hold references to the containing sorted
     // dictionary.
     Py_ssize_t known_referrers;
 
@@ -51,8 +51,8 @@ private:
     // The type of each key.
     PyTypeObject* key_type;
 
-    // Number of objects which hold references to this sorted dictionary and
-    // require access to its internals.
+    // Number of objects which require access to any key-value pair in this
+    // sorted dictionary. They will all hold references to the latter.
     Py_ssize_t known_referrers;
 
 private:
