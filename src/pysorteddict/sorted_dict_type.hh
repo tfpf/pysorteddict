@@ -23,9 +23,10 @@ struct SortedDictKeyCompare
     }
 };
 
-struct SortedDictValueType {
+struct SortedDictValueType
+{
 public:
-    PyObject *value;
+    PyObject* value;
 
     // Number of objects which require access to the key-value pair this value
     // is part of. They will all hold references to the containing sorted
@@ -33,7 +34,8 @@ public:
     Py_ssize_t known_referrers;
 
 public:
-    SortedDictValueType(PyObject*value): value(value), known_referrers(0){
+    SortedDictValueType(PyObject* value) : value(value), known_referrers(0)
+    {
     }
 };
 

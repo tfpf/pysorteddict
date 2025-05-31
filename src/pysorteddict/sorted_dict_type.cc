@@ -189,7 +189,9 @@ bool SortedDictType::is_modifiable(void)
     return true;
 }
 
-bool SortedDictType::is_modifiable(PyObject *key){}
+bool SortedDictType::is_modifiable(PyObject* key)
+{
+}
 
 void SortedDictType::deinit(void)
 {
