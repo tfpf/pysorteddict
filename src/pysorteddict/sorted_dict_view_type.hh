@@ -6,7 +6,6 @@
 #include <map>
 #include <utility>
 
-#include "sorted_dict_key_compare.hh"
 #include "sorted_dict_type.hh"
 
 struct SortedDictViewIterType
