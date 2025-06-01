@@ -23,7 +23,7 @@ struct SortedDictKeyCompare
     }
 };
 
-struct SortedDictMapValue
+struct SortedDictValue
 {
 public:
     PyObject* value;
@@ -34,7 +34,7 @@ public:
     Py_ssize_t known_referrers;
 
 public:
-    SortedDictMapValue(PyObject* value) : value(value), known_referrers(0)
+    SortedDictValue(PyObject* value) : value(value), known_referrers(0)
     {
     }
 };
@@ -48,7 +48,7 @@ private:
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
-    std::map<PyObject*, SortedDictMapValue, SortedDictKeyCompare>* map;
+    std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>* map;
 
     // The type of each key.
     PyTypeObject* key_type;
