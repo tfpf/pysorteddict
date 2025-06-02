@@ -172,25 +172,39 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
 }
 
 /**
- * Check whether this sorted dictionary may be modified.
+ * Check whether every key-value pair in this sorted dictionary can be deleted.
  *
  * @return `true` if the check succeeds, else `false`.
  */
-bool SortedDictType::is_modifiable(void)
+bool SortedDictType::is_deletion_allowed(void)
 {
-    if (this->referring_iterators != 0)
+    if (this->known_referrers != 0)
     {
         PyErr_Format(
-            PyExc_RuntimeError, "modification not permitted: %zd iterator/iterators is/are alive",
-            this->referring_iterators
+            PyExc_RuntimeError, "operation not permitted: object locked by %zd iterator(s)", this->known_referrers
         );
         return false;
     }
     return true;
 }
 
-bool SortedDictType::is_modifiable(PyObject* key)
+/**
+ * Check whether the given value in this sorted dictionary can be deleted.
+ *
+ * @param value_wrapper Value wrapper.
+ *
+ * @return `true` if the check succeeds, else `false`.
+ */
+bool SortedDictType::is_deletion_allowed(SortedDictValue const& value_wrapper)
 {
+    if (value_wrapper.known_referrers != 0)
+    {
+        PyErr_Format(
+            PyExc_RuntimeError, "operation not permitted: value locked by %zd iterator(s)", this->known_referrers
+        );
+        return false;
+    }
+    return true;
 }
 
 void SortedDictType::deinit(void)
