@@ -15,7 +15,8 @@ public:
 
 protected:
     SortedDictType* sd;
-    std::map<PyObject*, PyObject*, SortedDictKeyCompare>::iterator it;
+    std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it;
+    bool stop_iteration_raised;
 
 public:
     void deinit(void);
