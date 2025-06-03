@@ -16,7 +16,12 @@ public:
 protected:
     SortedDictType* sd;
     std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it;
-    bool stop_iteration_raised;
+    bool should_raise_stop_iteration;
+
+private:
+    void make_consistent(void);
+    // How about `track` and `untrack` methods to increment the number of know referrers of the iterator and decrement
+    // the those of the previous?
 
 public:
     void deinit(void);

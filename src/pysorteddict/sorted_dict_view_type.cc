@@ -7,30 +7,52 @@
 #include "sorted_dict_utils.hh"
 #include "sorted_dict_view_type.hh"
 
-void SortedDictViewIterType::deinit(void)
-{
-    // Drop the held reference only if it wasn't previously dropped as a
-    // consequence of finishing iteration.
-    if(!this->stop_iteration){
-        if(this->it != this->sd->map->end()){
-            --this->it->second.known_referrers;
-        }
+/**
+ * Make the number of known referrers of the sorted dictionary and/or its
+ * relevant key-value pair consistent.
+ *
+ * The caller should ensure that this function is called immediately after the
+ * iterator is updated, and should adjust the number of known referrers of
+ * other key-value pairs itself.
+ */
+void SortedDictViewIterType::make_consistent(void){
+    if(this->it == this->sd->map->begin()){
+        Py_INCREF(this->sd);
+        ++this->sd->known_referrers;
+        this->should_raise_stop_iteration = false;
+    }
+    if(this->it != this->sd->map->end())
+    {
+        ++this->it->second.known_referrers;
+    }else{
+        this->should_raise_stop_iteration = true;
         --this->sd->known_referrers;
         Py_DECREF(this->sd);
     }
 }
 
+void SortedDictViewIterType::deinit(void)
+{
+    if(this->should_raise_stop_iteration){
+        return;
+    }
+    if(this->it != this->sd->map->end()){
+        --this->it->second.known_referrers;
+    }
+    --this->sd->known_referrers;
+}
+
 std::pair<PyObject*, PyObject*> SortedDictViewIterType::next(void)
 {
     static std::pair<PyObject* const, PyObject*> sentinel = { nullptr, nullptr };
-    if(this->stop_iteration || this->it == this->sd->map->end()){
-        // Match the behaviour of other iterators: drop the held reference when
-        // raising `StopIteration` for the first time.
-        if(!this->stop_iteration){
+    if(this->stop_iteration_raised || this->it == this->sd->map->end()){
+        if(!this->stop_iteration_raised){
+            // Match the behaviour of built-in iterators: drop the held
+            // reference when raising `StopIteration` for the first time.
             --this->sd->known_referrers;
             Py_DECREF(this->sd);
+            this->stop_iteration_raised = true;
         }
-        this->stop_iteration = true;
         return sentinel;
     }
 
@@ -53,10 +75,8 @@ PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
 
     SortedDictViewIterType* sdvi = reinterpret_cast<SortedDictViewIterType*>(self);
     sdvi->sd = sd;
-    Py_INCREF(sdvi->sd);
-    ++sdvi->sd->known_referrers;
     sdvi->it = sdvi->sd->map->begin();
-    sdvi->stop_iteration = false;
+    sdvi->make_consistent();
     return self;
 }
 
