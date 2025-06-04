@@ -200,7 +200,7 @@ bool SortedDictType::is_deletion_allowed(SortedDictValue const& value_wrapper)
     if (value_wrapper.known_referrers != 0)
     {
         PyErr_Format(
-            PyExc_RuntimeError, "operation not permitted: value locked by %zd iterator(s)",
+            PyExc_RuntimeError, "operation not permitted: key-value pair locked by %zd iterator(s)",
             value_wrapper.known_referrers
         );
         return false;
