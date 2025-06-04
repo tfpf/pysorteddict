@@ -8,61 +8,72 @@
 #include "sorted_dict_view_type.hh"
 
 /**
- * Make the number of known referrers of the sorted dictionary and/or its
- * relevant key-value pair consistent.
+ * Do all the necessary bookkeeping required to start tracking the given
+ * iterator of the underlying sorted dictionary.
  *
- * The caller should ensure that this function is called immediately after the
- * iterator is updated, and should adjust the number of known referrers of
- * other key-value pairs itself.
+ * The caller should ensure that this method is called immediately after the
+ * iterator member is updated.
+ *
+ * @param it Current value of the iterator.
  */
-void SortedDictViewIterType::make_consistent(void){
-    if(this->it == this->sd->map->begin()){
+void SortedDictViewIterType::track(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it)
+{
+    if (it == this->sd->map->begin())
+    {
         Py_INCREF(this->sd);
         ++this->sd->known_referrers;
         this->should_raise_stop_iteration = false;
     }
-    if(this->it != this->sd->map->end())
+    if (it != this->sd->map->end())
     {
-        ++this->it->second.known_referrers;
-    }else{
+        ++it->second.known_referrers;
+    }
+    else
+    {
         this->should_raise_stop_iteration = true;
         --this->sd->known_referrers;
         Py_DECREF(this->sd);
     }
 }
 
+/**
+ * Do all the necessary bookkeeping required to stop tracking the given
+ * iterator of the underlying sorted dictionary.
+ *
+ * The caller should ensure that this method is called immediately after the
+ * iterator member is updated.
+ *
+ * @param it Previous value of the iterator.
+ */
+void SortedDictViewIterType::untrack(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it)
+{
+    --it->second.known_referrers;
+}
+
 void SortedDictViewIterType::deinit(void)
 {
-    if(this->should_raise_stop_iteration){
+    if (this->should_raise_stop_iteration)
+    {
         return;
     }
-    if(this->it != this->sd->map->end()){
-        --this->it->second.known_referrers;
-    }
+    this->untrack(this->it);
     --this->sd->known_referrers;
+    Py_DECREF(this->sd);
 }
 
 std::pair<PyObject*, PyObject*> SortedDictViewIterType::next(void)
 {
     static std::pair<PyObject* const, PyObject*> sentinel = { nullptr, nullptr };
-    if(this->stop_iteration_raised || this->it == this->sd->map->end()){
-        if(!this->stop_iteration_raised){
-            // Match the behaviour of built-in iterators: drop the held
-            // reference when raising `StopIteration` for the first time.
-            --this->sd->known_referrers;
-            Py_DECREF(this->sd);
-            this->stop_iteration_raised = true;
-        }
+    if (this->should_raise_stop_iteration)
+    {
         return sentinel;
     }
 
     // The 'next' key-value pair is the current one the iterator points to.
     auto curr = this->it++;
-    --curr->second.known_referrers;
-    if(this->it != this->sd->map->end()){
-        ++this->it->second.known_referrers;
-    }
-    return {curr->first, curr->second.value};
+    this->untrack(curr);
+    this->track(this->it);
+    return { curr->first, curr->second.value };
 }
 
 PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
@@ -76,7 +87,7 @@ PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
     SortedDictViewIterType* sdvi = reinterpret_cast<SortedDictViewIterType*>(self);
     sdvi->sd = sd;
     sdvi->it = sdvi->sd->map->begin();
-    sdvi->make_consistent();
+    sdvi->track(sdvi->it);
     return self;
 }
 

@@ -19,9 +19,8 @@ protected:
     bool should_raise_stop_iteration;
 
 private:
-    void make_consistent(void);
-    // How about `track` and `untrack` methods to increment the number of know referrers of the iterator and decrement
-    // the those of the previous?
+    void track(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
+    void untrack(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
 
 public:
     void deinit(void);
