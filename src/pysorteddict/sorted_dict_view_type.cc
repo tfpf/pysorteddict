@@ -14,7 +14,7 @@
  * The caller should ensure that this method is called immediately after the
  * iterator member is updated.
  *
- * @param it Current value of the iterator.
+ * @param it Current value of the iterator member.
  */
 void SortedDictViewIterType::track(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it)
 {
@@ -43,7 +43,7 @@ void SortedDictViewIterType::track(std::map<PyObject*, SortedDictValue, SortedDi
  * The caller should ensure that this method is called immediately after the
  * iterator member is updated.
  *
- * @param it Previous value of the iterator.
+ * @param it Previous value of the iterator member.
  */
 void SortedDictViewIterType::untrack(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it)
 {
@@ -52,13 +52,12 @@ void SortedDictViewIterType::untrack(std::map<PyObject*, SortedDictValue, Sorted
 
 void SortedDictViewIterType::deinit(void)
 {
-    if (this->should_raise_stop_iteration)
+    if (!this->should_raise_stop_iteration)
     {
-        return;
+        this->untrack(this->it);
+        --this->sd->known_referrers;
+        Py_DECREF(this->sd);
     }
-    this->untrack(this->it);
-    --this->sd->known_referrers;
-    Py_DECREF(this->sd);
 }
 
 std::pair<PyObject*, PyObject*> SortedDictViewIterType::next(void)
