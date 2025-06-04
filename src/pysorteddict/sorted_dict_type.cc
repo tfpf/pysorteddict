@@ -181,7 +181,8 @@ bool SortedDictType::is_deletion_allowed(void)
     if (this->known_referrers != 0)
     {
         PyErr_Format(
-            PyExc_RuntimeError, "operation not permitted: object locked by %zd iterator(s)", this->known_referrers
+            PyExc_RuntimeError, "operation not permitted: sorted dictionary locked by %zd iterator(s)",
+            this->known_referrers
         );
         return false;
     }
