@@ -482,6 +482,24 @@ it won't be a view on its items.
 
 Return a dynamic view on the keys in the sorted dictionary `d`.
 
+```python
+from pysorteddict import *
+d = SortedDict()
+keys = d.keys()
+d["foo"] = ()
+print(keys)
+d["bar"] = [100]
+print(keys)
+d["baz"] = 3.14
+print(keys)
+```
+
+```text
+SortedDictKeys(['foo'])
+SortedDictKeys(['bar', 'foo'])
+SortedDictKeys(['bar', 'baz', 'foo'])
+```
+
 ### `d.values() -> list[object]`
 
 Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
