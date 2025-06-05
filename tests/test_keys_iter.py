@@ -1,11 +1,19 @@
 import collections
+import gc
 import itertools
+import platform
 import random
 import re
 
 import pytest
 
 from pysorteddict import SortedDict
+
+# The PyPy interpreter does not deallocate an object immediately after all
+# references to it are dropped. Detect PyPy and force it to collect garbage to
+# run any destructors, so that the results are consistent with those of
+# CPython.
+pypy = platform.python_implementation() == "PyPy"
 
 
 @pytest.fixture
@@ -15,12 +23,14 @@ def sorted_dict(request):
         d[i] = i
     yield d
 
+    if pypy:
+        gc.collect()
     d.clear()
 
 
-@pytest.mark.parametrize("sorted_dict", [0, 1, 10, 100, 1_000, 10_000, 100_000][1:2], indirect=True)
-@pytest.mark.parametrize("iterators", range(1, 2))
-@pytest.mark.parametrize("advance", [0, 1, 2, 4, 8, 16, float("inf")][0:1])
+@pytest.mark.parametrize("sorted_dict", [0, 1, 10, 100, 1_000, 10_000, 100_000], indirect=True)
+@pytest.mark.parametrize("iterators", range(1, 10))
+@pytest.mark.parametrize("advance", [0, 1, 2, 4, 8, 16, float("inf")])
 def test_modify_with_active_iterators(sorted_dict, iterators, advance):
     sorted_dict_len = len(sorted_dict)
     sorted_dict_keys = sorted_dict.keys()
