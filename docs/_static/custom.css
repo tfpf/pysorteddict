@@ -1,6 +1,9 @@
 summary {
   color: rebeccapurple;
   cursor: pointer;
+}
+
+summary:hover {
   text-decoration: underline;
 }
 
