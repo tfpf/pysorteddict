@@ -58,7 +58,7 @@ ImportError: failed to import the `decimal.Decimal` type
 
 ### `d.key_type: type | None`
 
-Return the key type of the sorted dictionary `d`, or `None` if no key-value pairs have been inserted in it.
+The key type of the sorted dictionary `d`, or `None` if no key-value pairs have been inserted in it.
 
 ```python
 from pysorteddict import *
