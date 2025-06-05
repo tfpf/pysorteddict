@@ -416,55 +416,58 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 Remove all key-value pairs in the sorted dictionary `d`.
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
-If there are any living iterators over the keys of `d`, raise `RuntimeError`.
+If there exists an unexhausted iterator over the keys of `d`, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
-for k in d.keys():
-    d.clear()
+i = iter(d.keys())
+d.clear()
 ```
 
 ```text
 Traceback (most recent call last):
   File "…", line 5, in <module>
     d.clear()
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+RuntimeError: operation not permitted: sorted dictionary locked by 1 iterator(s)
 ```
 
-<div class="notice">
+</details>
 
-On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
-alive.
+<details class="warning">
+
+<summary>This method may behave differently with PyPy.</summary>
+
+PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, prematurely-deleted
+iterators will keep a sorted dictionary locked.
 
 ```python
 import gc
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
-for k in d.keys():
-    pass
+d["baz"] = 1
+i = iter(d.keys())
+del i
 # gc.collect()
 d.clear()
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 8, in <module>
+  File "…", line 9, in <module>
     d.clear()
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+RuntimeError: operation not permitted: sorted dictionary locked by 1 iterator(s)
 ```
 
-Uncommenting the commented line makes this error go away.
+Uncommenting the commented line runs any required destructors and makes this error go away.
 
-</div>
-
-</div>
+</details>
 
 ### `d.copy() -> SortedDict`
 
