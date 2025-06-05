@@ -500,8 +500,29 @@ SortedDictKeys(['bar', 'foo'])
 SortedDictKeys(['bar', 'baz', 'foo'])
 ```
 
+<div class="notice">
+Iteration over the keys is supported, and the sorted dictionary can be modified while such an iteration is ongoing.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ()
+d["bar"] = [100]
+d["baz"] = 3.14
+for key in d.keys():
+    d[key] = "spam"
+print(d)
+```
+
+```text
+SortedDict({'bar': 'spam', 'baz': 'spam', 'foo': 'spam'})
+```
+
+There are some minor restrictions on modification during iteration. See [`del d[key]`](#del-d-key) and
+[`d.clear()`](d-clear).
+</div>
+
 ### `d.values() -> list[object]`
 
 Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
 exist independently of `d`; it won't be a view on its values.
-
