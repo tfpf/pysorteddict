@@ -1,8 +1,9 @@
-import pytest
 import collections
-import re
-import random
 import itertools
+import random
+import re
+
+import pytest
 
 from pysorteddict import SortedDict
 
@@ -15,6 +16,7 @@ def sorted_dict(request):
     yield d
 
     d.clear()
+
 
 @pytest.mark.parametrize("sorted_dict", [0, 1, 10, 100, 1_000, 10_000, 100_000][1:2], indirect=True)
 @pytest.mark.parametrize("iterators", range(1, 2))
@@ -29,24 +31,30 @@ def test_modify_with_active_iterators(sorted_dict, iterators, advance):
     # the keys the iterators point to as locked keys.
     keys = [*sorted_dict_keys]
     locked_keys = collections.defaultdict(int)
-    for sorted_dict_keys_iter, advance in zip(sorted_dict_keys_iters, advances):
+    for sorted_dict_keys_iter, advance in zip(sorted_dict_keys_iters, advances, strict=True):
         [*itertools.islice(sorted_dict_keys_iter, advance)]
         if advance < sorted_dict_len:
             locked_keys[keys[advance]] += 1
 
     sorted_dict_copy = sorted_dict.copy()
     for locked_key, known_referrers in locked_keys.items():
-        with pytest.raises(RuntimeError, match=re.escape(f"operation not permitted: key-value pair locked by {known_referrers} iterator(s)")):
+        with pytest.raises(
+            RuntimeError,
+            match=re.escape(f"operation not permitted: key-value pair locked by {known_referrers} iterator(s)"),
+        ):
             del sorted_dict[locked_key]
         del sorted_dict_copy[locked_key]
     for unlocked_key in itertools.islice({*keys} - locked_keys.keys(), 100):
         del sorted_dict[unlocked_key]
     if total_known_referrers := sum(locked_keys.values()):
-        with pytest.raises(RuntimeError, match=re.escape(f"operation not permitted: sorted dictionary locked by {total_known_referrers} iterator(s)")):
+        with pytest.raises(
+            RuntimeError,
+            match=re.escape(
+                f"operation not permitted: sorted dictionary locked by {total_known_referrers} iterator(s)"
+            ),
+        ):
             sorted_dict.clear()
     sorted_dict_copy.clear()
-
-
 
 
 if __name__ == "__main__":
