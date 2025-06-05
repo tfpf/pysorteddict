@@ -2,7 +2,7 @@
 
 <details class="notice">
 
-<summary style="cursor: pointer">Looking for the documentation of an older version?</summary>
+<summary>Looking for the documentation of an older version?</summary>
 
 ▸ [0.7.0](https://github.com/tfpf/pysorteddict/blob/v0.7.0/docs/documentation.md)  
 ▸ [0.6.0](https://github.com/tfpf/pysorteddict/blob/v0.6.0/docs/documentation.md)  

@@ -1,3 +1,9 @@
+summary {
+  color: rebeccapurple;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .extra-info {
   border-left: 4px solid rgb(128, 128, 128);
   padding-left: 20px;
