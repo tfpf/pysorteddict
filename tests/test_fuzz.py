@@ -1,8 +1,6 @@
 import builtins
 import decimal
-import gc
 import math
-import platform
 import random
 import re
 import string
@@ -11,9 +9,6 @@ import pytest
 
 from pysorteddict import SortedDict
 
-# On PyPy, objects are not destroyed immediately after they become unreachable.
-# Detect PyPy and collect garbage to destroy any stale iterators.
-pypy = platform.python_implementation() == "PyPy"
 unsupported_types = {bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
 # Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
 supported_types = [bytes, int, float, str, decimal.Decimal]
@@ -202,8 +197,6 @@ class TestFuzz:
         assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys})"
         assert len(self.sorted_dict_keys) == len(sorted_normal_dict_keys)
         assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
-        if pypy:
-            gc.collect()
 
 
 if __name__ == "__main__":
