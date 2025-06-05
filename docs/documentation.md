@@ -2,8 +2,9 @@
 
 <details class="notice">
 
-<summary style="cursor: pointer">Looking for the documentation of an older version?</summary>
+<summary>Looking for the documentation of an older version?</summary>
 
+▸ [0.7.0](https://github.com/tfpf/pysorteddict/blob/v0.7.0/docs/documentation.md)  
 ▸ [0.6.0](https://github.com/tfpf/pysorteddict/blob/v0.6.0/docs/documentation.md)  
 ▸ [0.5.3](https://github.com/tfpf/pysorteddict/blob/v0.5.3/docs/documentation.md)
 ▸ [0.5.2](https://github.com/tfpf/pysorteddict/blob/v0.5.2/docs/documentation.md)
@@ -15,7 +16,7 @@
 
 </details>
 
-`SortedDict` may be imported explicitly:
+`SortedDict` is a thread-unsafe sorted dictionary. It may be imported explicitly:
 
 ```python
 from pysorteddict import SortedDict
@@ -27,18 +28,26 @@ or implicitly using the wildcard (though this is not recommended).
 from pysorteddict import *
 ```
 
+The following key types are supported.
+
+* `bytes`
+* `float`
+* `int`
+* `str`
+* `decimal.Decimal`
+
 ## Constructor
 
 ### `SortedDict(*args, **kwargs) -> SortedDict`
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
 If any of the supported key types which are not built-in (only `decimal.Decimal` as of this version) cannot be imported
-(which might be a symptom of a corrupt or damaged Python installation), raise `ImportError`.
+(which might be a symptom of a corrupt or damaged Python installation), raises `ImportError`.
 
 ```python
 from pysorteddict import *
@@ -52,13 +61,13 @@ Traceback (most recent call last):
 ImportError: failed to import the `decimal.Decimal` type
 ```
 
-</div>
+</details>
 
 ## Properties
 
 ### `d.key_type: type | None`
 
-Return the key type of the sorted dictionary `d`, or `None` if no key-value pairs have been inserted in it.
+The key type of the sorted dictionary `d`, or `None` if no key-value pairs have been inserted in it.
 
 ```python
 from pysorteddict import *
@@ -78,11 +87,11 @@ Return a human-readable representation of the sorted dictionary `d`.
 
 Return whether `key` is present in the sorted dictionary `d`.
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
-If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
+If no key-value pairs have been inserted into `d` yet, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
@@ -97,7 +106,7 @@ Traceback (most recent call last):
 RuntimeError: key type not set: insert at least one item first
 ```
 
-Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raises `TypeError`.
 
 ```python
 from pysorteddict import *
@@ -113,7 +122,7 @@ Traceback (most recent call last):
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
 ```
 
-Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+Otherwise, if `key` is not comparable with instances of its type, raises `ValueError`.
 
 ```python
 from pysorteddict import *
@@ -129,7 +138,7 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
-</div>
+</details>
 
 ### `len(d)`
 
@@ -139,11 +148,11 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 
 Return the value mapped to `key` in the sorted dictionary `d`.
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
-If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
+If no key-value pairs have been inserted into `d` yet, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
@@ -159,7 +168,7 @@ Traceback (most recent call last):
 RuntimeError: key type not set: insert at least one item first
 ```
 
-Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raises `TypeError`.
 
 ```python
 from pysorteddict import *
@@ -176,7 +185,7 @@ Traceback (most recent call last):
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
 ```
 
-Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+Otherwise, if `key` is not comparable with instances of its type, raises `ValueError`.
 
 ```python
 from pysorteddict import *
@@ -193,7 +202,7 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
-Otherwise, if `key` is not present in `d`, raise `KeyError`.
+Otherwise, if `key` is not present in `d`, raises `KeyError`.
 
 ```python
 from pysorteddict import *
@@ -210,18 +219,18 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-</div>
+</details>
 
 ### `d[key] = value`
 
 Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
-If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`,
-`float`, `int`, `str` and `decimal.Decimal`), raise `TypeError`.
+If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported key types, raises
+`TypeError`.
 
 ```python
 from pysorteddict import *
@@ -237,7 +246,7 @@ Traceback (most recent call last):
 TypeError: got key ['eggs'] of unsupported type <class 'list'>
 ```
 
-Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raises `TypeError`.
 
 ```python
 from pysorteddict import *
@@ -254,7 +263,7 @@ Traceback (most recent call last):
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
 ```
 
-Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+Otherwise, if `key` is not comparable with instances of its type, raises `ValueError`.
 
 ```python
 from pysorteddict import *
@@ -271,63 +280,17 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
-Otherwise, if there are any living iterators over the keys of `d`, raise `RuntimeError`.
-
-```python
-from pysorteddict import *
-d = SortedDict()
-d["foo"] = "bar"
-for k in d.keys():
-    d[k] = "bar"
-```
-
-```text
-Traceback (most recent call last):
-  File "…", line 5, in <module>
-    d[k] = "bar"
-    ~^^^
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
-```
-
-<div class="notice">
-
-On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
-alive.
-
-```python
-import gc
-from pysorteddict import *
-d = SortedDict()
-d["foo"] = "bar"
-for k in d.keys():
-    pass
-# gc.collect()
-d["foo"] = "bar"
-```
-
-```text
-Traceback (most recent call last):
-  File "…", line 8, in <module>
-    d["foo"] = "bar"
-    ~^^^^^^^
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
-```
-
-Uncommenting the commented line makes this error go away.
-
-</div>
-
-</div>
+</details>
 
 ### `del d[key]`
 
 Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
-If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
+If no key-value pairs have been inserted into `d` yet, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
@@ -343,7 +306,7 @@ Traceback (most recent call last):
 RuntimeError: key type not set: insert at least one item first
 ```
 
-Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raises `TypeError`.
 
 ```python
 from pysorteddict import *
@@ -360,7 +323,7 @@ Traceback (most recent call last):
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
 ```
 
-Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+Otherwise, if `key` is not comparable with instances of its type, raises `ValueError`.
 
 ```python
 from pysorteddict import *
@@ -377,7 +340,7 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
-Otherwise, if `key` is not present in `d`, raise `KeyError`.
+Otherwise, if `key` is not present in `d`, raises `KeyError`.
 
 ```python
 from pysorteddict import *
@@ -394,53 +357,58 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-Otherwise, if there are any living iterators over the keys of `d`, raise `RuntimeError`.
+Otherwise, if there exists an iterator over the keys of `d` pointing to `key` (i.e. calling `next` on the iterator
+would yield `key`), raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
-for k in d.keys():
-    del d[k]
+d["baz"] = 1
+i = iter(d.keys())
+del d["baz"]
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 5, in <module>
-    del d[k]
-        ~^^^
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+  File "…", line 6, in <module>
+    del d["baz"]
+        ~^^^^^^^
+RuntimeError: operation not permitted: key-value pair locked by 1 iterator(s)
 ```
 
-<div class="notice">
+</details>
 
-On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
-alive.
+<details class="warning">
+
+<summary>This method may behave differently with PyPy.</summary>
+
+PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, prematurely-deleted
+iterators will keep a key-value pair locked.
 
 ```python
 import gc
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
-for k in d.keys():
-    pass
+d["baz"] = 1
+i = iter(d.keys())
+del i
 # gc.collect()
-del d["foo"]
+del d["baz"]
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 8, in <module>
-    del d["foo"]
+  File "…", line 9, in <module>
+    del d["baz"]
         ~^^^^^^^
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+RuntimeError: operation not permitted: key-value pair locked by 1 iterator(s)
 ```
 
-Uncommenting the commented line makes this error go away.
+Uncommenting the commented line runs any required destructors and makes this error go away.
 
-</div>
-
-</div>
+</details>
 
 ## Other Methods
 
@@ -448,55 +416,58 @@ Uncommenting the commented line makes this error go away.
 
 Remove all key-value pairs in the sorted dictionary `d`.
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
-If there are any living iterators over the keys of `d`, raise `RuntimeError`.
+If there exists an unexhausted iterator over the keys of `d`, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
-for k in d.keys():
-    d.clear()
+i = iter(d.keys())
+d.clear()
 ```
 
 ```text
 Traceback (most recent call last):
   File "…", line 5, in <module>
     d.clear()
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+RuntimeError: operation not permitted: sorted dictionary locked by 1 iterator(s)
 ```
 
-<div class="notice">
+</details>
 
-On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
-alive.
+<details class="warning">
+
+<summary>This method may behave differently with PyPy.</summary>
+
+PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, prematurely-deleted
+iterators will keep a sorted dictionary locked.
 
 ```python
 import gc
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
-for k in d.keys():
-    pass
+d["baz"] = 1
+i = iter(d.keys())
+del i
 # gc.collect()
 d.clear()
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 8, in <module>
+  File "…", line 9, in <module>
     d.clear()
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+RuntimeError: operation not permitted: sorted dictionary locked by 1 iterator(s)
 ```
 
-Uncommenting the commented line makes this error go away.
+Uncommenting the commented line runs any required destructors and makes this error go away.
 
-</div>
-
-</div>
+</details>
 
 ### `d.copy() -> SortedDict`
 
@@ -511,8 +482,54 @@ it won't be a view on its items.
 
 Return a dynamic view on the keys in the sorted dictionary `d`.
 
+```python
+from pysorteddict import *
+d = SortedDict()
+keys = d.keys()
+d["foo"] = ()
+print(keys)
+d["bar"] = [100]
+print(keys)
+d["baz"] = 3.14
+print(keys)
+```
+
+```text
+SortedDictKeys(['foo'])
+SortedDictKeys(['bar', 'foo'])
+SortedDictKeys(['bar', 'baz', 'foo'])
+```
+
+<details class="notice">
+
+<summary>This method returns a mostly mutation-safe iterable.</summary>
+
+A sorted dictionary can be modified while iterating over its keys. (Whether this is good practice is a separate
+question.)
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ()
+d["bar"] = [100]
+d["baz"] = 3.14
+for key in d.keys():
+    d[key] = "spam"
+    d["a_" + key] = "eggs"
+    if "foo" in d:
+        del d["foo"]
+print(d)
+```
+
+```text
+SortedDict({'a_bar': 'eggs', 'a_baz': 'eggs', 'bar': 'spam', 'baz': 'spam'})
+```
+
+Some modifications are disallowed, however. See [`del d[key]`](#del-d-key) and [`d.clear()`](d-clear).
+
+</details>
+
 ### `d.values() -> list[object]`
 
 Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
 exist independently of `d`; it won't be a view on its values.
-

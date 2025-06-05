@@ -1,0 +1,24 @@
+summary {
+  cursor: pointer;
+  font-style: italic;
+}
+
+summary:hover {
+  text-decoration: underline;
+}
+
+.notice {
+  background: rgba(39, 180, 166, 0.2);
+  border-left: 4px solid rgb(39, 180, 166);
+  border-radius: 6px;
+  margin: 20px 0px 20px 0px;
+  padding: 10px;
+}
+
+.warning {
+  background: rgba(175, 175, 95, 0.2);
+  border-left: 4px solid rgb(175, 175, 95);
+  border-radius: 6px;
+  margin: 20px 0px 20px 0px;
+  padding: 10px;
+}

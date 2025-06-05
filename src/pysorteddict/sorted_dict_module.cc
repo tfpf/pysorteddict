@@ -271,7 +271,7 @@ static PyMethodDef sorted_dict_type_methods[] = {
 PyDoc_STRVAR(
     sorted_dict_type_get_key_type_doc,
     "d.key_type: type | None\n"
-    "Return the key type of the sorted dictionary ``d``, or ``None`` if no key-value pairs have been inserted in it."
+    "The key type of the sorted dictionary ``d``, or ``None`` if no key-value pairs have been inserted in it."
 );
 
 static PyObject* sorted_dict_type_get_key_type(PyObject* self, void* closure)
@@ -309,7 +309,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
 PyDoc_STRVAR(
     sorted_dict_type_doc,
     "SortedDict(*args, **kwargs) -> SortedDict\n"
-    "Create an empty sorted dictionary. `args` and `kwargs` are ignored."
+    "Create an empty sorted dictionary. ``args`` and ``kwargs`` are ignored."
 );
 
 static PyTypeObject sorted_dict_type = {

@@ -26,11 +26,3 @@ honestly -> weight
 losing -> ['weight']
 times -> easier than
 ```
-
-The following key types are supported.
-
-* `bytes`
-* `float`
-* `int`
-* `str`
-* `decimal.Decimal`
