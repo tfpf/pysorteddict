@@ -357,8 +357,8 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-Otherwise, if there exists an iterator over the keys of `d` pointing to `k` (i.e. calling `next` on the iterator would
-yield `k`), raises `RuntimeError`.
+Otherwise, if there exists an iterator over the keys of `d` pointing to `key` (i.e. calling `next` on the iterator
+would yield `key`), raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
