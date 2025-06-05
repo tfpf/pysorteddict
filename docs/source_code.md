@@ -16,7 +16,7 @@ Implementation of the Python `SortedDict` type.
 
 ### `sorted_dict_view_type.cc`
 
-Implementation of views over `SortedDict` objects. Superclasses of `SortedDictKeys` and `SortedDictKeysIter`.
+Implementation of views over `SortedDict` objects—superclasses of `SortedDictKeys` and `SortedDictKeysIter`.
 
 ### `sorted_dict_keys_type.cc`
 
