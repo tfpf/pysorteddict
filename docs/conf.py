@@ -11,7 +11,7 @@ source_suffix = [".md", ".rst"]
 
 exclude_patterns = ["_build"]
 
-html_css_files = ["styles.css"]
+html_css_files = ["custom.css"]
 html_logo = "logo.svg"
 html_static_path = ["_static"]
 html_theme = "furo"
