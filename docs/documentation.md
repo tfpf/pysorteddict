@@ -286,11 +286,11 @@ ValueError: got bad key nan of type <class 'float'>
 
 Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
-If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
+If no key-value pairs have been inserted into `d` yet, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
@@ -306,7 +306,7 @@ Traceback (most recent call last):
 RuntimeError: key type not set: insert at least one item first
 ```
 
-Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raises `TypeError`.
 
 ```python
 from pysorteddict import *
@@ -323,7 +323,7 @@ Traceback (most recent call last):
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
 ```
 
-Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+Otherwise, if `key` is not comparable with instances of its type, raises `ValueError`.
 
 ```python
 from pysorteddict import *
@@ -340,7 +340,7 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
-Otherwise, if `key` is not present in `d`, raise `KeyError`.
+Otherwise, if `key` is not present in `d`, raises `KeyError`.
 
 ```python
 from pysorteddict import *
@@ -357,23 +357,27 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-Otherwise, if there are any living iterators over the keys of `d`, raise `RuntimeError`.
+Otherwise, if there exists an iterator over the keys of `d` pointing to `k` (i.e. calling `next` on the iterator would
+yield `k`), raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
-for k in d.keys():
-    del d[k]
+d["baz"] = 1
+i = iter(d.keys())
+del d["baz"]
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 5, in <module>
-    del d[k]
-        ~^^^
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+  File "…", line 6, in <module>
+    del d["baz"]
+        ~^^^^^^^
+RuntimeError: operation not permitted: key-value pair locked by 1 iterator(s)
 ```
+
+</details>
 
 <div class="notice">
 
