@@ -400,7 +400,7 @@ del d["baz"]
 
 ```text
 Traceback (most recent call last):
-  File "/home/tfpf/Documents/projects/pysorteddict/t.py", line 9, in <module>
+  File "…", line 9, in <module>
     del d["baz"]
         ~^^^^^^^
 RuntimeError: operation not permitted: key-value pair locked by 1 iterator(s)
