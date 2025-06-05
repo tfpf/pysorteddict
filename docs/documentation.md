@@ -28,15 +28,23 @@ or implicitly using the wildcard (though this is not recommended).
 from pysorteddict import *
 ```
 
+The following key types are supported.
+
+* `bytes`
+* `float`
+* `int`
+* `str`
+* `decimal.Decimal`
+
 ## Constructor
 
 ### `SortedDict(*args, **kwargs) -> SortedDict`
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
 If any of the supported key types which are not built-in (only `decimal.Decimal` as of this version) cannot be imported
 (which might be a symptom of a corrupt or damaged Python installation), raise `ImportError`.
@@ -53,7 +61,7 @@ Traceback (most recent call last):
 ImportError: failed to import the `decimal.Decimal` type
 ```
 
-</div>
+</details>
 
 ## Properties
 
