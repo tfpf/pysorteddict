@@ -500,8 +500,12 @@ SortedDictKeys(['bar', 'foo'])
 SortedDictKeys(['bar', 'baz', 'foo'])
 ```
 
-<div class="notice">
-Iteration over the keys is supported, and the sorted dictionary can be modified while such an iteration is ongoing.
+<details class="notice">
+
+<summary>This method returns a mostly mutation-safe iterable.</summary>
+
+A sorted dictionary can be modified while iterating over its keys. (Whether this is good practice is a separate
+question.)
 
 ```python
 from pysorteddict import *
@@ -511,16 +515,19 @@ d["bar"] = [100]
 d["baz"] = 3.14
 for key in d.keys():
     d[key] = "spam"
+    d["a_" + key] = "eggs"
+    if "foo" in d:
+        del d["foo"]
 print(d)
 ```
 
 ```text
-SortedDict({'bar': 'spam', 'baz': 'spam', 'foo': 'spam'})
+SortedDict({'a_bar': 'eggs', 'a_baz': 'eggs', 'bar': 'spam', 'baz': 'spam'})
 ```
 
-There are some minor restrictions on modification during iteration. See [`del d[key]`](#del-d-key) and
-[`d.clear()`](d-clear).
-</div>
+Some modifications are disallowed, however. See [`del d[key]`](#del-d-key) and [`d.clear()`](d-clear).
+
+</details>
 
 ### `d.values() -> list[object]`
 
