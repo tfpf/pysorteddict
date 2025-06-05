@@ -309,7 +309,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
 PyDoc_STRVAR(
     sorted_dict_type_doc,
     "SortedDict(*args, **kwargs) -> SortedDict\n"
-    "Create an empty sorted dictionary. `args` and `kwargs` are ignored."
+    "Create an empty sorted dictionary. ``args`` and ``kwargs`` are ignored."
 );
 
 static PyTypeObject sorted_dict_type = {
