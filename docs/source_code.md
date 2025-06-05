@@ -4,7 +4,7 @@
 
 ## `docs/`
 
-Code for what you are reading right now.
+Code for the static website you are reading right now.
 
 ## `src/pysorteddict/`
 
