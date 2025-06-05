@@ -229,8 +229,8 @@ Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapp
 
 <summary>This method may raise exceptions.</summary>
 
-If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`,
-`float`, `int`, `str` and `decimal.Decimal`), raises `TypeError`.
+If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported key types, raises
+`TypeError`.
 
 ```python
 from pysorteddict import *
