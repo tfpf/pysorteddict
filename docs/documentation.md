@@ -225,12 +225,12 @@ KeyError: 'spam'
 
 Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
 If no key-value pairs have been inserted into `d` yet and `type(key)` isn't one of the supported types (`bytes`,
-`float`, `int`, `str` and `decimal.Decimal`), raise `TypeError`.
+`float`, `int`, `str` and `decimal.Decimal`), raises `TypeError`.
 
 ```python
 from pysorteddict import *
@@ -246,7 +246,7 @@ Traceback (most recent call last):
 TypeError: got key ['eggs'] of unsupported type <class 'list'>
 ```
 
-Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raises `TypeError`.
 
 ```python
 from pysorteddict import *
@@ -263,7 +263,7 @@ Traceback (most recent call last):
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
 ```
 
-Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+Otherwise, if `key` is not comparable with instances of its type, raises `ValueError`.
 
 ```python
 from pysorteddict import *
@@ -280,53 +280,7 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
-Otherwise, if there are any living iterators over the keys of `d`, raise `RuntimeError`.
-
-```python
-from pysorteddict import *
-d = SortedDict()
-d["foo"] = "bar"
-for k in d.keys():
-    d[k] = "bar"
-```
-
-```text
-Traceback (most recent call last):
-  File "…", line 5, in <module>
-    d[k] = "bar"
-    ~^^^
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
-```
-
-<div class="notice">
-
-On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
-alive.
-
-```python
-import gc
-from pysorteddict import *
-d = SortedDict()
-d["foo"] = "bar"
-for k in d.keys():
-    pass
-# gc.collect()
-d["foo"] = "bar"
-```
-
-```text
-Traceback (most recent call last):
-  File "…", line 8, in <module>
-    d["foo"] = "bar"
-    ~^^^^^^^
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
-```
-
-Uncommenting the commented line makes this error go away.
-
-</div>
-
-</div>
+</details>
 
 ### `del d[key]`
 
