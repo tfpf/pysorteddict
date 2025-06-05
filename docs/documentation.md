@@ -16,7 +16,7 @@
 
 </details>
 
-`SortedDict` may be imported explicitly:
+`SortedDict` is a thread-unsafe sorted dictionary. It may be imported explicitly:
 
 ```python
 from pysorteddict import SortedDict
@@ -379,35 +379,36 @@ RuntimeError: operation not permitted: key-value pair locked by 1 iterator(s)
 
 </details>
 
-<div class="notice">
+<details class="warning">
 
-On PyPy, because of an implementation detail, the above error may be raised even when there are seemingly no iterators
-alive.
+<summary>This method may behave differently with PyPy.</summary>
+
+PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, prematurely-deleted
+iterators will keep a key-value pair locked.
 
 ```python
 import gc
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
-for k in d.keys():
-    pass
+d["baz"] = 1
+i = iter(d.keys())
+del i
 # gc.collect()
-del d["foo"]
+del d["baz"]
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 8, in <module>
-    del d["foo"]
+  File "/home/tfpf/Documents/projects/pysorteddict/t.py", line 9, in <module>
+    del d["baz"]
         ~^^^^^^^
-RuntimeError: modification not permitted: 1 iterator/iterators is/are alive
+RuntimeError: operation not permitted: key-value pair locked by 1 iterator(s)
 ```
 
-Uncommenting the commented line makes this error go away.
+Uncommenting the commented line runs any required destructors and makes this error go away.
 
-</div>
-
-</div>
+</details>
 
 ## Other Methods
 
