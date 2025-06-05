@@ -23,6 +23,22 @@ struct SortedDictKeyCompare
     }
 };
 
+struct SortedDictValue
+{
+public:
+    PyObject* value;
+
+    // Number of objects which require access to the key-value pair this value
+    // is part of. They will all hold references to the containing sorted
+    // dictionary.
+    Py_ssize_t known_referrers;
+
+public:
+    SortedDictValue(PyObject* value) : value(value), known_referrers(0)
+    {
+    }
+};
+
 struct SortedDictType
 {
 public:
@@ -32,18 +48,20 @@ private:
     // Pointer to an object on the heap. Can't be the object itself, because
     // this container will be allocated a definite amount of space, which won't
     // allow the object to grow.
-    std::map<PyObject*, PyObject*, SortedDictKeyCompare>* map;
+    std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>* map;
 
     // The type of each key.
     PyTypeObject* key_type;
 
-    // How many iterators hold a reference to this sorted dictionary.
-    Py_ssize_t referring_iterators;
+    // Number of objects which require access to any key-value pair in this
+    // sorted dictionary. They will all hold references to the latter.
+    Py_ssize_t known_referrers;
 
 private:
     bool is_key_good(PyObject*);
     bool are_key_type_and_key_value_pair_good(PyObject*, PyObject*);
-    bool is_modifiable(void);
+    bool is_deletion_allowed(void);
+    static bool is_deletion_allowed(Py_ssize_t);
 
 public:
     void deinit(void);

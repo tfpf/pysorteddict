@@ -172,17 +172,36 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
 }
 
 /**
- * Check whether this sorted dictionary may be modified.
+ * Check whether every key-value pair in this sorted dictionary can be deleted.
  *
  * @return `true` if the check succeeds, else `false`.
  */
-bool SortedDictType::is_modifiable(void)
+bool SortedDictType::is_deletion_allowed(void)
 {
-    if (this->referring_iterators != 0)
+    if (this->known_referrers != 0)
     {
         PyErr_Format(
-            PyExc_RuntimeError, "modification not permitted: %zd iterator/iterators is/are alive",
-            this->referring_iterators
+            PyExc_RuntimeError, "operation not permitted: sorted dictionary locked by %zd iterator(s)",
+            this->known_referrers
+        );
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Check whether a key-value pair in this sorted dictionary can be deleted.
+ *
+ * @param kv_known_referrers Known referrers of the key-value pair.
+ *
+ * @return `true` if the check succeeds, else `false`.
+ */
+bool SortedDictType::is_deletion_allowed(Py_ssize_t kv_known_referrers)
+{
+    if (kv_known_referrers != 0)
+    {
+        PyErr_Format(
+            PyExc_RuntimeError, "operation not permitted: key-value pair locked by %zd iterator(s)", kv_known_referrers
         );
         return false;
     }
@@ -194,7 +213,7 @@ void SortedDictType::deinit(void)
     for (auto& item : *this->map)
     {
         Py_DECREF(item.first);
-        Py_DECREF(item.second);
+        Py_DECREF(item.second.value);
     }
     delete this->map;
 }
@@ -211,7 +230,7 @@ PyObject* SortedDictType::repr(void)
         {
             return nullptr;
         }
-        PyObjectWrapper value_repr(PyObject_Repr(item.second));  // 🆕
+        PyObjectWrapper value_repr(PyObject_Repr(item.second.value));  // 🆕
         if (value_repr == nullptr)
         {
             return nullptr;
@@ -269,7 +288,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
         PyErr_SetObject(PyExc_KeyError, key);
         return nullptr;
     }
-    return Py_NewRef(it->second);  // 🆕
+    return Py_NewRef(it->second.value);  // 🆕
 }
 
 /**
@@ -283,7 +302,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
  */
 int SortedDictType::setitem(PyObject* key, PyObject* value)
 {
-    if (!this->are_key_type_and_key_value_pair_good(key, value) || !this->is_modifiable())
+    if (!this->are_key_type_and_key_value_pair_good(key, value))
     {
         return -1;
     }
@@ -301,8 +320,12 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
             PyErr_SetObject(PyExc_KeyError, key);
             return -1;
         }
+        if (!this->is_deletion_allowed(it->second.known_referrers))
+        {
+            return -1;
+        }
         Py_DECREF(it->first);
-        Py_DECREF(it->second);
+        Py_DECREF(it->second.value);
         this->map->erase(it);
         return 0;
     }
@@ -321,23 +344,23 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     else
     {
         // Replace the previously-mapped value.
-        Py_DECREF(it->second);
-        it->second = value;
+        Py_DECREF(it->second.value);
+        it->second.value = value;
     }
-    Py_INCREF(it->second);  // 🆕
+    Py_INCREF(it->second.value);  // 🆕
     return 0;
 }
 
 PyObject* SortedDictType::clear(void)
 {
-    if (!this->is_modifiable())
+    if (!this->is_deletion_allowed())
     {
         return nullptr;
     }
     for (auto& item : *this->map)
     {
         Py_DECREF(item.first);
-        Py_DECREF(item.second);
+        Py_DECREF(item.second.value);
     }
     this->map->clear();
     Py_RETURN_NONE;
@@ -352,14 +375,15 @@ PyObject* SortedDictType::copy(void)
         return nullptr;
     }
     SortedDictType* this_copy = reinterpret_cast<SortedDictType*>(sd_copy);
-    this_copy->map = new std::map<PyObject*, PyObject*, SortedDictKeyCompare>(*this->map);
+    this_copy->map = new std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>(*this->map);
     for (auto& item : *this_copy->map)
     {
         Py_INCREF(item.first);  // 🆕
-        Py_INCREF(item.second);  // 🆕
+        Py_INCREF(item.second.value);  // 🆕
+        item.second.known_referrers = 0;
     }
     this_copy->key_type = this->key_type;
-    this_copy->referring_iterators = 0;
+    this_copy->known_referrers = 0;
     return sd_copy;
 }
 
@@ -380,7 +404,7 @@ PyObject* SortedDictType::items(void)
             return nullptr;
         }
         PyTuple_SET_ITEM(sd_item, 0, Py_NewRef(item.first));  // 🆕
-        PyTuple_SET_ITEM(sd_item, 1, Py_NewRef(item.second));  // 🆕
+        PyTuple_SET_ITEM(sd_item, 1, Py_NewRef(item.second.value));  // 🆕
         PyList_SET_ITEM(sd_items, idx++, sd_item);
     }
     return sd_items;
@@ -401,7 +425,7 @@ PyObject* SortedDictType::values(void)
     Py_ssize_t idx = 0;
     for (auto& item : *this->map)
     {
-        PyList_SET_ITEM(sd_values, idx++, Py_NewRef(item.second));  // 🆕
+        PyList_SET_ITEM(sd_values, idx++, Py_NewRef(item.second.value));  // 🆕
     }
     return sd_values;
 }
@@ -440,8 +464,8 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     // allocated memory to null, but actually writes zeros to it. Hence,
     // explicitly initialise them.
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    sd->map = new std::map<PyObject*, PyObject*, SortedDictKeyCompare>;
+    sd->map = new std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>;
     sd->key_type = nullptr;
-    sd->referring_iterators = 0;
+    sd->known_referrers = 0;
     return self;
 }

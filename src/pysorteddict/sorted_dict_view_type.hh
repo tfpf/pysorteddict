@@ -15,7 +15,12 @@ public:
 
 protected:
     SortedDictType* sd;
-    std::map<PyObject*, PyObject*, SortedDictKeyCompare>::iterator it;
+    std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it;
+    bool should_raise_stop_iteration;
+
+private:
+    void track(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
+    void untrack(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
 
 public:
     void deinit(void);
