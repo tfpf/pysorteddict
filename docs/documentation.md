@@ -47,7 +47,7 @@ Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 <summary>This method may raise exceptions.</summary>
 
 If any of the supported key types which are not built-in (only `decimal.Decimal` as of this version) cannot be imported
-(which might be a symptom of a corrupt or damaged Python installation), raise `ImportError`.
+(which might be a symptom of a corrupt or damaged Python installation), raises `ImportError`.
 
 ```python
 from pysorteddict import *
@@ -87,11 +87,11 @@ Return a human-readable representation of the sorted dictionary `d`.
 
 Return whether `key` is present in the sorted dictionary `d`.
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
-If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
+If no key-value pairs have been inserted into `d` yet, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
@@ -106,7 +106,7 @@ Traceback (most recent call last):
 RuntimeError: key type not set: insert at least one item first
 ```
 
-Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raises `TypeError`.
 
 ```python
 from pysorteddict import *
@@ -122,7 +122,7 @@ Traceback (most recent call last):
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
 ```
 
-Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+Otherwise, if `key` is not comparable with instances of its type, raises `ValueError`.
 
 ```python
 from pysorteddict import *
@@ -138,7 +138,7 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
-</div>
+</details>
 
 ### `len(d)`
 
@@ -148,11 +148,11 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 
 Return the value mapped to `key` in the sorted dictionary `d`.
 
-<div class="extra-info">
+<details class="warning">
 
-#### Errors
+<summary>This method may raise exceptions.</summary>
 
-If no key-value pairs have been inserted into `d` yet, raise `RuntimeError`.
+If no key-value pairs have been inserted into `d` yet, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
@@ -168,7 +168,7 @@ Traceback (most recent call last):
 RuntimeError: key type not set: insert at least one item first
 ```
 
-Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raise `TypeError`.
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raises `TypeError`.
 
 ```python
 from pysorteddict import *
@@ -185,7 +185,7 @@ Traceback (most recent call last):
 TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
 ```
 
-Otherwise, if `key` is not comparable with instances of its type, raise `ValueError`.
+Otherwise, if `key` is not comparable with instances of its type, raises `ValueError`.
 
 ```python
 from pysorteddict import *
@@ -202,7 +202,7 @@ Traceback (most recent call last):
 ValueError: got bad key nan of type <class 'float'>
 ```
 
-Otherwise, if `key` is not present in `d`, raise `KeyError`.
+Otherwise, if `key` is not present in `d`, raises `KeyError`.
 
 ```python
 from pysorteddict import *
@@ -219,7 +219,7 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-</div>
+</details>
 
 ### `d[key] = value`
 
