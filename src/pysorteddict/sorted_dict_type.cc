@@ -190,19 +190,18 @@ bool SortedDictType::is_deletion_allowed(void)
 }
 
 /**
- * Check whether the given value in this sorted dictionary can be deleted.
+ * Check whether a key-value pair in this sorted dictionary can be deleted.
  *
- * @param value_wrapper Value wrapper.
+ * @param kv_known_referrers Known referrers of the key-value pair.
  *
  * @return `true` if the check succeeds, else `false`.
  */
-bool SortedDictType::is_deletion_allowed(SortedDictValue const& value_wrapper)
+bool SortedDictType::is_deletion_allowed(Py_ssize_t kv_known_referrers)
 {
-    if (value_wrapper.known_referrers != 0)
+    if (kv_known_referrers != 0)
     {
         PyErr_Format(
-            PyExc_RuntimeError, "operation not permitted: key-value pair locked by %zd iterator(s)",
-            value_wrapper.known_referrers
+            PyExc_RuntimeError, "operation not permitted: key-value pair locked by %zd iterator(s)", kv_known_referrers
         );
         return false;
     }
@@ -321,7 +320,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
             PyErr_SetObject(PyExc_KeyError, key);
             return -1;
         }
-        if (!this->is_deletion_allowed(it->second))
+        if (!this->is_deletion_allowed(it->second.known_referrers))
         {
             return -1;
         }

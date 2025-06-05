@@ -61,7 +61,7 @@ private:
     bool is_key_good(PyObject*);
     bool are_key_type_and_key_value_pair_good(PyObject*, PyObject*);
     bool is_deletion_allowed(void);
-    static bool is_deletion_allowed(SortedDictValue const&);
+    static bool is_deletion_allowed(Py_ssize_t);
 
 public:
     void deinit(void);
