@@ -4,8 +4,8 @@
 #include <map>
 #include <string>
 
-#include "sorted_dict_type.hh"
 #include "sorted_dict_keys_type.hh"
+#include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"
 
 /**
