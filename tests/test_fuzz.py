@@ -1,5 +1,5 @@
-import decimal
 import builtins
+import decimal
 import math
 import random
 import re
