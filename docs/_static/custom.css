@@ -7,6 +7,25 @@ summary:hover {
   text-decoration: underline;
 }
 
+ul.change-break, ul.change-fix, ul.change-new {
+  list-style: none;
+}
+
+ul.change-break li::before {
+  content: "🔴";
+  margin-right: 8px;
+}
+
+ul.change-fix li::before {
+  content: "🟡";
+  margin-right: 8px;
+}
+
+ul.change-new li::before {
+  content: "🟢";
+  margin-right: 8px;
+}
+
 .notice {
   background: rgba(39, 180, 166, 0.2);
   border-left: 4px solid rgb(39, 180, 166);
