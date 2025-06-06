@@ -12,22 +12,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  cxx-style:
-    name: format C++
+  style:
+    name: format C++ and lint Python
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - run: ./clang-format.bash check
-
-  python-style:
-    name: format and lint Python
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
       - run: pipx run hatch fmt --check
+        if: success() || failure()
 
   coverage:
-    needs: [cxx-style, python-style]
+    needs: [style]
     name: check code coverage
     runs-on: ubuntu-22.04
     steps:
@@ -40,7 +35,7 @@ jobs:
           CFLAGS: --coverage
 
   build:
-    needs: [cxx-style, python-style]
+    needs: [style]
     strategy:
       matrix:
         os: ['macos-13', 'macos-14', 'ubuntu-22.04', 'windows-2022']
