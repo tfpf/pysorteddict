@@ -1,6 +1,6 @@
 summary {
+  color: var(--color-link);
   cursor: pointer;
-  font-style: italic;
 }
 
 summary:hover {
