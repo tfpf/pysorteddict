@@ -8,7 +8,6 @@ author = "Vishal Pankaj Chandratreya"
 
 extensions = ["myst_parser"]
 source_suffix = [".md", ".rst"]
-
 exclude_patterns = ["_build"]
 
 html_css_files = ["custom.css"]
@@ -22,3 +21,5 @@ html_theme_options = {
 }
 html_title = project
 html_use_index = False
+
+myst_heading_anchors = 3

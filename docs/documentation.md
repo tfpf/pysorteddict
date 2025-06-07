@@ -2,7 +2,7 @@
 
 <details class="notice">
 
-<summary>Looking for the documentation of an older version?</summary>
+<summary>Documentation of older versions is available on GitHub.</summary>
 
 ▸ [0.7.0](https://github.com/tfpf/pysorteddict/blob/v0.7.0/docs/documentation.md)  
 ▸ [0.6.0](https://github.com/tfpf/pysorteddict/blob/v0.6.0/docs/documentation.md)  
@@ -525,7 +525,7 @@ print(d)
 SortedDict({'a_bar': 'eggs', 'a_baz': 'eggs', 'bar': 'spam', 'baz': 'spam'})
 ```
 
-Some modifications are disallowed, however. See [`del d[key]`](#del-d-key) and [`d.clear()`](d-clear).
+Some modifications are disallowed, however. See [`del d[key]`](#del-dkey) and [`d.clear()`](#dclear).
 
 </details>
 
