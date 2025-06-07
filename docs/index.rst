@@ -7,7 +7,7 @@ ascending order.
 pysorteddict is implemented entirely in C++. ``SortedDict`` provides a Python interface to ``std::map``.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    installation
    usage

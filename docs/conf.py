@@ -8,8 +8,9 @@ author = "Vishal Pankaj Chandratreya"
 
 extensions = ["myst_parser"]
 source_suffix = [".md", ".rst"]
-
 exclude_patterns = ["_build"]
+
+myst_heading_anchors = 3
 
 html_css_files = ["custom.css"]
 html_logo = "logo.svg"
