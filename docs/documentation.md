@@ -525,7 +525,7 @@ print(d)
 SortedDict({'a_bar': 'eggs', 'a_baz': 'eggs', 'bar': 'spam', 'baz': 'spam'})
 ```
 
-Some modifications are disallowed, however. See [`del d[key]`](#del-dkey) and [`d.clear()`](dclear).
+Some modifications are disallowed, however. See [`del d[key]`](#del-dkey) and [`d.clear()`](#dclear).
 
 </details>
 
