@@ -23,7 +23,7 @@
   Update the check for the import of <code>decimal.Decimal</code> with type verification. Change the error message to
   reflect that importing the type failed.</li>
   <li><a href="https://github.com/tfpf/pysorteddict/pull/118">#118</a> Update <code>SortedDict.__contains__</code> to
-  raise the same exceptions <code>SortedDict.__getitem__</code> raises (excluding <code>KeyError</code>) instead of
+  raise the same errors <code>SortedDict.__getitem__</code> raises (excluding <code>KeyError</code>) instead of
   silently returning <code>False</code>. (This is consistent with the behaviour of <code>dict.__contains__</code>,
   which raises <code>TypeError</code> for unhashable types.)</li>
 </ul>
@@ -41,7 +41,7 @@
   <li><a href="https://github.com/tfpf/pysorteddict/commit/6bf7bbdef8cbc83d64d57e2eb50b2c3a5146a63b">6bf7bbdef8cb</a>
   Remove GitHub links from project metadata.</li>
   <li><a href="https://github.com/tfpf/pysorteddict/pull/111">#111</a> Change the error message about failure to import
-  Python types which are not built-in.</li>
+  Python types which are not built-in to report the problem more precisely.</li>
 </ul>
 
 ## [0.5.1](https://github.com/tfpf/pysorteddict/compare/v0.5.0...v0.5.1)
@@ -51,7 +51,8 @@ No user-facing changes of note.
 ## [0.5.0](https://github.com/tfpf/pysorteddict/compare/v0.4.6...v0.5.0)
 
 <ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/102">#102</a> Support <code>decimal.Decimal</code> keys.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/102">#102</a> Support <code>decimal.Decimal</code> keys.
+  Prohibit the insertion of a key if it is NaN.</li>
 </ul>
 
 <ul class="change-fix">
@@ -88,14 +89,15 @@ No user-facing changes of note.
 ## [0.4.1](https://github.com/tfpf/pysorteddict/compare/v0.4.0...v0.4.1)
 
 <ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/75">#75</a> Add C++ header files from the project to the
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/75">#75</a> Add the C++ header files from the project to the
   source and built distributions.</li>
 </ul>
 
 ## [0.4.0](https://github.com/tfpf/pysorteddict/compare/v0.3.0...v0.4.0)
 
 <ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/67">#67</a> Support <code>float</code> keys.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/67">#67</a> Support <code>float</code> keys. Prohibit the
+  insertion of a key if it is NaN.</li>
   <li><a href="https://github.com/tfpf/pysorteddict/pull/71">#71</a> Define <code>SortedDict.key_type</code> as the key
   type of a sorted dictionary.</li>
 </ul>
@@ -138,9 +140,9 @@ No user-facing changes of note.
 
 <ul class="change-fix">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/22">#22</a> Change the type of the error raised when the
-  constructor argument is an unsupported type from <code>ValueError</code> to <code>TypeError</code>. Update
-  <code>SortedDict.__str__</code> and <code>SortedDict.items</code> to detect allocation errors. Prohibit subclasses of
-  supported key types.</li>
+  constructor argument is an unsupported type from <code>ValueError</code> to <code>TypeError</code>. Prohibit
+  subclasses of supported key types. Update <code>SortedDict.__str__</code> and <code>SortedDict.items</code> to detect
+  allocation errors.</li>
 </ul>
 
 ## [0.0.7](https://github.com/tfpf/pysorteddict/compare/v0.0.6...v0.0.7)
@@ -165,7 +167,9 @@ No user-facing changes of note.
   Define the sorted dictionary constructor to accept the key type, which must be <code>int</code>.</li>
   <li><a href="https://github.com/tfpf/pysorteddict/pull/1">#1</a> Define the sorted dictionary destructor.</li>
   <li><a href="https://github.com/tfpf/pysorteddict/pull/2">#2</a> Define <code>SortedDict.__len__</code>,
-  <code>SortedDict.__getitem__</code>, <code>SortedDict.__setitem__</code> and <code>SortedDict.__str__</code>.</li>
+  <code>SortedDict.__getitem__</code>, <code>SortedDict.__setitem__</code>, <code>SortedDict.__delitem__</code> and
+  <code>SortedDict.__str__</code>. Prohibit insertion of a key if its type is not a subclass of what was passed to the
+  constructor.</li>
   <li><a href="https://github.com/tfpf/pysorteddict/pull/3">#3</a> Define <code>SortedDict.items</code>,
   <code>SortedDict.keys</code> and <code>SortedDict.values</code> to return lists (not views) containing the key-value
   pairs, keys and values in a sorted dictionary.</li>
