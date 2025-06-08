@@ -8,12 +8,12 @@ summary:hover {
 }
 
 ul.change-break::before {
-  content: "Breaking Changes ❌";
+  content: "Breaking Changes ❗";
   font-weight: bold;
 }
 
 ul.change-fix::before {
-  content: "Fixes and Improvements 🔧";
+  content: "Fixes and Improvements 🛠️";
   font-weight: bold;
 }
 
