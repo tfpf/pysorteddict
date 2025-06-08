@@ -80,3 +80,54 @@ No user-facing changes of note.
 ## [0.4.3](https://github.com/tfpf/pysorteddict/compare/v0.4.2...v0.4.3)
 
 No user-facing changes of note.
+
+## [0.4.2](https://github.com/tfpf/pysorteddict/compare/v0.4.1...v0.4.2)
+
+No user-facing changes of note.
+
+## [0.4.1](https://github.com/tfpf/pysorteddict/compare/v0.4.0...v0.4.1)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/75">#75</a> Add C++ header files from the project to the
+  source and built distributions.</li>
+</ul>
+
+## [0.4.0](https://github.com/tfpf/pysorteddict/compare/v0.3.0...v0.4.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/67">#67</a> Support <code>float</code> keys.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/71">#71</a> Define <code>SortedDict.key_type</code> to query
+  the key type of a sorted dictionary.</li>
+</ul>
+
+## [0.3.0](https://github.com/tfpf/pysorteddict/compare/v0.2.1...v0.3.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/45">#45</a> Define a cleanup function for sorted dictionaries
+  to prevent memory leaks.</li>
+</ul>
+
+<ul class="change-break">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/47">#47</a> Update the sorted dictionary constructor to ignore
+  all arguments. Update <code>SortedDict.__setitem__</code> to set the key type upon succeeding for the first
+  time.</li>
+</ul>
+
+## [0.2.1](https://github.com/tfpf/pysorteddict/compare/v0.2.0...v0.2.1)
+
+No user-facing changes of note.
+
+## [0.2.0](https://github.com/tfpf/pysorteddict/compare/v0.1.0...v0.2.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/36">#36</a> Define <code>SortedDict.copy</code> to return a
+  shallow copy.</li>
+</ul>
+
+## [0.1.0](https://github.com/tfpf/pysorteddict/compare/v0.0.8...v0.1.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/29">#29</a> Define <code>SortedDict.__contains__</code>.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/31">#31</a> Define <code>SortedDict.clear</code> to remove all
+  key-value pairs from a sorted dictionary.</li>
+</ul>
