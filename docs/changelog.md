@@ -103,14 +103,16 @@ No user-facing changes of note.
 ## [0.3.0](https://github.com/tfpf/pysorteddict/compare/v0.2.1...v0.3.0)
 
 <ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/45">#45</a> Define a cleanup function for sorted dictionaries
-  to prevent memory leaks.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/55">#55</a> Support <code>bytes</code> and <code>str</code>
+  keys.
 </ul>
 
 <ul class="change-break">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/47">#47</a> Update the sorted dictionary constructor to ignore
   all arguments. Update <code>SortedDict.__setitem__</code> to set the key type upon succeeding for the first
   time.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/49">#49</a> Remove <code>SortedDict.__str__</code>. Define
+  <code>SortedDict.__repr__</code>.</li>
 </ul>
 
 ## [0.2.1](https://github.com/tfpf/pysorteddict/compare/v0.2.0...v0.2.1)
@@ -130,4 +132,41 @@ No user-facing changes of note.
   <li><a href="https://github.com/tfpf/pysorteddict/pull/29">#29</a> Define <code>SortedDict.__contains__</code>.</li>
   <li><a href="https://github.com/tfpf/pysorteddict/pull/31">#31</a> Define <code>SortedDict.clear</code> to remove all
   key-value pairs from a sorted dictionary.</li>
+</ul>
+
+## [0.0.8](https://github.com/tfpf/pysorteddict/compare/v0.0.7...v0.0.8)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/22">#22</a> Change the type of the error raised when the
+  constructor argument is an unsupported type from <code>ValueError</code> to <code>TypeError</code>. Update
+  <code>SortedDict.__str__</code> and <code>SortedDict.items</code> to detect allocation errors. Prohibit subclasses of
+  supported key types.</li>
+</ul>
+
+## [0.0.7](https://github.com/tfpf/pysorteddict/compare/v0.0.6...v0.0.7)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/commit/e377dc4266f683daba99427e4955c3065d5f63a3">e377dc4266f6</a>
+  Add intended audience, supported operating systems and targeted Python implementations to project metadata.</li>
+</ul>
+
+## [0.0.6](https://github.com/tfpf/pysorteddict/compare/v0.0.5...v0.0.6)
+
+No user-facing changes of note.
+
+## [0.0.5](https://github.com/tfpf/pysorteddict/compare/v0.0.4...v0.0.5)
+
+No user-facing changes of note.
+
+## 0.0.4
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/commit/8ef0310913b47b1539b6524d0cf94424825c0a38">8ef0310913b4</a>
+  Define the sorted dictionary constructor to accept the key type, which must be <code>int</code>.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/1">#1</a> Define the sorted dictionary destructor.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/2">#2</a> Define <code>SortedDict.__len__</code>,
+  <code>SortedDict.__getitem__</code>, <code>SortedDict.__setitem__</code> and <code>SortedDict.__str__</code>.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/3">#3</a> Define <code>SortedDict.items</code>,
+  <code>SortedDict.keys</code> and <code>SortedDict.values</code> to return lists (not views) containing the key-value
+  pairs, keys and values in a sorted dictionary.</li>
 </ul>
