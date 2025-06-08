@@ -12,8 +12,8 @@
 
 <ul class="change-new">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/120">#120</a> Define sorted dictionary views and iterators.
-  Update <code>SortedDict.keys</code> to return said view. Prohibit modifications to a sorted dictionary while
-  iterating over its keys.</li>
+  Update <code>SortedDict.keys</code> to return a view. Prohibit modifications to a sorted dictionary while iterating
+  over its keys.</li>
 </ul>
 
 ## [0.6.0](https://github.com/tfpf/pysorteddict/compare/v0.5.3...v0.6.0)
@@ -43,3 +43,40 @@
   <li><a href="https://github.com/tfpf/pysorteddict/pull/111">#111</a> Change the error message about failure to import
   Python types which are not built-in.</li>
 </ul>
+
+## [0.5.1](https://github.com/tfpf/pysorteddict/compare/v0.5.0...v0.5.1)
+
+No user-facing changes of note.
+
+## [0.5.0](https://github.com/tfpf/pysorteddict/compare/v0.4.6...v0.5.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/102">#102</a> Support <code>decimal.Decimal</code> keys.</li>
+</ul>
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/commit/8c145e38eb98d623a640521ec996d49cc1af90fd">8c145e38eb98</a>
+  Add GitHub links to project metadata.</li>
+</ul>
+
+## [0.4.6](https://github.com/tfpf/pysorteddict/compare/v0.4.5...v0.4.6)
+
+No user-facing changes of note.
+
+## [0.4.5](https://github.com/tfpf/pysorteddict/compare/v0.4.4...v0.4.5)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/95">#95</a> Change the type of the error raised when the key
+  type is not set from <code>ValueError</code> to <code>RuntimeError</code>.</li>
+</ul>
+
+## [0.4.4](https://github.com/tfpf/pysorteddict/compare/v0.4.3...v0.4.4)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/91">#91</a> Change error messages to provide actionable
+  information.</li>
+</ul>
+
+## [0.4.3](https://github.com/tfpf/pysorteddict/compare/v0.4.2...v0.4.3)
+
+No user-facing changes of note.
