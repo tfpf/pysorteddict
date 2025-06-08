@@ -7,6 +7,21 @@ summary:hover {
   text-decoration: underline;
 }
 
+ul.change-break::before {
+  content: "Breaking Changes ❌";
+  font-weight: bold;
+}
+
+ul.change-fix::before {
+  content: "Fixes and Improvements 🔧";
+  font-weight: bold;
+}
+
+ul.change-new::before {
+  content: "New Features ➕";
+  font-weight: bold;
+}
+
 .notice {
   background: rgba(39, 180, 166, 0.2);
   border-left: 4px solid rgb(39, 180, 166);

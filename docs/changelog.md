@@ -2,12 +2,14 @@
 
 ## 0.7.1
 
-* ➕ New Features
-  * a
-  * b
-* 🔧 Fixes and Improvements
-  * a
-  * b
-* ❌ Breaking Changes
-  * a
-  * b
+<ul class="change-new">
+  <li>a</li>
+</ul>
+
+<ul class="change-fix">
+  <li>a</li>
+</ul>
+
+<ul class="change-break">
+  <li>a</li>
+</ul>
