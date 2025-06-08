@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.7.2](https://github.com/tfpf/pysorteddict/compare/v0.7.1...v0.7.2)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/141">#141</a> Add changelog link to project metadata.</li>
+</ul>
+
 ## [0.7.1](https://github.com/tfpf/pysorteddict/compare/v0.7.0...v0.7.1)
 
 <ul class="change-fix">
@@ -57,7 +63,7 @@ No user-facing changes of note.
 
 <ul class="change-fix">
   <li><a href="https://github.com/tfpf/pysorteddict/commit/8c145e38eb98d623a640521ec996d49cc1af90fd">8c145e38eb98</a>
-  Add GitHub links to project metadata.</li>
+  Add GitHub and homepage links to project metadata.</li>
 </ul>
 
 ## [0.4.6](https://github.com/tfpf/pysorteddict/compare/v0.4.5...v0.4.6)
@@ -68,7 +74,8 @@ No user-facing changes of note.
 
 <ul class="change-fix">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/95">#95</a> Change the type of the error raised when the key
-  type is not set from <code>ValueError</code> to <code>RuntimeError</code>.</li>
+  type is not set from <code>ValueError</code> to <code>RuntimeError</code>. Add documentation link to project
+  metadata.</li>
 </ul>
 
 ## [0.4.4](https://github.com/tfpf/pysorteddict/compare/v0.4.3...v0.4.4)
@@ -141,7 +148,7 @@ No user-facing changes of note.
 <ul class="change-fix">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/22">#22</a> Change the type of the error raised when the
   constructor argument is an unsupported type from <code>ValueError</code> to <code>TypeError</code>. Prohibit
-  subclasses of supported key types. Update <code>SortedDict.__str__</code> and <code>SortedDict.items</code> to detect
+  subclasses of supported key types. Update <code>SortedDict.__str__</code> and <code>SortedDict.items</code> to raise
   allocation errors.</li>
 </ul>
 

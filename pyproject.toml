@@ -13,7 +13,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysorteddict"
-version = "0.7.1"
+version = "0.7.2"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
@@ -39,9 +39,10 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://tfpf.github.io/pysorteddict/index.html"
+Homepage = "https://tfpf.github.io/pysorteddict/"
 Documentation = "https://tfpf.github.io/pysorteddict/documentation.html"
 Repository = "https://github.com/tfpf/pysorteddict"
+Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 
 [tool.cibuildwheel]
 archs = ["auto64"]
