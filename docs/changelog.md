@@ -96,8 +96,8 @@ No user-facing changes of note.
 
 <ul class="change-new">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/67">#67</a> Support <code>float</code> keys.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/71">#71</a> Define <code>SortedDict.key_type</code> to query
-  the key type of a sorted dictionary.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/71">#71</a> Define <code>SortedDict.key_type</code> as the key
+  type of a sorted dictionary.</li>
 </ul>
 
 ## [0.3.0](https://github.com/tfpf/pysorteddict/compare/v0.2.1...v0.3.0)
@@ -121,7 +121,7 @@ No user-facing changes of note.
 
 <ul class="change-new">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/36">#36</a> Define <code>SortedDict.copy</code> to return a
-  shallow copy.</li>
+  shallow copy of a sorted dictionary.</li>
 </ul>
 
 ## [0.1.0](https://github.com/tfpf/pysorteddict/compare/v0.0.8...v0.1.0)
