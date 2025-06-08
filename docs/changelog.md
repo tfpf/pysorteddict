@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.7.1
+## [0.7.1](https://github.com/tfpf/pysorteddict/compare/v0.7.0...v0.7.1)
 
 <ul class="change-fix">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/131">#131</a> Allow most modifications to a sorted dictionary
@@ -8,7 +8,7 @@
   sorted dictionary when any unexhausted iterators exist.</li>
 </ul>
 
-## 0.7.0
+## [0.7.0](https://github.com/tfpf/pysorteddict/compare/v0.6.0...v0.7.0)
 
 <ul class="change-new">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/120">#120</a> Define sorted dictionary views and iterators.
@@ -16,7 +16,7 @@
   iterating over its keys.</li>
 </ul>
 
-## 0.6.0
+## [0.6.0](https://github.com/tfpf/pysorteddict/compare/v0.5.3...v0.6.0)
 
 <ul class="change-break">
   <li><a href="https://github.com/tfpf/pysorteddict/commit/84830cb2d98afa28a1be188f42da5938080a5435">84830cb2d98a</a>
@@ -26,4 +26,20 @@
   raise the same exceptions <code>SortedDict.__getitem__</code> raises (excluding <code>KeyError</code>) instead of
   silently returning <code>False</code>. (This is consistent with the behaviour of <code>dict.__contains__</code>,
   which raises <code>TypeError</code> for unhashable types.)</li>
+</ul>
+
+## [0.5.3](https://github.com/tfpf/pysorteddict/compare/v0.5.2...v0.5.3)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/commit/61c6d76c88c2849bed2c092afe2aeb7349bd33bf">61c6d76c88c2</a>
+  Add GitHub links to project metadata.</li>
+</ul>
+
+## [0.5.2](https://github.com/tfpf/pysorteddict/compare/v0.5.1...v0.5.2)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/commit/6bf7bbdef8cbc83d64d57e2eb50b2c3a5146a63b">6bf7bbdef8cb</a>
+  Remove GitHub links from project metadata.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/111">#111</a> Change the error message about failure to import
+  Python types which are not built-in.</li>
 </ul>
