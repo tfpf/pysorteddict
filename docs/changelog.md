@@ -30,8 +30,7 @@
   reflect that importing the type failed.</li>
   <li><a href="https://github.com/tfpf/pysorteddict/pull/118">#118</a> Update <code>SortedDict.__contains__</code> to
   raise the same errors <code>SortedDict.__getitem__</code> raises (excluding <code>KeyError</code>) instead of
-  silently returning <code>False</code>. (This is consistent with the behaviour of <code>dict.__contains__</code>,
-  which raises <code>TypeError</code> for unhashable types.)</li>
+  silently returning <code>False</code>.</li>
 </ul>
 
 ## [0.5.3](https://github.com/tfpf/pysorteddict/compare/v0.5.2...v0.5.3)
