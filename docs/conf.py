@@ -17,9 +17,9 @@ html_static_path = ["_static"]
 html_theme = "furo"
 html_theme_options = {
     "light_css_variables": {
-        "font-stack": "-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji",
-        "font-stack--headings": "-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji",
-        "font-stack--monospace": "SFMono-Regular,Menlo,Consolas,Monaco,Liberation Mono,Lucida Console,monospace",
+        "font-stack": "Edu NSW ACT Hand Pre, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
+        "font-stack--headings": "Edu NSW ACT Hand Pre, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
+        "font-stack--monospace": "Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace",
     },
     "source_branch": "main",
     "source_directory": "docs",
@@ -27,5 +27,5 @@ html_theme_options = {
 }
 html_title = project
 html_use_index = False
-
 myst_heading_anchors = 3
+templates_path = ['_templates']
