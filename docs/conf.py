@@ -16,6 +16,11 @@ html_logo = "logo.svg"
 html_static_path = ["_static"]
 html_theme = "furo"
 html_theme_options = {
+    "light_css_variables": {
+        "font-stack": "-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji",
+        "font-stack--headings": "-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji",
+        "font-stack--monospace": "SFMono-Regular,Menlo,Consolas,Monaco,Liberation Mono,Lucida Console,monospace",
+    },
     "source_branch": "main",
     "source_directory": "docs",
     "source_repository": "https://github.com/tfpf/pysorteddict",
