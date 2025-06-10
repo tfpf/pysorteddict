@@ -1,3 +1,15 @@
+@font-face {
+  font-family: "Livvic";
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/Livvic/Livvic-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Signika";
+  src: url(../fonts/Signika/static/Signika-Regular.ttf);
+}
+
 summary {
   color: var(--color-link);
   cursor: pointer;
