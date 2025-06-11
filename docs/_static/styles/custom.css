@@ -7,14 +7,12 @@
 
 @font-face {
   font-family: "JetBrainsMono Nerd Font pysorteddict";
-  font-weight: normal;
   src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Regular.ttf);
 }
 
 @font-face {
   font-family: "JetBrainsMono Nerd Font pysorteddict";
   font-style: italic;
-  font-weight: normal;
   src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Italic.ttf);
 }
 
@@ -33,7 +31,6 @@
 
 @font-face {
   font-family: "Signika pysorteddict";
-  font-weight: normal;
   src: url(../fonts/Signika/Signika-Regular.ttf);
 }
 
