@@ -1,57 +1,46 @@
+/*
+ * The SIL Open Font Licence version 1.1 does not permit using the reserved
+ * name for modified versions of a font. Deleting components (to reduce the
+ * size of the package I want to bundle) makes the result a modified version.
+ * Hence, I have used different names.
+ */
+
 @font-face {
-  font-family: "JetBrainsMono Nerd Font";
+  font-family: "JetBrainsMono Nerd Font pysorteddict";
   font-weight: 400;
   src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Regular.ttf);
 }
 
 @font-face {
-  font-family: "JetBrainsMono Nerd Font";
+  font-family: "JetBrainsMono Nerd Font pysorteddict";
   font-style: italic;
   font-weight: 400;
   src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Italic.ttf);
 }
 
 @font-face {
-  font-family: "JetBrainsMono Nerd Font";
+  font-family: "JetBrainsMono Nerd Font pysorteddict";
   font-weight: 700;
   src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Bold.ttf);
 }
 
 @font-face {
-  font-family: "JetBrainsMono Nerd Font";
+  font-family: "JetBrainsMono Nerd Font pysorteddict";
   font-style: italic;
   font-weight: 700;
   src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-BoldItalic.ttf);
 }
 
 @font-face {
-  font-family: "Signika";
-  font-weight: 300;
-  src: url(../fonts/Signika/static/Signika-Light.ttf);
-}
-
-@font-face {
-  font-family: "Signika";
+  font-family: "Signika pysorteddict";
   font-weight: 400;
-  src: url(../fonts/Signika/static/Signika-Regular.ttf);
+  src: url(../fonts/Signika/Signika-Regular.ttf);
 }
 
 @font-face {
-  font-family: "Signika";
-  font-weight: 500;
-  src: url(../fonts/Signika/static/Signika-Medium.ttf);
-}
-
-@font-face {
-  font-family: "Signika";
-  font-weight: 600;
-  src: url(../fonts/Signika/static/Signika-SemiBold.ttf);
-}
-
-@font-face {
-  font-family: "Signika";
+  font-family: "Signika pysorteddict";
   font-weight: 700;
-  src: url(../fonts/Signika/static/Signika-Bold.ttf);
+  src: url(../fonts/Signika/Signika-Bold.ttf);
 }
 
 summary {
