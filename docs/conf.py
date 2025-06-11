@@ -16,6 +16,11 @@ html_logo = "_static/images/logo.svg"
 html_static_path = ["_static"]
 html_theme = "furo"
 html_theme_options = {
+    "light_css_variables": {
+        "font-stack": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
+        "font-stack--headings": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
+        "font-stack--monospace": "JetBrainsMono Nerd Font pysorteddict, Consolas, Monaco, Liberation Mono, monospace",
+    },
     "source_branch": "main",
     "source_directory": "docs",
     "source_repository": "https://github.com/tfpf/pysorteddict",
