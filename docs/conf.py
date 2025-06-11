@@ -10,9 +10,9 @@ extensions = ["myst_parser"]
 source_suffix = [".md", ".rst"]
 exclude_patterns = ["_build"]
 
-html_css_files = ["custom.css"]
-html_favicon = "favicon.svg"
-html_logo = "logo.svg"
+html_css_files = ["styles/custom.css"]
+html_favicon = "_static/images/favicon.svg"
+html_logo = "_static/images/logo.svg"
 html_static_path = ["_static"]
 html_theme = "furo"
 html_theme_options = {
