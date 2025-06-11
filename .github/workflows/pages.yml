@@ -24,12 +24,14 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    container: sphinxdoc/sphinx
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: true
       - uses: actions/configure-pages@v5
       - run: unzip fonts.zip
         working-directory: docs/_static/
+      - uses: actions/setup-python@v5
       - run: pip install -r requirements.txt && sphinx-build . _build
         working-directory: docs/
       - uses: actions/upload-pages-artifact@v3
