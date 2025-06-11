@@ -28,6 +28,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - run: unzip fonts.zip
+        working-directory: docs/_static/
       - run: pip install -r requirements.txt && sphinx-build . _build
         working-directory: docs/
       - uses: actions/upload-pages-artifact@v3
