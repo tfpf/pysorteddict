@@ -27,4 +27,5 @@ html_theme_options = {
 }
 html_title = project
 html_use_index = False
+
 myst_heading_anchors = 3
