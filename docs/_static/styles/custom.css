@@ -7,39 +7,39 @@
 
 @font-face {
   font-family: "JetBrainsMono Nerd Font pysorteddict";
-  font-weight: 400;
+  font-weight: normal;
   src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Regular.ttf);
 }
 
 @font-face {
   font-family: "JetBrainsMono Nerd Font pysorteddict";
   font-style: italic;
-  font-weight: 400;
+  font-weight: normal;
   src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Italic.ttf);
 }
 
 @font-face {
   font-family: "JetBrainsMono Nerd Font pysorteddict";
-  font-weight: 700;
+  font-weight: bold;
   src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Bold.ttf);
 }
 
 @font-face {
   font-family: "JetBrainsMono Nerd Font pysorteddict";
   font-style: italic;
-  font-weight: 700;
+  font-weight: bold;
   src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-BoldItalic.ttf);
 }
 
 @font-face {
   font-family: "Signika pysorteddict";
-  font-weight: 400;
+  font-weight: normal;
   src: url(../fonts/Signika/Signika-Regular.ttf);
 }
 
 @font-face {
   font-family: "Signika pysorteddict";
-  font-weight: 700;
+  font-weight: bold;
   src: url(../fonts/Signika/Signika-Bold.ttf);
 }
 
