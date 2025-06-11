@@ -19,7 +19,7 @@ html_theme_options = {
     "light_css_variables": {
         "font-stack": "Signika, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--headings": "Signika, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
-        "font-stack--monospace": "RecMonoCasual Nerd Font, Consolas, Monaco, Liberation Mono, monospace",
+        "font-stack--monospace": "JetBrainsMono Nerd Font, Consolas, Monaco, Liberation Mono, monospace",
     },
     "source_branch": "main",
     "source_directory": "docs",

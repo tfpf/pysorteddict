@@ -1,27 +1,27 @@
 @font-face {
-  font-family: "RecMonoCasual Nerd Font";
+  font-family: "JetBrainsMono Nerd Font";
   font-weight: 400;
-  src: url(../fonts/Recursive/RecMonoCasualNerdFont-Regular.ttf);
+  src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Regular.ttf);
 }
 
 @font-face {
-  font-family: "RecMonoCasual Nerd Font";
+  font-family: "JetBrainsMono Nerd Font";
   font-style: italic;
   font-weight: 400;
-  src: url(../fonts/Recursive/RecMonoCasualNerdFont-Italic.ttf);
+  src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Italic.ttf);
 }
 
 @font-face {
-  font-family: "RecMonoCasual Nerd Font";
+  font-family: "JetBrainsMono Nerd Font";
   font-weight: 700;
-  src: url(../fonts/Recursive/RecMonoCasualNerdFont-Bold.ttf);
+  src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Bold.ttf);
 }
 
 @font-face {
-  font-family: "RecMonoCasual Nerd Font";
+  font-family: "JetBrainsMono Nerd Font";
   font-style: italic;
   font-weight: 700;
-  src: url(../fonts/Recursive/RecMonoCasualNerdFont-BoldItalic.ttf);
+  src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-BoldItalic.ttf);
 }
 
 @font-face {
