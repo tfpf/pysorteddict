@@ -6,27 +6,27 @@
  */
 
 @font-face {
-  font-family: "JetBrainsMono Nerd Font pysorteddict";
-  src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Regular.ttf);
+  font-family: "JetBrainsMono pysorteddict";
+  src: url(../fonts/JetBrainsMono/JetBrainsMono-Regular.woff2);
 }
 
 @font-face {
-  font-family: "JetBrainsMono Nerd Font pysorteddict";
+  font-family: "JetBrainsMono pysorteddict";
   font-style: italic;
-  src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Italic.ttf);
+  src: url(../fonts/JetBrainsMono/JetBrainsMono-Italic.woff2);
 }
 
 @font-face {
-  font-family: "JetBrainsMono Nerd Font pysorteddict";
+  font-family: "JetBrainsMono pysorteddict";
   font-weight: bold;
-  src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-Bold.ttf);
+  src: url(../fonts/JetBrainsMono/JetBrainsMono-Bold.woff2);
 }
 
 @font-face {
-  font-family: "JetBrainsMono Nerd Font pysorteddict";
+  font-family: "JetBrainsMono pysorteddict";
   font-style: italic;
   font-weight: bold;
-  src: url(../fonts/JetBrainsMono/JetBrainsMonoNerdFont-BoldItalic.ttf);
+  src: url(../fonts/JetBrainsMono/JetBrainsMono-BoldItalic.woff2);
 }
 
 @font-face {
