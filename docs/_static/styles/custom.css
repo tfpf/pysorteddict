@@ -31,13 +31,13 @@
 
 @font-face {
   font-family: "Signika pysorteddict";
-  src: url(../fonts/Signika/Signika-Regular.ttf);
+  src: url(../fonts/Signika/Signika-Regular.woff2);
 }
 
 @font-face {
   font-family: "Signika pysorteddict";
   font-weight: bold;
-  src: url(../fonts/Signika/Signika-Bold.ttf);
+  src: url(../fonts/Signika/Signika-Bold.woff2);
 }
 
 summary {
