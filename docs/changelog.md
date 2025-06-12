@@ -17,9 +17,10 @@
 ## [0.7.0](https://github.com/tfpf/pysorteddict/compare/v0.6.0...v0.7.0)
 
 <ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/120">#120</a> Define sorted dictionary views and iterators.
-  Update <code>SortedDict.keys</code> to return a view. Prohibit modifications to a sorted dictionary while iterating
-  over its keys.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/120">#120</a> Define <code>SortedDictKeys</code> as a view
+  over the keys of a sorted dictionary. Define <code>SortedDictKeysIter</code> as an iterator over the keys of a sorted
+  dictionary. Update <code>SortedDict.keys</code> to return the aforementioned view. Prohibit modifications to a sorted
+  dictionary while iterating over its keys.</li>
 </ul>
 
 ## [0.6.0](https://github.com/tfpf/pysorteddict/compare/v0.5.3...v0.6.0)
@@ -116,8 +117,8 @@ No user-facing changes of note.
 </ul>
 
 <ul class="change-break">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/47">#47</a> Update the sorted dictionary constructor to ignore
-  all arguments. Update <code>SortedDict.__setitem__</code> to set the key type upon succeeding for the first
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/47">#47</a> Update the <code>SortedDict</code> constructor to
+  ignore all arguments. Update <code>SortedDict.__setitem__</code> to set the key type upon succeeding the first
   time.</li>
   <li><a href="https://github.com/tfpf/pysorteddict/pull/49">#49</a> Remove <code>SortedDict.__str__</code>. Define
   <code>SortedDict.__repr__</code>.</li>
@@ -170,8 +171,9 @@ No user-facing changes of note.
 
 <ul class="change-new">
   <li><a href="https://github.com/tfpf/pysorteddict/commit/8ef0310913b47b1539b6524d0cf94424825c0a38">8ef0310913b4</a>
-  Define the sorted dictionary constructor to accept the key type, which must be <code>int</code>.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/1">#1</a> Define the sorted dictionary destructor.</li>
+  Define <code>SortedDict</code>. Define the <code>SortedDict</code> constructor to accept the key type, which must be
+  <code>int</code>.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/1">#1</a> Define the <code>SortedDict</code> destructor.</li>
   <li><a href="https://github.com/tfpf/pysorteddict/pull/2">#2</a> Define <code>SortedDict.__len__</code>,
   <code>SortedDict.__getitem__</code>, <code>SortedDict.__setitem__</code>, <code>SortedDict.__delitem__</code> and
   <code>SortedDict.__str__</code>. Prohibit insertion of a key if its type is not a subclass of what was passed to the
