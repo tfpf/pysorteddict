@@ -35,7 +35,8 @@ def test_modify_with_active_iterators(sorted_dict, iterators, advance):
     sorted_dict_len = len(sorted_dict)
     sorted_dict_keys = sorted_dict.keys()
     sorted_dict_keys_iters = [iter(sorted_dict_keys) for _ in range(iterators)]
-    advances = [random.randint(0, min(advance, sorted_dict_len)) for _ in sorted_dict_keys_iters]
+    rg = random.Random(f"{__name__}-{sorted_dict_len}-{iterators}-{advance}")
+    advances = [rg.randint(0, min(advance, sorted_dict_len)) for _ in sorted_dict_keys_iters]
 
     # Advance the iterators by the arbitrary amounts determined above. Record
     # the keys the iterators point to as locked keys.
