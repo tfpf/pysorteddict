@@ -2,7 +2,7 @@
 requires = [
     # See https://github.com/pypa/cibuildwheel/issues/2015 for the reason this
     # version is required.
-    "setuptools==72.0.0",
+    "setuptools==72.1.0",
 ]
 build-backend = "setuptools.build_meta"
 
