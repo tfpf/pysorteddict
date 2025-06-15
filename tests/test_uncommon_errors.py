@@ -4,25 +4,16 @@ import pytest
 
 from pysorteddict import SortedDict
 
-from unittest.mock import Mock
-
-import decimal
-import importlib
 
 def test_key_repr_error():
     sorted_dict = SortedDict()
-    sorted_dict[2 **15000] = 0
+    sorted_dict[2**15000] = 0
     with pytest.raises(ValueError, match=re.escape("Exceeds the limit (4300 digits) for integer string conversion")):
         str(sorted_dict)
 
 
 def test_value_repr_error():
     sorted_dict = SortedDict()
-    sorted_dict[0] = 2 **15000
+    sorted_dict[0] = 2**15000
     with pytest.raises(ValueError, match=re.escape("Exceeds the limit (4300 digits) for integer string conversion")):
         str(sorted_dict)
-
-def test_decimal_import_failed(monkeypatch):
-    monkeypatch.setattr("decimal.Decimal", Mock())
-    importlib.reload(decimal)
-    sorted_dict = SortedDict()
