@@ -18,9 +18,11 @@
 
 <ul class="change-new">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/120">#120</a> Define <code>SortedDictKeys</code> as a view
-  over the keys of a sorted dictionary. Define <code>SortedDictKeysIter</code> as an iterator over the keys of a sorted
-  dictionary. Update <code>SortedDict.keys</code> to return the aforementioned view. Prohibit modifications to a sorted
-  dictionary while iterating over its keys.</li>
+  over the keys of a sorted dictionary. Define <code>SortedDictKeys.__repr__</code>,
+  <code>SortedDictKeys.__len__</code> and <code>SortedDictKeys.__iter__</code>. Define <code>SortedDictKeysIter</code>
+  as an iterator over the keys of a sorted dictionary. Define <code>SortedDictKeysIter.__iter__</code> and
+  <code>SortedDictKeysIter.__next__</code>. Update <code>SortedDict.keys</code> to return the aforementioned view.
+  Prohibit modifications to a sorted dictionary while iterating over its keys.</li>
 </ul>
 
 ## [0.6.0](https://github.com/tfpf/pysorteddict/compare/v0.5.3...v0.6.0)
