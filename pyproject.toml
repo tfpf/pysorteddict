@@ -1,6 +1,8 @@
 [build-system]
 requires = [
-    "setuptools==80.0.0",
+    # See https://github.com/pypa/cibuildwheel/issues/2015 for the reason this
+    # version is required.
+    "setuptools==72.0.0",
 ]
 build-backend = "setuptools.build_meta"
 
