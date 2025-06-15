@@ -12,5 +12,5 @@ setuptools.setup(
         setuptools.Extension(
             name="pysorteddict", extra_compile_args=[cxx_standard_arg], sources=glob.glob("src/pysorteddict/*.cc")
         )
-    ]
+    ], include_package_data=False,
 )
