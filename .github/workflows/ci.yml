@@ -21,11 +21,24 @@ jobs:
       - run: pipx run hatch fmt --check
         if: success() || failure()
 
+  coverage:
+    needs: [style]
+    name: check code coverage
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          pipx run hatch -vv run pytest -n auto
+          pipx run gcovr --json-summary-pretty | tee coverage.json
+          [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
+        env:
+          CFLAGS: --coverage
+
   build:
     needs: [style]
     strategy:
       matrix:
-        os: ['macos-14']
+        os: ['macos-13', 'macos-14', 'ubuntu-22.04', 'windows-2022']
     name: build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -40,6 +53,7 @@ jobs:
 
   release:
     if: github.ref_type == 'tag'
+    needs: [coverage, build]
     runs-on: ubuntu-22.04
     environment:
       name: pypi
