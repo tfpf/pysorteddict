@@ -1,10 +1,11 @@
-import re
+import tomllib
 
-with open("../pyproject.toml") as reader:
-    release = re.search(r'^version = "(.*?)"$', reader.read(), flags=re.MULTILINE).group(1)
-project = f"pysorteddict {release}"
-copyright = "2025, Vishal Pankaj Chandratreya"
-author = "Vishal Pankaj Chandratreya"
+with open("../pyproject.toml", "rb") as reader:
+    metadata = tomllib.load(reader)["project"]
+author = metadata["authors"][0]["name"]
+copyright = f"2025, {author}"
+release = metadata["version"]
+project = metadata["name"] + " " + release
 
 extensions = ["myst_parser"]
 source_suffix = [".md", ".rst"]
@@ -23,7 +24,7 @@ html_theme_options = {
     },
     "source_branch": "main",
     "source_directory": "docs",
-    "source_repository": "https://github.com/tfpf/pysorteddict",
+    "source_repository": metadata["urls"]["Repository"],
 }
 html_title = project
 html_use_index = False
