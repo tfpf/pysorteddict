@@ -50,7 +50,7 @@ summary:hover {
 }
 
 ul.change-break::before {
-  content: "Breaking Changes ❗";
+  content: "Breaking Changes 🚨";
   font-weight: bold;
 }
 
@@ -60,7 +60,7 @@ ul.change-fix::before {
 }
 
 ul.change-new::before {
-  content: "New Features ➕";
+  content: "New Features 🧩";
   font-weight: bold;
 }
 
