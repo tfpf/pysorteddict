@@ -63,14 +63,24 @@ static PyObject* sorted_dict_keys_type_repr(PyObject* self)
 /**
  * Obtain the number of keys.
  */
-Py_ssize_t sorted_dict_keys_type_len(PyObject* self)
+static Py_ssize_t sorted_dict_keys_type_len(PyObject* self)
 {
     SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
     return sdk->len();
 }
 
+/**
+ * Check whether a key is present.
+ */
+static int sorted_dict_keys_type_contains(PyObject* self, PyObject* key)
+{
+    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
+    return sdk->contains(key);
+}
+
 static PySequenceMethods sorted_dict_keys_type_sequence = {
     .sq_length = sorted_dict_keys_type_len,
+    .sq_contains = sorted_dict_keys_type_contains,
 };
 
 /**

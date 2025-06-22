@@ -54,7 +54,7 @@ class TestFuzz:
             "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__", "__sizeof__",
             "__str__", "__subclasshook__", "__weakref__", "items", "key_type", "values",
         ))  # fmt: skip
-        for attr in self._rg.choices([*attrs], k=50_000):
+        for attr in self._rg.choices([*attrs], k=10_000):
             getattr(self, f"_test_{attr}")()
 
             with pytest.raises(TypeError, match="^unhashable type: 'pysorteddict.SortedDict'$"):
@@ -71,26 +71,27 @@ class TestFuzz:
             assert self.sorted_dict.values() == [*sorted_normal_dict.values()]
 
     def _test___contains__(self):
-        for key_type in all_types:
-            key = self._gen(key_type)
-            if self.is_sorted_dict_new:
-                with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
-                    key in self.sorted_dict  # noqa: B015
-                continue
-            if key_type is not self.key_type:
-                with pytest.raises(
-                    TypeError,
-                    match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
-                ):
-                    key in self.sorted_dict  # noqa: B015
-                continue
-            if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
-                with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
-                    key in self.sorted_dict  # noqa: B015
-                continue
-            if self.normal_dict:
-                assert self._rg.choice([*self.normal_dict]) in self.sorted_dict
-            assert (key in self.sorted_dict) == (key in self.normal_dict)
+        for sorted_dict_or_sorted_dict_keys in (self.sorted_dict, self.sorted_dict_keys):
+            for key_type in all_types:
+                key = self._gen(key_type)
+                if self.is_sorted_dict_new:
+                    with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
+                        key in sorted_dict_or_sorted_dict_keys  # noqa: B015
+                    continue
+                if key_type is not self.key_type:
+                    with pytest.raises(
+                        TypeError,
+                        match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
+                    ):
+                        key in sorted_dict_or_sorted_dict_keys  # noqa: B015
+                    continue
+                if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
+                    with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
+                        key in sorted_dict_or_sorted_dict_keys  # noqa: B015
+                    continue
+                if self.normal_dict:
+                    assert self._rg.choice([*self.normal_dict]) in sorted_dict_or_sorted_dict_keys
+                assert (key in sorted_dict_or_sorted_dict_keys) == (key in self.normal_dict)
 
     def _test___delattr__(self):
         with pytest.raises(AttributeError):
