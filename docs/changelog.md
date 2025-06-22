@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.7.3](https://github.com/tfpf/pysorteddict/compare/v0.7.2...v0.7.3)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/149">#149</a> Exclude test files from the source distribution.
+  Exclude source files from the built distributions.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/157">#157</a> Define
+  <code>SortedDictKeys.__contains__</code>.</li>
+</ul>
+
 ## [0.7.2](https://github.com/tfpf/pysorteddict/compare/v0.7.1...v0.7.2)
 
 <ul class="change-fix">
@@ -98,8 +107,8 @@ No user-facing changes of note.
 ## [0.4.1](https://github.com/tfpf/pysorteddict/compare/v0.4.0...v0.4.1)
 
 <ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/75">#75</a> Add the C++ header files from the project to the
-  source and built distributions.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/75">#75</a> Include the C++ header files from the project in
+  the source and built distributions.</li>
 </ul>
 
 ## [0.4.0](https://github.com/tfpf/pysorteddict/compare/v0.3.0...v0.4.0)
