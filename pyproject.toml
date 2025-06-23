@@ -41,6 +41,7 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 
 [tool.cibuildwheel]
 archs = ["auto64"]
+build-verbosity = 1
 enable = ["pypy"]
 test-command = "pytest -n auto {package}"
 test-requires = ["pytest-xdist"]
@@ -58,3 +59,6 @@ line-length = 119
 "docs/conf.py" = ["A001", "INP001"]
 "examples/*" = ["S101", "T201"]
 "tests/*" = ["PLR2004", "S101", "S311"]
+
+[tool.setuptools]
+include-package-data = false

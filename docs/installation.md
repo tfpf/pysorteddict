@@ -16,8 +16,7 @@ Wheels for the Raspberry Pi family of computers may be found on piwheels, but th
 The piwheels page is not controlled by me.
 
 <div class="notice">
-If there are no wheels available for your platform, running the above installation command may result in compilation
-from source. For this to be successful, a C++ compiler must be available, and the Python development headers and
-libraries must be installed. (On Windows, this compiler must support C++20. On other operating systems, it need support
-only C++14.)
+If there are no wheels available for your platform, running the above installation command will result in compilation
+from source. For this to be successful, a C++20 compiler must be available, and the Python development headers and
+libraries must be installed. This has been tested only with Clang, GCC and MSVC.
 </div>
