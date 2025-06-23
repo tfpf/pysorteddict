@@ -1,8 +1,8 @@
+import glob
 import os
 import sysconfig
-from glob import glob
 
-from setuptools import Extension, setup
+import setuptools
 
 # Only non-static (i.e. platform-specific) configurations go here.
 if os.name != "nt" or sysconfig.get_platform().startswith("mingw"):
@@ -11,11 +11,11 @@ if os.name != "nt" or sysconfig.get_platform().startswith("mingw"):
 else:
     extra_compile_args = ["/GL", "/std:c++20"]
     extra_link_args = ["/LTCG"]
-setup(
+setuptools.setup(
     ext_modules=[
-        Extension(
+        setuptools.Extension(
             "pysorteddict",
-            glob("src/pysorteddict/*.cc"),
+            glob.glob("src/pysorteddict/*.cc"),
             extra_compile_args=extra_compile_args,
             extra_link_args=extra_link_args,
         )
