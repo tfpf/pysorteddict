@@ -198,7 +198,3 @@ class TestFuzz:
         assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys})"
         assert len(self.sorted_dict_keys) == len(sorted_normal_dict_keys)
         assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
-
-
-if __name__ == "__main__":
-    pytest.main()

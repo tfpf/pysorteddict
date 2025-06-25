@@ -66,7 +66,3 @@ def test_modify_with_active_iterators(sorted_dict, iterators, advance):
         ):
             sorted_dict.clear()
     sorted_dict_copy.clear()
-
-
-if __name__ == "__main__":
-    pytest.main()
