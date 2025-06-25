@@ -1,7 +1,6 @@
 # pysorteddict
 
-Provides `SortedDict`, which is a Python sorted dictionary: a Python dictionary in which the keys are always in
-ascending order.
+Enriches Python with `SortedDict`, a sorted dictionary: a dictionary in which the keys are always in ascending order.
 
 [Read more on the homepage.](https://tfpf.github.io/pysorteddict/)
 

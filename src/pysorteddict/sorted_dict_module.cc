@@ -23,8 +23,6 @@ static PyObject* sorted_dict_keys_iter_type_next(PyObject* self)
     return sdki->next();
 }
 
-PyDoc_STRVAR(sorted_dict_keys_iter_type_doc, "Iterator over the keys in a sorted dictionary.");
-
 static PyTypeObject sorted_dict_keys_iter_type = {
     // clang-format off
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -35,7 +33,7 @@ static PyTypeObject sorted_dict_keys_iter_type = {
     .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_doc = sorted_dict_keys_iter_type_doc,
+    .tp_doc = "Iterator over the keys in a sorted dictionary.",
     .tp_iter = PyObject_SelfIter,
     .tp_iternext = sorted_dict_keys_iter_type_next,
     .tp_alloc = PyType_GenericAlloc,
@@ -92,8 +90,6 @@ static PyObject* sorted_dict_keys_type_iter(PyObject* self)
     return sdk->iter(&sorted_dict_keys_iter_type);
 }
 
-PyDoc_STRVAR(sorted_dict_keys_type_doc, "Dynamic view on the keys in a sorted dictionary.");
-
 static PyTypeObject sorted_dict_keys_type = {
     // clang-format off
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -106,7 +102,7 @@ static PyTypeObject sorted_dict_keys_type = {
     .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_doc = sorted_dict_keys_type_doc,
+    .tp_doc = "Dynamic view on the keys in a sorted dictionary.",
     .tp_iter = sorted_dict_keys_type_iter,
     .tp_alloc = PyType_GenericAlloc,
     .tp_free = PyObject_Free,
@@ -316,12 +312,6 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     return SortedDictType::New(type, args, kwargs);
 }
 
-PyDoc_STRVAR(
-    sorted_dict_type_doc,
-    "SortedDict(*args, **kwargs) -> SortedDict\n"
-    "Create an empty sorted dictionary. ``args`` and ``kwargs`` are ignored."
-);
-
 static PyTypeObject sorted_dict_type = {
     // clang-format off
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -335,7 +325,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,
-    .tp_doc = sorted_dict_type_doc,
+    .tp_doc = "Sorted dictionary: a dictionary in which the keys are always in ascending order.",
     .tp_methods = sorted_dict_type_methods,
     .tp_getset = sorted_dict_type_getset,
     .tp_init = sorted_dict_type_init,
@@ -344,16 +334,10 @@ static PyTypeObject sorted_dict_type = {
     .tp_free = PyObject_Free,
 };
 
-PyDoc_STRVAR(
-    sorted_dict_module_doc,
-    "Provides ``SortedDict``, which is a Python sorted dictionary: "
-    "a Python dictionary in which the keys are always in ascending order."
-);
-
 static PyModuleDef sorted_dict_module = {
     .m_base = PyModuleDef_HEAD_INIT,
     .m_name = "pysorteddict",
-    .m_doc = sorted_dict_module_doc,
+    .m_doc = "Enriches Python with a sorted dictionary.\n\nSee https://tfpf.github.io/pysorteddict/.",
     .m_size = -1,
 };
 
