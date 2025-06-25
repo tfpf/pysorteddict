@@ -82,6 +82,18 @@ static PySequenceMethods sorted_dict_keys_type_sequence = {
 };
 
 /**
+ * Find the value at an index.
+ */
+static PyObject* sorted_dict_keys_type_getitem(PyObject* self, PyObject* idx)
+{
+    Py_RETURN_NONE;
+}
+
+static PyMappingMethods sorted_dict_keys_type_mapping = {
+    .mp_subscript = sorted_dict_keys_type_getitem,
+};
+
+/**
  * Create an iterator.
  */
 static PyObject* sorted_dict_keys_type_iter(PyObject* self)
@@ -99,6 +111,7 @@ static PyTypeObject sorted_dict_keys_type = {
     .tp_dealloc = sorted_dict_keys_type_dealloc,
     .tp_repr = sorted_dict_keys_type_repr,
     .tp_as_sequence = &sorted_dict_keys_type_sequence,
+    .tp_as_mapping = &sorted_dict_keys_type_mapping,
     .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
