@@ -105,6 +105,18 @@ PyObject* SortedDictViewType::repr(char const* name, PyObject* ob)
     return PyUnicode_FromFormat("%s(%R)", name, ob_list.get());
 }
 
+PyObject* SortedDictViewType::getitem(PyObject* index_or_slice)
+{
+    if(PyIndex_Check(index_or_slice) == 1)
+    {
+        return this->getitem_slice
+    }
+    PyTypeObject* t = Py_TYPE(index_or_slice);
+    PyObject* r = PyObject_Repr((PyObject*)t);
+    fprintf(stderr, "r=%s\n", PyUnicode_AsUTF8(r));
+    Py_RETURN_NONE;
+}
+
 Py_ssize_t SortedDictViewType::len(void)
 {
     return this->sd->map->size();
