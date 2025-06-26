@@ -23,3 +23,8 @@ int SortedDictKeysType::contains(PyObject* key)
 {
     return this->sd->contains(key);
 }
+
+PyObject* SortedDictKeysType::getitem(PyObject* idx)
+{
+    return this->SortedDictViewType::getitem(idx);
+}

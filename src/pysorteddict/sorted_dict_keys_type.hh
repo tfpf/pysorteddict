@@ -20,6 +20,7 @@ private:
 
 public:
     int contains(PyObject*);
+    PyObject* getitem(PyObject*);
 };
 
 #endif
