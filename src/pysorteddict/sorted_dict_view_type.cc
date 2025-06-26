@@ -117,7 +117,7 @@ PyObject* SortedDictViewType::getitem(PyObject* idx)
     if (PySlice_Unpack(idx, &start, &stop, &step) == 0)
     {
         Py_ssize_t slice_len = PySlice_AdjustIndices(this->len(), &start, &stop, step);
-        return this->getitem(start, stop, step, slice_len);
+        return this->getitem(slice_len, start, stop, step);
     }
     PyErr_Format(PyExc_TypeError, "got index %R, want a position (integer) or slice", idx);
     return nullptr;

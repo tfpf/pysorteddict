@@ -9,6 +9,16 @@ PyObject* SortedDictKeysIterType::next(void)
     return Py_XNewRef(this->SortedDictViewIterType::next().first);  // 🆕
 }
 
+PyObject* SortedDictKeysType::getitem(Py_ssize_t position)
+{
+    Py_RETURN_NONE;
+}
+
+PyObject* SortedDictKeysType::getitem(Py_ssize_t slice_len, Py_ssize_t start, Py_ssize_t stop, Py_ssize_t step)
+{
+    Py_RETURN_NONE;
+}
+
 int SortedDictKeysType::contains(PyObject* key)
 {
     return this->sd->contains(key);
