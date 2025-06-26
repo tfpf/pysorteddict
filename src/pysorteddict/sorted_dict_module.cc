@@ -82,12 +82,12 @@ static PySequenceMethods sorted_dict_keys_type_sequence = {
 };
 
 /**
- * Retrieve the value or values given an index or a slice.
+ * Retrieve the value or values at a position or in a slice.
  */
-static PyObject* sorted_dict_keys_type_getitem(PyObject* self, PyObject* index_or_slice)
+static PyObject* sorted_dict_keys_type_getitem(PyObject* self, PyObject* idx)
 {
     SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
-    return sdk->getitem(index_or_slice);
+    return sdk->getitem(idx);
 }
 
 static PyMappingMethods sorted_dict_keys_type_mapping = {

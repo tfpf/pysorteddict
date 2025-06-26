@@ -105,21 +105,27 @@ PyObject* SortedDictViewType::repr(char const* name, PyObject* ob)
     return PyUnicode_FromFormat("%s(%R)", name, ob_list.get());
 }
 
-PyObject* SortedDictViewType::getitem(PyObject* index_or_slice)
+PyObject* SortedDictViewType::getitem(PyObject* idx)
 {
-    if(PyIndex_Check(index_or_slice) == 1)
+    Py_ssize_t position = PyNumber_AsSsize_t(idx, PyExc_IndexError);
+    if (position != -1 || PyErr_Occurred() == nullptr)
     {
-        return this->getitem_slice
+        return this->getitem(position);
     }
-    PyTypeObject* t = Py_TYPE(index_or_slice);
-    PyObject* r = PyObject_Repr((PyObject*)t);
-    fprintf(stderr, "r=%s\n", PyUnicode_AsUTF8(r));
-    Py_RETURN_NONE;
+    PyErr_Clear();
+    Py_ssize_t start, stop, step;
+    if (PySlice_Unpack(idx, &start, &stop, &step) == 0)
+    {
+        Py_ssize_t slice_len = PySlice_AdjustIndices(this->len(), &start, &stop, step);
+        return this->getitem(start, stop, step, slice_len);
+    }
+    PyErr_Format(PyExc_TypeError, "got index %R, want a position (integer) or slice", idx);
+    return nullptr;
 }
 
 Py_ssize_t SortedDictViewType::len(void)
 {
-    return this->sd->map->size();
+    return this->sd->len();
 }
 
 PyObject* SortedDictViewType::iter(PyTypeObject* type)
