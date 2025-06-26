@@ -389,7 +389,7 @@ PyObject* SortedDictType::copy(void)
 
 PyObject* SortedDictType::items(void)
 {
-    PyObject* sd_items = PyList_New(this->map->size());  // 🆕
+    PyObject* sd_items = PyList_New(this->len());  // 🆕
     if (sd_items == nullptr)
     {
         return nullptr;
@@ -417,7 +417,7 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
 
 PyObject* SortedDictType::values(void)
 {
-    PyObject* sd_values = PyList_New(this->map->size());  // 🆕
+    PyObject* sd_values = PyList_New(this->len());  // 🆕
     if (sd_values == nullptr)
     {
         return nullptr;
