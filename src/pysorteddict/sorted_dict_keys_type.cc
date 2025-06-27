@@ -11,20 +11,15 @@ PyObject* SortedDictKeysIterType::next(void)
 
 PyObject* SortedDictKeysType::getitem(Py_ssize_t position)
 {
-    Py_RETURN_NONE;
+    Py_RETURN_TRUE;
 }
 
 PyObject* SortedDictKeysType::getitem(Py_ssize_t slice_len, Py_ssize_t start, Py_ssize_t stop, Py_ssize_t step)
 {
-    Py_RETURN_NONE;
+    Py_RETURN_FALSE;
 }
 
 int SortedDictKeysType::contains(PyObject* key)
 {
     return this->sd->contains(key);
-}
-
-PyObject* SortedDictKeysType::getitem(PyObject* idx)
-{
-    return this->SortedDictViewType::getitem(idx);
 }

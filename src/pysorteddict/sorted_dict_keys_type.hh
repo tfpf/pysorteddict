@@ -20,7 +20,7 @@ private:
 
 public:
     int contains(PyObject*);
-    PyObject* getitem(PyObject*);
+    using SortedDictViewType::getitem;
 };
 
 #endif
