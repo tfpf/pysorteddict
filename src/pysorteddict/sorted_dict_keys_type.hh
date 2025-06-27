@@ -14,13 +14,15 @@ public:
 
 struct SortedDictKeysType : public SortedDictViewType
 {
+public:
+    using SortedDictViewType::getitem;
+
 private:
     PyObject* getitem(Py_ssize_t);
     PyObject* getitem(Py_ssize_t, Py_ssize_t, Py_ssize_t, Py_ssize_t);
 
 public:
     int contains(PyObject*);
-    using SortedDictViewType::getitem;
 };
 
 #endif
