@@ -37,8 +37,8 @@ protected:
     SortedDictType* sd;
 
 protected:
-    virtual PyObject* getitem(Py_ssize_t);
-    virtual PyObject* getitem(Py_ssize_t, Py_ssize_t, Py_ssize_t, Py_ssize_t);
+    PyObject* getitem(Py_ssize_t);
+    PyObject* getitem(Py_ssize_t, Py_ssize_t, Py_ssize_t, Py_ssize_t);
 
 public:
     void deinit(void);

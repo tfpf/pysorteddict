@@ -90,6 +90,15 @@ PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
     return self;
 }
 
+PyObject* SortedDictViewType::getitem(Py_ssize_t){
+// Stub.
+return nullptr;
+}
+PyObject* SortedDictViewType::getitem(Py_ssize_t, Py_ssize_t, Py_ssize_t, Py_ssize_t){
+// Stub.
+return nullptr;
+}
+
 void SortedDictViewType::deinit(void)
 {
     Py_DECREF(this->sd);
@@ -104,6 +113,7 @@ PyObject* SortedDictViewType::repr(char const* name, PyObject* ob)
     }
     return PyUnicode_FromFormat("%s(%R)", name, ob_list.get());
 }
+
 
 PyObject* SortedDictViewType::getitem(PyObject* idx)
 {
