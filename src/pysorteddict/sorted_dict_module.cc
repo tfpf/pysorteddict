@@ -82,7 +82,7 @@ static PySequenceMethods sorted_dict_keys_type_sequence = {
 };
 
 /**
- * Retrieve the value or values at a position or in a slice.
+ * Retrieve the value at a position or values in a slice.
  */
 static PyObject* sorted_dict_keys_type_getitem(PyObject* self, PyObject* idx)
 {

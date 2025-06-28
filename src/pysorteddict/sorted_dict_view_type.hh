@@ -36,14 +36,9 @@ public:
 protected:
     SortedDictType* sd;
 
-protected:
-    PyObject* getitem(Py_ssize_t);
-    PyObject* getitem(Py_ssize_t, Py_ssize_t, Py_ssize_t, Py_ssize_t);
-
 public:
     void deinit(void);
     static PyObject* repr(char const* name, PyObject*);
-    PyObject* getitem(PyObject*);
     Py_ssize_t len(void);
     PyObject* iter(PyTypeObject*);
     static PyObject* New(PyTypeObject*, SortedDictType*);
