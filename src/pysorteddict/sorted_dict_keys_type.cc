@@ -35,6 +35,6 @@ Py_ssize_t start, stop, step;
 if (PySlice_Unpack(idx, &start, &stop, &step) == 0){
 return this->getitem(start, stop, step);
 }
-PyErr_Format(PyExc_TypeError, "got index %R, want a position (integer) or slice", idx);
+PyErr_Format(PyExc_TypeError, "got index %R, want position (integer) or slice", idx);
 return nullptr;
 }
