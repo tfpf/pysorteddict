@@ -1,5 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <algorithm>
 
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_view_type.hh"
@@ -11,7 +12,29 @@ PyObject* SortedDictKeysIterType::next(void)
 
 PyObject* SortedDictKeysType::getitem(Py_ssize_t position)
 {
-    Py_RETURN_TRUE;
+    Py_ssize_t sz = this->sd->len();
+    if (sz == -1)
+    {
+        return nullptr;
+    }
+    if (position < 0)
+    {
+        position += sz;
+    }
+    if (position < 0 || sz <= position)
+    {
+        PyErr_Format(PyExc_IndexError, "got invalid index %zd for sorted dictionary of length %zd", position, sz);
+        return nullptr;
+    }
+    if (position < sz / 2)
+    {
+        auto it = this->sd->map->begin();
+        std::advance(it, position);
+        return Py_NewRef(it->first);
+    }
+    auto it = this->sd->map->rbegin();
+    std::advance(it, sz - position - 1);
+    return Py_NewRef(it->first);
 }
 
 PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssize_t step)
