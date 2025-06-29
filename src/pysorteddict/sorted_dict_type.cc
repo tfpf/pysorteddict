@@ -270,7 +270,10 @@ Py_ssize_t SortedDictType::len(void)
     auto sz = this->map->size();
     if (std::cmp_greater(sz, PY_SSIZE_T_MAX))
     {
-        PyErr_Format(PyExc_OverflowError, "length is %zu which exceeds PY_SSIZE_T_MAX = %zd", sz, PY_SSIZE_T_MAX);
+        PyErr_Format(
+            PyExc_OverflowError, "sorted dictionary length is %zu which exceeds PY_SSIZE_T_MAX = %zd", sz,
+            PY_SSIZE_T_MAX
+        );
         return -1;
     }
     return sz;
