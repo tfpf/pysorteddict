@@ -90,7 +90,6 @@ PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
     return self;
 }
 
-
 void SortedDictViewType::deinit(void)
 {
     Py_DECREF(this->sd);
@@ -105,7 +104,6 @@ PyObject* SortedDictViewType::repr(char const* name, PyObject* ob)
     }
     return PyUnicode_FromFormat("%s(%R)", name, ob_list.get());
 }
-
 
 Py_ssize_t SortedDictViewType::len(void)
 {
