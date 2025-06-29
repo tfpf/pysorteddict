@@ -17,23 +17,20 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t position)
     {
         return nullptr;
     }
-    if (position < 0)
-    {
-        position += sz;
-    }
-    if (position < 0 || sz <= position)
+    Py_ssize_t positive_position = position >= 0 ? position : position + sz;
+    if (positive_position < 0 || sz <= positive_position)
     {
         PyErr_Format(PyExc_IndexError, "got invalid index %zd for sorted dictionary of length %zd", position, sz);
         return nullptr;
     }
-    if (position < sz / 2)
+    if (positive_position < sz / 2)
     {
         auto it = this->sd->map->begin();
-        std::advance(it, position);
+        std::advance(it, positive_position);
         return Py_NewRef(it->first);
     }
     auto it = this->sd->map->rbegin();
-    std::advance(it, sz - position - 1);
+    std::advance(it, sz - positive_position - 1);
     return Py_NewRef(it->first);
 }
 
