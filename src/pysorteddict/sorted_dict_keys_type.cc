@@ -36,7 +36,12 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t position)
 
 PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssize_t step)
 {
-    Py_RETURN_FALSE;
+    Py_ssize_t sz = this->sd->len();
+    if (sz == -1)
+    {
+        return nullptr;
+    }
+    return Py_NotImplemented;
 }
 
 int SortedDictKeysType::contains(PyObject* key)
