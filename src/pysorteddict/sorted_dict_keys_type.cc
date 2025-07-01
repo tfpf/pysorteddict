@@ -99,7 +99,7 @@ PyObject* SortedDictKeysType::getitem(PyObject* idx)
     }
     PyErr_Clear();
     Py_ssize_t start, stop, step;
-    if (PySlice_Unpack(idx, &start, &stop, &step) == 0)
+    if (PySlice_Check(idx) && PySlice_Unpack(idx, &start, &stop, &step) == 0)
     {
         return this->getitem(start, stop, step);
     }
