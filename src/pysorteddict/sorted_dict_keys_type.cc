@@ -30,7 +30,7 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t position)
         return Py_NewRef(it->first);
     }
     auto it = this->sd->map->rbegin();
-    std::advance(it, sz - positive_position - 1);
+    std::advance(it, sz - 1 - positive_position);
     return Py_NewRef(it->first);
 }
 
