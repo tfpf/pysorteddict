@@ -210,4 +210,16 @@ class TestFuzz:
                     match=rf"^got invalid index {idx} for sorted dictionary of length {sorted_normal_dict_keys_len}$",
                 ):
                     self.sorted_dict_keys[idx]
+        step = self._rg.randint(-sorted_normal_dict_keys_len_ex, sorted_normal_dict_keys_len_ex)
+        if step == 0:
+            with pytest.raises(TypeError, match="got index slice"):
+                self.sorted_dict_keys[start:stop:step]
+        else:
+            assert self.sorted_dict_keys[start:stop:step] == sorted_normal_dict_keys[start:stop:step]
+            assert self.sorted_dict_keys[:stop:step] == sorted_normal_dict_keys[:stop:step]
+            assert self.sorted_dict_keys[start::step] == sorted_normal_dict_keys[start::step]
+            assert self.sorted_dict_keys[::step] == sorted_normal_dict_keys[::step]
+        assert self.sorted_dict_keys[start:stop] == sorted_normal_dict_keys[start:stop]
+        assert self.sorted_dict_keys[start:] == sorted_normal_dict_keys[start:]
+        assert self.sorted_dict_keys[:stop] == sorted_normal_dict_keys[:stop]
         assert [*self.sorted_dict_keys] == sorted_normal_dict_keys

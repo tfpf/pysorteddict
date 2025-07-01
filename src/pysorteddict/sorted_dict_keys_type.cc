@@ -79,7 +79,7 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
                 // Don't push the iterator out of range.
                 break;
             }
-            std::advance(it, step);
+            std::advance(it, -step);
         }
     }
     return keys;
