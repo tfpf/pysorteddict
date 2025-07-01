@@ -195,6 +195,19 @@ class TestFuzz:
 
     def _test_keys(self):
         sorted_normal_dict_keys = sorted(self.normal_dict.keys())
+        sorted_normal_dict_keys_len = len(sorted_normal_dict_keys)
+        sorted_normal_dict_keys_len_ex = int(1.3 * sorted_normal_dict_keys_len)
         assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys})"
-        assert len(self.sorted_dict_keys) == len(sorted_normal_dict_keys)
+        assert len(self.sorted_dict_keys) == sorted_normal_dict_keys_len
+        start = self._rg.randint(-sorted_normal_dict_keys_len_ex, sorted_normal_dict_keys_len_ex)
+        stop = self._rg.randint(-sorted_normal_dict_keys_len_ex, sorted_normal_dict_keys_len_ex)
+        for idx in [start, stop]:
+            if -sorted_normal_dict_keys_len <= idx < sorted_normal_dict_keys_len:
+                assert self.sorted_dict_keys[idx] == sorted_normal_dict_keys[idx]
+            else:
+                with pytest.raises(
+                    IndexError,
+                    match=rf"^got invalid index {idx} for sorted dictionary of length {sorted_normal_dict_keys_len}$",
+                ):
+                    self.sorted_dict_keys[idx]
         assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
