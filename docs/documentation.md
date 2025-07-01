@@ -4,6 +4,7 @@
 
 <summary>Documentation of older versions is available on GitHub.</summary>
 
+▸ [0.7.3](https://github.com/tfpf/pysorteddict/blob/v0.7.3/docs/documentation.md)
 ▸ [0.7.2](https://github.com/tfpf/pysorteddict/blob/v0.7.2/docs/documentation.md)
 ▸ [0.7.1](https://github.com/tfpf/pysorteddict/blob/v0.7.1/docs/documentation.md)
 ▸ [0.7.0](https://github.com/tfpf/pysorteddict/blob/v0.7.0/docs/documentation.md)  
