@@ -79,7 +79,7 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
                 // Don't push the iterator out of range.
                 break;
             }
-            std::advance(it, -step);
+            std::advance(it, step);
         }
     }
     return keys;
@@ -103,6 +103,7 @@ PyObject* SortedDictKeysType::getitem(PyObject* idx)
     {
         return this->getitem(start, stop, step);
     }
+    PyErr_Clear();
     PyErr_Format(
         PyExc_TypeError, "got index %R of type %R, want index of type %R or %R with non-zero step", idx, Py_TYPE(idx),
         &PyLong_Type, &PySlice_Type
