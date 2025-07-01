@@ -52,8 +52,8 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
     if (step > 0)
     {
         auto it = this->sd->map->begin();
-        // Consider optimising this by iterating from right to left if this is
-        // expected to take a long time.
+        // Iterating from left to right may be faster in some cases. Consider
+        // introspecting and picking the better direction.
         std::advance(it, start);
         for (Py_ssize_t i = 0;; ++i)
         {
@@ -69,8 +69,8 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
     else
     {
         auto it = this->sd->map->rbegin();
-        // Consider optimising this by iterating from left to right if this is
-        // expected to take a long time.
+        // Iterating from right to left may be faster in some cases. Consider
+        // introspecting and picking the better direction.
         std::advance(it, sz - 1 - start);
         for (Py_ssize_t i = 0;; ++i)
         {
