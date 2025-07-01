@@ -219,6 +219,8 @@ class TestFuzz:
             assert self.sorted_dict_keys[:stop:step] == sorted_normal_dict_keys[:stop:step]
             assert self.sorted_dict_keys[start::step] == sorted_normal_dict_keys[start::step]
             assert self.sorted_dict_keys[::step] == sorted_normal_dict_keys[::step]
+        with pytest.raises(TypeError, match="^got index 0.0"):
+            self.sorted_dict_keys[0.0]
         assert self.sorted_dict_keys[start:stop] == sorted_normal_dict_keys[start:stop]
         assert self.sorted_dict_keys[start:] == sorted_normal_dict_keys[start:]
         assert self.sorted_dict_keys[:stop] == sorted_normal_dict_keys[:stop]
