@@ -62,6 +62,9 @@ PyObject* SortedDictKeysType::getitem(PyObject* idx)
     {
         return this->getitem(start, stop, step);
     }
-    PyErr_Format(PyExc_TypeError, "got index %R, want position (integer) or slice", idx);
+    PyErr_Format(
+        PyExc_TypeError, "got index %R of type %R, want index of type %R or %R", idx, Py_TYPE(idx), &PyLong_Type,
+        &PySlice_Type
+    );
     return nullptr;
 }
