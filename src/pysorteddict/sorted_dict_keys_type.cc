@@ -41,6 +41,11 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
     {
         return nullptr;
     }
+    Py_ssize_t slice_len = PySlice_AdjustIndices(sz, &start, &stop, step);
+    if (slice_len == 0)
+    {
+        return PyList_New(0);  // 🆕
+    }
     return Py_NotImplemented;
 }
 
