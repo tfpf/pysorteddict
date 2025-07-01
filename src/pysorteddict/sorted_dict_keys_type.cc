@@ -20,7 +20,7 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t position)
     Py_ssize_t positive_position = position >= 0 ? position : position + sz;
     if (positive_position < 0 || sz <= positive_position)
     {
-        PyErr_Format(PyExc_IndexError, "got invalid index %zd for sorted dictionary of length %zd", position, sz);
+        PyErr_Format(PyExc_IndexError, "got invalid index %zd for view of length %zd", position, sz);
         return nullptr;
     }
     if (positive_position < sz / 2)
