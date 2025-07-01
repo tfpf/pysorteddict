@@ -54,7 +54,7 @@ class TestFuzz:
             "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__", "__sizeof__",
             "__str__", "__subclasshook__", "__weakref__", "items", "key_type", "values",
         ))  # fmt: skip
-        for attr in self._rg.choices([*attrs], k=10_000):
+        for attr in self._rg.choices([*attrs], k=15_000):
             getattr(self, f"_test_{attr}")()
 
             with pytest.raises(TypeError, match="^unhashable type: 'pysorteddict.SortedDict'$"):
@@ -195,6 +195,41 @@ class TestFuzz:
 
     def _test_keys(self):
         sorted_normal_dict_keys = sorted(self.normal_dict.keys())
+        sorted_normal_dict_keys_len = len(sorted_normal_dict_keys)
+        sorted_normal_dict_keys_len_ex = int(1.3 * sorted_normal_dict_keys_len)
         assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys})"
-        assert len(self.sorted_dict_keys) == len(sorted_normal_dict_keys)
+        assert len(self.sorted_dict_keys) == sorted_normal_dict_keys_len
+        start = self._rg.randint(-sorted_normal_dict_keys_len_ex, sorted_normal_dict_keys_len_ex)
+        stop = self._rg.randint(-sorted_normal_dict_keys_len_ex, sorted_normal_dict_keys_len_ex)
+        for idx in [start, stop]:
+            if -sorted_normal_dict_keys_len <= idx < sorted_normal_dict_keys_len:
+                assert self.sorted_dict_keys[idx] == sorted_normal_dict_keys[idx]
+            else:
+                with pytest.raises(
+                    IndexError,
+                    match=rf"^got invalid index {idx} for view of length {sorted_normal_dict_keys_len}$",
+                ):
+                    self.sorted_dict_keys[idx]
+        step = self._rg.randint(-sorted_normal_dict_keys_len_ex, sorted_normal_dict_keys_len_ex)
+        if step == 0:
+            with pytest.raises(
+                TypeError,
+                match=re.escape(
+                    f"got index slice({start}, {stop}, {step}) of type {slice}, want index of type {int} or {slice} with non-zero step"
+                ),
+            ):
+                self.sorted_dict_keys[start:stop:step]
+        else:
+            assert self.sorted_dict_keys[start:stop:step] == sorted_normal_dict_keys[start:stop:step]
+            assert self.sorted_dict_keys[:stop:step] == sorted_normal_dict_keys[:stop:step]
+            assert self.sorted_dict_keys[start::step] == sorted_normal_dict_keys[start::step]
+            assert self.sorted_dict_keys[::step] == sorted_normal_dict_keys[::step]
+        with pytest.raises(
+            TypeError,
+            match=rf"^got index 0.0 of type {float}, want index of type {int} or {slice} with non-zero step$",
+        ):
+            self.sorted_dict_keys[0.0]
+        assert self.sorted_dict_keys[start:stop] == sorted_normal_dict_keys[start:stop]
+        assert self.sorted_dict_keys[start:] == sorted_normal_dict_keys[start:]
+        assert self.sorted_dict_keys[:stop] == sorted_normal_dict_keys[:stop]
         assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
