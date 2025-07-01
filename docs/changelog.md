@@ -9,7 +9,8 @@
 
 <ul class="change-fix">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/164">#164</a> Update <code>SortedDict.__len__</code> to raise
-  <code>OverflowError</code> if the length exceeds the maximum value a `Py_ssize_t` integer can take.</li>
+  <code>OverflowError</code> if the length exceeds the maximum value an integer of type <code>Py_ssize_t</code> can
+  have.</li>
 </ul>
 
 ## [0.7.3](https://github.com/tfpf/pysorteddict/compare/v0.7.2...v0.7.3)
