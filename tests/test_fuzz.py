@@ -212,14 +212,22 @@ class TestFuzz:
                     self.sorted_dict_keys[idx]
         step = self._rg.randint(-sorted_normal_dict_keys_len_ex, sorted_normal_dict_keys_len_ex)
         if step == 0:
-            with pytest.raises(TypeError, match="^got index slice"):
+            with pytest.raises(
+                TypeError,
+                match=re.escape(
+                    f"got index slice({start}, {stop}, {step}) of type {slice}, want index of type {int} or {slice} with non-zero step"
+                ),
+            ):
                 self.sorted_dict_keys[start:stop:step]
         else:
             assert self.sorted_dict_keys[start:stop:step] == sorted_normal_dict_keys[start:stop:step]
             assert self.sorted_dict_keys[:stop:step] == sorted_normal_dict_keys[:stop:step]
             assert self.sorted_dict_keys[start::step] == sorted_normal_dict_keys[start::step]
             assert self.sorted_dict_keys[::step] == sorted_normal_dict_keys[::step]
-        with pytest.raises(TypeError, match="^got index 0.0"):
+        with pytest.raises(
+            TypeError,
+            match=rf"^got index 0.0 of type {float}, want index of type {int} or {slice} with non-zero step$",
+        ):
             self.sorted_dict_keys[0.0]
         assert self.sorted_dict_keys[start:stop] == sorted_normal_dict_keys[start:stop]
         assert self.sorted_dict_keys[start:] == sorted_normal_dict_keys[start:]
