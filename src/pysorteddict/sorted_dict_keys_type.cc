@@ -55,14 +55,14 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         {
             auto it = this->sd->map->begin();
             std::advance(it, start);
-            for (Py_ssize_t i = start;;)
+            for (Py_ssize_t i = 0;; ++i)
             {
                 PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
-                if (step >= stop - i)
+                if (i == slice_len - 1)
                 {
+                    // Avoid pushing the iterator out of range.
                     break;
                 }
-                i += step;
                 std::advance(it, step);
             }
         }
