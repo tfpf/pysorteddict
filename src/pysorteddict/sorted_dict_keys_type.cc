@@ -27,11 +27,11 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t position)
     {
         auto it = this->sd->map->begin();
         std::advance(it, positive_position);
-        return Py_NewRef(it->first);
+        return Py_NewRef(it->first);  // 🆕
     }
     auto it = this->sd->map->rbegin();
     std::advance(it, sz - 1 - positive_position);
-    return Py_NewRef(it->first);
+    return Py_NewRef(it->first);  // 🆕
 }
 
 PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssize_t step)
