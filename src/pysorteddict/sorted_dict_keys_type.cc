@@ -42,12 +42,40 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         return nullptr;
     }
     Py_ssize_t slice_len = PySlice_AdjustIndices(sz, &start, &stop, step);
-fprintf(stderr, "(%zd, %zd, %zd): %zd\n", start, stop, step, slice_len);
+    fprintf(stderr, "(%zd, %zd, %zd): %zd\n", start, stop, step, slice_len);
+    PyObject* keys = PyList_New(slice_len);  // 🆕
     if (slice_len == 0)
     {
-        return PyList_New(0);  // 🆕
+        return keys;
     }
-    return Py_NotImplemented;
+
+    if (step > 0)
+    {
+        if (start < sz - stop)
+        {
+            auto it = this->sd->map->begin();
+            std::advance(it, start);
+            for (Py_ssize_t i = start;;)
+            {
+                PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
+                if (step >= stop - i)
+                {
+                    break;
+                }
+                i += step;
+                std::advance(it, step);
+            }
+        }
+        else
+        {
+            Py_RETURN_NOTIMPLEMENTED;
+        }
+    }
+    else
+    {
+        Py_RETURN_NOTIMPLEMENTED;
+    }
+    return keys;
 }
 
 int SortedDictKeysType::contains(PyObject* key)
