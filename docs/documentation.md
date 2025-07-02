@@ -155,7 +155,6 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 
 If the number of key-value pairs in `d` exceeds `PY_SSIZE_T_MAX`, raise `OverflowError`.
 
-
 ```python
 from pysorteddict import *
 d = SortedDict()
