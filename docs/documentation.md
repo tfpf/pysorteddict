@@ -425,7 +425,7 @@ d["foo"] = "bar"
 d["baz"] = 1
 i = iter(d.keys())
 del i
-## gc.collect()
+# gc.collect()
 del d["baz"]
 ```
 
@@ -485,7 +485,7 @@ d["foo"] = "bar"
 d["baz"] = 1
 i = iter(d.keys())
 del i
-## gc.collect()
+# gc.collect()
 d.clear()
 ```
 
