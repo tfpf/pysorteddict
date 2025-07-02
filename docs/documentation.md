@@ -532,11 +532,78 @@ SortedDictKeys(['bar', 'foo'])
 SortedDictKeys(['bar', 'baz', 'foo'])
 ```
 
+See the documentation of [sorted dictionary views](#sorted-dictionary-views).
+
+#### `d.values() -> list[object]`
+
+Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
+exist independently of `d`; it won't be a view on its values.
+
+## Sorted Dictionary Views
+
+Sorted dictionary views are dynamic views on a sorted dictionary: they are immutable and cannot be used to mutate the
+sorted dictionary, but always reflect its current state.
+
+As of the current version, there is only one view type.
+
+* `SortedDictKeys`: the return type of `SortedDict.keys`.
+
+### Magic Methods
+
+#### `repr(v)`
+
+Return a human-readable representation of the sorted dictionary view `v`.
+
+#### `len(v)`
+
+Return the length of the sorted dictionary view `v`.
+
+<details class="warning">
+
+<summary>This method may raise exceptions.</summary>
+
+If `v` is of type `SortedDictKeys`, the behaviour is equivalent to that of [`len(d)`](#lend) where `d` is the
+underlying sorted dictionary.
+
+</details>
+
+#### `ob in v`
+
+Return whether `ob` is present in the sorted dictionary view `v`.
+
+<details class="warning">
+
+<summary>This method may raise exceptions.</summary>
+
+If `v` is of type `SortedDictKeys`, the behaviour is equivalent to that of [`ob in d`](#key-in-d) where `d` is the
+underlying sorted dictionary.
+
+</details>
+
+#### `v[pos]` or `v[start:stop:step]`
+
+Return the element at position `pos` or a `list` of elements in the slice denoted by `start`, `stop` and `step` in the
+sorted dictionary view `v`. `start`, `stop` and `step` can be omitted in the second form, just like when indexing a
+`list`.
+
+<details class="warning">
+
+<summary>This method may raise exceptions.</summary>
+
+The behaviour is equivalent to that of `l[pos]` or `l[start:stop:step]` respectively where `l` is a `list` containing
+the same elements as `v`.
+
+</details>
+
+#### `iter(v)`
+
+Return an iterator over the sorted dictionary view `v`.
+
 <details class="notice">
 
-<summary>This method returns a mostly mutation-safe iterable.</summary>
+<summary>This method returns a mostly mutation-safe iterator.</summary>
 
-A sorted dictionary can be modified while iterating over its keys. (Whether this is good practice is a separate
+A sorted dictionary can be modified while iterating over any of its views. (Whether this is good practice is a separate
 question.)
 
 ```python
@@ -560,8 +627,3 @@ SortedDict({'a_bar': 'eggs', 'a_baz': 'eggs', 'bar': 'spam', 'baz': 'spam'})
 Some modifications are prohibited, however. See [`del d[key]`](#del-dkey) and [`d.clear()`](#dclear) for details.
 
 </details>
-
-#### `d.values() -> list[object]`
-
-Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
-exist independently of `d`; it won't be a view on its values.
