@@ -149,6 +149,32 @@ ValueError: got bad key nan of type <class 'float'>
 
 Return the number of key-value pairs in the sorted dictionary `d`.
 
+<details class="warning">
+
+<summary>This method may raise exceptions.</summary>
+
+If the number of key-value pairs in `d` exceeds `PY_SSIZE_T_MAX` (practically impossible on most desktop operating
+systems), raise `OverflowError`.
+
+
+```python
+from pysorteddict import *
+d = SortedDict()
+for i in range(65000):
+    d[i] = i
+print(len(d))
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 5, in <module>
+    print(len(d))
+          ^^^^^^
+OverflowError: sorted dictionary length is 65000 which exceeds PY_SSIZE_T_MAX = 32767
+```
+
+</details>
+
 #### `d[key]`
 
 Return the value mapped to `key` in the sorted dictionary `d`.
