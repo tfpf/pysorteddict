@@ -19,6 +19,8 @@
 
 </details>
 
+## Sorted Dictionary
+
 `SortedDict` is a thread-unsafe sorted dictionary. It may be imported explicitly:
 
 ```python
@@ -39,9 +41,9 @@ The following key types are supported.
 * `str`
 * `decimal.Decimal`
 
-## Constructor
+### Constructor
 
-### `SortedDict(*args, **kwargs) -> SortedDict`
+#### `SortedDict(*args, **kwargs) -> SortedDict`
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 
@@ -66,9 +68,9 @@ ImportError: failed to import the `decimal.Decimal` type
 
 </details>
 
-## Properties
+### Properties
 
-### `d.key_type: type | None`
+#### `d.key_type: type | None`
 
 The key type of the sorted dictionary `d`, or `None` if no key-value pairs have been inserted in it.
 
@@ -80,13 +82,13 @@ d[b"foo"] = ()
 assert d.key_type is bytes
 ```
 
-## Magic Methods
+### Magic Methods
 
-### `repr(d)`
+#### `repr(d)`
 
 Return a human-readable representation of the sorted dictionary `d`.
 
-### `key in d`
+#### `key in d`
 
 Return whether `key` is present in the sorted dictionary `d`.
 
@@ -143,11 +145,11 @@ ValueError: got bad key nan of type <class 'float'>
 
 </details>
 
-### `len(d)`
+#### `len(d)`
 
 Return the number of key-value pairs in the sorted dictionary `d`.
 
-### `d[key]`
+#### `d[key]`
 
 Return the value mapped to `key` in the sorted dictionary `d`.
 
@@ -224,7 +226,7 @@ KeyError: 'spam'
 
 </details>
 
-### `d[key] = value`
+#### `d[key] = value`
 
 Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
 
@@ -285,7 +287,7 @@ ValueError: got bad key nan of type <class 'float'>
 
 </details>
 
-### `del d[key]`
+#### `del d[key]`
 
 Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
@@ -397,7 +399,7 @@ d["foo"] = "bar"
 d["baz"] = 1
 i = iter(d.keys())
 del i
-# gc.collect()
+## gc.collect()
 del d["baz"]
 ```
 
@@ -413,9 +415,9 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 </details>
 
-## Other Methods
+### Other Methods
 
-### `d.clear()`
+#### `d.clear()`
 
 Remove all key-value pairs in the sorted dictionary `d`.
 
@@ -457,7 +459,7 @@ d["foo"] = "bar"
 d["baz"] = 1
 i = iter(d.keys())
 del i
-# gc.collect()
+## gc.collect()
 d.clear()
 ```
 
@@ -472,16 +474,16 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 </details>
 
-### `d.copy() -> SortedDict`
+#### `d.copy() -> SortedDict`
 
 Return a shallow copy of the sorted dictionary `d`.
 
-### `d.items() -> list[tuple[object, object]]`
+#### `d.items() -> list[tuple[object, object]]`
 
 Return the key-value pairs in the sorted dictionary `d`. The list will be sorted. It will exist independently of `d`;
 it won't be a view on its items.
 
-### `d.keys() -> SortedDictKeys`
+#### `d.keys() -> SortedDictKeys`
 
 Return a dynamic view on the keys in the sorted dictionary `d`.
 
@@ -532,7 +534,7 @@ Some modifications are prohibited, however. See [`del d[key]`](#del-dkey) and [`
 
 </details>
 
-### `d.values() -> list[object]`
+#### `d.values() -> list[object]`
 
 Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
 exist independently of `d`; it won't be a view on its values.
