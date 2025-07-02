@@ -4,6 +4,7 @@
 
 <summary>Documentation of older versions is available on GitHub.</summary>
 
+▸ [0.7.3](https://github.com/tfpf/pysorteddict/blob/v0.7.3/docs/documentation.md)
 ▸ [0.7.2](https://github.com/tfpf/pysorteddict/blob/v0.7.2/docs/documentation.md)
 ▸ [0.7.1](https://github.com/tfpf/pysorteddict/blob/v0.7.1/docs/documentation.md)
 ▸ [0.7.0](https://github.com/tfpf/pysorteddict/blob/v0.7.0/docs/documentation.md)  
@@ -17,6 +18,8 @@
 ▸ [0.4.4](https://github.com/tfpf/pysorteddict/blob/v0.4.4/docs/index.md)
 
 </details>
+
+## Sorted Dictionary
 
 `SortedDict` is a thread-unsafe sorted dictionary. It may be imported explicitly:
 
@@ -38,9 +41,9 @@ The following key types are supported.
 * `str`
 * `decimal.Decimal`
 
-## Constructor
+### Constructor
 
-### `SortedDict(*args, **kwargs) -> SortedDict`
+#### `SortedDict(*args, **kwargs) -> SortedDict`
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
 
@@ -65,9 +68,9 @@ ImportError: failed to import the `decimal.Decimal` type
 
 </details>
 
-## Properties
+### Properties
 
-### `d.key_type: type | None`
+#### `d.key_type: type | None`
 
 The key type of the sorted dictionary `d`, or `None` if no key-value pairs have been inserted in it.
 
@@ -79,13 +82,13 @@ d[b"foo"] = ()
 assert d.key_type is bytes
 ```
 
-## Magic Methods
+### Magic Methods
 
-### `repr(d)`
+#### `repr(d)`
 
 Return a human-readable representation of the sorted dictionary `d`.
 
-### `key in d`
+#### `key in d`
 
 Return whether `key` is present in the sorted dictionary `d`.
 
@@ -142,11 +145,37 @@ ValueError: got bad key nan of type <class 'float'>
 
 </details>
 
-### `len(d)`
+#### `len(d)`
 
 Return the number of key-value pairs in the sorted dictionary `d`.
 
-### `d[key]`
+<details class="warning">
+
+<summary>This method may raise exceptions.</summary>
+
+If the number of key-value pairs in `d` exceeds `PY_SSIZE_T_MAX`, raise `OverflowError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+for i in range(65000):
+    d[i] = i
+print(len(d))
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 5, in <module>
+    print(len(d))
+          ^^^^^^
+OverflowError: sorted dictionary length is 65000 which exceeds PY_SSIZE_T_MAX = 32767
+```
+
+On a 64-bit operating system, `PY_SSIZE_T_MAX` will probably be 9223372036854775807, so this error should never occur.
+
+</details>
+
+#### `d[key]`
 
 Return the value mapped to `key` in the sorted dictionary `d`.
 
@@ -223,7 +252,7 @@ KeyError: 'spam'
 
 </details>
 
-### `d[key] = value`
+#### `d[key] = value`
 
 Map `value` to `key` in the sorted dictionary `d`, replacing the previously-mapped value (if any).
 
@@ -284,7 +313,7 @@ ValueError: got bad key nan of type <class 'float'>
 
 </details>
 
-### `del d[key]`
+#### `del d[key]`
 
 Remove `key` and the value mapped to it from the sorted dictionary `d`.
 
@@ -412,9 +441,9 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 </details>
 
-## Other Methods
+### Other Methods
 
-### `d.clear()`
+#### `d.clear()`
 
 Remove all key-value pairs in the sorted dictionary `d`.
 
@@ -471,16 +500,16 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 </details>
 
-### `d.copy() -> SortedDict`
+#### `d.copy() -> SortedDict`
 
 Return a shallow copy of the sorted dictionary `d`.
 
-### `d.items() -> list[tuple[object, object]]`
+#### `d.items() -> list[tuple[object, object]]`
 
 Return the key-value pairs in the sorted dictionary `d`. The list will be sorted. It will exist independently of `d`;
 it won't be a view on its items.
 
-### `d.keys() -> SortedDictKeys`
+#### `d.keys() -> SortedDictKeys`
 
 Return a dynamic view on the keys in the sorted dictionary `d`.
 
@@ -502,11 +531,78 @@ SortedDictKeys(['bar', 'foo'])
 SortedDictKeys(['bar', 'baz', 'foo'])
 ```
 
+See the documentation of [sorted dictionary views](#sorted-dictionary-views).
+
+#### `d.values() -> list[object]`
+
+Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
+exist independently of `d`; it won't be a view on its values.
+
+## Sorted Dictionary Views
+
+Sorted dictionary views are dynamic views on a sorted dictionary: they are immutable and cannot be used to mutate the
+sorted dictionary, but always reflect its current state.
+
+As of the current version, there is only one view type.
+
+* `SortedDictKeys`: the return type of `SortedDict.keys`.
+
+### Magic Methods
+
+#### `repr(v)`
+
+Return a human-readable representation of the sorted dictionary view `v`.
+
+#### `len(v)`
+
+Return the length of the sorted dictionary view `v`.
+
+<details class="warning">
+
+<summary>This method may raise exceptions.</summary>
+
+If `v` is of type `SortedDictKeys`, the behaviour is equivalent to that of [`len(d)`](#lend) where `d` is the
+underlying sorted dictionary.
+
+</details>
+
+#### `ob in v`
+
+Return whether `ob` is present in the sorted dictionary view `v`.
+
+<details class="warning">
+
+<summary>This method may raise exceptions.</summary>
+
+If `v` is of type `SortedDictKeys`, the behaviour is equivalent to that of [`ob in d`](#key-in-d) where `d` is the
+underlying sorted dictionary.
+
+</details>
+
+#### `v[pos]` or `v[start:stop:step]`
+
+Return the element at position `pos` or a `list` of elements in the slice denoted by `start`, `stop` and `step` in the
+sorted dictionary view `v`. `start`, `stop` and `step` can be omitted in the second form, just like when indexing a
+`list`.
+
+<details class="warning">
+
+<summary>This method may raise exceptions.</summary>
+
+The behaviour is equivalent to that of `l[pos]` or `l[start:stop:step]` respectively where `l` is a `list` containing
+the same elements as `v`.
+
+</details>
+
+#### `iter(v)`
+
+Return an iterator over the sorted dictionary view `v`.
+
 <details class="notice">
 
-<summary>This method returns a mostly mutation-safe iterable.</summary>
+<summary>This method returns a mostly mutation-safe iterator.</summary>
 
-A sorted dictionary can be modified while iterating over its keys. (Whether this is good practice is a separate
+A sorted dictionary can be modified while iterating over any of its views. (Whether this is good practice is a separate
 question.)
 
 ```python
@@ -530,8 +626,3 @@ SortedDict({'a_bar': 'eggs', 'a_baz': 'eggs', 'bar': 'spam', 'baz': 'spam'})
 Some modifications are prohibited, however. See [`del d[key]`](#del-dkey) and [`d.clear()`](#dclear) for details.
 
 </details>
-
-### `d.values() -> list[object]`
-
-Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
-exist independently of `d`; it won't be a view on its values.

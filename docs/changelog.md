@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.8.0](https://github.com/tfpf/pysorteddict/compare/v0.7.3...v0.8.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/163">#163</a> Define
+  <code>SortedDictKeys.__getitem__</code>.</li>
+</ul>
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/164">#164</a> Update <code>SortedDict.__len__</code> to raise
+  <code>OverflowError</code> if the length exceeds the maximum value a <code>Py_ssize_t</code> can have.</li>
+</ul>
+
 ## [0.7.3](https://github.com/tfpf/pysorteddict/compare/v0.7.2...v0.7.3)
 
 <ul class="change-fix">
