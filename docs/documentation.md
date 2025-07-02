@@ -153,8 +153,7 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 
 <summary>This method may raise exceptions.</summary>
 
-If the number of key-value pairs in `d` exceeds `PY_SSIZE_T_MAX` (practically impossible on most desktop operating
-systems), raise `OverflowError`.
+If the number of key-value pairs in `d` exceeds `PY_SSIZE_T_MAX`, raise `OverflowError`.
 
 
 ```python
@@ -172,6 +171,8 @@ Traceback (most recent call last):
           ^^^^^^
 OverflowError: sorted dictionary length is 65000 which exceeds PY_SSIZE_T_MAX = 32767
 ```
+
+On a 64-bit operating system, `PY_SSIZE_T_MAX` will probably be 9223372036854775807, so this error should never occur.
 
 </details>
 
