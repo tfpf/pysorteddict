@@ -113,8 +113,8 @@ PyObject* SortedDictKeysType::getitem(PyObject* idx)
     }
 
     PyErr_Format(
-        PyExc_TypeError, "got index %R of type %R, want index of type %R or %R", idx, Py_TYPE(idx), &PyLong_Type,
-        &PySlice_Type
+        PyExc_TypeError, "got index %R of type `%s`, want index of type `%s` or `%s`", idx, Py_TYPE(idx)->tp_name,
+        PyLong_Type.tp_name, PySlice_Type.tp_name
     );
     return nullptr;
 }
