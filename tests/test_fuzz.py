@@ -208,8 +208,7 @@ class TestFuzz:
                 assert view[idx] == view_as_list[idx]
             else:
                 with pytest.raises(
-                    IndexError,
-                    match=rf"^got invalid index {idx} for view of length {view_as_list_len}$",
+                    IndexError, match=rf"^got invalid index {idx} for view of length {view_as_list_len}$"
                 ):
                     view[idx]
         step = self._rg.randint(-view_as_list_len_ex, view_as_list_len_ex)
