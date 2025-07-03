@@ -82,12 +82,16 @@ class TestFuzz:
                 if key_type is not self.key_type:
                     with pytest.raises(
                         TypeError,
-                        match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
+                        match=re.escape(
+                            f"got key {key!r} of type `{key_type.__name__}`, want key of type `{self.key_type.__name__}`"
+                        ),
                     ):
                         key in sorted_dict_or_sorted_dict_keys  # noqa: B015
                     continue
                 if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
-                    with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
+                    with pytest.raises(
+                        ValueError, match=re.escape(f"got bad key {key!r} of type `{key_type.__name__}`")
+                    ):
                         key in sorted_dict_or_sorted_dict_keys  # noqa: B015
                     continue
                 if self.normal_dict:
@@ -111,12 +115,14 @@ class TestFuzz:
             if key_type is not self.key_type:
                 with pytest.raises(
                     TypeError,
-                    match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
+                    match=re.escape(
+                        f"got key {key!r} of type `{key_type.__name__}`, want key of type `{self.key_type.__name__}`"
+                    ),
                 ):
                     del self.sorted_dict[key]
                 continue
             if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
-                with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
+                with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type `{key_type.__name__}`")):
                     del self.sorted_dict[key]
                 continue
             if key not in self.normal_dict:
@@ -136,12 +142,14 @@ class TestFuzz:
             if key_type is not self.key_type:
                 with pytest.raises(
                     TypeError,
-                    match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
+                    match=re.escape(
+                        f"got key {key!r} of type `{key_type.__name__}`, want key of type `{self.key_type.__name__}`"
+                    ),
                 ):
                     self.sorted_dict[key]
                 continue
             if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
-                with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
+                with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type `{key_type.__name__}`")):
                     self.sorted_dict[key]
                 continue
             if key not in self.normal_dict:
@@ -162,14 +170,16 @@ class TestFuzz:
             if self.is_sorted_dict_new and key_type in unsupported_types:
                 with pytest.raises(
                     TypeError,
-                    match=re.escape(f"got key {key!r} of unsupported type {key_type!r}"),
+                    match=re.escape(f"got key {key!r} of unsupported type `{key_type.__name__}`"),
                 ):
                     self.sorted_dict[key] = value
                 continue
             if not self.is_sorted_dict_new and key_type is not self.key_type:
                 with pytest.raises(
                     TypeError,
-                    match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
+                    match=re.escape(
+                        f"got key {key!r} of type `{key_type.__name__}`, want key of type `{self.key_type.__name__}`"
+                    ),
                 ):
                     self.sorted_dict[key] = value
                 continue
@@ -178,7 +188,7 @@ class TestFuzz:
                 and math.isnan(key)
                 and (self.is_sorted_dict_new or self.key_type is key_type)
             ):
-                with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
+                with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type `{key_type.__name__}`")):
                     self.sorted_dict[key] = value
                 continue
             if key_type is self.key_type:
@@ -214,7 +224,7 @@ class TestFuzz:
                     view[idx]
         with pytest.raises(IndexError, match="^cannot fit 'int' into an index-sized integer$"):
             view[sys.maxsize + 1]
-        with pytest.raises(TypeError, match=rf"^got index 0.0 of type {float}, want index of type {int} or {slice}$"):
+        with pytest.raises(TypeError, match=r"^got index 0.0 of type `float`, want index of type `int` or `slice`$"):
             view[0.0]
         step = self._rg.randint(-view_as_list_len_ex, view_as_list_len_ex)
         if step == 0:
