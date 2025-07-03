@@ -228,4 +228,5 @@ class TestFuzz:
         assert view[start:stop] == view_as_list[start:stop]
         assert view[start:] == view_as_list[start:]
         assert view[:stop] == view_as_list[:stop]
+        assert view[:] == view_as_list
         assert [*view] == view_as_list
