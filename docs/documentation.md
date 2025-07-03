@@ -582,8 +582,31 @@ underlying sorted dictionary.
 #### `v[pos]` or `v[start:stop:step]`
 
 Return the element at position `pos` or a `list` of elements in the slice denoted by `start`, `stop` and `step` in the
-sorted dictionary view `v`. `start`, `stop` and `step` can be omitted in the second form, just like when indexing a
-`list`.
+sorted dictionary view `v`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+keys = d.keys()
+d["foo"] = ()
+d["bar"] = [100]
+d["baz"] = 3.14
+d["spam"] = {}
+d["eggs"] = ""
+print(keys[0], keys[2], keys[4])
+print(keys[:3])
+print(keys[1:])
+print(keys[-3:3])
+print(keys[::-1])
+```
+
+```text
+bar eggs spam
+['bar', 'baz', 'eggs']
+['baz', 'eggs', 'foo', 'spam']
+['eggs']
+['spam', 'foo', 'eggs', 'baz', 'bar']
+```
 
 <details class="warning">
 
