@@ -4,6 +4,7 @@ import math
 import random
 import re
 import string
+import sys
 
 import pytest
 
@@ -211,14 +212,11 @@ class TestFuzz:
                     IndexError, match=rf"^got invalid index {idx} for view of length {view_as_list_len}$"
                 ):
                     view[idx]
+        with pytest.raises(IndexError, match="^cannot fit 'int' into an index-sized integer$"):
+            view[sys.maxsize + 1]
         step = self._rg.randint(-view_as_list_len_ex, view_as_list_len_ex)
         if step == 0:
-            with pytest.raises(
-                TypeError,
-                match=re.escape(
-                    f"got index slice({start}, {stop}, {step}) of type {slice}, want index of type {int} or {slice} with non-zero step"
-                ),
-            ):
+            with pytest.raises(ValueError, match="^slice step cannot be zero$"):
                 view[start:stop:step]
         else:
             assert view[start:stop:step] == view_as_list[start:stop:step]
