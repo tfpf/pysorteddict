@@ -214,6 +214,8 @@ class TestFuzz:
                     view[idx]
         with pytest.raises(IndexError, match="^cannot fit 'int' into an index-sized integer$"):
             view[sys.maxsize + 1]
+        with pytest.raises(TypeError, match=rf"^got index 0.0 of type {float}, want index of type {int} or {slice}$"):
+            view[0.0]
         step = self._rg.randint(-view_as_list_len_ex, view_as_list_len_ex)
         if step == 0:
             with pytest.raises(ValueError, match="^slice step cannot be zero$"):
@@ -223,11 +225,6 @@ class TestFuzz:
             assert view[:stop:step] == view_as_list[:stop:step]
             assert view[start::step] == view_as_list[start::step]
             assert view[::step] == view_as_list[::step]
-        with pytest.raises(
-            TypeError,
-            match=rf"^got index 0.0 of type {float}, want index of type {int} or {slice} with non-zero step$",
-        ):
-            view[0.0]
         assert view[start:stop] == view_as_list[start:stop]
         assert view[start:] == view_as_list[start:]
         assert view[:stop] == view_as_list[:stop]
