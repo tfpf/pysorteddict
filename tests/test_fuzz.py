@@ -4,6 +4,7 @@ import math
 import random
 import re
 import string
+import sys
 
 import pytest
 
@@ -194,42 +195,38 @@ class TestFuzz:
         self.sorted_dict_keys = self.sorted_dict.keys()
 
     def _test_keys(self):
-        sorted_normal_dict_keys = sorted(self.normal_dict.keys())
-        sorted_normal_dict_keys_len = len(sorted_normal_dict_keys)
-        sorted_normal_dict_keys_len_ex = int(1.3 * sorted_normal_dict_keys_len)
-        assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys})"
-        assert len(self.sorted_dict_keys) == sorted_normal_dict_keys_len
-        start = self._rg.randint(-sorted_normal_dict_keys_len_ex, sorted_normal_dict_keys_len_ex)
-        stop = self._rg.randint(-sorted_normal_dict_keys_len_ex, sorted_normal_dict_keys_len_ex)
+        self._test_view("SortedDictKeys", self.sorted_dict_keys, sorted(self.normal_dict.keys()))
+
+    def _test_view(self, name, view, view_as_list):
+        view_as_list_len = len(view_as_list)
+        view_as_list_len_ex = int(1.3 * view_as_list_len)
+        assert repr(view) == f"{name}({view_as_list})"
+        assert len(view) == view_as_list_len
+        start = self._rg.randint(-view_as_list_len_ex, view_as_list_len_ex)
+        stop = self._rg.randint(-view_as_list_len_ex, view_as_list_len_ex)
         for idx in [start, stop]:
-            if -sorted_normal_dict_keys_len <= idx < sorted_normal_dict_keys_len:
-                assert self.sorted_dict_keys[idx] == sorted_normal_dict_keys[idx]
+            if -view_as_list_len <= idx < view_as_list_len:
+                assert view[idx] == view_as_list[idx]
             else:
                 with pytest.raises(
-                    IndexError,
-                    match=rf"^got invalid index {idx} for view of length {sorted_normal_dict_keys_len}$",
+                    IndexError, match=rf"^got invalid index {idx} for view of length {view_as_list_len}$"
                 ):
-                    self.sorted_dict_keys[idx]
-        step = self._rg.randint(-sorted_normal_dict_keys_len_ex, sorted_normal_dict_keys_len_ex)
+                    view[idx]
+        with pytest.raises(IndexError, match="^cannot fit 'int' into an index-sized integer$"):
+            view[sys.maxsize + 1]
+        with pytest.raises(TypeError, match=rf"^got index 0.0 of type {float}, want index of type {int} or {slice}$"):
+            view[0.0]
+        step = self._rg.randint(-view_as_list_len_ex, view_as_list_len_ex)
         if step == 0:
-            with pytest.raises(
-                TypeError,
-                match=re.escape(
-                    f"got index slice({start}, {stop}, {step}) of type {slice}, want index of type {int} or {slice} with non-zero step"
-                ),
-            ):
-                self.sorted_dict_keys[start:stop:step]
+            with pytest.raises(ValueError, match="^slice step cannot be zero$"):
+                view[start:stop:step]
         else:
-            assert self.sorted_dict_keys[start:stop:step] == sorted_normal_dict_keys[start:stop:step]
-            assert self.sorted_dict_keys[:stop:step] == sorted_normal_dict_keys[:stop:step]
-            assert self.sorted_dict_keys[start::step] == sorted_normal_dict_keys[start::step]
-            assert self.sorted_dict_keys[::step] == sorted_normal_dict_keys[::step]
-        with pytest.raises(
-            TypeError,
-            match=rf"^got index 0.0 of type {float}, want index of type {int} or {slice} with non-zero step$",
-        ):
-            self.sorted_dict_keys[0.0]
-        assert self.sorted_dict_keys[start:stop] == sorted_normal_dict_keys[start:stop]
-        assert self.sorted_dict_keys[start:] == sorted_normal_dict_keys[start:]
-        assert self.sorted_dict_keys[:stop] == sorted_normal_dict_keys[:stop]
-        assert [*self.sorted_dict_keys] == sorted_normal_dict_keys
+            assert view[start:stop:step] == view_as_list[start:stop:step]
+            assert view[:stop:step] == view_as_list[:stop:step]
+            assert view[start::step] == view_as_list[start::step]
+            assert view[::step] == view_as_list[::step]
+        assert view[start:stop] == view_as_list[start:stop]
+        assert view[start:] == view_as_list[start:]
+        assert view[:stop] == view_as_list[:stop]
+        assert view[:] == view_as_list
+        assert [*view] == view_as_list
