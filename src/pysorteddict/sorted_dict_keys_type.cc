@@ -48,35 +48,49 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         return keys;
     }
 
-        std::map<PyObject*, SortedDictValue>::iterator it;
-    if(step > 0 && start <= sz - stop || step < 0 && sz - 1 - start < stop + 1){
-        if(step > 0){
+    std::map<PyObject*, SortedDictValue>::iterator it;
+    if (step > 0 && start <= sz - stop || step < 0 && sz - 1 - start < stop + 1)
+    {
+        if (step > 0)
+        {
             it = this->sd->map->begin();
             std::advance(it, start);
         }
-        else{
+        else
+        {
             it = this->sd->map->end();
             std::advance(it, start - sz);
         }
-        for (Py_ssize_t i = 0;; ++i){
-                PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
-                if(i == slice_len - 1){break;}
-                std::advance(it, step);
+        for (Py_ssize_t i = 0;; ++i)
+        {
+            PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
+            if (i == slice_len - 1)
+            {
+                break;
+            }
+            std::advance(it, step);
         }
     }
-    else{
-            start += (slice_len - 1) * step;
-        if(step > 0){
+    else
+    {
+        start += (slice_len - 1) * step;
+        if (step > 0)
+        {
             it = this->sd->map->end();
             std::advance(it, start - sz);
         }
-        else{
+        else
+        {
             it = this->sd->map->begin();
             std::advance(it, start);
         }
-        for(Py_ssize_t i = slice_len - 1;; --i){
+        for (Py_ssize_t i = slice_len - 1;; --i)
+        {
             PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
-            if(i == 0){break;}
+            if (i == 0)
+            {
+                break;
+            }
             std::advance(it, -step);
         }
     }
