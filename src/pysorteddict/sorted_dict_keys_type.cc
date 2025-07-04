@@ -50,27 +50,30 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
 
     if (step > 0)
     {
-        if(start <= sz - stop){
-        auto it = this->sd->map->begin();
-        // Possible optimisation: iterate backwards (filling the list
-        // backwards) if the slice is closer to the end.
-        std::advance(it, start);
-        for (Py_ssize_t i = 0;; ++i)
+        if (start <= sz - stop)
         {
-            PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
-            if (i == slice_len - 1)
+            auto it = this->sd->map->begin();
+            // Possible optimisation: iterate backwards (filling the list
+            // backwards) if the slice is closer to the end.
+            std::advance(it, start);
+            for (Py_ssize_t i = 0;; ++i)
             {
-                // Don't push the iterator out of range.
-                break;
+                PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
+                if (i == slice_len - 1)
+                {
+                    // Don't push the iterator out of range.
+                    break;
+                }
+                std::advance(it, step);
             }
-            std::advance(it, step);
         }
-        }
-        else{
+        else
+        {
             start += (slice_len - 1) * step;
             auto it = this->sd->map->rbegin();
             std::advance(it, sz - 1 - start);
-            for(Py_ssize_t i = slice_len - 1;; --i){
+            for (Py_ssize_t i = slice_len - 1;; --i)
+            {
                 PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
                 if (i == 0)
                 {
@@ -83,27 +86,31 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
     }
     else
     {
-        if(sz - 1 - start < stop + 1){
-        
-        auto it = this->sd->map->rbegin();
-        // Possible optimisation: iterate forwards (filling the list
-        // backwards) if the slice is closer to the beginning.
-        std::advance(it, sz - 1 - start);
-        for (Py_ssize_t i = 0;; ++i)
+        if (sz - 1 - start < stop + 1)
         {
-            PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
-            if (i == slice_len - 1)
+
+            auto it = this->sd->map->rbegin();
+            // Possible optimisation: iterate forwards (filling the list
+            // backwards) if the slice is closer to the beginning.
+            std::advance(it, sz - 1 - start);
+            for (Py_ssize_t i = 0;; ++i)
             {
-                // Don't push the iterator out of range.
-                break;
+                PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
+                if (i == slice_len - 1)
+                {
+                    // Don't push the iterator out of range.
+                    break;
+                }
+                std::advance(it, -step);
             }
-            std::advance(it, -step);
-        }}
-        else{
+        }
+        else
+        {
             start += (slice_len - 1) * step;
             auto it = this->sd->map->begin();
             std::advance(it, start);
-            for(Py_ssize_t i = slice_len - 1;; --i){
+            for (Py_ssize_t i = slice_len - 1;; --i)
+            {
                 PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
                 if (i == 0)
                 {
