@@ -40,12 +40,11 @@ def test_modify_with_active_iterators(sorted_dict, iterators, advance):
 
     # Advance the iterators by the arbitrary amounts determined above. Record
     # the keys the iterators point to as locked keys.
-    keys = [*sorted_dict_keys]
     locked_keys = collections.defaultdict(int)
     for sorted_dict_keys_iter, advance in zip(sorted_dict_keys_iters, advances, strict=True):
         [*itertools.islice(sorted_dict_keys_iter, advance)]
         if advance < sorted_dict_len:
-            locked_keys[keys[advance]] += 1
+            locked_keys[sorted_dict_keys[advance]] += 1
 
     sorted_dict_copy = sorted_dict.copy()
     for locked_key, known_referrers in locked_keys.items():
@@ -55,7 +54,7 @@ def test_modify_with_active_iterators(sorted_dict, iterators, advance):
         ):
             del sorted_dict[locked_key]
         del sorted_dict_copy[locked_key]
-    for unlocked_key in itertools.islice({*keys} - locked_keys.keys(), 100):
+    for unlocked_key in itertools.islice({*sorted_dict_keys} - locked_keys.keys(), 100):
         del sorted_dict[unlocked_key]
     if total_known_referrers := sum(locked_keys.values()):
         with pytest.raises(
