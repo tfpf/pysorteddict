@@ -599,6 +599,7 @@ print(keys[0], keys[2], keys[4])
 print(keys[:3])
 print(keys[1:])
 print(keys[-3:3])
+print(keys[-5:4:2])
 print(keys[::-1])
 ```
 
@@ -607,6 +608,7 @@ bar eggs spam
 ['bar', 'baz', 'eggs']
 ['baz', 'eggs', 'foo', 'spam']
 ['eggs']
+['bar', 'eggs']
 ['spam', 'foo', 'eggs', 'baz', 'bar']
 ```
 
