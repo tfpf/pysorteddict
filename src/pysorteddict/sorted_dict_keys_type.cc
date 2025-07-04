@@ -50,6 +50,7 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
 
     if (step > 0)
     {
+        if(start < sz - stop){
         auto it = this->sd->map->begin();
         // Possible optimisation: iterate backwards (filling the list
         // backwards) if the slice is closer to the end.
@@ -63,6 +64,9 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
                 break;
             }
             std::advance(it, step);
+        }
+        }
+        else{
         }
     }
     else
