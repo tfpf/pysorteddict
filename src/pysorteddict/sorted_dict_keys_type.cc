@@ -49,7 +49,7 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
     }
 
     std::map<PyObject*, SortedDictValue>::iterator it;
-    if (step > 0 && start <= sz - stop || step < 0 && sz - 1 - start < stop + 1)
+    if ((step > 0 && start <= sz - stop) || (step < 0 && sz - 1 - start < stop + 1))
     {
         if (step > 0)
         {
