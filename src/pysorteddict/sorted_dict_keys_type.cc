@@ -23,14 +23,17 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t position)
         PyErr_Format(PyExc_IndexError, "got invalid index %zd for view of length %zd", position, sz);
         return nullptr;
     }
-    if (positive_position < sz / 2)
+    std::map<PyObject*, SortedDictValue>::iterator it;
+    if (positive_position <= sz / 2)
     {
-        auto it = this->sd->map->begin();
+        it = this->sd->map->begin();
         std::advance(it, positive_position);
-        return Py_NewRef(it->first);  // 🆕
     }
-    auto it = this->sd->map->rbegin();
-    std::advance(it, sz - 1 - positive_position);
+    else
+    {
+        it = this->sd->map->end();
+        std::advance(it, positive_position - sz);
+    }
     return Py_NewRef(it->first);  // 🆕
 }
 
