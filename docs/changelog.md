@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.2](https://github.com/tfpf/pysorteddict/compare/v0.8.1...v0.8.2)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/175">#175</a> Update <code>SortedDictKeys.__getitem__</code>
+  to speed up the creation of a slice with a positive step near the end or a slice with a negative step near the
+  beginning.</li>
+</ul>
+
 ## [0.8.1](https://github.com/tfpf/pysorteddict/compare/v0.8.0...v0.8.1)
 
 <ul class="change-fix">
