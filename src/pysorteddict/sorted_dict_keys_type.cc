@@ -53,15 +53,12 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         if (start <= sz - stop)
         {
             auto it = this->sd->map->begin();
-            // Possible optimisation: iterate backwards (filling the list
-            // backwards) if the slice is closer to the end.
             std::advance(it, start);
             for (Py_ssize_t i = 0;; ++i)
             {
                 PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
                 if (i == slice_len - 1)
                 {
-                    // Don't push the iterator out of range.
                     break;
                 }
                 std::advance(it, step);
@@ -77,7 +74,6 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
                 PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
                 if (i == 0)
                 {
-                    // Don't push the iterator out of range.
                     break;
                 }
                 std::advance(it, step);
@@ -90,15 +86,12 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         {
 
             auto it = this->sd->map->rbegin();
-            // Possible optimisation: iterate forwards (filling the list
-            // backwards) if the slice is closer to the beginning.
             std::advance(it, sz - 1 - start);
             for (Py_ssize_t i = 0;; ++i)
             {
                 PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
                 if (i == slice_len - 1)
                 {
-                    // Don't push the iterator out of range.
                     break;
                 }
                 std::advance(it, -step);
@@ -114,7 +107,6 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
                 PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
                 if (i == 0)
                 {
-                    // Don't push the iterator out of range.
                     break;
                 }
                 std::advance(it, -step);
