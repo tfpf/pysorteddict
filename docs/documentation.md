@@ -4,6 +4,7 @@
 
 <summary>Documentation of older versions is available on GitHub.</summary>
 
+▸ [0.8.1](https://github.com/tfpf/pysorteddict/blob/v0.8.1/docs/documentation.md)
 ▸ [0.8.0](https://github.com/tfpf/pysorteddict/blob/v0.8.0/docs/documentation.md)  
 ▸ [0.7.3](https://github.com/tfpf/pysorteddict/blob/v0.7.3/docs/documentation.md)
 ▸ [0.7.2](https://github.com/tfpf/pysorteddict/blob/v0.7.2/docs/documentation.md)
@@ -598,6 +599,7 @@ print(keys[0], keys[2], keys[4])
 print(keys[:3])
 print(keys[1:])
 print(keys[-3:3])
+print(keys[-5:4:2])
 print(keys[::-1])
 ```
 
@@ -606,6 +608,7 @@ bar eggs spam
 ['bar', 'baz', 'eggs']
 ['baz', 'eggs', 'foo', 'spam']
 ['eggs']
+['bar', 'eggs']
 ['spam', 'foo', 'eggs', 'baz', 'bar']
 ```
 
