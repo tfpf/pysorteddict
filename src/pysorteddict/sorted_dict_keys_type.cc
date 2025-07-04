@@ -50,7 +50,7 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
 
     if (step > 0)
     {
-        if(start < sz - stop){
+        if(start <= sz - stop){
         auto it = this->sd->map->begin();
         // Possible optimisation: iterate backwards (filling the list
         // backwards) if the slice is closer to the end.
@@ -68,7 +68,7 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         }
         else{
             start += (slice_len - 1) * step;
-            auto it = this->map->rbegin();
+            auto it = this->sd->map->rbegin();
             std::advance(it, sz - 1 - start);
             for(Py_ssize_t i = slice_len - 1;; --i){
                 PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
@@ -83,6 +83,8 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
     }
     else
     {
+        if(sz - 1 - start < stop + 1){
+        
         auto it = this->sd->map->rbegin();
         // Possible optimisation: iterate forwards (filling the list
         // backwards) if the slice is closer to the beginning.
@@ -96,6 +98,20 @@ PyObject* SortedDictKeysType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
                 break;
             }
             std::advance(it, -step);
+        }}
+        else{
+            start += (slice_len - 1) * step;
+            auto it = this->sd->map->begin();
+            std::advance(it, start);
+            for(Py_ssize_t i = slice_len - 1;; --i){
+                PyList_SET_ITEM(keys, i, Py_NewRef(it->first));
+                if (i == 0)
+                {
+                    // Don't push the iterator out of range.
+                    break;
+                }
+                std::advance(it, -step);
+            }
         }
     }
     return keys;
