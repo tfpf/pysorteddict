@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.0](https://github.com/tfpf/pysorteddict/compare/v0.8.2...v0.9.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/179">#179</a> Define <code>SortedDict.__iter__</code>.</li>
+</ul>
+
 ## [0.8.2](https://github.com/tfpf/pysorteddict/compare/v0.8.1...v0.8.2)
 
 <ul class="change-fix">
