@@ -446,7 +446,7 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 #### `iter(d)`
 
-Return an iterator over the sorted dictionary `d`.
+Return an iterator over the keys in the sorted dictionary `d`.
 
 ```python
 from pysorteddict import *
