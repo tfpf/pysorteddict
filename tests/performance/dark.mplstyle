@@ -1,28 +1,23 @@
-axes.axisbelow: axes.axisbelow: line
-
 axes.edgecolor: CCCCCC
 axes.facecolor: 3C3C3C
-axes.formatter.limits: (-7, 7)
+axes.formatter.limits: -6, 6
 axes.formatter.use_mathtext: True
-axes.grid: True
 axes.labelcolor: 999999
 axes.labelpad: 2.5
 axes.labelsize: large
 axes.linewidth: 1
-axes.prop_cycle: cycler('color', ['1F77B4', 'FF7F0E', '2CA02C', 'D62728', '9467BD', '8C564B', 'E377C2', '7F7F7F', 'BCBD22', '17BECF'])
+axes.prop_cycle: cycler('color', ['yellow', 'cyan', 'red'])
 axes.titlepad: 8.75
 axes.titlesize: x-large
-figure.dpi: 194
+figure.autolayout: True
+figure.dpi: 288
 figure.edgecolor: 333333
 figure.facecolor: 333333
-figure.figsize: (15, 8)
+figure.figsize: 8, 5
 figure.titlesize: x-large
-grid.alpha: 0.9
-grid.color: B0B0B0
-grid.linewidth: 0.1875
+font.family: Signika
 legend.borderaxespad: 0.3125
 legend.borderpad: 0.25
-legend.columnspacing: 1.25
 legend.edgecolor: black
 legend.facecolor: black
 legend.fontsize: large
@@ -31,20 +26,12 @@ legend.handleheight: 0.5
 legend.handlelength: 1
 legend.handletextpad: 0.5
 legend.labelspacing: 0.3125
-lines.dash_capstyle: projecting
-lines.dashdot_pattern: (6, 3, 1, 3)
-lines.dashed_pattern: (3, 3)
-lines.dash_joinstyle: miter
-lines.dotted_pattern: (1, 3)
-lines.linewidth: 0.5
+legend.loc: upper left
+lines.linestyle: :
+lines.linewidth: 0.8
+lines.marker: .
 lines.markeredgewidth: 0.5
-lines.markerfacecolor: 333333
-lines.marker: None
-lines.markersize: 4
-lines.solid_joinstyle: miter
-patch.edgecolor: 999999
-patch.facecolor: 999999
-patch.linewidth: 0
+lines.markersize: 8
 text.color: CCCCCC
 xtick.color: CCCCCC
 xtick.direction: in
