@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 
+#include "sorted_dict_view_type.hh"
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"
@@ -359,6 +360,10 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     }
     Py_INCREF(it->second.value);  // 🆕
     return 0;
+}
+
+PyObject*SortedDictType::iter(PyTypeObject*type){
+    return SortedDictViewIterType::New(type, this);
 }
 
 PyObject* SortedDictType::clear(void)
