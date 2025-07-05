@@ -1,0 +1,125 @@
+lines.linewidth:       0.8
+lines.linestyle:       :
+lines.marker:          .
+lines.markerfacecolor: auto
+lines.markeredgecolor: auto
+lines.markeredgewidth: 0.5
+lines.markersize:      8
+
+text.color:          black
+
+axes.facecolor:     EEEEEE
+axes.edgecolor:     black
+axes.linewidth:     1
+axes.grid:          True
+axes.grid.axis:     both
+axes.grid.which:    major
+axes.titlelocation: center
+axes.titlesize:     x-large
+axes.titlecolor:    auto
+axes.titlepad:      8.75
+axes.labelsize:     large
+axes.labelpad:      2.5
+axes.labelcolor:    666666
+axes.axisbelow:     line
+
+axes.formatter.limits:           -6, 6
+axes.formatter.use_locale:       False
+axes.formatter.use_mathtext:     True
+axes.formatter.min_exponent:     0
+axes.formatter.useoffset:        True
+axes.formatter.offset_threshold: 4
+
+axes.spines.left:   True
+axes.spines.bottom: True
+axes.spines.top:    True
+axes.spines.right:  True
+
+axes.unicode_minus: True
+
+axes.prop_cycle: cycler('color', ['1F77B4', 'FF7F0E', '2CA02C', 'D62728', '9467BD', '8C564B', 'E377C2', '7F7F7F', 'BCBD22', '17BECF'])
+
+axes.autolimit_mode: data
+
+axes.xmargin: 0.05
+axes.ymargin: 0.05
+
+
+xtick.top:           False
+xtick.bottom:        True
+xtick.labeltop:      False
+xtick.labelbottom:   True
+xtick.major.size:    2.1875
+xtick.minor.size:    1.25
+xtick.major.width:   1
+xtick.minor.width:   0.5
+xtick.major.pad:     6.1875
+xtick.minor.pad:     2.125
+xtick.color:         black
+xtick.labelsize:     large
+xtick.direction:     in
+xtick.minor.visible: False
+xtick.major.top:     False
+xtick.major.bottom:  True
+xtick.minor.top:     False
+xtick.minor.bottom:  True
+xtick.alignment:     center
+
+ytick.left:          True
+ytick.right:         False
+ytick.labelleft:     True
+ytick.labelright:    False
+ytick.major.size:    2.1875
+ytick.minor.size:    1.25
+ytick.major.width:   1
+ytick.minor.width:   0.5
+ytick.major.pad:     6.1875
+ytick.minor.pad:     2.125
+ytick.color:         black
+ytick.labelsize:     large
+ytick.direction:     in
+ytick.minor.visible: False
+ytick.major.left:    True
+ytick.major.right:   False
+ytick.minor.left:    True
+ytick.minor.right:   False
+ytick.alignment:     center
+
+grid.color:     B0B0B0
+grid.linestyle: -
+grid.linewidth: 0.1875
+grid.alpha:     0.9
+
+legend.loc:        best
+legend.frameon:    True
+legend.framealpha: 0.5
+legend.facecolor:  D5D5D5
+legend.edgecolor:  D5D5D5
+legend.fancybox:   True
+
+legend.shadow:         False
+legend.numpoints:      1
+legend.scatterpoints:  1
+legend.markerscale:    1
+legend.fontsize:       large
+legend.title_fontsize: None
+
+legend.borderpad:     0.25
+legend.labelspacing:  0.3125
+legend.handlelength:  1
+legend.handleheight:  0.5
+legend.handletextpad: 0.5
+legend.borderaxespad: 0.3125
+legend.columnspacing: 1.25
+
+figure.titlesize:   x-large
+figure.titleweight: normal
+figure.figsize: 8, 5
+figure.dpi:         288
+figure.facecolor:   white
+figure.edgecolor:   white
+figure.frameon:     True
+
+font.family:  Signika
+figure.autolayout: True
+figure.constrained_layout.use: False
