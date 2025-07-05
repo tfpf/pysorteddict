@@ -444,6 +444,26 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 </details>
 
+#### `iter(d)`
+
+Return an iterator over the sorted dictionary `d`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ()
+d["bar"] = [100]
+d["baz"] = 3.14
+for key in d:
+    print(key)
+```
+
+```text
+bar
+baz
+foo
+```
+
 ### Other Methods
 
 #### `d.clear()`
