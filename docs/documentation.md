@@ -560,32 +560,23 @@ Return a human-readable representation of the sorted dictionary view `v`.
 
 Return the length of the sorted dictionary view `v`.
 
-<details class="warning">
-
-<summary>This method may raise exceptions.</summary>
-
-If `v` is of type `SortedDictKeys`, the behaviour is equivalent to that of [`len(d)`](#lend) where `d` is the
-underlying sorted dictionary.
-
-</details>
+The behaviour is equivalent to that of [`len(d)`](#lend) where `d` is the underlying sorted dictionary.
 
 #### `ob in v`
 
 Return whether `ob` is present in the sorted dictionary view `v`.
 
-<details class="warning">
-
-<summary>This method may raise exceptions.</summary>
-
 If `v` is of type `SortedDictKeys`, the behaviour is equivalent to that of [`ob in d`](#key-in-d) where `d` is the
 underlying sorted dictionary.
-
-</details>
 
 #### `v[pos]` or `v[start:stop:step]`
 
 Return the element at position `pos` or a `list` of elements in the slice denoted by `start`, `stop` and `step` in the
 sorted dictionary view `v`.
+
+The behaviour is equivalent to that of `l[pos]` or `l[start:stop:step]` respectively where `l` is a `list` of the
+elements in `v` in the same order. In the second form, `start`, `stop` and `step` can be omitted, just
+like when slicing a `list`.
 
 ```python
 from pysorteddict import *
@@ -612,15 +603,6 @@ bar eggs spam
 ['bar', 'eggs']
 ['spam', 'foo', 'eggs', 'baz', 'bar']
 ```
-
-<details class="warning">
-
-<summary>This method may raise exceptions.</summary>
-
-The behaviour is equivalent to that of `l[pos]` or `l[start:stop:step]` respectively where `l` is a `list` containing
-the same elements as `v`.
-
-</details>
 
 #### `iter(v)`
 
