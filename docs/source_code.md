@@ -31,9 +31,9 @@ Implementation of the Python `pysorteddict` module. Glue between Python methods 
 
 Miscellanies for ease of development.
 
-## `tests/`
+## `tests/functional/`
 
-Behavioural tests.
+Functional (behavioural) tests.
 
 ### `test_fuzz.py`
 
@@ -46,3 +46,11 @@ Tests for `SortedDictKeysIter`.
 ### `test_uncommon_errors.py`
 
 Tests for errors not expected to occur during regular usage.
+
+## `tests/performance/`
+
+Performance tests.
+
+### `performance.ipynb`
+
+Tests to benchmark the performance of some methods.
