@@ -192,6 +192,12 @@ static PyMappingMethods sorted_dict_type_mapping = {
     .mp_ass_subscript = sorted_dict_type_setitem,
 };
 
+static PyObject* sorted_dict_type_iter(PyObject* self)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->iter(&sorted_dict_keys_iter_type);
+}
+
 PyDoc_STRVAR(
     sorted_dict_type_clear_doc,
     "d.clear()\n"
@@ -340,6 +346,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,
     .tp_doc = "Sorted dictionary: a dictionary in which the keys are always in ascending order.",
+    .tp_iter = sorted_dict_type_iter,
     .tp_methods = sorted_dict_type_methods,
     .tp_getset = sorted_dict_type_getset,
     .tp_init = sorted_dict_type_init,
