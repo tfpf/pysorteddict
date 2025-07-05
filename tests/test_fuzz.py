@@ -51,9 +51,9 @@ class TestFuzz:
 
         attrs = {*dir(SortedDict)}.difference((
             "__class__", "__dict__", "__dir__", "__doc__", "__eq__", "__format__", "__ge__", "__getattr__",
-            "__getattribute__", "__getstate__", "__gt__", "__hash__", "__init__", "__init_subclass__", "__le__",
-            "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__", "__sizeof__",
-            "__str__", "__subclasshook__", "__weakref__", "items", "key_type", "values",
+            "__getattribute__", "__getstate__", "__gt__", "__hash__", "__init__", "__init_subclass__", "__iter__",
+            "__le__", "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__",
+            "__sizeof__", "__str__", "__subclasshook__", "__weakref__", "items", "key_type", "values",
         ))  # fmt: skip
         for attr in self._rg.choices([*attrs], k=15_000):
             getattr(self, f"_test_{attr}")()
@@ -68,6 +68,7 @@ class TestFuzz:
             sorted_normal_dict = dict(sorted(self.normal_dict.items()))
             assert len(self.sorted_dict) == len(sorted_normal_dict)
             assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
+            assert [*self.sorted_dict] == [*sorted_normal_dict]
             assert self.sorted_dict.items() == [*sorted_normal_dict.items()]
             assert self.sorted_dict.values() == [*sorted_normal_dict.values()]
 
@@ -149,6 +150,7 @@ class TestFuzz:
                     self.sorted_dict[key]
                 continue
             assert self.sorted_dict[key] == self.normal_dict[key]
+
 
     def _test___new__(self):
         self.normal_dict = {}
