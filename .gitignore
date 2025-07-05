@@ -4,5 +4,6 @@
 /docs/_build/
 /docs/_static/fonts/
 /src/*.egg-info
+/tests/performance/.ipynb_checkpoints/
 
 __pycache__
