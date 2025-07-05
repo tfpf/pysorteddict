@@ -192,8 +192,9 @@ static PyMappingMethods sorted_dict_type_mapping = {
     .mp_ass_subscript = sorted_dict_type_setitem,
 };
 
-static PyObject*sorted_dict_type_iter(PyObject*self){
-SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+static PyObject* sorted_dict_type_iter(PyObject* self)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     return sd->iter(&sorted_dict_keys_iter_type);
 }
 

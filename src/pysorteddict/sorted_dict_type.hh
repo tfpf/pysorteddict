@@ -70,7 +70,7 @@ public:
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
-    PyObject*iter(PyTypeObject*);
+    PyObject* iter(PyTypeObject*);
     PyObject* clear(void);
     PyObject* copy(void);
     PyObject* items(void);

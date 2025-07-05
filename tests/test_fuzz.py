@@ -151,7 +151,6 @@ class TestFuzz:
                 continue
             assert self.sorted_dict[key] == self.normal_dict[key]
 
-
     def _test___new__(self):
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
