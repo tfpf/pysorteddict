@@ -11,9 +11,6 @@ text.color:          black
 axes.facecolor:     EEEEEE
 axes.edgecolor:     black
 axes.linewidth:     1
-axes.grid:          True
-axes.grid.axis:     both
-axes.grid.which:    major
 axes.titlelocation: center
 axes.titlesize:     x-large
 axes.titlecolor:    auto
@@ -85,12 +82,7 @@ ytick.minor.left:    True
 ytick.minor.right:   False
 ytick.alignment:     center
 
-grid.color:     B0B0B0
-grid.linestyle: -
-grid.linewidth: 0.1875
-grid.alpha:     0.9
-
-legend.loc:        best
+legend.loc:        upper left
 legend.frameon:    True
 legend.framealpha: 0.5
 legend.facecolor:  D5D5D5
@@ -98,9 +90,6 @@ legend.edgecolor:  D5D5D5
 legend.fancybox:   True
 
 legend.shadow:         False
-legend.numpoints:      1
-legend.scatterpoints:  1
-legend.markerscale:    1
 legend.fontsize:       large
 legend.title_fontsize: None
 
@@ -110,7 +99,6 @@ legend.handlelength:  1
 legend.handleheight:  0.5
 legend.handletextpad: 0.5
 legend.borderaxespad: 0.3125
-legend.columnspacing: 1.25
 
 figure.titlesize:   x-large
 figure.titleweight: normal
