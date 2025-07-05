@@ -1,6 +1,3 @@
-axes.autolimit_mode: data
-axes.axisbelow: line
-axes.edgecolor: black
 axes.facecolor: EEEEEE
 axes.formatter.limits: -6, 6
 axes.formatter.min_exponent: 0
@@ -16,8 +13,6 @@ axes.spines.bottom: True
 axes.spines.left: True
 axes.spines.right: True
 axes.spines.top: True
-axes.titlecolor: auto
-axes.titlelocation: center
 axes.titlepad: 8.75
 axes.titlesize: x-large
 axes.unicode_minus: True
@@ -26,12 +21,9 @@ axes.ymargin: 0.05
 figure.autolayout: True
 figure.constrained_layout.use: False
 figure.dpi: 288
-figure.edgecolor: white
-figure.facecolor: white
 figure.figsize: 8, 5
 figure.frameon: True
 figure.titlesize: x-large
-figure.titleweight: normal
 font.family: Signika
 legend.borderaxespad: 0.3125
 legend.borderpad: 0.25
@@ -53,10 +45,7 @@ lines.linewidth: 0.8
 lines.marker: .
 lines.markeredgewidth: 0.5
 lines.markersize: 8
-text.color: black
-xtick.alignment: center
 xtick.bottom: True
-xtick.color: black
 xtick.direction: in
 xtick.labelbottom: True
 xtick.labelsize: large
@@ -74,7 +63,6 @@ xtick.minor.visible: False
 xtick.minor.width: 0.5
 xtick.top: False
 ytick.alignment: center
-ytick.color: black
 ytick.direction: in
 ytick.labelleft: True
 ytick.labelright: False
