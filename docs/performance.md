@@ -4,9 +4,17 @@
 
 The table below describes the environment the performance benchmarks were run in.
 
-|Component|Specification|
-|:-:|:-:|
-|CPU|Intel Core i9-12900H|
-|CPU Frequency Scaling Governor|powersave|
-|RAM|16 GiB DDR4|
-|Operating System|Debian|
+| Component                      | Specification        |
+| :----------------------------: | :------------------: |
+| CPU                            | Intel Core i9-12900H |
+| CPU Frequency Scaling Governor | powersave            |
+| RAM                            | 16 GiB DDR4          |
+| Operating System               | Debian               |
+| pysorteddict Version           | 0.9.0                |
+
+The key type chosen was `float`, since it is easy to generate floating-point numbers uniformly distributed in [0, 1).
+Comparing two `float`s is straightforward (as opposed to comparing, say, two `str`s—if their lengths are different,
+they may introduce noise in the benchmarks).
+
+There is an extra step required when using `float` keys: the check for NaN. Hence, the performance will be marginally
+worse than if `int` keys were used.
