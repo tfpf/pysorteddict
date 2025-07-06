@@ -6,7 +6,7 @@ axes.labelcolor: 999999
 axes.labelpad: 2.5
 axes.labelsize: large
 axes.linewidth: 1
-axes.prop_cycle: cycler('color', ['yellow', 'cyan', 'red'])
+axes.prop_cycle: cycler('color', ['yellow', 'cyan', 'lightgreen', 'violet'])
 axes.titlepad: 8.75
 axes.titlesize: x-large
 figure.autolayout: True
