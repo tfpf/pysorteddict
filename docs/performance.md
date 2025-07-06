@@ -18,3 +18,15 @@ they may introduce noise in the benchmarks).
 
 There is an extra step required when using `float` keys: the check for NaN. Hence, the performance will be marginally
 worse than if `int` keys were used.
+
+## Iteration
+
+```{image} _static/images/perf-__iter__-light.png
+:align: center
+:class: only-light
+```
+
+```{image} _static/images/perf-__iter__-dark.png
+:align: center
+:class: only-dark
+```
