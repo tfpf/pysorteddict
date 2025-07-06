@@ -4,13 +4,14 @@
 
 The table below describes the environment the performance benchmarks were run in.
 
-| Component                      | Specification        |
-| :----------------------------: | :------------------: |
-| CPU                            | Intel Core i9-12900H |
-| CPU Frequency Scaling Governor | powersave            |
-| RAM                            | 16 GiB DDR4          |
-| Operating System               | Debian               |
-| Python Interpreter             | CPython 3.11         |
+| Component                      | Specification                     |
+| :----------------------------: | :-------------------------------: |
+| CPU                            | Intel Core i9-12900H              |
+| CPU Frequency Scaling Governor | powersave                         |
+| RAM                            | 16 GiB DDR4                       |
+| Operating System               | Debian                            |
+| Python Interpreter             | CPython 3.11                      |
+| Libraries                      | Jupyter 1.1.1, pysorteddict 0.9.0 |
 
 The key type chosen was `float`, since it is easy to generate floating-point numbers uniformly distributed in [0, 1).
 Comparing two `float`s is straightforward (as opposed to comparing, say, two `str`s—if their lengths are different,
