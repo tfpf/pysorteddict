@@ -1,5 +1,5 @@
 axes.edgecolor: CCCCCC
-axes.facecolor: 3C3C3C
+axes.facecolor: 2A2A2A
 axes.formatter.limits: -6, 6
 axes.formatter.use_mathtext: True
 axes.labelcolor: 999999
@@ -11,8 +11,8 @@ axes.titlepad: 8.75
 axes.titlesize: x-large
 figure.autolayout: True
 figure.dpi: 288
-figure.edgecolor: 333333
-figure.facecolor: 333333
+figure.edgecolor: 131416
+figure.facecolor: 131416
 figure.figsize: 8, 5
 figure.titlesize: x-large
 font.family: Signika
