@@ -1,2 +1,1 @@
 docs/_static/assets.zip diff=lfs filter=lfs merge=lfs -text
-docs/_static/fonts.zip diff=lfs filter=lfs merge=lfs -text
