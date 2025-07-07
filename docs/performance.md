@@ -27,15 +27,15 @@ Everything required to run these performance benchmarks can be found in the GitH
 
 ## Overview
 
-Average execution times of some expressions are tabulated against the lengths of the sorted dictionaries used.
+The average execution times of some expressions are tabulated against the lengths of the sorted dictionaries used.
 
 | Expression         | &emsp;10<sup>2</sup>&emsp; | &emsp;10<sup>3</sup>&emsp; | &emsp;10<sup>4</sup>&emsp; | &emsp;10<sup>5</sup>&emsp; | &emsp;10<sup>6</sup>&emsp; | &emsp;10<sup>7</sup>&emsp; |
 | :--------:         | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: |
-| `0.00 in d`        |                            |                            |                            |                            |                            |                            |
-| `0.33 in d`        |                            |                            |                            |                            |                            |                            |
-| `0.67 in d`        |                            |                            |                            |                            |                            |                            |
-| `1.00 in d`        |                            |                            |                            |                            |                            |                            |
-| `for _ in d: pass` |                            |                            |                            |                            |                            |                            |
+| `0.00 in d`        | 36.8 ns                    | 48.9 ns                    | 64.6 ns                    | 83.1 ns                    | 94.0 ns                    | 106 ns                     |
+| `0.33 in d`        | 44.8 ns                    | 59.8 ns                    | 67.6 ns                    | 84.2 ns                    | 100 ns                     | 113 ns                     |
+| `0.67 in d`        | 39.7 ns                    | 56.1 ns                    | 67.7 ns                    | 76.5 ns                    | 97.4 ns                    | 114 ns                     |
+| `1.00 in d`        | 31.8 ns                    | 60.3 ns                    | 64.5 ns                    | 84.6 ns                    | 92.2 ns                    | 116 ns                     |
+| `for _ in d: pass` | 875 ns                     | 9.40 μs                    | 129 μs                     | 1.98 ms                    | 96.1 ms                    | 1.08 s                     |
 
 ## Details
 
