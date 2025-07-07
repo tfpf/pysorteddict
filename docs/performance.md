@@ -25,7 +25,21 @@ worse than if `int` keys were used.
 
 Everything required to run these performance benchmarks can be found in the GitHub repository.
 
-## Membership Check
+## Overview
+
+Average execution times of some expressions are tabulated against the lengths of the sorted dictionaries used.
+
+| Expression         | 10<sup>2</sup> | 10<sup>3</sup> | 10<sup>4</sup> | 10<sup>5</sup> | 10<sup>6</sup> | 10<sup>7</sup> |
+| :--------:         | :------------: | :------------: | :------------: | :------------: | :------------: | :------------: |
+| `0.00 in d`        |                |                |                |                |                |                |
+| `0.33 in d`        |                |                |                |                |                |                |
+| `0.67 in d`        |                |                |                |                |                |                |
+| `1.00 in d`        |                |                |                |                |                |                |
+| `for _ in d: pass` |                |                |                |                |                |                |
+
+## Details
+
+### Membership Check
 
 ```{image} _static/images/perf-__contains__-light.png
 :align: center
@@ -37,7 +51,7 @@ Everything required to run these performance benchmarks can be found in the GitH
 :class: only-dark
 ```
 
-## Iteration
+### Iteration
 
 ```{image} _static/images/perf-__iter__-light.png
 :align: center
