@@ -29,13 +29,13 @@ Everything required to run these performance benchmarks can be found in the GitH
 
 Average execution times of some expressions are tabulated against the lengths of the sorted dictionaries used.
 
-| Expression         | 10<sup>2</sup> | 10<sup>3</sup> | 10<sup>4</sup> | 10<sup>5</sup> | 10<sup>6</sup> | 10<sup>7</sup> |
-| :--------:         | :------------: | :------------: | :------------: | :------------: | :------------: | :------------: |
-| `0.00 in d`        |                |                |                |                |                |                |
-| `0.33 in d`        |                |                |                |                |                |                |
-| `0.67 in d`        |                |                |                |                |                |                |
-| `1.00 in d`        |                |                |                |                |                |                |
-| `for _ in d: pass` |                |                |                |                |                |                |
+| Expression         | &emsp;10<sup>2</sup>&emsp; | &emsp;10<sup>3</sup>&emsp; | &emsp;10<sup>4</sup>&emsp; | &emsp;10<sup>5</sup>&emsp; | &emsp;10<sup>6</sup>&emsp; | &emsp;10<sup>7</sup>&emsp; |
+| :--------:         | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: |
+| `0.00 in d`        |                            |                            |                            |                            |                            |                            |
+| `0.33 in d`        |                            |                            |                            |                            |                            |                            |
+| `0.67 in d`        |                            |                            |                            |                            |                            |                            |
+| `1.00 in d`        |                            |                            |                            |                            |                            |                            |
+| `for _ in d: pass` |                            |                            |                            |                            |                            |                            |
 
 ## Details
 
