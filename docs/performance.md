@@ -23,6 +23,8 @@ nothing-up-my-sleeve number.
 There is an extra step required when using `float` keys: the check for NaN. Hence, the performance will be marginally
 worse than if `int` keys were used.
 
+Everything required to run these performance benchmarks can be found in the GitHub repository.
+
 ## Membership Check
 
 ```{image} _static/images/perf-__contains__-light.png
