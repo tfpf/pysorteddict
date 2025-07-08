@@ -23,7 +23,10 @@ with _π_, a nothing-up-my-sleeve number.
 There is an extra step required when using `float` keys: the check for NaN. Hence, the performance will be marginally
 worse than if `int` keys were used.
 
-Everything required to run these performance benchmarks can be found in the GitHub repository.
+<div class="notice">
+The performance benchmarking code is in a Jupyter notebook in the GitHub repository. It contains everything required to
+run the benchmarks.
+</div>
 
 ## Overview
 
@@ -35,6 +38,7 @@ The average execution times of some expressions are tabulated against the length
 | `0.33 in d`        | 44.8 ns                    | 59.8 ns                    | 67.6 ns                    | 84.2 ns                    | 100 ns                     | 113 ns                     |
 | `0.67 in d`        | 39.7 ns                    | 56.1 ns                    | 67.7 ns                    | 76.5 ns                    | 97.4 ns                    | 114 ns                     |
 | `1.00 in d`        | 31.8 ns                    | 60.3 ns                    | 64.5 ns                    | 84.6 ns                    | 92.2 ns                    | 116 ns                     |
+| `set_del(d, keys)` | 6.35 μs                    | 7.62 μs                    | 9.04 μs                    | 10.7 μs                    | 13.4 μs                    | 17.4 μs                    |
 | `for _ in d: pass` | 875 ns                     | 9.40 μs                    | 129 μs                     | 1.98 ms                    | 96.1 ms                    | 1.08 s                     |
 
 ## Details
@@ -47,6 +51,34 @@ The average execution times of some expressions are tabulated against the length
 ```
 
 ```{image} _static/images/perf-contains-dark.png
+:align: center
+:class: only-dark
+```
+
+### Insertion and Deletion
+
+Inserting or deleting an item into or from a sorted dictionary changes its length. Hence, benchmarks which only insert
+or only delete items cannot be said to have been performed on a sorted dictionary of a particular length. Therefore,
+the strategy chosen was:
+
+* generate a `list` of 50 random `float`s;
+* insert all of them into the sorted dictionary; and
+* delete all of them from the sorted dictionary in order of insertion.
+
+Only the last two steps (defined in a function `set_del`) were timed. After these, in theory, the sorted dictionary
+should return to the original state, allowing it to be used for the next round of timing. In practice, it is likely to
+be different under the hood because of rebalancing operations. But that can be assumed to simulate the real-world
+effects of insertions and deletions, so this is a sound strategy.
+
+The numbers reported in the table above and the two graphs below are obtained by dividing the average running time by
+50 (the number of insertions and deletions) in order to indicate the time taken per insertion and deletion.
+
+```{image} _static/images/perf-setitem-light.png
+:align: center
+:class: only-light
+```
+
+```{image} _static/images/perf-setitem-dark.png
 :align: center
 :class: only-dark
 ```
