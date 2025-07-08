@@ -1,7 +1,5 @@
 # Performance
 
-<div class="notice">This page is a work-in-progress.</div>
-
 The table below describes the environment the performance benchmarks were run in.
 
 | Component                      | Specification                              |
