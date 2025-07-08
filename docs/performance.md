@@ -41,24 +41,24 @@ The average execution times of some expressions are tabulated against the length
 
 ### Membership Check
 
-```{image} _static/images/perf-__contains__-light.png
+```{image} _static/images/perf-contains-light.png
 :align: center
 :class: only-light
 ```
 
-```{image} _static/images/perf-__contains__-dark.png
+```{image} _static/images/perf-contains-dark.png
 :align: center
 :class: only-dark
 ```
 
 ### Iteration
 
-```{image} _static/images/perf-__iter__-light.png
+```{image} _static/images/perf-iter-light.png
 :align: center
 :class: only-light
 ```
 
-```{image} _static/images/perf-__iter__-dark.png
+```{image} _static/images/perf-iter-dark.png
 :align: center
 :class: only-dark
 ```
