@@ -70,8 +70,7 @@ should return to the original state, allowing it to be used for the next round o
 be different under the hood because of rebalancing operations. But that can be assumed to simulate the real-world
 effects of insertions and deletions, so this is a sound strategy.
 
-The numbers reported in the table above and the two graphs below are obtained by dividing the average running time by
-50 (the number of insertions and deletions) in order to indicate the time taken per insertion and deletion.
+To reiterate, the numbers reported in the table above and the graph below are for 50 insertions and deletions.
 
 ```{image} _static/images/perf-setitem-light.png
 :align: center
