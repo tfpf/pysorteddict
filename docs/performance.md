@@ -67,8 +67,8 @@ the strategy chosen was:
 
 Only the last two steps (defined in a function `set_del`) were timed. After these, in theory, the sorted dictionary
 should return to the original state, allowing it to be used for the next round of timing. In practice, it is likely to
-be different under the hood because of rebalancing operations. But that can be assumed to simulate the real-world
-effects of insertions and deletions, so this is a sound strategy.
+be in a different state because of rebalancing operations. But that change of state can be assumed to simulate the
+real-world effects of insertions and deletions, so this is a sound strategy.
 
 To reiterate, the numbers reported in the table above and the graph below are for 50 insertions and deletions.
 
