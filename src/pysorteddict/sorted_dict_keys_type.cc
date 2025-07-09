@@ -9,6 +9,11 @@ PyObject* SortedDictKeysIterType::next(void)
     return Py_XNewRef(this->SortedDictViewIterType::next().first);  // 🆕
 }
 
+PyObject* SortedDictViewType::iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator)
+{
+    Py_RETURN_FALSE;
+}
+
 int SortedDictKeysType::contains(PyObject* key)
 {
     return this->sd->contains(key);
