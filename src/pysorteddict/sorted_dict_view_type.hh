@@ -37,6 +37,7 @@ protected:
     SortedDictType* sd;
 
 private:
+    PyObject* iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
     PyObject* getitem(Py_ssize_t);
     PyObject* getitem(Py_ssize_t, Py_ssize_t, Py_ssize_t);
 
