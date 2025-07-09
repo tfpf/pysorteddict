@@ -244,7 +244,7 @@ PyDoc_STRVAR(
 static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->keys(&sorted_dict_keys_type);
+    return sd->keys();
 }
 
 PyDoc_STRVAR(

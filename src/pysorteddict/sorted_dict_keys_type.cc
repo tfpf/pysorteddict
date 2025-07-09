@@ -18,3 +18,14 @@ int SortedDictKeysType::contains(PyObject* key)
 {
     return this->sd->contains(key);
 }
+
+PyObject* SortedDictKeysType::New(SortedDictType* sd)
+{
+    return reinterpret_cast<PyObject*>(new SortedDictKeysType(sd));
+}
+
+SortedDictKeysType::SortedDictKeysType(SortedDictType* sd)
+{
+    this->sd = sd;
+    Py_INCREF(this->sd);
+}

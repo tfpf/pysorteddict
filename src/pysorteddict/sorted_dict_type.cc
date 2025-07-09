@@ -431,9 +431,9 @@ PyObject* SortedDictType::items(void)
     return sd_items;
 }
 
-PyObject* SortedDictType::keys(PyTypeObject* type)
+PyObject* SortedDictType::keys(void)
 {
-    return SortedDictKeysType::New(type, this);
+    return SortedDictKeysType::New(this);
 }
 
 PyObject* SortedDictType::values(void)

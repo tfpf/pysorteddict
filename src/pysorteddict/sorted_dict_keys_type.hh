@@ -19,6 +19,8 @@ private:
 
 public:
     int contains(PyObject*);
+    static PyObject* New(SortedDictType*);
+    SortedDictKeysType(SortedDictType*);
 };
 
 #endif
