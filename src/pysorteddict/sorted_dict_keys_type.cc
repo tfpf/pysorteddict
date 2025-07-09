@@ -9,7 +9,7 @@ PyObject* SortedDictKeysIterType::next(void)
     return Py_XNewRef(this->SortedDictViewIterType::next().first);  // 🆕
 }
 
-PyObject* SortedDictViewType::iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator)
+PyObject* SortedDictKeysType::iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator)
 {
     Py_RETURN_FALSE;
 }
