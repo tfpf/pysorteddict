@@ -239,3 +239,17 @@ PyObject* SortedDictViewType::iter(PyTypeObject* type)
 {
     return SortedDictViewIterType::New(type, this->sd);
 }
+
+PyObject* SortedDictViewType::New(PyTypeObject* type, SortedDictType* sd)
+{
+    PyObject* self = type->tp_alloc(type, 0);  // 🆕
+    if (self == nullptr)
+    {
+        return nullptr;
+    }
+
+    SortedDictViewType* sdv = reinterpret_cast<SortedDictViewType*>(self);
+    sdv->sd = sd;
+    Py_INCREF(sdv->sd);
+    return self;
+}

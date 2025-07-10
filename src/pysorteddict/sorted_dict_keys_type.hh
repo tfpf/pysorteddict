@@ -14,13 +14,8 @@ public:
 
 struct SortedDictKeysType : public SortedDictViewType
 {
-private:
-    PyObject* iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
-
 public:
     int contains(PyObject*);
-    static PyObject* New(SortedDictType*);
-    SortedDictKeysType(SortedDictType*);
 };
 
 #endif
