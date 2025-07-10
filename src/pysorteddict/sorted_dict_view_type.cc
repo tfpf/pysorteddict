@@ -232,7 +232,7 @@ PyObject* SortedDictViewType::getitem(PyObject* idx)
 
 PyObject* SortedDictViewType::iter(PyTypeObject* type)
 {
-    return SortedDictViewIterType::New(type, this->sd,this->iterator_to_object);
+    return SortedDictViewIterType::New(type, this->sd, this->iterator_to_object);
 }
 
 PyObject* SortedDictViewType::New(PyTypeObject* type, SortedDictType* sd, IteratorToObject iterator_to_object)

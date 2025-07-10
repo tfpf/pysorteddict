@@ -30,7 +30,7 @@ private:
 public:
     void deinit(void);
     PyObject* next(void);
-    static PyObject* New(PyTypeObject*, SortedDictType*,IteratorToObject);
+    static PyObject* New(PyTypeObject*, SortedDictType*, IteratorToObject);
 };
 
 struct SortedDictViewType
