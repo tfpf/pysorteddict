@@ -2,7 +2,6 @@
 #include <Python.h>
 #include <algorithm>
 #include <map>
-#include <utility>
 
 #include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"

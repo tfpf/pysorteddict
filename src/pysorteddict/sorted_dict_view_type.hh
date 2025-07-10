@@ -4,7 +4,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <map>
-#include <utility>
 
 #include "sorted_dict_type.hh"
 
