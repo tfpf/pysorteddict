@@ -20,7 +20,7 @@ protected:
     std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it;
     bool should_raise_stop_iteration;
 
-    // See the next class for details.
+    // See below for why this is required.
     IteratorToObject iterator_to_object;
 
 private:
@@ -41,11 +41,12 @@ public:
 protected:
     SortedDictType* sd;
 
-    // To mimic dynamic dispatch. Using C++ virtual functions would require
-    // constructing instances the C++ way, but C++ constructors won't know how
-    // to initialise the Python-specific members. The default memory allocator
-    // provided by Python (which does initialise Python-specific members) does
-    // not run constructors.
+    // To mimic dynamic dispatch. Child classes should provide this function,
+    // which should convert a C++ iterator into a Python object. Using C++
+    // virtual functions would require constructing instances the C++ way, but
+    // C++ constructors won't know how to initialise the Python-specific
+    // members. The default memory allocator provided by Python (which does
+    // initialise Python-specific members) does not run constructors.
     IteratorToObject iterator_to_object;
 
 private:
