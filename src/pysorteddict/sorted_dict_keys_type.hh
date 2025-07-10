@@ -8,14 +8,14 @@
 
 struct SortedDictKeysIterType : public SortedDictViewIterType
 {
-public:
-    PyObject* next(void);
+    static PyObject* New(PyTypeObject*, SortedDictType*);
 };
 
 struct SortedDictKeysType : public SortedDictViewType
 {
 public:
     int contains(PyObject*);
+    static PyObject* New(PyTypeObject*, SortedDictType*);
 };
 
 #endif

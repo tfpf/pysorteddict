@@ -61,22 +61,21 @@ void SortedDictViewIterType::deinit(void)
     }
 }
 
-std::pair<PyObject*, PyObject*> SortedDictViewIterType::next(void)
+PyObject* SortedDictViewIterType::next(void)
 {
-    static std::pair<PyObject* const, PyObject*> sentinel = { nullptr, nullptr };
     if (this->should_raise_stop_iteration)
     {
-        return sentinel;
+        return nullptr;
     }
 
     // The 'next' key-value pair is the current one the iterator points to.
     auto curr = this->it++;
     this->untrack(curr);
     this->track(this->it);
-    return { curr->first, curr->second.value };
+    return this->iterator_to_object(curr);
 }
 
-PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
+PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd, IteratorToObject iterator_to_object)
 {
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
     if (self == nullptr)
@@ -88,12 +87,8 @@ PyObject* SortedDictViewIterType::New(PyTypeObject* type, SortedDictType* sd)
     sdvi->sd = sd;
     sdvi->it = sdvi->sd->map->begin();
     sdvi->track(sdvi->it);
+    sdvi->iterator_to_object = iterator_to_object;
     return self;
-}
-
-PyObject* SortedDictViewType::iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator)
-{
-    Py_RETURN_NOTIMPLEMENTED;
 }
 
 PyObject* SortedDictViewType::getitem(Py_ssize_t position)
@@ -237,10 +232,10 @@ PyObject* SortedDictViewType::getitem(PyObject* idx)
 
 PyObject* SortedDictViewType::iter(PyTypeObject* type)
 {
-    return SortedDictViewIterType::New(type, this->sd);
+    return SortedDictViewIterType::New(type, this->sd,this->iterator_to_object);
 }
 
-PyObject* SortedDictViewType::New(PyTypeObject* type, SortedDictType* sd)
+PyObject* SortedDictViewType::New(PyTypeObject* type, SortedDictType* sd, IteratorToObject iterator_to_object)
 {
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
     if (self == nullptr)
@@ -251,5 +246,6 @@ PyObject* SortedDictViewType::New(PyTypeObject* type, SortedDictType* sd)
     SortedDictViewType* sdv = reinterpret_cast<SortedDictViewType*>(self);
     sdv->sd = sd;
     Py_INCREF(sdv->sd);
+    sdv->iterator_to_object = iterator_to_object;
     return self;
 }

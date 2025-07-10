@@ -4,12 +4,21 @@
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_view_type.hh"
 
-PyObject* SortedDictKeysIterType::next(void)
+static PyObject* iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it)
 {
-    return Py_XNewRef(this->SortedDictViewIterType::next().first);  // 🆕
+    return Py_NewRef(it->first);  // 🆕
+}
+
+PyObject* SortedDictKeysIterType::New(PyTypeObject*type, SortedDictType*sd){
+    return SortedDictViewIterType::New(type,sd,::iterator_to_object);
 }
 
 int SortedDictKeysType::contains(PyObject* key)
 {
     return this->sd->contains(key);
+}
+
+PyObject* SortedDictKeysType::New(PyTypeObject* type, SortedDictType* sd)
+{
+    return SortedDictViewType::New(type, sd, ::iterator_to_object);
 }

@@ -8,6 +8,8 @@
 
 #include "sorted_dict_type.hh"
 
+using IteratorToObject = PyObject* (*)(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
+
 struct SortedDictViewIterType
 {
 public:
@@ -18,14 +20,17 @@ protected:
     std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it;
     bool should_raise_stop_iteration;
 
+    // See the next class for details.
+    IteratorToObject iterator_to_object;
+
 private:
     void track(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
     void untrack(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
 
 public:
     void deinit(void);
-    std::pair<PyObject*, PyObject*> next(void);
-    static PyObject* New(PyTypeObject*, SortedDictType*);
+    PyObject* next(void);
+    static PyObject* New(PyTypeObject*, SortedDictType*,IteratorToObject);
 };
 
 struct SortedDictViewType
@@ -36,8 +41,14 @@ public:
 protected:
     SortedDictType* sd;
 
+    // To mimic dynamic dispatch. Using C++ virtual functions would require
+    // constructing instances the C++ way, but C++ constructors won't know how
+    // to initialise the Python-specific members. The default memory allocator
+    // provided by Python (which does initialise Python-specific members) does
+    // not run constructors.
+    IteratorToObject iterator_to_object;
+
 private:
-    PyObject* iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
     PyObject* getitem(Py_ssize_t);
     PyObject* getitem(Py_ssize_t, Py_ssize_t, Py_ssize_t);
 
@@ -47,7 +58,7 @@ public:
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     PyObject* iter(PyTypeObject*);
-    static PyObject* New(PyTypeObject*, SortedDictType*);
+    static PyObject* New(PyTypeObject*, SortedDictType*, IteratorToObject);
 };
 
 #endif
