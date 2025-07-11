@@ -30,7 +30,6 @@ static PyTypeObject sorted_dict_keys_iter_type = {
     // clang-format on
     .tp_basicsize = sizeof(SortedDictKeysIterType),
     .tp_dealloc = sorted_dict_keys_iter_type_dealloc,
-    .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_doc = "Iterator over the keys in a sorted dictionary.",
