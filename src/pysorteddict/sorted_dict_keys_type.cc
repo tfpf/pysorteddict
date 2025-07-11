@@ -2,6 +2,7 @@
 #include <Python.h>
 
 #include "sorted_dict_keys_type.hh"
+#include "sorted_dict_type.hh"
 #include "sorted_dict_view_type.hh"
 
 static PyObject* iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it)
