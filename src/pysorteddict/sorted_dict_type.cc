@@ -2,6 +2,7 @@
 #include <Python.h>
 #include <cmath>
 #include <map>
+#include <cstddef>
 #include <string>
 #include <utility>
 
@@ -473,14 +474,14 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
     return 0;
 }
 
-PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
+void*SortedDictType::operator new(std::size_t count) noexcept
 {
     if (!import_supported_key_types())
     {
         return nullptr;
     }
 
-    PyObject* self = type->tp_alloc(type, 0);  // 🆕
+    void* self = PyType_GenericAlloc(type, 0);  // 🆕
     if (self == nullptr)
     {
         return nullptr;
@@ -489,9 +490,12 @@ PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwar
     // Python's default allocator claims to initialise the contents of the
     // allocated memory to null, but actually writes zeros to it. Hence,
     // explicitly initialise them.
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    SortedDictType* sd = static_cast<SortedDictType*>(self);
     sd->map = new std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>;
     sd->key_type = nullptr;
     sd->known_referrers = 0;
     return self;
+}
+
+SortedDictType::SortedDictType(PyObject*args,PyObject*kwargs){
 }

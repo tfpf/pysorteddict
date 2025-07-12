@@ -3,6 +3,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <cstddef>
 #include <map>
 
 /**
@@ -78,7 +79,8 @@ public:
     PyObject* values(void);
     PyObject* get_key_type(void);
     int init(PyObject*, PyObject*);
-    static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
+    static void* operator new(std::size_t) noexcept;
+    SortedDictType(PyObject*,PyObject*);
 
     friend struct SortedDictKeysType;
     friend struct SortedDictViewIterType;

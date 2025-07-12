@@ -131,9 +131,7 @@ static void sorted_dict_type_dealloc(PyObject* self)
     // but it looks like the deinitialisation (finalisation) function is not
     // automatically called prior to deallocation. Further, the documentation
     // recommends doing both here.
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    sd->deinit();
-    Py_TYPE(self)->tp_free(self);
+    delete self;
 }
 
 /**
@@ -328,7 +326,7 @@ static int sorted_dict_type_init(PyObject* self, PyObject* args, PyObject* kwarg
  */
 static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    return SortedDictType::New(type, args, kwargs);
+    return reinterpret_cast<PyObject*>( new SortedDictType(args, kwargs));
 }
 
 static PyTypeObject sorted_dict_type = {
@@ -349,9 +347,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_methods = sorted_dict_type_methods,
     .tp_getset = sorted_dict_type_getset,
     .tp_init = sorted_dict_type_init,
-    .tp_alloc = PyType_GenericAlloc,
     .tp_new = sorted_dict_type_new,
-    .tp_free = PyObject_Free,
 };
 
 static PyModuleDef sorted_dict_module = {
