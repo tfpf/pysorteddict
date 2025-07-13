@@ -642,26 +642,28 @@ like when slicing a `list`.
 ```python
 from pysorteddict import *
 d = SortedDict()
-keys = d.keys()
+items, keys, values = d.items(), d.keys(), d.values()
 d["foo"] = ()
 d["bar"] = [100]
 d["baz"] = 3.14
 d["spam"] = {}
 d["eggs"] = ""
-print(keys[0], keys[2], keys[4])
+print(d)
+print(keys[0], keys[2], values[4])
 print(keys[:3])
-print(keys[1:])
-print(keys[-3:3])
-print(keys[-5:4:2])
+print(items[1:])
+print(values[-3:3])
+print(items[-5:4:2])
 print(keys[::-1])
 ```
 
 ```text
-bar eggs spam
+SortedDict({'bar': [100], 'baz': 3.14, 'eggs': '', 'foo': (), 'spam': {}})
+bar eggs {}
 ['bar', 'baz', 'eggs']
-['baz', 'eggs', 'foo', 'spam']
-['eggs']
-['bar', 'eggs']
+[('baz', 3.14), ('eggs', ''), ('foo', ()), ('spam', {})]
+['']
+[('bar', [100]), ('eggs', '')]
 ['spam', 'foo', 'eggs', 'baz', 'bar']
 ```
 
