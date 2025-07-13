@@ -9,9 +9,7 @@
  */
 static void sorted_dict_keys_iter_type_dealloc(PyObject* self)
 {
-    SortedDictKeysIterType* sdki = reinterpret_cast<SortedDictKeysIterType*>(self);
-    sdki->deinit();
-    Py_TYPE(self)->tp_free(self);
+    SortedDictKeysIterType::Delete(self);
 }
 
 /**
