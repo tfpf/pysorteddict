@@ -8,7 +8,7 @@
 
 static PyObject* iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it)
 {
-    return PyTuple_Pack(2, Py_NewRef(it->first), Py_NewRef(it->second.value));  // 🆕
+    return PyTuple_Pack(2, it->first, it->second.value);  // 🆕
 }
 
 PyObject* SortedDictItemsType::New(PyTypeObject* type, SortedDictType* sd)
