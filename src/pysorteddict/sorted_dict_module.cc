@@ -566,7 +566,9 @@ static PyModuleDef sorted_dict_module = {
 
 PyMODINIT_FUNC PyInit_pysorteddict(void)
 {
-    if (PyType_Ready(&sorted_dict_keys_iter_type) < 0 || PyType_Ready(&sorted_dict_keys_type) < 0
+    if (PyType_Ready(&sorted_dict_items_iter_type) < 0 || PyType_Ready(&sorted_dict_items_type) < 0
+        || PyType_Ready(&sorted_dict_keys_iter_type) < 0 || PyType_Ready(&sorted_dict_keys_type) < 0
+        || PyType_Ready(&sorted_dict_values_iter_type) < 0 || PyType_Ready(&sorted_dict_values_type) < 0
         || PyType_Ready(&sorted_dict_type) < 0)
     {
         return nullptr;
