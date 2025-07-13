@@ -53,7 +53,7 @@ private:
     PyObject* getitem(Py_ssize_t, Py_ssize_t, Py_ssize_t);
 
 public:
-    void deinit(void);
+    static void Delete(PyObject*);
     static PyObject* repr(char const* name, PyObject*);
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);

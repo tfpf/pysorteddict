@@ -44,9 +44,7 @@ static PyTypeObject sorted_dict_keys_iter_type = {
  */
 static void sorted_dict_keys_type_dealloc(PyObject* self)
 {
-    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
-    sdk->deinit();
-    Py_TYPE(self)->tp_free(self);
+    SortedDictKeysType::Delete(self);
 }
 
 /**

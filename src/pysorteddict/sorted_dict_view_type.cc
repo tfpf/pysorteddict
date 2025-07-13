@@ -180,9 +180,11 @@ PyObject* SortedDictViewType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
     return keys;
 }
 
-void SortedDictViewType::deinit(void)
+void SortedDictViewType::Delete(PyObject* self)
 {
-    Py_DECREF(this->sd);
+    SortedDictViewType* sdv = reinterpret_cast<SortedDictViewType*>(self);
+    Py_DECREF(sdv->sd);
+    Py_TYPE(self)->tp_free(self);
 }
 
 PyObject* SortedDictViewType::repr(char const* name, PyObject* ob)
