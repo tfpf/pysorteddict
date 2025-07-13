@@ -528,10 +528,29 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 Return a shallow copy of the sorted dictionary `d`.
 
-#### `d.items() -> list[tuple[object, object]]`
+#### `d.items() -> SortedDictItems`
 
-Return the key-value pairs in the sorted dictionary `d`. The list will be sorted. It will exist independently of `d`;
-it won't be a view on its items.
+Return a dynamic view on the items in the sorted dictionary `d`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+items = d.items()
+d["foo"] = ()
+print(items)
+d["bar"] = [100]
+print(items)
+d["baz"] = 3.14
+print(items)
+```
+
+```text
+SortedDictItems([('foo', ())])
+SortedDictItems([('bar', [100]), ('foo', ())])
+SortedDictItems([('bar', [100]), ('baz', 3.14), ('foo', ())])
+```
+
+See [sorted dictionary views](#sorted-dictionary-views).
 
 #### `d.keys() -> SortedDictKeys`
 
@@ -555,12 +574,31 @@ SortedDictKeys(['bar', 'foo'])
 SortedDictKeys(['bar', 'baz', 'foo'])
 ```
 
-See the documentation of [sorted dictionary views](#sorted-dictionary-views).
+See [sorted dictionary views](#sorted-dictionary-views).
 
-#### `d.values() -> list[object]`
+#### `d.values() -> SortedDictValues`
 
-Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
-exist independently of `d`; it won't be a view on its values.
+Return a dynamic view on the values in the sorted dictionary `d`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+values = d.values()
+d["foo"] = ()
+print(values)
+d["bar"] = [100]
+print(values)
+d["baz"] = 3.14
+print(values)
+```
+
+```text
+SortedDictValues([()])
+SortedDictValues([[100], ()])
+SortedDictValues([[100], 3.14, ()])
+```
+
+See [sorted dictionary views](#sorted-dictionary-views).
 
 ## Sorted Dictionary Views
 
