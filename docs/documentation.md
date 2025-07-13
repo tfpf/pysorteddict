@@ -4,6 +4,7 @@
 
 <summary>Documentation of older versions is available on GitHub.</summary>
 
+▸ [0.9.0](https://github.com/tfpf/pysorteddict/blob/v0.9.0/docs/documentation.md)  
 ▸ [0.8.2](https://github.com/tfpf/pysorteddict/blob/v0.8.2/docs/documentation.md)
 ▸ [0.8.1](https://github.com/tfpf/pysorteddict/blob/v0.8.1/docs/documentation.md)
 ▸ [0.8.0](https://github.com/tfpf/pysorteddict/blob/v0.8.0/docs/documentation.md)  
@@ -527,10 +528,29 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 Return a shallow copy of the sorted dictionary `d`.
 
-#### `d.items() -> list[tuple[object, object]]`
+#### `d.items() -> SortedDictItems`
 
-Return the key-value pairs in the sorted dictionary `d`. The list will be sorted. It will exist independently of `d`;
-it won't be a view on its items.
+Return a dynamic view on the items in the sorted dictionary `d`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+items = d.items()
+d["foo"] = ()
+print(items)
+d["bar"] = [100]
+print(items)
+d["baz"] = 3.14
+print(items)
+```
+
+```text
+SortedDictItems([('foo', ())])
+SortedDictItems([('bar', [100]), ('foo', ())])
+SortedDictItems([('bar', [100]), ('baz', 3.14), ('foo', ())])
+```
+
+See [sorted dictionary views](#sorted-dictionary-views).
 
 #### `d.keys() -> SortedDictKeys`
 
@@ -554,21 +574,42 @@ SortedDictKeys(['bar', 'foo'])
 SortedDictKeys(['bar', 'baz', 'foo'])
 ```
 
-See the documentation of [sorted dictionary views](#sorted-dictionary-views).
+See [sorted dictionary views](#sorted-dictionary-views).
 
-#### `d.values() -> list[object]`
+#### `d.values() -> SortedDictValues`
 
-Return the values in the sorted dictionary `d`. The list will be sorted by the keys the values are mapped to. It will
-exist independently of `d`; it won't be a view on its values.
+Return a dynamic view on the values in the sorted dictionary `d`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+values = d.values()
+d["foo"] = ()
+print(values)
+d["bar"] = [100]
+print(values)
+d["baz"] = 3.14
+print(values)
+```
+
+```text
+SortedDictValues([()])
+SortedDictValues([[100], ()])
+SortedDictValues([[100], 3.14, ()])
+```
+
+See [sorted dictionary views](#sorted-dictionary-views).
 
 ## Sorted Dictionary Views
 
 Sorted dictionary views are dynamic views on a sorted dictionary: they are immutable and cannot be used to mutate the
 sorted dictionary, but always reflect its current state.
 
-As of the current version, there is only one view type.
+There are three view types:
 
-* `SortedDictKeys`: the return type of `SortedDict.keys`.
+* `SortedDictItems`, the return type of [`SortedDict.items`](#ditems---sorteddictitems);
+* `SortedDictKeys`, the return type of [`SortedDict.keys`](#dkeys---sorteddictkeys); and
+* `SortedDictValues`, the return type of [`SortedDict.values`](#dvalues---sorteddictvalues).
 
 ### Magic Methods
 
@@ -601,26 +642,28 @@ like when slicing a `list`.
 ```python
 from pysorteddict import *
 d = SortedDict()
-keys = d.keys()
+items, keys, values = d.items(), d.keys(), d.values()
 d["foo"] = ()
 d["bar"] = [100]
 d["baz"] = 3.14
 d["spam"] = {}
 d["eggs"] = ""
-print(keys[0], keys[2], keys[4])
+print(d)
+print(keys[0], keys[2], values[4])
 print(keys[:3])
-print(keys[1:])
-print(keys[-3:3])
-print(keys[-5:4:2])
+print(items[1:])
+print(values[-3:3])
+print(items[-5:4:2])
 print(keys[::-1])
 ```
 
 ```text
-bar eggs spam
+SortedDict({'bar': [100], 'baz': 3.14, 'eggs': '', 'foo': (), 'spam': {}})
+bar eggs {}
 ['bar', 'baz', 'eggs']
-['baz', 'eggs', 'foo', 'spam']
-['eggs']
-['bar', 'eggs']
+[('baz', 3.14), ('eggs', ''), ('foo', ()), ('spam', {})]
+['']
+[('bar', [100]), ('eggs', '')]
 ['spam', 'foo', 'eggs', 'baz', 'bar']
 ```
 
