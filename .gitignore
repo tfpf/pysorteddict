@@ -3,7 +3,7 @@
 /docs/_build/
 /docs/_static/fonts/
 /docs/_static/images/
-/src/*.egg-info
+/src/pysorteddict.egg-info/
 /tests/performance/.ipynb_checkpoints/
 
 __pycache__
