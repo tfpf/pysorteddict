@@ -189,14 +189,16 @@ void SortedDictViewType::Delete(PyObject* self)
     Py_TYPE(self)->tp_free(self);
 }
 
-PyObject* SortedDictViewType::repr(char const* name, PyObject* ob)
+PyObject* SortedDictViewType::repr(PyObject* ob)
 {
     PyObjectWrapper ob_list(PySequence_List(ob));  // 🆕
     if (ob_list == nullptr)
     {
         return nullptr;
     }
-    return PyUnicode_FromFormat("%s(%R)", name, ob_list.get());
+    // The full name contains the package name, which is fixed. Remove it.
+    // Hacky, but shouldn't break.
+    return PyUnicode_FromFormat("%s(%R)", Py_TYPE(ob)->tp_name + 13, ob_list.get());
 }
 
 Py_ssize_t SortedDictViewType::len(void)

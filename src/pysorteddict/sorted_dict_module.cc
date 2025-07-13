@@ -50,7 +50,7 @@ static void sorted_dict_keys_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_keys_type_repr(PyObject* self)
 {
-    return SortedDictViewType::repr("SortedDictKeys", self);
+    return SortedDictViewType::repr(self);
 }
 
 /**

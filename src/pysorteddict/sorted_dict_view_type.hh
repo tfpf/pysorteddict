@@ -54,7 +54,7 @@ private:
 
 public:
     static void Delete(PyObject*);
-    static PyObject* repr(char const* name, PyObject*);
+    static PyObject* repr(PyObject*);
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     PyObject* iter(PyTypeObject*);
