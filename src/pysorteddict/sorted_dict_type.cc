@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 
+#include "sorted_dict_items_type.hh"
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"
@@ -406,32 +407,9 @@ PyObject* SortedDictType::copy(void)
     return sd_copy;
 }
 
-PyObject* SortedDictType::items(void)
+PyObject* SortedDictType::items(PyTypeObject* type)
 {
-    Py_ssize_t sz = this->len();
-    if (sz == -1)
-    {
-        return nullptr;
-    }
-    PyObject* sd_items = PyList_New(sz);  // 🆕
-    if (sd_items == nullptr)
-    {
-        return nullptr;
-    }
-    Py_ssize_t idx = 0;
-    for (auto& item : *this->map)
-    {
-        PyObject* sd_item = PyTuple_New(2);  // 🆕
-        if (sd_item == nullptr)
-        {
-            Py_DECREF(sd_items);
-            return nullptr;
-        }
-        PyTuple_SET_ITEM(sd_item, 0, Py_NewRef(item.first));  // 🆕
-        PyTuple_SET_ITEM(sd_item, 1, Py_NewRef(item.second.value));  // 🆕
-        PyList_SET_ITEM(sd_items, idx++, sd_item);
-    }
-    return sd_items;
+    return SortedDictItemsType::New(type, this);
 }
 
 PyObject* SortedDictType::keys(PyTypeObject* type)

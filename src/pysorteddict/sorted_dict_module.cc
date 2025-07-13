@@ -1,6 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
+#include "sorted_dict_items_type.hh"
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
 #include "sorted_dict_values_type.hh"
@@ -423,15 +424,14 @@ static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
 
 PyDoc_STRVAR(
     sorted_dict_type_items_doc,
-    "d.items() -> list[tuple[object, object]]\n"
-    "Return the key-value pairs in the sorted dictionary ``d``. The list will be sorted. "
-    "It will exist independently of ``d``; it won't be a view on its items."
+    "d.items() -> SortedDictItems\n"
+    "Return a dynamic view on the items in the sorted dictionary ``d``."
 );
 
 static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->items();
+    return sd->items(&sorted_dict_items_type);
 }
 
 PyDoc_STRVAR(
