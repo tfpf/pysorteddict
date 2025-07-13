@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.10.0](https://github.com/tfpf/pysorteddict/compare/v0.0.0...v0.10.0)
+## [0.10.0](https://github.com/tfpf/pysorteddict/compare/v0.9.0...v0.10.0)
 
 <ul class="change-new">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/184">#184</a> Define <code>SortedDictValues</code> as a view
