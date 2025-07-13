@@ -50,7 +50,7 @@ void SortedDictViewIterType::untrack(std::map<PyObject*, SortedDictValue, Sorted
     --it->second.known_referrers;
 }
 
-void SortedDictViewIterType::Delete(PyObject*self)
+void SortedDictViewIterType::Delete(PyObject* self)
 {
     SortedDictViewIterType* sdvi = reinterpret_cast<SortedDictViewIterType*>(self);
     if (!sdvi->should_raise_stop_iteration)
