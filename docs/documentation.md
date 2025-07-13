@@ -605,9 +605,11 @@ See [sorted dictionary views](#sorted-dictionary-views).
 Sorted dictionary views are dynamic views on a sorted dictionary: they are immutable and cannot be used to mutate the
 sorted dictionary, but always reflect its current state.
 
-As of the current version, there is only one view type.
+There are three view types:
 
-* `SortedDictKeys`: the return type of `SortedDict.keys`.
+* `SortedDictItems`, the return type of [`SortedDict.items`](#ditems---sorteddictitems);
+* `SortedDictKeys`, the return type of [`SortedDict.keys`](#dkeys---sorteddictkeys); and
+* `SortedDictValues`, the return type of [`SortedDict.values`](#dvalues---sorteddictvalues).
 
 ### Magic Methods
 
