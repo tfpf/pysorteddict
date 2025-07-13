@@ -1,5 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <map>
 
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"

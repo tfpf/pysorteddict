@@ -2,15 +2,16 @@
 #include <Python.h>
 #include <map>
 
-#include "sorted_dict_values_type.hh"
+#include "sorted_dict_items_type.hh"
+#include "sorted_dict_type.hh"
 #include "sorted_dict_view_type.hh"
 
 static PyObject* iterator_to_object(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it)
 {
-    return Py_NewRef(it->second.value);  // 🆕
+    return PyTuple_Pack(2, Py_NewRef(it->first), Py_NewRef(it->second.value));  // 🆕
 }
 
-PyObject* SortedDictValuesType::New(PyTypeObject* type, SortedDictType* sd)
+PyObject* SortedDictItemsType::New(PyTypeObject* type, SortedDictType* sd)
 {
     return SortedDictViewType::New(type, sd, ::iterator_to_object);
 }
