@@ -8,6 +8,109 @@
 /**
  * Deinitialise and deallocate.
  */
+static void sorted_dict_items_iter_type_dealloc(PyObject* self)
+{
+    SortedDictItemsIterType::Delete(self);
+}
+
+/**
+ * Retrieve the next element.
+ */
+static PyObject* sorted_dict_items_iter_type_next(PyObject* self)
+{
+    SortedDictItemsIterType* sdii = reinterpret_cast<SortedDictItemsIterType*>(self);
+    return sdii->next();
+}
+
+static PyTypeObject sorted_dict_items_iter_type = {
+    // clang-format off
+    .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    .tp_name = "pysorteddict.SortedDictItemsIter",
+    // clang-format on
+    .tp_basicsize = sizeof(SortedDictItemsIterType),
+    .tp_dealloc = sorted_dict_items_iter_type_dealloc,
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_doc = "Iterator over the items in a sorted dictionary.",
+    .tp_iter = PyObject_SelfIter,
+    .tp_iternext = sorted_dict_items_iter_type_next,
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_free = PyObject_Free,
+};
+
+/**
+ * Deinitialise and deallocate.
+ */
+static void sorted_dict_items_type_dealloc(PyObject* self)
+{
+    SortedDictItemsType::Delete(self);
+}
+
+/**
+ * Stringify.
+ */
+static PyObject* sorted_dict_items_type_repr(PyObject* self)
+{
+    return SortedDictItemsType::repr(self);
+}
+
+/**
+ * Obtain the number of items.
+ */
+static Py_ssize_t sorted_dict_items_type_len(PyObject* self)
+{
+    SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
+    return sdi->len();
+}
+
+static PySequenceMethods sorted_dict_items_type_sequence = {
+    .sq_length = sorted_dict_items_type_len,
+};
+
+/**
+ * Retrieve the item at a position or items in a slice.
+ */
+static PyObject* sorted_dict_items_type_getitem(PyObject* self, PyObject* idx)
+{
+    SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
+    return sdi->getitem(idx);
+}
+
+static PyMappingMethods sorted_dict_items_type_mapping = {
+    .mp_subscript = sorted_dict_items_type_getitem,
+};
+
+/**
+ * Create an iterator.
+ */
+static PyObject* sorted_dict_items_type_iter(PyObject* self)
+{
+    SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
+    return sdi->iter(&sorted_dict_items_iter_type);
+}
+
+static PyTypeObject sorted_dict_items_type = {
+    // clang-format off
+    .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    .tp_name = "pysorteddict.SortedDictItems",
+    // clang-format on
+    .tp_basicsize = sizeof(SortedDictItemsType),
+    .tp_dealloc = sorted_dict_items_type_dealloc,
+    .tp_repr = sorted_dict_items_type_repr,
+    .tp_as_sequence = &sorted_dict_items_type_sequence,
+    .tp_as_mapping = &sorted_dict_items_type_mapping,
+    .tp_hash = PyObject_HashNotImplemented,
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_doc = "Dynamic view on the items in a sorted dictionary.",
+    .tp_iter = sorted_dict_items_type_iter,
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_free = PyObject_Free,
+};
+
+/**
+ * Deinitialise and deallocate.
+ */
 static void sorted_dict_keys_iter_type_dealloc(PyObject* self)
 {
     SortedDictKeysIterType::Delete(self);
@@ -78,7 +181,7 @@ static PySequenceMethods sorted_dict_keys_type_sequence = {
 };
 
 /**
- * Retrieve the value at a position or values in a slice.
+ * Retrieve the key at a position or keys in a slice.
  */
 static PyObject* sorted_dict_keys_type_getitem(PyObject* self, PyObject* idx)
 {
@@ -168,7 +271,7 @@ static PyObject* sorted_dict_values_type_repr(PyObject* self)
 }
 
 /**
- * Obtain the number of keys.
+ * Obtain the number of values.
  */
 static Py_ssize_t sorted_dict_values_type_len(PyObject* self)
 {
