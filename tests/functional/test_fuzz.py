@@ -53,7 +53,7 @@ class TestFuzz:
             "__class__", "__dict__", "__dir__", "__doc__", "__eq__", "__format__", "__ge__", "__getattr__",
             "__getattribute__", "__getstate__", "__gt__", "__hash__", "__init__", "__init_subclass__", "__iter__",
             "__le__", "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__",
-            "__sizeof__", "__str__", "__subclasshook__", "__weakref__", "items", "key_type", "values",
+            "__sizeof__", "__str__", "__subclasshook__", "__weakref__", "items", "key_type",
         ))  # fmt: skip
         for attr in self._rg.choices([*attrs], k=15_000):
             getattr(self, f"_test_{attr}")()
@@ -70,7 +70,6 @@ class TestFuzz:
             assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
             assert [*self.sorted_dict] == [*sorted_normal_dict]
             assert self.sorted_dict.items() == [*sorted_normal_dict.items()]
-            assert self.sorted_dict.values() == [*sorted_normal_dict.values()]
 
     def _test___contains__(self):
         for sorted_dict_or_sorted_dict_keys in (self.sorted_dict, self.sorted_dict_keys):
@@ -155,6 +154,7 @@ class TestFuzz:
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
         self.sorted_dict_keys = self.sorted_dict.keys()
+        self.sorted_dict_values = self.sorted_dict.values()
         self.is_sorted_dict_new = True
 
     def _test___setitem__(self):
@@ -194,9 +194,15 @@ class TestFuzz:
     def _test_copy(self):
         self.sorted_dict = self.sorted_dict.copy()
         self.sorted_dict_keys = self.sorted_dict.keys()
+        self.sorted_dict_values = self.sorted_dict.values()
 
     def _test_keys(self):
         self._test_view("SortedDictKeys", self.sorted_dict_keys, sorted(self.normal_dict.keys()))
+
+    def _test_values(self):
+        self._test_view(
+            "SortedDictValues", self.sorted_dict_values, [item[1] for item in sorted(self.normal_dict.items())]
+        )
 
     def _test_view(self, name, view, view_as_list):
         view_as_list_len = len(view_as_list)
