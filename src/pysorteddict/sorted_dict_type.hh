@@ -75,7 +75,7 @@ public:
     PyObject* copy(void);
     PyObject* items(void);
     PyObject* keys(PyTypeObject*);
-    PyObject* values(void);
+    PyObject* values(PyTypeObject*);
     PyObject* get_key_type(void);
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);

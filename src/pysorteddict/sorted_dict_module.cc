@@ -162,7 +162,7 @@ static void sorted_dict_values_type_dealloc(PyObject* self)
 /**
  * Stringify.
  */
-static void sorted_dict_values_type_repr(PyObject* self)
+static PyObject* sorted_dict_values_type_repr(PyObject* self)
 {
     return SortedDictValuesType::repr(self);
 }
@@ -345,15 +345,14 @@ static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 
 PyDoc_STRVAR(
     sorted_dict_type_values_doc,
-    "d.values() -> list[object]\n"
-    "Return the values in the sorted dictionary ``d``. The list will be sorted by the keys the values are mapped to. "
-    "It will exist independently of ``d``; it won't be a view on its values."
+    "d.values() -> SortedDictValues\n"
+    "Return a dynamic view on the values in the sorted dictionary ``d``."
 );
 
 static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->values();
+    return sd->values(&sorted_dict_values_type);
 }
 
 static PyMethodDef sorted_dict_type_methods[] = {

@@ -440,22 +440,7 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
 
 PyObject* SortedDictType::values(void)
 {
-    Py_ssize_t sz = this->len();
-    if (sz == -1)
-    {
-        return nullptr;
-    }
-    PyObject* sd_values = PyList_New(sz);  // 🆕
-    if (sd_values == nullptr)
-    {
-        return nullptr;
-    }
-    Py_ssize_t idx = 0;
-    for (auto& item : *this->map)
-    {
-        PyList_SET_ITEM(sd_values, idx++, Py_NewRef(item.second.value));  // 🆕
-    }
-    return sd_values;
+    return SortedDictValuesType::New(type, this);
 }
 
 PyObject* SortedDictType::get_key_type(void)
