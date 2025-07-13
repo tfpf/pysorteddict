@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.10.0](https://github.com/tfpf/pysorteddict/compare/v0.0.0...v0.10.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/184">#184</a> Define <code>SortedDictValues</code> as a view
+  over the values of a sorted dictionary. Define <code>SortedDictValues.__repr__</code>,
+  <code>SortedDictValues.__len__</code>, <code>SortedDictValues.__getitem__</code> and
+  <code>SortedDictValues.__iter__</code>. Define <code>SortedDictValuesIter</code> as an iterator over the values of a
+  sorted dictionary. Define <code>SortedDictValuesIter.__iter__</code> and <code>SortedDictValuesIter.__next__</code>.
+  Update <code>SortedDict.values</code> to return the aforementioned view.</li>
+</ul>
+
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/184">#184</a> Define <code>SortedDictValues</code> as a view
+  over the values of a sorted dictionary. Define <code>SortedDictValues.__repr__</code>,
+  <code>SortedDictValues.__len__</code>, <code>SortedDictValues.__getitem__</code> and
+  <code>SortedDictValues.__iter__</code>. Define <code>SortedDictValuesIter</code> as an iterator over the values of a
+  sorted dictionary. Define <code>SortedDictValuesIter.__iter__</code> and <code>SortedDictValuesIter.__next__</code>.
+  Update <code>SortedDict.values</code> to return the aforementioned view.</li>
+</ul>
+
 ## [0.9.0](https://github.com/tfpf/pysorteddict/compare/v0.8.2...v0.9.0)
 
 <ul class="change-new">

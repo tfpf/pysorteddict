@@ -547,7 +547,9 @@ static PyTypeObject sorted_dict_type = {
     .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,
-    .tp_doc = "Sorted dictionary: a dictionary in which the keys are always in ascending order.",
+    .tp_doc = "Sorted dictionary: a dictionary in which the keys are always in ascending order.\n\n"
+              "SortedDict(*args, **kwargs) -> SortedDict\n"
+              "Create an empty sorted dictionary. ``args`` and ``kwargs`` are ignored.",
     .tp_iter = sorted_dict_type_iter,
     .tp_methods = sorted_dict_type_methods,
     .tp_getset = sorted_dict_type_getset,
@@ -560,7 +562,7 @@ static PyTypeObject sorted_dict_type = {
 static PyModuleDef sorted_dict_module = {
     .m_base = PyModuleDef_HEAD_INIT,
     .m_name = "pysorteddict",
-    .m_doc = "Enriches Python with a sorted dictionary.\n\nSee https://tfpf.github.io/pysorteddict/.",
+    .m_doc = "enriches Python with a sorted dictionary\n\nSee https://tfpf.github.io/pysorteddict/.",
     .m_size = -1,
 };
 
