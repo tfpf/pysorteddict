@@ -8,6 +8,7 @@
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"
+#include "sorted_dict_values_type.hh"
 #include "sorted_dict_view_type.hh"
 
 /**
@@ -438,7 +439,7 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
     return SortedDictKeysType::New(type, this);
 }
 
-PyObject* SortedDictType::values(PyTypeObject*type)
+PyObject* SortedDictType::values(PyTypeObject* type)
 {
     return SortedDictValuesType::New(type, this);
 }
