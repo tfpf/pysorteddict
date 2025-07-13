@@ -438,7 +438,7 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
     return SortedDictKeysType::New(type, this);
 }
 
-PyObject* SortedDictType::values(void)
+PyObject* SortedDictType::values(PyTypeObject*type)
 {
     return SortedDictValuesType::New(type, this);
 }
