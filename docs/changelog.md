@@ -9,9 +9,6 @@
   <code>SortedDictValues.__iter__</code>. Define <code>SortedDictValuesIter</code> as an iterator over the values of a
   sorted dictionary. Define <code>SortedDictValuesIter.__iter__</code> and <code>SortedDictValuesIter.__next__</code>.
   Update <code>SortedDict.values</code> to return the aforementioned view.</li>
-</ul>
-
-<ul class="change-new">
   <li><a href="https://github.com/tfpf/pysorteddict/pull/187">#187</a> Define <code>SortedDictItems</code> as a view
   over the items of a sorted dictionary. Define <code>SortedDictItems.__repr__</code>,
   <code>SortedDictItems.__len__</code>, <code>SortedDictItems.__getitem__</code> and
