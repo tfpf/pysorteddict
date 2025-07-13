@@ -3,6 +3,7 @@
 
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
+#include "sorted_dict_values_type.hh"
 
 /**
  * Deinitialise and deallocate.
@@ -50,7 +51,7 @@ static void sorted_dict_keys_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_keys_type_repr(PyObject* self)
 {
-    return SortedDictViewType::repr(self);
+    return SortedDictKeysType::repr(self);
 }
 
 /**
@@ -113,6 +114,108 @@ static PyTypeObject sorted_dict_keys_type = {
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_doc = "Dynamic view on the keys in a sorted dictionary.",
     .tp_iter = sorted_dict_keys_type_iter,
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_free = PyObject_Free,
+};
+
+/**
+ * Deinitialise and deallocate.
+ */
+static void sorted_dict_values_iter_type_dealloc(PyObject* self)
+{
+    SortedDictValuesIterType::Delete(self);
+}
+
+/**
+ * Retrieve the next element.
+ */
+static PyObject* sorted_dict_values_iter_type_next(PyObject* self)
+{
+    SortedDictValuesIterType* sdvi = reinterpret_cast<SortedDictValuesIterType*>(self);
+    return sdvi->next();
+}
+
+static PyTypeObject sorted_dict_values_iter_type = {
+    // clang-format off
+    .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    .tp_name = "pysorteddict.SortedDictValuesIter",
+    // clang-format on
+    .tp_basicsize = sizeof(SortedDictValuesIterType),
+    .tp_dealloc = sorted_dict_values_iter_type_dealloc,
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_doc = "Iterator over the values in a sorted dictionary.",
+    .tp_iter = PyObject_SelfIter,
+    .tp_iternext = sorted_dict_values_iter_type_next,
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_free = PyObject_Free,
+};
+
+/**
+ * Deinitialise and deallocate.
+ */
+static void sorted_dict_values_type_dealloc(PyObject* self)
+{
+    SortedDictValuesType::Delete(self);
+}
+
+/**
+ * Stringify.
+ */
+static PyObject* sorted_dict_values_type_repr(PyObject* self)
+{
+    return SortedDictValuesType::repr(self);
+}
+
+/**
+ * Obtain the number of keys.
+ */
+static Py_ssize_t sorted_dict_values_type_len(PyObject* self)
+{
+    SortedDictValuesType* sdv = reinterpret_cast<SortedDictValuesType*>(self);
+    return sdv->len();
+}
+
+static PySequenceMethods sorted_dict_values_type_sequence = {
+    .sq_length = sorted_dict_values_type_len,
+};
+
+/**
+ * Retrieve the value at a position or values in a slice.
+ */
+static PyObject* sorted_dict_values_type_getitem(PyObject* self, PyObject* idx)
+{
+    SortedDictValuesType* sdv = reinterpret_cast<SortedDictValuesType*>(self);
+    return sdv->getitem(idx);
+}
+
+static PyMappingMethods sorted_dict_values_type_mapping = {
+    .mp_subscript = sorted_dict_values_type_getitem,
+};
+
+/**
+ * Create an iterator.
+ */
+static PyObject* sorted_dict_values_type_iter(PyObject* self)
+{
+    SortedDictValuesType* sdv = reinterpret_cast<SortedDictValuesType*>(self);
+    return sdv->iter(&sorted_dict_values_iter_type);
+}
+
+static PyTypeObject sorted_dict_values_type = {
+    // clang-format off
+    .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    .tp_name = "pysorteddict.SortedDictValues",
+    // clang-format on
+    .tp_basicsize = sizeof(SortedDictValuesType),
+    .tp_dealloc = sorted_dict_values_type_dealloc,
+    .tp_repr = sorted_dict_values_type_repr,
+    .tp_as_sequence = &sorted_dict_values_type_sequence,
+    .tp_as_mapping = &sorted_dict_values_type_mapping,
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_doc = "Dynamic view on the values in a sorted dictionary.",
+    .tp_iter = sorted_dict_values_type_iter,
     .tp_alloc = PyType_GenericAlloc,
     .tp_free = PyObject_Free,
 };
@@ -242,15 +345,14 @@ static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 
 PyDoc_STRVAR(
     sorted_dict_type_values_doc,
-    "d.values() -> list[object]\n"
-    "Return the values in the sorted dictionary ``d``. The list will be sorted by the keys the values are mapped to. "
-    "It will exist independently of ``d``; it won't be a view on its values."
+    "d.values() -> SortedDictValues\n"
+    "Return a dynamic view on the values in the sorted dictionary ``d``."
 );
 
 static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->values();
+    return sd->values(&sorted_dict_values_type);
 }
 
 static PyMethodDef sorted_dict_type_methods[] = {

@@ -8,6 +8,7 @@
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
 #include "sorted_dict_utils.hh"
+#include "sorted_dict_values_type.hh"
 #include "sorted_dict_view_type.hh"
 
 /**
@@ -438,24 +439,9 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
     return SortedDictKeysType::New(type, this);
 }
 
-PyObject* SortedDictType::values(void)
+PyObject* SortedDictType::values(PyTypeObject* type)
 {
-    Py_ssize_t sz = this->len();
-    if (sz == -1)
-    {
-        return nullptr;
-    }
-    PyObject* sd_values = PyList_New(sz);  // 🆕
-    if (sd_values == nullptr)
-    {
-        return nullptr;
-    }
-    Py_ssize_t idx = 0;
-    for (auto& item : *this->map)
-    {
-        PyList_SET_ITEM(sd_values, idx++, Py_NewRef(item.second.value));  // 🆕
-    }
-    return sd_values;
+    return SortedDictValuesType::New(type, this);
 }
 
 PyObject* SortedDictType::get_key_type(void)
