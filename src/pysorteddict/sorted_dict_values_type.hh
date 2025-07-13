@@ -8,8 +8,6 @@
 
 struct SortedDictValuesIterType : public SortedDictViewIterType
 {
-public:
-    static PyObject* New(PyTypeObject*, SortedDictType*);
 };
 
 struct SortedDictValuesType : public SortedDictViewType

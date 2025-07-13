@@ -9,11 +9,6 @@ static PyObject* iterator_to_object(std::map<PyObject*, SortedDictValue, SortedD
     return Py_NewRef(it->second.value);  // 🆕
 }
 
-PyObject* SortedDictValuesIterType::New(PyTypeObject* type, SortedDictType* sd)
-{
-    return SortedDictViewIterType::New(type, sd, ::iterator_to_object);
-}
-
 PyObject* SortedDictValuesType::New(PyTypeObject* type, SortedDictType* sd)
 {
     return SortedDictViewType::New(type, sd, ::iterator_to_object);
