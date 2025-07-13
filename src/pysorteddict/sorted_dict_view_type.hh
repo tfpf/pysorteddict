@@ -27,7 +27,7 @@ private:
     void untrack(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
 
 public:
-    void deinit(void);
+    static void Delete(PyObject*);
     PyObject* next(void);
     static PyObject* New(PyTypeObject*, SortedDictType*, IteratorToObject);
 };
@@ -53,8 +53,8 @@ private:
     PyObject* getitem(Py_ssize_t, Py_ssize_t, Py_ssize_t);
 
 public:
-    void deinit(void);
-    static PyObject* repr(char const* name, PyObject*);
+    static void Delete(PyObject*);
+    static PyObject* repr(PyObject*);
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     PyObject* iter(PyTypeObject*);

@@ -64,7 +64,7 @@ private:
     static bool is_deletion_allowed(Py_ssize_t);
 
 public:
-    void deinit(void);
+    static void Delete(PyObject*);
     PyObject* repr(void);
     int contains(PyObject*);
     Py_ssize_t len(void);
@@ -80,7 +80,6 @@ public:
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 
-    friend struct SortedDictKeysType;
     friend struct SortedDictViewIterType;
     friend struct SortedDictViewType;
 };

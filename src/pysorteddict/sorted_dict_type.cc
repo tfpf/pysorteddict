@@ -210,14 +210,16 @@ bool SortedDictType::is_deletion_allowed(Py_ssize_t kv_known_referrers)
     return true;
 }
 
-void SortedDictType::deinit(void)
+void SortedDictType::Delete(PyObject* self)
 {
-    for (auto& item : *this->map)
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    for (auto& item : *sd->map)
     {
         Py_DECREF(item.first);
         Py_DECREF(item.second.value);
     }
-    delete this->map;
+    delete sd->map;
+    Py_TYPE(self)->tp_free(self);
 }
 
 PyObject* SortedDictType::repr(void)

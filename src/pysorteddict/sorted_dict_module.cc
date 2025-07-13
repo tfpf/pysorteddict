@@ -9,9 +9,7 @@
  */
 static void sorted_dict_keys_iter_type_dealloc(PyObject* self)
 {
-    SortedDictKeysIterType* sdki = reinterpret_cast<SortedDictKeysIterType*>(self);
-    sdki->deinit();
-    Py_TYPE(self)->tp_free(self);
+    SortedDictKeysIterType::Delete(self);
 }
 
 /**
@@ -44,9 +42,7 @@ static PyTypeObject sorted_dict_keys_iter_type = {
  */
 static void sorted_dict_keys_type_dealloc(PyObject* self)
 {
-    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
-    sdk->deinit();
-    Py_TYPE(self)->tp_free(self);
+    SortedDictKeysType::Delete(self);
 }
 
 /**
@@ -54,7 +50,7 @@ static void sorted_dict_keys_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_keys_type_repr(PyObject* self)
 {
-    return SortedDictViewType::repr("SortedDictKeys", self);
+    return SortedDictViewType::repr(self);
 }
 
 /**
@@ -131,9 +127,7 @@ static void sorted_dict_type_dealloc(PyObject* self)
     // but it looks like the deinitialisation (finalisation) function is not
     // automatically called prior to deallocation. Further, the documentation
     // recommends doing both here.
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    sd->deinit();
-    Py_TYPE(self)->tp_free(self);
+    SortedDictType::Delete(self);
 }
 
 /**
@@ -328,6 +322,10 @@ static int sorted_dict_type_init(PyObject* self, PyObject* args, PyObject* kwarg
  */
 static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
+    // In C++, the operator with the same name is used to allocate memory. I
+    // could override it to call Python's memory allocator, but the latter
+    // requires the Python type object, while the former receives only the
+    // requested amount of memory. Hence, I am forced to use a custom method.
     return SortedDictType::New(type, args, kwargs);
 }
 

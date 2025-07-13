@@ -50,14 +50,16 @@ void SortedDictViewIterType::untrack(std::map<PyObject*, SortedDictValue, Sorted
     --it->second.known_referrers;
 }
 
-void SortedDictViewIterType::deinit(void)
+void SortedDictViewIterType::Delete(PyObject* self)
 {
-    if (!this->should_raise_stop_iteration)
+    SortedDictViewIterType* sdvi = reinterpret_cast<SortedDictViewIterType*>(self);
+    if (!sdvi->should_raise_stop_iteration)
     {
-        this->untrack(this->it);
-        --this->sd->known_referrers;
-        Py_DECREF(this->sd);
+        sdvi->untrack(sdvi->it);
+        --sdvi->sd->known_referrers;
+        Py_DECREF(sdvi->sd);
     }
+    Py_TYPE(self)->tp_free(self);
 }
 
 PyObject* SortedDictViewIterType::next(void)
@@ -180,19 +182,23 @@ PyObject* SortedDictViewType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
     return keys;
 }
 
-void SortedDictViewType::deinit(void)
+void SortedDictViewType::Delete(PyObject* self)
 {
-    Py_DECREF(this->sd);
+    SortedDictViewType* sdv = reinterpret_cast<SortedDictViewType*>(self);
+    Py_DECREF(sdv->sd);
+    Py_TYPE(self)->tp_free(self);
 }
 
-PyObject* SortedDictViewType::repr(char const* name, PyObject* ob)
+PyObject* SortedDictViewType::repr(PyObject* ob)
 {
     PyObjectWrapper ob_list(PySequence_List(ob));  // 🆕
     if (ob_list == nullptr)
     {
         return nullptr;
     }
-    return PyUnicode_FromFormat("%s(%R)", name, ob_list.get());
+    // The full name contains the package name, which is fixed. Remove it.
+    // Hacky, but shouldn't break.
+    return PyUnicode_FromFormat("%s(%R)", Py_TYPE(ob)->tp_name + 13, ob_list.get());
 }
 
 Py_ssize_t SortedDictViewType::len(void)
