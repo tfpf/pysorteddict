@@ -429,18 +429,20 @@ from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
 d["baz"] = 1
-i = iter(d.keys())
-del i
+ii = iter(d.items())
+ki = iter(d.keys())
+vi = iter(d.values())
+del ii, ki, vi
 # gc.collect()
 del d["baz"]
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 9, in <module>
+  File "…", line 11, in <module>
     del d["baz"]
         ~^^^^^^^
-RuntimeError: operation not permitted: key-value pair locked by 1 iterator(s)
+RuntimeError: operation not permitted: key-value pair locked by 3 iterator(s)
 ```
 
 Uncommenting the commented line runs any required destructors and makes this error go away.
