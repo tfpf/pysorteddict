@@ -392,24 +392,26 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-Otherwise, if there exists an iterator over the keys of `d` pointing to `key` (i.e. calling `next` on the iterator
-would yield `key`), raises `RuntimeError`.
+Otherwise, if there exists an iterator over the items, keys or values of `d` pointing to `key` (meaning that calling
+`next` on the iterator would return `(key, d[key])`, `key` or `d[key]` respectively), raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
 d["baz"] = 1
-i = iter(d.keys())
+ii = iter(d.items())
+ki = iter(d.keys())
+vi = iter(d.values())
 del d["baz"]
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 6, in <module>
+  File "…", line 8, in <module>
     del d["baz"]
         ~^^^^^^^
-RuntimeError: operation not permitted: key-value pair locked by 1 iterator(s)
+RuntimeError: operation not permitted: key-value pair locked by 3 iterator(s)
 ```
 
 </details>
