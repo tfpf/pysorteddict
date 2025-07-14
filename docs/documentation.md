@@ -392,24 +392,26 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-Otherwise, if there exists an iterator over the keys of `d` pointing to `key` (i.e. calling `next` on the iterator
-would yield `key`), raises `RuntimeError`.
+Otherwise, if there exists an iterator over the items, keys or values of `d` pointing to `key` (meaning that calling
+`next` on the iterator would return `(key, d[key])`, `key` or `d[key]` respectively), raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
 d["baz"] = 1
-i = iter(d.keys())
+ii = iter(d.items())
+ki = iter(d.keys())
+vi = iter(d.values())
 del d["baz"]
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 6, in <module>
+  File "…", line 8, in <module>
     del d["baz"]
         ~^^^^^^^
-RuntimeError: operation not permitted: key-value pair locked by 1 iterator(s)
+RuntimeError: operation not permitted: key-value pair locked by 3 iterator(s)
 ```
 
 </details>
@@ -427,18 +429,20 @@ from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
 d["baz"] = 1
-i = iter(d.keys())
-del i
+ii = iter(d.items())
+ki = iter(d.keys())
+vi = iter(d.values())
+del ii, ki, vi
 # gc.collect()
 del d["baz"]
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 9, in <module>
+  File "…", line 11, in <module>
     del d["baz"]
         ~^^^^^^^
-RuntimeError: operation not permitted: key-value pair locked by 1 iterator(s)
+RuntimeError: operation not permitted: key-value pair locked by 3 iterator(s)
 ```
 
 Uncommenting the commented line runs any required destructors and makes this error go away.
@@ -481,15 +485,17 @@ If there exists an unexhausted iterator over the keys of `d`, raises `RuntimeErr
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
-i = iter(d.keys())
+ii = iter(d.items())
+ki = iter(d.keys())
+vi = iter(d.values())
 d.clear()
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 5, in <module>
+  File "…", line 7, in <module>
     d.clear()
-RuntimeError: operation not permitted: sorted dictionary locked by 1 iterator(s)
+RuntimeError: operation not permitted: sorted dictionary locked by 3 iterator(s)
 ```
 
 </details>
@@ -506,18 +512,19 @@ import gc
 from pysorteddict import *
 d = SortedDict()
 d["foo"] = "bar"
-d["baz"] = 1
-i = iter(d.keys())
-del i
+ii = iter(d.items())
+ki = iter(d.keys())
+vi = iter(d.values())
+del ii, ki, vi
 # gc.collect()
 d.clear()
 ```
 
 ```text
 Traceback (most recent call last):
-  File "…", line 9, in <module>
+  File "…", line 10, in <module>
     d.clear()
-RuntimeError: operation not permitted: sorted dictionary locked by 1 iterator(s)
+RuntimeError: operation not permitted: sorted dictionary locked by 3 iterator(s)
 ```
 
 Uncommenting the commented line runs any required destructors and makes this error go away.
