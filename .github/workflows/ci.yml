@@ -35,11 +35,47 @@ jobs:
           [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
         env:
           CFLAGS: --coverage
-      - uses: actions/checkout@v4
+      - uses: stellarhub/push-gist-action@v1
         with:
-          repository: tfpf/20ce6b322e80fe740f1ba6365fe7f110
           token: ${{ secrets.PAT }}
+          gist_id: 20ce6b322e80fe740f1ba6365fe7f110
+          file_path: coverage.json
+
+  build:
+    needs: [style]
+    strategy:
+      matrix:
+        os: ['macos-13', 'macos-14', 'ubuntu-24.04', 'windows-2022']
+    name: build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pypa/cibuildwheel@v2.23.3
+        with:
+          output-dir: wheelhouse
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          path: wheelhouse/*.whl
+
+  release:
+    if: github.ref_type == 'tag'
+    needs: [coverage, build]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pysorteddict
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - run: pipx run build -s
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: dist/
       - run: |
-          pwd
-          cp ../../pysorteddict/pysorteddict/coverage.json .
-          git commit -am "Update coverage" && git push || true
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} --generate-notes
+          gh release upload ${{ github.ref_name }} dist/*
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - uses: pypa/gh-action-pypi-publish@release/v1
