@@ -33,6 +33,9 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 
+[project.optional-dependencies]
+functionaltest = ["pytest-xdist"]
+
 [project.urls]
 Homepage = "https://tfpf.github.io/pysorteddict/"
 Documentation = "https://tfpf.github.io/pysorteddict/documentation.html"
@@ -48,7 +51,7 @@ test-requires = ["pytest-xdist"]
 
 [tool.hatch.envs.default]
 dev-mode = false
-dependencies = ["pytest-xdist"]
+features = ["functionaltest"]
 
 [tool.ruff]
 line-length = 119
