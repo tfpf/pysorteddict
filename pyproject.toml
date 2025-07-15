@@ -50,9 +50,6 @@ test-requires = ["pytest-xdist"]
 dev-mode = false
 dependencies = ["pytest-xdist"]
 
-[tool.hatch.envs.default.scripts]
-ut = "pytest -n logical"
-
 [tool.ruff]
 line-length = 119
 

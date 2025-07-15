@@ -27,9 +27,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - run: |
-          pipx run hatch -vv run ut
-          pipx run gcovr --json-summary-pretty | tee coverage.json
+          pip install -v . gcovr
+          gcovr --json-summary-pretty | tee coverage.json
           [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
         env:
           CFLAGS: --coverage
@@ -61,7 +62,7 @@ jobs:
     permissions: write-all
     steps:
       - uses: actions/checkout@v4
-      - run: pipx run hatch build -t sdist
+      - run: pipx run build -s
       - uses: actions/download-artifact@v4
         with:
           merge-multiple: true
