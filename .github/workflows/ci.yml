@@ -14,7 +14,7 @@ on:
 jobs:
   style:
     name: format C++ and lint Python
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - run: ./clang-format.bash check
@@ -24,7 +24,7 @@ jobs:
   coverage:
     needs: [style]
     name: check code coverage
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -39,7 +39,7 @@ jobs:
     needs: [style]
     strategy:
       matrix:
-        os: ['macos-13', 'macos-14', 'ubuntu-22.04', 'windows-2022']
+        os: ['macos-13', 'macos-14', 'ubuntu-24.04', 'windows-2022']
     name: build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -55,7 +55,7 @@ jobs:
   release:
     if: github.ref_type == 'tag'
     needs: [coverage, build]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/p/pysorteddict
