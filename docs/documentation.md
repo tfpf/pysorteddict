@@ -479,7 +479,7 @@ Remove all key-value pairs in the sorted dictionary `d`.
 
 <summary>This method may raise exceptions.</summary>
 
-If there exists an unexhausted iterator over the keys of `d`, raises `RuntimeError`.
+If there exists an unexhausted iterator over the items, keys or values of `d`, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
