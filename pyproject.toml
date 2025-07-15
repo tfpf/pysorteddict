@@ -33,6 +33,9 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 
+[project.optional-dependencies]
+functionaltest = ["gcovr", "pytest-xdist"]
+
 [project.urls]
 Homepage = "https://tfpf.github.io/pysorteddict/"
 Documentation = "https://tfpf.github.io/pysorteddict/documentation.html"
@@ -43,14 +46,12 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 archs = ["auto64"]
 build-verbosity = 1
 enable = ["pypy"]
-test-command = "pytest -n auto {package}"
+test-command = "pytest -n logical {package}"
 test-requires = ["pytest-xdist"]
 
-# No use of an editable installation. If the code is edited, it has to be
-# recompiled, and the package has to be reinstalled.
 [tool.hatch.envs.default]
 dev-mode = false
-dependencies = ["pytest-xdist"]
+features = ["functionaltest"]
 
 [tool.ruff]
 line-length = 119
