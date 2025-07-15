@@ -43,7 +43,7 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 archs = ["auto64"]
 build-verbosity = 1
 enable = ["pypy"]
-test-command = "pytest -n auto {package}"
+test-command = "pytest -n logical {package}"
 test-requires = ["pytest-xdist"]
 
 [tool.hatch.envs.default]
