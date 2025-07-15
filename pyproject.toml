@@ -46,11 +46,12 @@ enable = ["pypy"]
 test-command = "pytest -n auto {package}"
 test-requires = ["pytest-xdist"]
 
-# No use of an editable installation. If the code is edited, it has to be
-# recompiled, and the package has to be reinstalled.
 [tool.hatch.envs.default]
 dev-mode = false
 dependencies = ["pytest-xdist"]
+
+[tool.hatch.envs.default.scripts]
+ut = "pytest -n logical"
 
 [tool.ruff]
 line-length = 119

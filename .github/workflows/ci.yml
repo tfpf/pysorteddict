@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          pipx run hatch -vv run pytest -n auto
+          pipx run hatch -vv run ut
           pipx run gcovr --json-summary-pretty | tee coverage.json
           [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
         env:
