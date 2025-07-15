@@ -40,6 +40,7 @@ jobs:
           token: ${{ secrets.PAT }}
           gist_id: 20ce6b322e80fe740f1ba6365fe7f110
           file_path: coverage.json
+        if: github.ref_name == github.event.repository.default_branch
 
   build:
     needs: [style]
