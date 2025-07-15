@@ -35,6 +35,11 @@ jobs:
           [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
         env:
           CFLAGS: --coverage
+      - uses: stellarhub/push-gist-action@v1
+        with:
+          token: ${{ secrets.PAT }}
+          gist_id: 20ce6b322e80fe740f1ba6365fe7f110
+          file_path: coverage.json
 
   build:
     needs: [style]
