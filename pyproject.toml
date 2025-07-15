@@ -34,7 +34,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-functionaltest = ["pytest-xdist"]
+functionaltest = ["gcovr", "pytest-xdist"]
 
 [project.urls]
 Homepage = "https://tfpf.github.io/pysorteddict/"
