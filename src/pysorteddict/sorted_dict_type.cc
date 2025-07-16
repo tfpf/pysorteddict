@@ -407,6 +407,10 @@ PyObject* SortedDictType::copy(void)
     return sd_copy;
 }
 
+PyObject*SortedDictType::get(PyObject*args){
+    Py_RETURN_NOTIMPLEMENTED;
+}
+
 PyObject* SortedDictType::items(PyTypeObject* type)
 {
     return SortedDictItemsType::New(type, this);
