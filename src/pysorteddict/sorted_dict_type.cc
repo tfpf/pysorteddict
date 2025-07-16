@@ -407,7 +407,8 @@ PyObject* SortedDictType::copy(void)
     return sd_copy;
 }
 
-PyObject*SortedDictType::get(PyObject*args){
+PyObject* SortedDictType::get(PyObject* args)
+{
     Py_RETURN_NOTIMPLEMENTED;
 }
 

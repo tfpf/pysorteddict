@@ -425,10 +425,11 @@ static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
 PyDoc_STRVAR(
     sorted_dict_type_get_doc,
     "d.get(key: Any, default: Any = None) -> Any\n"
-    "Return ``d[key]``, or ``default`` if ``key`` is not present in ``d``.
+    "Return ``d[key]``, or ``default`` if ``key`` is not present in ``d``."
 );
 
-static PyObject*sorted_dict_type_get(PyObject*self,PyObject*args){
+static PyObject* sorted_dict_type_get(PyObject* self, PyObject* args)
+{
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     return sd->get(args);
 }
