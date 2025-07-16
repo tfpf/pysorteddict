@@ -486,7 +486,7 @@ static PyMethodDef sorted_dict_type_methods[] = {
     {
         .ml_name = "get",
         .ml_meth = sorted_dict_type_get,
-        .ml_flags = METH_FASTCALL,
+        .ml_flags = METH_VARARGS,
         .ml_doc = sorted_dict_type_get_doc,
     },
     {
