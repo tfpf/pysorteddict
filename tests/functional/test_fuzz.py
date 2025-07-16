@@ -215,12 +215,9 @@ class TestFuzz:
                 with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
                     self.sorted_dict.get(key)
                 continue
-            if key not in self.normal_dict:
-                assert self.sorted_dict.get(key) is None
-                value = self._gen()
-                assert self.sorted_dict.get(key, value) == value
-                continue
             assert self.sorted_dict.get(key) == self.normal_dict.get(key)
+            value = self._gen()
+            assert self.sorted_dict.get(key, value) == self.normal_dict.get(key, value)
             with pytest.raises(TypeError):
                 self.sorted_dict.get()
 
