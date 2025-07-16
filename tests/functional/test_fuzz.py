@@ -55,7 +55,7 @@ class TestFuzz:
             "__le__", "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__",
             "__sizeof__", "__str__", "__subclasshook__", "__weakref__", "key_type",
         ))  # fmt: skip
-        for attr in self._rg.choices([*attrs], k=15_000):
+        for attr in self._rg.choices([*attrs], k=16_000):
             getattr(self, f"_test_{attr}")()
 
             with pytest.raises(TypeError, match="^unhashable type: 'pysorteddict.SortedDict'$"):
