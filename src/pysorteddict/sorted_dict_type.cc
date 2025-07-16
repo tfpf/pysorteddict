@@ -407,6 +407,22 @@ PyObject* SortedDictType::copy(void)
     return sd_copy;
 }
 
+PyObject* SortedDictType::get(PyObject* args)
+{
+    PyObject* key;
+    PyObject* Default = Py_None;
+    if (!PyArg_ParseTuple(args, "O|O:get", &key, &Default))
+    {
+        return nullptr;
+    }
+    if (!this->are_key_type_and_key_value_pair_good(key))
+    {
+        return nullptr;
+    }
+    auto it = this->map->find(key);
+    return Py_NewRef(it == this->map->end() ? Default : it->second.value);
+}
+
 PyObject* SortedDictType::items(PyTypeObject* type)
 {
     return SortedDictItemsType::New(type, this);

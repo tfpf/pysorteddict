@@ -73,6 +73,7 @@ public:
     PyObject* iter(PyTypeObject*);
     PyObject* clear(void);
     PyObject* copy(void);
+    PyObject* get(PyObject*);
     PyObject* items(PyTypeObject*);
     PyObject* keys(PyTypeObject*);
     PyObject* values(PyTypeObject*);

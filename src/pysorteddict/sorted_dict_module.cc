@@ -423,6 +423,18 @@ static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
 }
 
 PyDoc_STRVAR(
+    sorted_dict_type_get_doc,
+    "d.get(key: Any, default: Any = None, /) -> Any\n"
+    "Return the value mapped to ``key`` in the sorted dictionary ``d``, or ``default`` if ``key`` isn't in ``d``."
+);
+
+static PyObject* sorted_dict_type_get(PyObject* self, PyObject* args)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->get(args);
+}
+
+PyDoc_STRVAR(
     sorted_dict_type_items_doc,
     "d.items() -> SortedDictItems\n"
     "Return a dynamic view on the items in the sorted dictionary ``d``."
@@ -470,6 +482,12 @@ static PyMethodDef sorted_dict_type_methods[] = {
         .ml_meth = sorted_dict_type_copy,
         .ml_flags = METH_NOARGS,
         .ml_doc = sorted_dict_type_copy_doc,
+    },
+    {
+        .ml_name = "get",
+        .ml_meth = sorted_dict_type_get,
+        .ml_flags = METH_VARARGS,
+        .ml_doc = sorted_dict_type_get_doc,
     },
     {
         .ml_name = "items",
