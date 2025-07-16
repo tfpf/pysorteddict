@@ -197,6 +197,33 @@ class TestFuzz:
         self.sorted_dict_keys = self.sorted_dict.keys()
         self.sorted_dict_values = self.sorted_dict.values()
 
+    def _test_get(self):
+        for key_type in all_types:
+            key = self._gen(key_type)
+            if self.is_sorted_dict_new:
+                with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
+                    self.sorted_dict.get(key)
+                continue
+            if key_type is not self.key_type:
+                with pytest.raises(
+                    TypeError,
+                    match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
+                ):
+                    self.sorted_dict.get(key)
+                continue
+            if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
+                with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
+                    self.sorted_dict.get(key)
+                continue
+            if key not in self.normal_dict:
+                assert self.sorted_dict.get(key) is None
+                value = self._gen()
+                assert self.sorted_dict.get(key, value) == value
+                continue
+            assert self.sorted_dict.get(key) == self.normal_dict.get(key)
+            with pytest.raises(TypeError):
+                self.sorted_dict.get()
+
     def _test_items(self):
         self._test_view("SortedDictItems", self.sorted_dict_items, sorted(self.normal_dict.items()))
 
