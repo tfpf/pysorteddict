@@ -95,9 +95,12 @@ class TestFuzz:
                     query = self._rg.choice([*self.normal_dict.items()])
                     query = query if container_contains_items else query[0]
                     assert query in container
-                assert (query in container) == (
-                    query in (self.normal_dict.items() if container_contains_items else self.normal_dict)
-                )
+                if container_contains_items:
+                    assert query in self.normal_dict.items()
+                    assert query[0] not in self.normal_dict.items()
+                    assert [*query] not in self.normal_dict.items()
+                else:
+                    assert query in self.normal_dict
 
     def _test___delattr__(self):
         with pytest.raises(AttributeError):
