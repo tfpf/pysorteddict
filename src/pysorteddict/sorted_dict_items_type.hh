@@ -13,6 +13,7 @@ struct SortedDictItemsIterType : public SortedDictViewIterType
 struct SortedDictItemsType : public SortedDictViewType
 {
 public:
+    int contains(PyObject*);
     static PyObject* New(PyTypeObject*, SortedDictType*);
 };
 

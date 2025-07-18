@@ -64,8 +64,18 @@ static Py_ssize_t sorted_dict_items_type_len(PyObject* self)
     return sdi->len();
 }
 
+/**
+ * Check whether a item is present.
+ */
+static int sorted_dict_items_type_contains(PyObject* self, PyObject* item)
+{
+    SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
+    return sdi->contains(item);
+}
+
 static PySequenceMethods sorted_dict_items_type_sequence = {
     .sq_length = sorted_dict_items_type_len,
+    .sq_contains = sorted_dict_items_type_contains,
 };
 
 /**
