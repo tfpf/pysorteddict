@@ -259,7 +259,7 @@ PyObject* SortedDictType::repr(void)
  * value if it is provided.
  *
  * @param key Key.
- * @param key Value.
+ * @param value Value.
  *
  * @return -1 on error. 1 if it is present and mapped, else 0.
  */
