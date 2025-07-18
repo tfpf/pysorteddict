@@ -91,16 +91,17 @@ class TestFuzz:
                     with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
                         query in container  # noqa: B015
                     continue
+                items = self.normal_dict.items()
                 if self.normal_dict:
-                    query = self._rg.choice([*self.normal_dict.items()])
+                    query = self._rg.choice([*items])
                     query = query if container_contains_items else query[0]
                     assert query in container
                 if container_contains_items:
-                    assert query in self.normal_dict.items()
-                    assert query[0] not in self.normal_dict.items()
-                    assert [*query] not in self.normal_dict.items()
+                    assert (query in container) == (query in items)
+                    assert query[0] not in container
+                    assert [*query] not in container
                 else:
-                    assert query in self.normal_dict
+                    assert (query in self.normal_dict) == (query in items)
 
     def _test___delattr__(self):
         with pytest.raises(AttributeError):
