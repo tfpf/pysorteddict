@@ -113,7 +113,7 @@ bool SortedDictType::is_key_good(PyObject* key)
  *
  * @return `true` if the check succeeds, else `false`.
  */
-bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObject* value = nullptr)
+bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObject* value)
 {
     bool key_type_set_here = false;
     if (this->key_type == nullptr)
@@ -263,7 +263,7 @@ PyObject* SortedDictType::repr(void)
  *
  * @return -1 on error. 1 if it is present and mapped, else 0.
  */
-int SortedDictType::contains(PyObject* key, PyObject* value = nullptr)
+int SortedDictType::contains(PyObject* key, PyObject* value)
 {
     if (!this->are_key_type_and_key_value_pair_good(key))
     {

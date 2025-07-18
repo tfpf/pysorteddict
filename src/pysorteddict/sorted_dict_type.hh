@@ -59,14 +59,14 @@ private:
 
 private:
     bool is_key_good(PyObject*);
-    bool are_key_type_and_key_value_pair_good(PyObject*, PyObject*);
+    bool are_key_type_and_key_value_pair_good(PyObject*, PyObject* value = nullptr);
     bool is_deletion_allowed(void);
     static bool is_deletion_allowed(Py_ssize_t);
 
 public:
     static void Delete(PyObject*);
     PyObject* repr(void);
-    int contains(PyObject*, PyObject*);
+    int contains(PyObject*, PyObject* value = nullptr);
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
