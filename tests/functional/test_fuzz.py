@@ -71,27 +71,33 @@ class TestFuzz:
             assert [*self.sorted_dict] == [*sorted_normal_dict]
 
     def _test___contains__(self):
-        for sorted_dict_or_sorted_dict_keys in (self.sorted_dict, self.sorted_dict_keys):
+        for container in (self.sorted_dict, self.sorted_dict_keys, self.sorted_dict_items):
+            container_contains_items = container.__class__.__name__ == "SortedDictItems"
             for key_type in all_types:
                 key = self._gen(key_type)
+                query = (key, self._gen()) if container_contains_items else key
                 if self.is_sorted_dict_new:
                     with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
-                        key in sorted_dict_or_sorted_dict_keys  # noqa: B015
+                        query in container  # noqa: B015
                     continue
                 if key_type is not self.key_type:
                     with pytest.raises(
                         TypeError,
                         match=re.escape(f"got key {key!r} of type {key_type!r}, want key of type {self.key_type!r}"),
                     ):
-                        key in sorted_dict_or_sorted_dict_keys  # noqa: B015
+                        query in container  # noqa: B015
                     continue
                 if (key_type is float or key_type is decimal.Decimal) and math.isnan(key):
                     with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {key_type!r}")):
-                        key in sorted_dict_or_sorted_dict_keys  # noqa: B015
+                        query in container  # noqa: B015
                     continue
                 if self.normal_dict:
-                    assert self._rg.choice([*self.normal_dict]) in sorted_dict_or_sorted_dict_keys
-                assert (key in sorted_dict_or_sorted_dict_keys) == (key in self.normal_dict)
+                    query = self._rg.choice([*self.normal_dict.items()])
+                    query = query if container_contains_items else query[0]
+                    assert query in container
+                assert (query in container) == (
+                    query in (self.normal_dict.items() if container_contains_items else self.normal_dict)
+                )
 
     def _test___delattr__(self):
         with pytest.raises(AttributeError):
