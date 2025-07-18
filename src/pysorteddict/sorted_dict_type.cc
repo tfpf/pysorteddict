@@ -257,7 +257,7 @@ PyObject* SortedDictType::repr(void)
 /**
  * Check whether a key is present.
  *
- * @param ob Python object.
+ * @param key Key.
  *
  * @return -1 on error. 1 if it is present, else 0.
  */
@@ -268,6 +268,28 @@ int SortedDictType::contains(PyObject* key)
         return -1;
     }
     return this->map->find(key) == this->map->end() ? 0 : 1;
+}
+
+/**
+ * Check whether a key is present and mapped to the given value.
+ *
+ * @param key Key.
+ * @param key Value.
+ *
+ * @return -1 on error. 1 if it is present and mapped, else 0.
+ */
+int SortedDictType::contains(PyObject* key, PyObject* value)
+{
+    if (!this->are_key_type_and_key_value_pair_good(key))
+    {
+        return -1;
+    }
+    auto it = this->map->find(key);
+    if (it == this->map->end)
+    {
+        return 0;
+    }
+    return PyObject_RichCompareBool(it->second.value, value);
 }
 
 Py_ssize_t SortedDictType::len(void)
