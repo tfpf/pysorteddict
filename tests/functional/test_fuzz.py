@@ -98,8 +98,8 @@ class TestFuzz:
                     assert query in container
                 if container_contains_items:
                     assert (query in container) == (query in items)
-                    assert query[0] not in container
                     assert [*query] not in container
+                    assert () not in container
                 else:
                     assert (query in container) == (query in self.normal_dict)
 
