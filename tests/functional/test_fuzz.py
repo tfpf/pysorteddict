@@ -101,7 +101,7 @@ class TestFuzz:
                     assert query[0] not in container
                     assert [*query] not in container
                 else:
-                    assert (query in self.normal_dict) == (query in items)
+                    assert (query in container) == (query in self.normal_dict)
 
     def _test___delattr__(self):
         with pytest.raises(AttributeError):
