@@ -13,6 +13,10 @@ static PyObject* iterator_to_object(std::map<PyObject*, SortedDictValue, SortedD
 
 int SortedDictItemsType::contains(PyObject* item)
 {
+    if(!PyTuple_Check(item) || PyTuple_GET_SIZE(item) != 2){
+        return 0;
+    }
+    PyObject*key = PyTuple_GET_ITEM(item, 0);
     return 0;
 }
 
