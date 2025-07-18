@@ -285,11 +285,11 @@ int SortedDictType::contains(PyObject* key, PyObject* value)
         return -1;
     }
     auto it = this->map->find(key);
-    if (it == this->map->end)
+    if (it == this->map->end())
     {
         return 0;
     }
-    return PyObject_RichCompareBool(it->second.value, value);
+    return PyObject_RichCompareBool(it->second.value, value, Py_EQ);
 }
 
 Py_ssize_t SortedDictType::len(void)
