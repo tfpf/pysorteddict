@@ -608,7 +608,8 @@ static PyTypeObject sorted_dict_type = {
 static PyModuleDef sorted_dict_module = {
     .m_base = PyModuleDef_HEAD_INIT,
     .m_name = "pysorteddict",
-    .m_doc = "enriches Python with a sorted dictionary\n\nSee https://tfpf.github.io/pysorteddict/.",
+    .m_doc = "enriches Python with a sorted dictionary\n\n"
+    "This documentation is generated from the source files. For details, see https://tfpf.github.io/pysorteddict/.",
     .m_size = -1,
 };
 
