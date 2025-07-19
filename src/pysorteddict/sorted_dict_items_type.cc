@@ -11,6 +11,17 @@ static PyObject* iterator_to_object(std::map<PyObject*, SortedDictValue, SortedD
     return PyTuple_Pack(2, it->first, it->second.value);  // 🆕
 }
 
+int SortedDictItemsType::contains(PyObject* item)
+{
+    if (!PyTuple_Check(item) || PyTuple_GET_SIZE(item) != 2)
+    {
+        return 0;
+    }
+    PyObject* key = PyTuple_GET_ITEM(item, 0);
+    PyObject* value = PyTuple_GET_ITEM(item, 1);
+    return this->sd->contains(key, value);
+}
+
 PyObject* SortedDictItemsType::New(PyTypeObject* type, SortedDictType* sd)
 {
     return SortedDictViewType::New(type, sd, ::iterator_to_object);
