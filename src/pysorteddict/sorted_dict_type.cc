@@ -360,7 +360,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     {
         // Insert a new key-value pair. The hint is correct; the key will get
         // inserted just before it.
-        it = this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
+        this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
     }
     else
     {
