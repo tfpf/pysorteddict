@@ -76,6 +76,7 @@ public:
     PyObject* get(PyObject*);
     PyObject* items(PyTypeObject*);
     PyObject* keys(PyTypeObject*);
+    PyObject* setdefault(PyObject*);
     PyObject* values(PyTypeObject*);
     PyObject* get_key_type(void);
     int init(PyObject*, PyObject*);
