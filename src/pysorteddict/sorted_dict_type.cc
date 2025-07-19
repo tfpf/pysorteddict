@@ -442,7 +442,23 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
 
 PyObject* SortedDictType::setdefault(PyObject* args)
 {
-    Py_RETURN_NOTIMPLEMENTED;
+    PyObject* key;
+    PyObject* Default = Py_None;
+    if (!PyArg_ParseTuple(args, "O|O:setdefault", &key, &Default))
+    {
+        return nullptr;
+    }
+    if (!this->are_key_type_and_key_value_pair_good(key))
+    {
+        return nullptr;
+    }
+    auto it = this->map->lower_bound(key);
+    bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
+    if(found){
+        return Py_NewRef(it->second.value);
+    }
+    this->map->emplace_hint(it, Py_NewRef(key), Py_NewRef(Default)); // 🆕
+    return Py_NewRef(Default); // 🆕
 }
 
 PyObject* SortedDictType::values(PyTypeObject* type)
