@@ -360,8 +360,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     {
         // Insert a new key-value pair. The hint is correct; the key will get
         // inserted just before it.
-        it = this->map->emplace_hint(it, key, value);
-        Py_INCREF(it->first);  // 🆕
+        it = this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
     }
     else
     {
@@ -369,7 +368,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
         Py_DECREF(it->second.value);
         it->second.value = value;
     }
-    Py_INCREF(it->second.value);  // 🆕
+    Py_INCREF(value);  // 🆕
     return 0;
 }
 
