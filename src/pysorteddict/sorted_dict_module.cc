@@ -609,7 +609,7 @@ static PyModuleDef sorted_dict_module = {
     .m_base = PyModuleDef_HEAD_INIT,
     .m_name = "pysorteddict",
     .m_doc = "enriches Python with a sorted dictionary\n\n"
-    "This documentation is generated from the source files. For details, see https://tfpf.github.io/pysorteddict/.",
+             "See https://tfpf.github.io/pysorteddict/.",
     .m_size = -1,
 };
 

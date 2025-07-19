@@ -454,11 +454,12 @@ PyObject* SortedDictType::setdefault(PyObject* args)
     }
     auto it = this->map->lower_bound(key);
     bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
-    if(found){
+    if (found)
+    {
         return Py_NewRef(it->second.value);
     }
-    this->map->emplace_hint(it, Py_NewRef(key), Py_NewRef(Default)); // 🆕
-    return Py_NewRef(Default); // 🆕
+    this->map->emplace_hint(it, Py_NewRef(key), Py_NewRef(Default));  // 🆕
+    return Py_NewRef(Default);  // 🆕
 }
 
 PyObject* SortedDictType::values(PyTypeObject* type)
