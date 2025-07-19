@@ -440,6 +440,11 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
     return SortedDictKeysType::New(type, this);
 }
 
+PyObject* SortedDictType::setdefault(PyObject* args)
+{
+    Py_RETURN_NOTIMPLEMENTED;
+}
+
 PyObject* SortedDictType::values(PyTypeObject* type)
 {
     return SortedDictValuesType::New(type, this);

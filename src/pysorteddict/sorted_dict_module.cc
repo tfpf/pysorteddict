@@ -469,6 +469,18 @@ static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 }
 
 PyDoc_STRVAR(
+    sorted_dict_type_setdefault_doc,
+    "d.setdefault(key: Any, default: Any = None, /) -> Any\n"
+    "Returns ``d.get(key, default)``, and maps ``default`` to ``key`` if ``key`` isn't in the sorted dictionary ``d``."
+);
+
+static PyObject* sorted_dict_type_setdefault(PyObject* self, PyObject* args)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->setdefault(args);
+}
+
+PyDoc_STRVAR(
     sorted_dict_type_values_doc,
     "d.values() -> SortedDictValues\n"
     "Return a dynamic view on the values in the sorted dictionary ``d``."
@@ -510,6 +522,12 @@ static PyMethodDef sorted_dict_type_methods[] = {
         .ml_meth = sorted_dict_type_keys,
         .ml_flags = METH_NOARGS,
         .ml_doc = sorted_dict_type_keys_doc,
+    },
+    {
+        .ml_name = "setdefault",
+        .ml_meth = sorted_dict_type_setdefault,
+        .ml_flags = METH_VARARGS,
+        .ml_doc = sorted_dict_type_setdefault_doc,
     },
     {
         .ml_name = "values",
