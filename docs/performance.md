@@ -32,10 +32,10 @@ The average execution times of some expressions are tabulated against the length
 
 | Expression             | &emsp;10<sup>2</sup>&emsp; | &emsp;10<sup>3</sup>&emsp; | &emsp;10<sup>4</sup>&emsp; | &emsp;10<sup>5</sup>&emsp; | &emsp;10<sup>6</sup>&emsp; | &emsp;10<sup>7</sup>&emsp; |
 | :--------:             | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: |
-| `0.00 in d`            | 36.8 ns                    | 48.9 ns                    | 64.6 ns                    | 83.1 ns                    | 94.0 ns                    | 106 ns                     |
-| `0.33 in d`            | 44.8 ns                    | 59.8 ns                    | 67.6 ns                    | 84.2 ns                    | 100 ns                     | 113 ns                     |
-| `0.67 in d`            | 39.7 ns                    | 56.1 ns                    | 67.7 ns                    | 76.5 ns                    | 97.4 ns                    | 114 ns                     |
-| `1.00 in d`            | 31.8 ns                    | 60.3 ns                    | 64.5 ns                    | 84.6 ns                    | 92.2 ns                    | 116 ns                     |
+| `0.00 in d`            | 37.9 ns                    | 50.0 ns                    | 65.2 ns                    | 84.0 ns                    | 95.1 ns                    | 112 ns                     |
+| `0.33 in d`            | 47 ns                      | 61.4 ns                    | 69.5 ns                    | 86.2 ns                    | 103 ns                     | 117 ns                     |
+| `0.67 in d`            | 41.2 ns                    | 58.3 ns                    | 69.9 ns                    | 78.6 ns                    | 100 ns                     | 118 ns                     |
+| `1.00 in d`            | 31.7 ns                    | 60.8 ns                    | 64.2 ns                    | 88.4 ns                    | 94.9 ns                    | 112 ns                     |
 | `set_del(d, keys_33)`  | 4.14 μs                    | 5.08 μs                    | 6.10 μs                    | 7.07 μs                    | 8.06 μs                    | 9.44 μs                    |
 | `set_del(d, keys_67)`  | 8.46 μs                    | 10.4 μs                    | 12.7 μs                    | 15.3 μs                    | 19.2 μs                    | 24.1 μs                    |
 | `set_del(d, keys_100)` | 13.0 μs                    | 15.9 μs                    | 21.2 μs                    | 26.8 μs                    | 33.9 μs                    | 43.3 μs                    |
