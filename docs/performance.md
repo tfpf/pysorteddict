@@ -36,8 +36,7 @@ The average execution times of some expressions are tabulated against the length
 | `0.33 in d`        | 44.8 ns                    | 59.8 ns                    | 67.6 ns                    | 84.2 ns                    | 100 ns                     | 113 ns                     |
 | `0.67 in d`        | 39.7 ns                    | 56.1 ns                    | 67.7 ns                    | 76.5 ns                    | 97.4 ns                    | 114 ns                     |
 | `1.00 in d`        | 31.8 ns                    | 60.3 ns                    | 64.5 ns                    | 84.6 ns                    | 92.2 ns                    | 116 ns                     |
-| `set_del(d, keys)` | 6.21 μs                    | 7.60 μs                    | 8.90 μs                    | 10.5 μs                    | 12.3 μs                    | 15.2 μs                    |
-| `for _ in d: pass` | 875 ns                     | 9.40 μs                    | 129 μs                     | 1.98 ms                    | 96.1 ms                    | 1.08 s                     |
+| `for _ in d: pass` | 818 ns                     | 8.37 μs                    | 119 μs                     | 2.01 ms                    | 97.1 ms                    | 1.06 s                     |
 
 ## Details
 
