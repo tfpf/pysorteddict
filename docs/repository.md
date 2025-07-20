@@ -2,7 +2,7 @@
 
 [Explore the repository on GitHub.](https://github.com/tfpf/pysorteddict)
 
-Efforts have been made to organise the repository neatly.
+Related components are grouped into directories.
 
 ## `docs/`
 
