@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.11.0](https://github.com/tfpf/pysorteddict/compare/v0.10.0...v0.11.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/196">#196</a> Define <code>SortedDict.get</code> to return the
+  value mapped to a key or a specified default.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/198">#198</a> Define <code>SortedDict.setdefault</code> to
+  return the value mapped to a key or a specified default and map that default to the key.</li>
+</ul>
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/commit/8fe14d796917482f830af5921d5b18546a9d7843">8fe14d796917</a>
+  Add optional testing dependencies to project metadata.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/197">#197</a> Define
+  <code>SortedDictItems.__contains__</code>.</li>
+</ul>
+
 ## [0.10.0](https://github.com/tfpf/pysorteddict/compare/v0.9.0...v0.10.0)
 
 <ul class="change-new">
