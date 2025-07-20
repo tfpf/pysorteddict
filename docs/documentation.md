@@ -602,6 +602,16 @@ See [sorted dictionary views](#sorted-dictionary-views).
 Return [`d.get(key, default)`](#dgetkey-any-default-any--none----any), and map `default` to `key` if `key` isn't in the
 sorted dictionary `d`.
 
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+assert d.setdefault("foo") == "bar"
+assert d.setdefault("baz") is None
+assert d["baz"] is None
+assert d.setdefault("spam", "eggs") == "eggs"
+assert d["spam"] == "eggs"
+```
 
 #### `d.values() -> SortedDictValues`
 
