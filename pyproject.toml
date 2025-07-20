@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysorteddict"
-version = "0.10.0"
+version = "0.11.0"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
