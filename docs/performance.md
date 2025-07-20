@@ -11,7 +11,7 @@ The table below describes the environment the performance benchmarks were run in
 | Operating System               | Debian 12 "bookworm"                       |
 | Operating System Libraries     | GNU C Library 2.36, GNU C++ Library 12.2.0 |
 | Python Interpreter             | CPython 3.11.2                             |
-| Python Interpreter Libraries   | Jupyter 1.1.1, pysorteddict 0.9.0          |
+| Python Interpreter Libraries   | Jupyter 1.1.1, pysorteddict 0.11.0         |
 
 The key type chosen was `float`, since it is easy to generate floating-point numbers uniformly distributed in the unit
 interval. Comparing two `float`s is straightforward (as opposed to comparing, say, two `str`s—if their lengths are
