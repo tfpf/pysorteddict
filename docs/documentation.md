@@ -770,8 +770,15 @@ The behaviour is equivalent to that of [`len(d)`](#lend) where `d` is the underl
 
 Return whether `ob` is present in the sorted dictionary view `v`.
 
-If `v` is of type `SortedDictKeys`, the behaviour is equivalent to that of [`ob in d`](#key-in-d) where `d` is the
-underlying sorted dictionary.
+If `v` is of type `SortedDictItems` and `ob` is not a two-element `tuple`, this expression evaluates to `False`. If
+`ob` is a two-element `tuple`, the behaviour is equivalent to that of `ob[0] in d and d[ob[0]] == ob[1]`, where `d` is
+the underlying sorted dictionary.
+
+If `v` is of type `SortedDictKeys`, the behaviour is equivalent to that of [`ob in d`](#key-in-d), where, once again,
+`d` is the underlying sorted dictionary.
+
+Finally, if `v` is of type `SortedDictValues`, the behaviour is equivalent to that of `ob in l`, where `l` is a `list`
+of the elements in `v` in the same order. (In other words, an element-by-element comparison is performed.)
 
 #### `v[pos]` or `v[start:stop:step]`
 
