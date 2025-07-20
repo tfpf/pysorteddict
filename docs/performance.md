@@ -43,6 +43,10 @@ The average execution times of some expressions are tabulated against the length
 
 ### Membership Check
 
+The numbers 0.00, 0.33, 0.67 and 1.00 are spaced equally in the range spanned by the keys, but are absent in the sorted
+dictionaries constructed using the seeded random number generator described above. Hence, a search for them in any of
+those sorted dictionaries will not terminate permaturely.
+
 ```{image} _static/images/perf-contains-light.svg
 :align: center
 :class: only-light
@@ -59,16 +63,16 @@ Inserting or deleting an item into or from a sorted dictionary changes its lengt
 or only delete items cannot be said to have been performed on a sorted dictionary of a particular length. Therefore,
 the strategy chosen was:
 
-* generate a `list` of 50 random `float`s;
+* generate a `list` of random `float`s;
 * insert all of them into the sorted dictionary; and
 * delete all of them from the sorted dictionary in order of insertion.
 
-Only the last two steps (defined in a function `set_del`) were timed. After these, in theory, the sorted dictionary
+Only the last two steps (defined in a function `set_del`) were timed. After these, ideally, the sorted dictionary
 should return to the original state, allowing it to be used for the next round of timing. In practice, it is likely to
 be in a different state because of rebalancing operations. But that change of state can be assumed to simulate the
 real-world effects of insertions and deletions, so this is a sound strategy.
 
-To reiterate, the numbers reported in the table above and the graph below are for 50 insertions and deletions.
+This benchmark was repeated for three different lengths of the `list` of random `float`s: 33, 67 and 100.
 
 ```{image} _static/images/perf-setitem-light.svg
 :align: center
