@@ -43,12 +43,12 @@ The average execution times of some expressions are tabulated against the length
 
 ### Membership Check
 
-```{image} _static/images/perf-contains-light.png
+```{image} _static/images/perf-contains-light.svg
 :align: center
 :class: only-light
 ```
 
-```{image} _static/images/perf-contains-dark.png
+```{image} _static/images/perf-contains-dark.svg
 :align: center
 :class: only-dark
 ```
@@ -70,24 +70,24 @@ real-world effects of insertions and deletions, so this is a sound strategy.
 
 To reiterate, the numbers reported in the table above and the graph below are for 50 insertions and deletions.
 
-```{image} _static/images/perf-setitem-light.png
+```{image} _static/images/perf-setitem-light.svg
 :align: center
 :class: only-light
 ```
 
-```{image} _static/images/perf-setitem-dark.png
+```{image} _static/images/perf-setitem-dark.svg
 :align: center
 :class: only-dark
 ```
 
 ### Iteration
 
-```{image} _static/images/perf-iter-light.png
+```{image} _static/images/perf-iter-light.svg
 :align: center
 :class: only-light
 ```
 
-```{image} _static/images/perf-iter-dark.png
+```{image} _static/images/perf-iter-dark.svg
 :align: center
 :class: only-dark
 ```
