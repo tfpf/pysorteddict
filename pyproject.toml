@@ -53,10 +53,13 @@ test-requires = ["pytest-xdist"]
 dev-mode = false
 features = ["functionaltest"]
 
-[tool.hatch.envs.default.env-vars]
+[tool.hatch.envs.test]
+skip-install = true
+
+[tool.hatch.envs.test.env-vars]
 CFLAGS = "--coverage"
 
-[tool.hatch.envs.default.scripts]
+[tool.hatch.envs.test.scripts]
 cov = [
     "rm -r build/ cov/ && pip install . && pytest -n logical",
     "mkdir -p cov/ && gcovr --html-details cov/index.html",
