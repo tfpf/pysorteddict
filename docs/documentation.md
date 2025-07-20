@@ -549,6 +549,59 @@ assert d.get("baz") is None
 assert d.get("spam", "eggs") == "eggs"
 ```
 
+<details class="warning">
+
+<summary>This method may raise exceptions.</summary>
+
+If no key-value pairs have been inserted into `d` yet, raises `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d.get("foo")
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 3, in <module>
+    d.get("foo")
+RuntimeError: key type not set: insert at least one item first
+```
+
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raises `TypeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ("bar", "baz")
+d.get(100)
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    d.get(100)
+TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
+```
+
+Otherwise, if `key` is not comparable with instances of its type, raises `ValueError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d[1.1] = ("racecar",)
+d.get(float("nan"))
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    d.get(float("nan"))
+ValueError: got bad key nan of type <class 'float'>
+```
+
+</details>
+
 #### `d.items() -> SortedDictItems`
 
 Return a dynamic view on the items in the sorted dictionary `d`.
@@ -612,6 +665,59 @@ assert d["baz"] is None
 assert d.setdefault("spam", "eggs") == "eggs"
 assert d["spam"] == "eggs"
 ```
+
+<details class="warning">
+
+<summary>This method may raise exceptions.</summary>
+
+If no key-value pairs have been inserted into `d` yet, raises `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d.setdefault("foo")
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 3, in <module>
+    d.setdefault("foo")
+RuntimeError: key type not set: insert at least one item first
+```
+
+Otherwise, if `type(key)` does not match the type of the first key inserted into `d`, raises `TypeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ("bar", "baz")
+d.setdefault(100)
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    d.setdefault(100)
+TypeError: got key 100 of type <class 'int'>, want key of type <class 'str'>
+```
+
+Otherwise, if `key` is not comparable with instances of its type, raises `ValueError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d[1.1] = ("racecar",)
+d.setdefault(float("nan"))
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 4, in <module>
+    d.setdefault(float("nan"))
+ValueError: got bad key nan of type <class 'float'>
+```
+
+</details>
 
 #### `d.values() -> SortedDictValues`
 
