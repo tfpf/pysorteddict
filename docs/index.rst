@@ -13,4 +13,4 @@ pysorteddict is implemented entirely in C++. ``SortedDict`` provides a Python in
    documentation
    performance
    changelog
-   source_code
+   repository

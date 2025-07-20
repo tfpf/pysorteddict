@@ -1,6 +1,8 @@
-# Source Code
+# Repository
 
-[Explore the source code on GitHub.](https://github.com/tfpf/pysorteddict)
+[Explore the repository on GitHub.](https://github.com/tfpf/pysorteddict)
+
+Efforts have been made to organise the repository neatly.
 
 ## `docs/`
 
