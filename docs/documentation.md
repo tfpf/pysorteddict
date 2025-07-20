@@ -540,6 +540,15 @@ Return a shallow copy of the sorted dictionary `d`.
 
 Return the value mapped to `key` in the sorted dictionary `d`, or `default` if `key` isn't in `d`.
 
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = "bar"
+assert d.get("foo") == "bar"
+assert d.get("baz") is None
+assert d.get("spam", "eggs") == "eggs"
+```
+
 #### `d.items() -> SortedDictItems`
 
 Return a dynamic view on the items in the sorted dictionary `d`.
@@ -590,7 +599,9 @@ See [sorted dictionary views](#sorted-dictionary-views).
 
 #### `d.setdefault(key: Any, default: Any = None, /) -> Any`
 
-Return `d.get(key, default)`, and map `default` to `key` if `key` isn't in the sorted dictionary `d`.
+Return [`d.get(key, default)`](#dgetkey-any-default-any--none----any), and map `default` to `key` if `key` isn't in the
+sorted dictionary `d`.
+
 
 #### `d.values() -> SortedDictValues`
 
