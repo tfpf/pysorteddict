@@ -536,6 +536,10 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 Return a shallow copy of the sorted dictionary `d`.
 
+#### `d.get(key: Any, default: Any = None, /) -> Any`
+
+Return the value mapped to `key` in the sorted dictionary `d`, or `default` if `key` isn't in `d`.
+
 #### `d.items() -> SortedDictItems`
 
 Return a dynamic view on the items in the sorted dictionary `d`.
@@ -583,6 +587,10 @@ SortedDictKeys(['bar', 'baz', 'foo'])
 ```
 
 See [sorted dictionary views](#sorted-dictionary-views).
+
+#### `d.setdefault(key: Any, default: Any = None, /) -> Any`
+
+Return `d.get(key, default)`, and map `default` to `key` if `key` isn't in the sorted dictionary `d`.
 
 #### `d.values() -> SortedDictValues`
 
