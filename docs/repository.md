@@ -6,7 +6,7 @@ Efforts have been made to organise the repository neatly.
 
 ## `docs/`
 
-Code for the static website you are reading right now.
+Code for the static website you are viewing right now.
 
 ## `src/pysorteddict/`
 
