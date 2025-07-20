@@ -471,7 +471,7 @@ static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 PyDoc_STRVAR(
     sorted_dict_type_setdefault_doc,
     "d.setdefault(key: Any, default: Any = None, /) -> Any\n"
-    "Returns ``d.get(key, default)``, and maps ``default`` to ``key`` if ``key`` isn't in the sorted dictionary ``d``."
+    "Return ``d.get(key, default)``, and map ``default`` to ``key`` if ``key`` isn't in the sorted dictionary ``d``."
 );
 
 static PyObject* sorted_dict_type_setdefault(PyObject* self, PyObject* args)

@@ -1,10 +1,12 @@
-# Source Code
+# Repository
 
-[Explore the source code on GitHub.](https://github.com/tfpf/pysorteddict)
+[Explore the repository on GitHub.](https://github.com/tfpf/pysorteddict)
+
+Related components are grouped into directories.
 
 ## `docs/`
 
-Code for the static website you are reading right now.
+Code for the static website you are viewing right now.
 
 ## `src/pysorteddict/`
 
