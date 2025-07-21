@@ -33,7 +33,7 @@ The average execution times of some expressions are tabulated against the length
 | Expression             | &emsp;10<sup>2</sup>&emsp; | &emsp;10<sup>3</sup>&emsp; | &emsp;10<sup>4</sup>&emsp; | &emsp;10<sup>5</sup>&emsp; | &emsp;10<sup>6</sup>&emsp; | &emsp;10<sup>7</sup>&emsp; |
 | :--------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: |
 | `0.00 in d`            | 37.9 ns                    | 50.0 ns                    | 65.2 ns                    | 84.0 ns                    | 95.1 ns                    | 112 ns                     |
-| `0.33 in d`            | 47 ns                      | 61.4 ns                    | 69.5 ns                    | 86.2 ns                    | 103 ns                     | 117 ns                     |
+| `0.33 in d`            | 47.0 ns                    | 61.4 ns                    | 69.5 ns                    | 86.2 ns                    | 103 ns                     | 117 ns                     |
 | `0.67 in d`            | 41.2 ns                    | 58.3 ns                    | 69.9 ns                    | 78.6 ns                    | 100 ns                     | 118 ns                     |
 | `1.00 in d`            | 31.7 ns                    | 60.8 ns                    | 64.2 ns                    | 88.4 ns                    | 94.9 ns                    | 112 ns                     |
 | `set_del(d, keys_33)`  | 4.14 μs                    | 5.08 μs                    | 6.10 μs                    | 7.07 μs                    | 8.06 μs                    | 9.44 μs                    |
@@ -52,11 +52,13 @@ those sorted dictionaries will not terminate permaturely.
 ```{image} _static/images/perf-contains-light.svg
 :align: center
 :class: only-light
+:width: 100%
 ```
 
 ```{image} _static/images/perf-contains-dark.svg
 :align: center
 :class: only-dark
+:width: 100%
 ```
 
 ### Insertion and Deletion
@@ -79,11 +81,13 @@ This benchmark was repeated for three different lengths of the `list` of random 
 ```{image} _static/images/perf-setitem-light.svg
 :align: center
 :class: only-light
+:width: 100%
 ```
 
 ```{image} _static/images/perf-setitem-dark.svg
 :align: center
 :class: only-dark
+:width: 100%
 ```
 
 ### Iteration
@@ -91,9 +95,11 @@ This benchmark was repeated for three different lengths of the `list` of random 
 ```{image} _static/images/perf-iter-light.svg
 :align: center
 :class: only-light
+:width: 100%
 ```
 
 ```{image} _static/images/perf-iter-dark.svg
 :align: center
 :class: only-dark
+:width: 100%
 ```
