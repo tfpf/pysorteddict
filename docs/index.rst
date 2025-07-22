@@ -10,7 +10,7 @@ pysorteddict is implemented entirely in C++. ``SortedDict`` provides a Python in
 
    installation
    usage
-   reference
+   documentation
    performance
    changelog
    repository
