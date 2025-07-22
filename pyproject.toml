@@ -34,7 +34,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-functionaltest = ["gcovr", "pytest-xdist"]
+cov = ["gcovr", "pytest-xdist"]
 
 [project.urls]
 Homepage = "https://tfpf.github.io/pysorteddict/"
@@ -52,14 +52,14 @@ test-requires = ["pytest-xdist"]
 [tool.hatch.envs.default]
 dev-mode = false
 
-[tool.hatch.envs.test]
-features = ["functionaltest"]
+[tool.hatch.envs.cov]
+features = ["cov"]
 skip-install = true
 
-[tool.hatch.envs.test.env-vars]
+[tool.hatch.envs.cov.env-vars]
 CFLAGS = "--coverage"
 
-[tool.hatch.envs.test.scripts]
+[tool.hatch.envs.cov.scripts]
 cov = [
     "rm -fr build/ cov/ && pip install . && pytest -n logical",
     "mkdir -p cov/ && gcovr --html-details cov/index.html",
