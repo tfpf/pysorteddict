@@ -6,9 +6,6 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-[dependency-groups]
-docs = ["furo~=2024.8", "myst-parser~=4.0"]
-
 [project]
 name = "pysorteddict"
 version = "0.11.0"
@@ -69,8 +66,8 @@ cov = [
 ]
 
 [tool.hatch.envs.docs]
-dependencies = ["furo~=2024.8", "myst-parser~=4.0"]
 detached = true
+post-install-commands = "cd docs/ && pip install -r requirements.txt"
 
 [tool.hatch.envs.docs.scripts]
 docs = "cd docs/ && sphinx-build -q . _build/"
