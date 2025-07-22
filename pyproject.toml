@@ -34,7 +34,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-functionaltest = ["gcovr", "pytest-xdist"]
+cov = ["gcovr", "pytest-xdist"]
 
 [project.urls]
 Homepage = "https://tfpf.github.io/pysorteddict/"
@@ -52,18 +52,29 @@ test-requires = ["pytest-xdist"]
 [tool.hatch.envs.default]
 dev-mode = false
 
-[tool.hatch.envs.test]
-features = ["functionaltest"]
-skip-install = true
+[tool.hatch.envs.cov]
+detached = true
+features = ["cov"]
 
-[tool.hatch.envs.test.env-vars]
+[tool.hatch.envs.cov.env-vars]
 CFLAGS = "--coverage"
 
-[tool.hatch.envs.test.scripts]
+[tool.hatch.envs.cov.scripts]
 cov = [
     "rm -fr build/ cov/ && pip install . && pytest -n logical",
     "mkdir -p cov/ && gcovr --html-details cov/index.html",
 ]
+
+[tool.hatch.envs.docs]
+detached = true
+
+[tool.hatch.envs.docs.scripts]
+# Building the documentation does not require installing this project, but does
+# require some dependencies. I can't figure out a way to get Hatch to only
+# install those dependencies without repeating them here. Hence, install them
+# in this environment manually from the requirements file. Otherwise, the below
+# command will fail.
+docs = "sphinx-build docs/ docs/_build/"
 
 [tool.ruff]
 line-length = 119
