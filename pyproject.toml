@@ -69,10 +69,11 @@ cov = [
 detached = true
 
 [tool.hatch.envs.docs.scripts]
-# Can't think of a way to install the packages required to build the homepage
-# without installing the project and without repeating those packages here.
-# Install them manually in this environment, otherwise the below command will
-# fail.
+# Building the documentation does not require installing this project, but does
+# require some dependencies. I can't figure out a way to get Hatch to only
+# install those dependencies without repeating them here. Hence, install them
+# in this environment manually from the requirements file. Otherwise, the below
+# command will fail.
 docs = "cd docs/ && sphinx-build . _build/"
 
 [tool.ruff]
