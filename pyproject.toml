@@ -74,7 +74,7 @@ detached = true
 # install those dependencies without repeating them here. Hence, install them
 # in this environment manually from the requirements file. Otherwise, the below
 # command will fail.
-docs = "cd docs/ && sphinx-build . _build/"
+docs = "sphinx-build docs/ docs/_build/"
 
 [tool.ruff]
 line-length = 119
