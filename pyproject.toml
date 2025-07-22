@@ -53,8 +53,8 @@ test-requires = ["pytest-xdist"]
 dev-mode = false
 
 [tool.hatch.envs.cov]
+detached = true
 features = ["cov"]
-skip-install = true
 
 [tool.hatch.envs.cov.env-vars]
 CFLAGS = "--coverage"
@@ -64,6 +64,9 @@ cov = [
     "rm -fr build/ cov/ && pip install . && pytest -n logical",
     "mkdir -p cov/ && gcovr --html-details cov/index.html",
 ]
+
+[tool.hatch.envs.docs]
+detached = true
 
 [tool.ruff]
 line-length = 119
