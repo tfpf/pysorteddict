@@ -6,6 +6,9 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[dependency-groups]
+docs = ["furo~=2024.8", "myst-parser~=4.0"]
+
 [project]
 name = "pysorteddict"
 version = "0.11.0"
@@ -72,7 +75,7 @@ detached = true
 # Building the documentation does not require installing this project, but does
 # require some dependencies. I can't figure out a way to get Hatch to only
 # install those dependencies without repeating them here. Hence, install them
-# in this environment manually from the requirements file. Otherwise, the below
+# in this environment manually from the dependency group. Otherwise, the below
 # command will fail.
 docs = "sphinx-build docs/ docs/_build/"
 
