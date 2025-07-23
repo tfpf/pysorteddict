@@ -32,7 +32,9 @@ jobs:
       - run: unzip assets.zip
         working-directory: docs/_static/
       - uses: actions/setup-python@v5
-      - run: pip install -r requirements.txt && sphinx-build . _build
+      - run: pip install -U pip
+      - run: pip install --group docs
+      - run: sphinx-build . _build/
         working-directory: docs/
       - uses: actions/upload-pages-artifact@v3
         with:
