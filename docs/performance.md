@@ -16,7 +16,7 @@ The table below describes the environment the performance benchmarks were run in
 The key type chosen was `float`, since it is easy to generate floating-point numbers uniformly distributed in the unit
 interval. Comparing two `float`s is straightforward (as opposed to comparing, say, two `str`s—if their lengths are
 different, they may introduce noise in the benchmarks). Before every benchmark, the random number generator was seeded
-with pi, a nothing-up-my-sleeve number.
+with _π_, a nothing-up-my-sleeve number.
 
 There is an extra step required when using `float` keys: the check for NaN. Hence, the performance will be marginally
 worse than if `int` keys were used.
