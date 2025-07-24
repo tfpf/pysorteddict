@@ -18,7 +18,7 @@ html_static_path = ["_static"]
 html_theme = "furo"
 html_theme_options = {
     "light_css_variables": {
-        "font-stack": "Signika pysorteddict, Cochineal, Arial, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
+        "font-stack": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--headings": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--monospace": "JetBrainsMono pysorteddict, Consolas, Monaco, Liberation Mono, monospace",
     },
