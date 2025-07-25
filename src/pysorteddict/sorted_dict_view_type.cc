@@ -127,10 +127,10 @@ PyObject* SortedDictViewType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         return nullptr;
     }
     Py_ssize_t slice_len = PySlice_AdjustIndices(sz, &start, &stop, step);
-    PyObject* keys = PyList_New(slice_len);  // 🆕
+    PyObject* lst = PyList_New(slice_len);  // 🆕
     if (slice_len == 0)
     {
-        return keys;
+        return lst;
     }
 
     std::map<PyObject*, SortedDictValue>::iterator it;
@@ -148,7 +148,7 @@ PyObject* SortedDictViewType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         }
         for (Py_ssize_t i = 0;; ++i)
         {
-            PyList_SET_ITEM(keys, i, this->iterator_to_object(it));
+            PyList_SET_ITEM(lst, i, this->iterator_to_object(it));
             if (i == slice_len - 1)
             {
                 break;
@@ -171,7 +171,7 @@ PyObject* SortedDictViewType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         }
         for (Py_ssize_t i = slice_len - 1;; --i)
         {
-            PyList_SET_ITEM(keys, i, this->iterator_to_object(it));
+            PyList_SET_ITEM(lst, i, this->iterator_to_object(it));
             if (i == 0)
             {
                 break;
@@ -179,7 +179,7 @@ PyObject* SortedDictViewType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
             std::advance(it, -step);
         }
     }
-    return keys;
+    return lst;
 }
 
 void SortedDictViewType::Delete(PyObject* self)
