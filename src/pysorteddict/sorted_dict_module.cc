@@ -410,7 +410,7 @@ static PyObject* sorted_dict_type_iter(PyObject* self)
 
 PyDoc_STRVAR(
     sorted_dict_type_clear_doc,
-    "d.clear()\n"
+    "``dclear()``  \n"
     "Remove all key-value pairs in the sorted dictionary ``d``."
 );
 
