@@ -1,4 +1,19 @@
 import tomllib
+import zipfile
+from pathlib import Path
+import os
+import time
+
+with zipfile.ZipFile(assets_src := Path("_static/assets.zip")) as zf:
+    assets_dst = assets_src.parent
+    for zi in zf.infolist():
+        if (target := assets_dst / zi.filename).exists():
+            continue
+        zf.extract(zi, assets_dst)
+        original_timestamp = time.mktime(zi.date_time + (0, 0, -1))
+        os.utime(target, (original_timestamp, original_timestamp))
+        print(f"{target} set to {original_timestamp}")
+raise SystemExit(1)
 
 with open("../pyproject.toml", "rb") as reader:
     metadata = tomllib.load(reader)["project"]
