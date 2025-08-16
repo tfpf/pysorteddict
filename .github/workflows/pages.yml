@@ -29,8 +29,6 @@ jobs:
         with:
           lfs: true
       - uses: actions/configure-pages@v5
-      - run: unzip assets.zip
-        working-directory: docs/_static/
       - uses: actions/setup-python@v5
       - run: pip install -U pip
       - run: pip install --group docs

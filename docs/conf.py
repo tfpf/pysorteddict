@@ -1,4 +1,23 @@
+import os
+import time
+import zipfile
+from pathlib import Path
+
 import tomllib
+
+with zipfile.ZipFile(assets_src := Path("_static/assets.zip")) as zf:
+    assets_dst, modification_time_tuples = assets_src.parent, {}
+    for zi in zf.infolist():
+        if not (target := assets_dst / zi.filename).exists():
+            zf.extract(zi, assets_dst)
+            modification_time_tuples[target] = zi.date_time
+    # Set the modification and access times of the extracted files to what the
+    # archive reports. This must be done in a separate loop because the
+    # modification time of a directory gets updated when a file is extracted
+    # into it.
+    for target, modification_time_tuple in modification_time_tuples.items():
+        modification_timestamp = time.mktime((*modification_time_tuple, 0, 0, -1))
+        os.utime(target, (modification_timestamp, modification_timestamp))
 
 with open("../pyproject.toml", "rb") as reader:
     metadata = tomllib.load(reader)["project"]
