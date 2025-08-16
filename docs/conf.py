@@ -1,8 +1,9 @@
-import tomllib
-import zipfile
-from pathlib import Path
 import os
 import time
+import zipfile
+from pathlib import Path
+
+import tomllib
 
 with zipfile.ZipFile(assets_src := Path("_static/assets.zip")) as zf:
     assets_dst, modification_time_tuples = assets_src.parent, {}
@@ -15,7 +16,7 @@ with zipfile.ZipFile(assets_src := Path("_static/assets.zip")) as zf:
     # modification time of a directory gets updated when a file is extracted
     # into it.
     for target, modification_time_tuple in modification_time_tuples.items():
-        modification_timestamp = time.mktime(modification_time_tuple + (0, 0, -1))
+        modification_timestamp = time.mktime((*modification_time_tuple, 0, 0, -1))
         os.utime(target, (modification_timestamp, modification_timestamp))
 
 with open("../pyproject.toml", "rb") as reader:
