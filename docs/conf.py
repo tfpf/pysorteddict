@@ -11,8 +11,8 @@ with zipfile.ZipFile(assets_src := Path("_static/assets.zip")) as zf:
         if not (target := assets_dst / zi.filename).exists():
             zf.extract(zi, assets_dst)
             modification_time_tuples[target] = zi.date_time
-    # Set the modification and access times of only the extracted files to what
-    # the archive reports. This must be done in a separate loop because
+    # Set the modification and access times of the extracted files to what the
+    # archive reports. This must be done in a separate loop because the
     # modification time of a directory gets updated when a file is extracted
     # into it.
     for target, modification_time_tuple in modification_time_tuples.items():
