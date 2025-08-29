@@ -5,7 +5,7 @@ from pathlib import Path
 
 import tomllib
 
-with zipfile.ZipFile(assets_src := Path("_static/assets.zip")) as zf:
+with zipfile.ZipFile(assets_src := Path(__file__).with_name("_static") / "assets.zip") as zf:
     assets_dst, modification_time_tuples = assets_src.parent, {}
     for zi in zf.infolist():
         if not (target := assets_dst / zi.filename).exists():
@@ -19,7 +19,7 @@ with zipfile.ZipFile(assets_src := Path("_static/assets.zip")) as zf:
         modification_timestamp = time.mktime((*modification_time_tuple, 0, 0, -1))
         os.utime(target, (modification_timestamp, modification_timestamp))
 
-with open("../pyproject.toml", "rb") as reader:
+with open(Path(__file__).parents[1] / "pyproject.toml", "rb") as reader:
     metadata = tomllib.load(reader)["project"]
 author = metadata["authors"][0]["name"]
 copyright = f"2025, {author}"
