@@ -84,7 +84,7 @@ PyObject* SortedDictViewType::getitem(Py_ssize_t position)
         PyErr_Format(PyExc_IndexError, "got invalid index %zd for view of length %zd", position, sz);
         return nullptr;
     }
-    std::map<PyObject*, SortedDictValue>::iterator it;
+    FwdIterType it;
     if (positive_position <= sz / 2)
     {
         it = this->sd->map->begin();
@@ -112,7 +112,7 @@ PyObject* SortedDictViewType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         return lst;
     }
 
-    std::map<PyObject*, SortedDictValue>::iterator it;
+    FwdIterType it;
     if ((step > 0 && start <= sz - stop) || (step < 0 && sz - 1 - start < stop + 1))
     {
         if (step > 0)
