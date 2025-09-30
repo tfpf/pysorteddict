@@ -6,7 +6,7 @@
 
 #include "sorted_dict_view_type.hh"
 
-struct SortedDictKeysIterType : public SortedDictViewIterType
+struct SortedDictKeysFwdIterType : public SortedDictViewIterType<FwdIterType>
 {
 public:
     static PyObject* New(PyTypeObject*, SortedDictType*);

@@ -3,12 +3,18 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <iterator>
 #include <map>
 
 #include "sorted_dict_type.hh"
 
-using IteratorToObject = PyObject* (*)(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
+using FwdIterType = std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator;
+using FwdIterToObj = PyObject* (*)(FwdIterType);
 
+using RevIterType = std::reverse_iterator<FwdIterType>;
+using RevIterToObj = PyObject* (*)(RevIterType);
+
+template<typename T>
 struct SortedDictViewIterType
 {
 public:
@@ -16,20 +22,44 @@ public:
 
 protected:
     SortedDictType* sd;
-    std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator it;
+    T it;
     bool should_raise_stop_iteration;
 
     // See below for why this is required.
-    IteratorToObject iterator_to_object;
+    PyObject* (*iterator_to_object)(T);
 
 private:
-    void track(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
-    void untrack(std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator);
+    void track(T);
+    void untrack(T);
 
 public:
-    static void Delete(PyObject*);
-    PyObject* next(void);
-    static PyObject* New(PyTypeObject*, SortedDictType*, IteratorToObject);
+    static void Delete(PyObject* self)
+    {
+        SortedDictViewIterType<T>* sdvi = reinterpret_cast<SortedDictViewIterType<T>*>(self);
+        if (!sdvi->should_raise_stop_iteration)
+        {
+            sdvi->untrack(sdvi->it);
+            --sdvi->sd->known_referrers;
+            Py_DECREF(sdvi->sd);
+        }
+        Py_TYPE(self)->tp_free(self);
+    }
+
+    PyObject* next(void)
+    {
+        if (this->should_raise_stop_iteration)
+        {
+            return nullptr;
+        }
+
+        // The 'next' key-value pair is the current one the iterator points to.
+        auto curr = this->it++;
+        this->untrack(curr);
+        this->track(this->it);
+        return this->iterator_to_object(curr);
+    }
+
+    static PyObject* New(PyTypeObject*, SortedDictType*, PyObject* (*iterator_to_object)(T));
 };
 
 struct SortedDictViewType
@@ -40,13 +70,15 @@ public:
 protected:
     SortedDictType* sd;
 
-    // To mimic dynamic dispatch. Child classes should provide this function,
-    // which should convert a C++ iterator into a Python object. Using C++
-    // virtual functions would require constructing instances the C++ way, but
-    // C++ constructors won't know how to initialise the Python-specific
-    // members. The default memory allocator provided by Python (which does
-    // initialise Python-specific members) does not run constructors.
-    IteratorToObject iterator_to_object;
+    // To mimic dynamic dispatch. Child classes should provide these functions,
+    // both of which should convert a C++ iterator into a Python object. Using
+    // C++ virtual functions would require constructing instances the C++ way,
+    // but C++ constructors won't know how to initialise the Python-specific
+    // members. On the other hand, the default memory allocator provided by
+    // Python (which does initialise Python-specific members) does not run
+    // constructors.
+    FwdIterToObj forward_iterator_to_object;
+    RevIterToObj reverse_iterator_to_object;
 
 private:
     PyObject* getitem(Py_ssize_t);
@@ -58,7 +90,7 @@ public:
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     PyObject* iter(PyTypeObject*);
-    static PyObject* New(PyTypeObject*, SortedDictType*, IteratorToObject);
+    static PyObject* New(PyTypeObject*, SortedDictType*, FwdIterToObj, RevIterToObj);
 };
 
 #endif
