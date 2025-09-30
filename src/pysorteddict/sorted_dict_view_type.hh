@@ -53,7 +53,7 @@ public:
         }
 
         // The 'next' key-value pair is the current one the iterator points to.
-        auto curr = this->it++;
+        T curr = this->it++;
         this->untrack(curr);
         this->track(this->it);
         return this->iterator_to_object(curr);
