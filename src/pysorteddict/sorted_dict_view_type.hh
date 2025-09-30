@@ -9,10 +9,10 @@
 #include "sorted_dict_type.hh"
 
 using FwdIterType = std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator;
-using FwdIterToObj = PyObject* (*)(FwdIterType);
+using FwdIterToOb = PyObject* (*)(FwdIterType);
 
 using RevIterType = std::reverse_iterator<FwdIterType>;
-using RevIterToObj = PyObject* (*)(RevIterType);
+using RevIterToOb = PyObject* (*)(RevIterType);
 
 template<typename T>
 struct SortedDictViewIterType
@@ -77,8 +77,8 @@ protected:
     // members. On the other hand, the default memory allocator provided by
     // Python (which does initialise Python-specific members) does not run
     // constructors.
-    FwdIterToObj forward_iterator_to_object;
-    RevIterToObj reverse_iterator_to_object;
+    FwdIterToOb forward_iterator_to_object;
+    RevIterToOb reverse_iterator_to_object;
 
 private:
     PyObject* getitem(Py_ssize_t);
@@ -90,7 +90,7 @@ public:
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     PyObject* iter(PyTypeObject*);
-    static PyObject* New(PyTypeObject*, SortedDictType*, FwdIterToObj, RevIterToObj);
+    static PyObject* New(PyTypeObject*, SortedDictType*, FwdIterToOb, RevIterToOb);
 };
 
 #endif

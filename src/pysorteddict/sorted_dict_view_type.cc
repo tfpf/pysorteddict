@@ -54,7 +54,7 @@ void SortedDictViewIterType<FwdIterType>::untrack(FwdIterType it)
 
 template<>
 PyObject* SortedDictViewIterType<FwdIterType>::New(
-    PyTypeObject* type, SortedDictType* sd, FwdIterToObj forward_iterator_to_object
+    PyTypeObject* type, SortedDictType* sd, FwdIterToOb forward_iterator_to_object
 )
 {
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
@@ -220,8 +220,8 @@ PyObject* SortedDictViewType::iter(PyTypeObject* type)
 }
 
 PyObject* SortedDictViewType::New(
-    PyTypeObject* type, SortedDictType* sd, FwdIterToObj forward_iterator_to_object,
-    RevIterToObj reverse_iterator_to_object
+    PyTypeObject* type, SortedDictType* sd, FwdIterToOb forward_iterator_to_object,
+    RevIterToOb reverse_iterator_to_object
 )
 {
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
