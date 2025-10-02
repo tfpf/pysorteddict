@@ -13,9 +13,9 @@ static PyObject* forward_iterator_to_object(FwdIterType it)
     return Py_NewRef(it->first);  // 🆕
 }
 
-template <typename T> PyObject* SortedDictKeysIterType<T>::New(PyTypeObject* type, SortedDictType* sd)
+template <> PyObject* SortedDictKeysIterType<FwdIterType>::New(PyTypeObject* type, SortedDictType* sd)
 {
-    return SortedDictViewIterType<T>::New(type, sd, ::forward_iterator_to_object);
+    return SortedDictViewIterType<FwdIterType>::New(type, sd, ::forward_iterator_to_object);
 }
 
 int SortedDictKeysType::contains(PyObject* key)
