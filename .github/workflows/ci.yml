@@ -46,21 +46,19 @@ jobs:
     needs: [style]
     strategy:
       matrix:
-        os: ['macos-13', 'macos-14', 'ubuntu-24.04', 'windows-2022']
-    env:
-      MACOSX_DEPLOYMENT_TARGET_SOURCE: ${{ matrix.os }}
-    name: build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+        os: [{name: 'macos-13', version: '13.0'}, {name: 'macos-14', version: '14.0'}, {name: 'ubuntu-24.04', version: ''}, {name: 'windows-2022', version: ''}]
+    name: build on ${{ matrix.os.name }}
+    runs-on: ${{ matrix.os.name }}
     steps:
       - uses: actions/checkout@v4
       - uses: pypa/cibuildwheel@v2.23.3
         env:
-          MACOSX_DEPLOYMENT_TARGET: "${MACOSX_DEPLOYMENT_TARGET_SOURCE##*-}"
+          MACOSX_DEPLOYMENT_TARGET: ${{ matrix.os.version }}
         with:
           output-dir: wheelhouse
       - uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          name: wheels-${{ matrix.os.name }}-${{ strategy.job-index }}
           path: wheelhouse/*.whl
 
   release:
