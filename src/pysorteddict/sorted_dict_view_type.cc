@@ -7,8 +7,6 @@
 #include "sorted_dict_utils.hh"
 #include "sorted_dict_view_type.hh"
 
-template struct SortedDictViewIterType<FwdIterType>;
-
 /**
  * Do all the necessary bookkeeping required to start tracking the given
  * forward iterator of the underlying sorted dictionary.
@@ -263,3 +261,5 @@ PyObject* SortedDictViewType::New(
     sdv->reverse_iterator_to_object = reverse_iterator_to_object;
     return self;
 }
+
+template struct SortedDictViewIterType<FwdIterType>;

@@ -6,8 +6,6 @@
 #include "sorted_dict_type.hh"
 #include "sorted_dict_view_type.hh"
 
-template struct SortedDictItemsIterType<FwdIterType>;
-
 static PyObject* forward_iterator_to_object(FwdIterType it)
 {
     return PyTuple_Pack(2, it->first, it->second.value);  // 🆕
@@ -28,3 +26,5 @@ PyObject* SortedDictItemsType::New(PyTypeObject* type, SortedDictType* sd)
 {
     return SortedDictViewType::New(type, sd, ::forward_iterator_to_object, nullptr);
 }
+
+template struct SortedDictItemsIterType<FwdIterType>;

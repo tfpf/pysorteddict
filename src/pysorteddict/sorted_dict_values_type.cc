@@ -6,8 +6,6 @@
 #include "sorted_dict_values_type.hh"
 #include "sorted_dict_view_type.hh"
 
-template struct SortedDictValuesIterType<FwdIterType>;
-
 static PyObject* forward_iterator_to_object(FwdIterType it)
 {
     return Py_NewRef(it->second.value);  // 🆕
@@ -17,3 +15,5 @@ PyObject* SortedDictValuesType::New(PyTypeObject* type, SortedDictType* sd)
 {
     return SortedDictViewType::New(type, sd, ::forward_iterator_to_object, nullptr);
 }
+
+template struct SortedDictValuesIterType<FwdIterType>;

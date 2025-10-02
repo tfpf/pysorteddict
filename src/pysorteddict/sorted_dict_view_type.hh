@@ -66,6 +66,4 @@ public:
     static PyObject* New(PyTypeObject*, SortedDictType*, IteratorToObject<FwdIterType>, IteratorToObject<RevIterType>);
 };
 
-extern template struct SortedDictViewIterType<FwdIterType>;
-
 #endif
