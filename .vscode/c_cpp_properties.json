@@ -6,7 +6,7 @@
       "cppStandard": "c++20",
       "defines": [],
       "includePath": [
-        "/usr/include/python3.11"
+        "/usr/include/python3*/"
       ],
       "intelliSenseMode": "linux-gcc-x64",
       "name": "Linux"
