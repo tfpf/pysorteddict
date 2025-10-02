@@ -66,6 +66,9 @@ public:
     static PyObject* New(PyTypeObject*, SortedDictType*, IteratorToObject<FwdIterType>, IteratorToObject<RevIterType>);
 };
 
+template <> void SortedDictViewIterType<FwdIterType>::track(FwdIterType);
+template <>
+PyObject* SortedDictViewIterType<FwdIterType>::New(PyTypeObject*, SortedDictType*, IteratorToObject<FwdIterType>);
 extern template struct SortedDictViewIterType<FwdIterType>;
 
 #endif
