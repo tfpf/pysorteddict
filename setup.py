@@ -4,6 +4,11 @@ import sysconfig
 
 import setuptools
 
+if os.name != "nt":
+    # Clang doesn't know how to resolve template specialisations when explicit
+    # instantiations are provided.
+    sysconfig.get_config_vars().update({"CC": "gcc", "CXX": "g++"})
+
 # Only non-static (i.e. platform-specific) configurations go here.
 if os.name != "nt" or sysconfig.get_platform().startswith("mingw"):
     extra_compile_args = ["-flto", "-std=c++20"]
