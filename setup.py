@@ -7,7 +7,7 @@ import setuptools
 if (system := platform.system()) == "Darwin":
     # Clang doesn't know how to resolve template specialisations when explicit
     # instantiations are provided.
-    sysconfig.get_config_vars().update({"CC": "gcc-15", "CXX": "g++-15"})
+    sysconfig.get_config_vars().update({"CC": "gcc-12", "CXX": "g++-12"})
 
 # Only non-static (i.e. platform-specific) configurations go here.
 if system != "Windows" or sysconfig.get_platform().startswith("mingw"):
