@@ -6,7 +6,7 @@
 
 #include "sorted_dict_view_type.hh"
 
-struct SortedDictItemsIterType : public SortedDictViewIterType
+template <typename T> struct SortedDictItemsIterType : public SortedDictViewIterType<T>
 {
 };
 

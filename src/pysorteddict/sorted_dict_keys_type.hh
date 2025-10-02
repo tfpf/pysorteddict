@@ -6,7 +6,7 @@
 
 #include "sorted_dict_view_type.hh"
 
-struct SortedDictKeysIterType : public SortedDictViewIterType
+template <typename T> struct SortedDictKeysIterType : public SortedDictViewIterType<T>
 {
 public:
     static PyObject* New(PyTypeObject*, SortedDictType*);

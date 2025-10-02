@@ -82,7 +82,7 @@ public:
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 
-    friend struct SortedDictViewIterType;
+    template <typename T> friend struct SortedDictViewIterType;
     friend struct SortedDictViewType;
 };
 
