@@ -7,6 +7,8 @@
 #include "sorted_dict_utils.hh"
 #include "sorted_dict_view_type.hh"
 
+template struct SortedDictViewIterType<FwdIterType>;
+
 /**
  * Do all the necessary bookkeeping required to start tracking the given
  * forward iterator of the underlying sorted dictionary.
@@ -38,7 +40,7 @@ void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
 }
 
 /**
- * Do all the necessary bookkeeping required to stop tracking the given forward
+ * Do all the necessary bookkeeping required to stop tracking the given
  * iterator of the underlying sorted dictionary.
  *
  * The caller should ensure that this method is called immediately after the
@@ -46,10 +48,38 @@ void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
  *
  * @param it Previous value of the iterator member.
  */
-template<>
-void SortedDictViewIterType<FwdIterType>::untrack(FwdIterType it)
+template<typename T>
+void SortedDictViewIterType<T>::untrack(T it)
 {
     --it->second.known_referrers;
+}
+
+template<typename T>
+void SortedDictViewIterType<T>::Delete(PyObject* self)
+{
+    SortedDictViewIterType<T>* sdvi = reinterpret_cast<SortedDictViewIterType<T>*>(self);
+    if (!sdvi->should_raise_stop_iteration)
+    {
+        sdvi->untrack(sdvi->it);
+        --sdvi->sd->known_referrers;
+        Py_DECREF(sdvi->sd);
+    }
+    Py_TYPE(self)->tp_free(self);
+}
+
+template<typename T>
+PyObject* SortedDictViewIterType<T>::next(void)
+{
+    if (this->should_raise_stop_iteration)
+    {
+        return nullptr;
+    }
+
+    // The 'next' key-value pair is the current one the iterator points to.
+    T curr = this->it++;
+    this->untrack(curr);
+    this->track(this->it);
+    return this->iterator_to_object(curr);
 }
 
 template<>

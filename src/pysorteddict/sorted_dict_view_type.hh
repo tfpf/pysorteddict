@@ -33,32 +33,8 @@ private:
     void untrack(T);
 
 public:
-    static void Delete(PyObject* self)
-    {
-        SortedDictViewIterType<T>* sdvi = reinterpret_cast<SortedDictViewIterType<T>*>(self);
-        if (!sdvi->should_raise_stop_iteration)
-        {
-            sdvi->untrack(sdvi->it);
-            --sdvi->sd->known_referrers;
-            Py_DECREF(sdvi->sd);
-        }
-        Py_TYPE(self)->tp_free(self);
-    }
-
-    PyObject* next(void)
-    {
-        if (this->should_raise_stop_iteration)
-        {
-            return nullptr;
-        }
-
-        // The 'next' key-value pair is the current one the iterator points to.
-        T curr = this->it++;
-        this->untrack(curr);
-        this->track(this->it);
-        return this->iterator_to_object(curr);
-    }
-
+    static void Delete(PyObject* self);
+    PyObject* next(void);
     static PyObject* New(PyTypeObject*, SortedDictType*, PyObject* (*iterator_to_object)(T));
 };
 
@@ -92,5 +68,7 @@ public:
     PyObject* iter(PyTypeObject*);
     static PyObject* New(PyTypeObject*, SortedDictType*, FwdIterToOb, RevIterToOb);
 };
+
+extern template struct SortedDictViewIterType<FwdIterType>;
 
 #endif
