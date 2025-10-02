@@ -14,8 +14,7 @@ using FwdIterToOb = PyObject* (*)(FwdIterType);
 using RevIterType = std::reverse_iterator<FwdIterType>;
 using RevIterToOb = PyObject* (*)(RevIterType);
 
-template<typename T>
-struct SortedDictViewIterType
+template <typename T> struct SortedDictViewIterType
 {
 public:
     PyObject_HEAD;
