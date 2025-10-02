@@ -43,17 +43,19 @@ jobs:
         if: github.ref_type == 'tag'
 
   build:
-    env:
-      MACOSX_DEPLOYMENT_TARGET: "14.0"
     needs: [style]
     strategy:
       matrix:
         os: ['macos-13', 'macos-14', 'ubuntu-24.04', 'windows-2022']
+    env:
+      MACOSX_DEPLOYMENT_TARGET_SOURCE: ${{ matrix.os }}
     name: build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: pypa/cibuildwheel@v2.23.3
+        env:
+          MACOSX_DEPLOYMENT_TARGET: "${MACOSX_DEPLOYMENT_TARGET_SOURCE##*-}"
         with:
           output-dir: wheelhouse
       - uses: actions/upload-artifact@v4
