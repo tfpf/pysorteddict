@@ -80,7 +80,7 @@ template <typename T> PyObject* SortedDictViewIterType<T>::next(void)
 
 template <>
 PyObject* SortedDictViewIterType<FwdIterType>::New(
-    PyTypeObject* type, SortedDictType* sd, FwdIterToOb forward_iterator_to_object
+    PyTypeObject* type, SortedDictType* sd, IterToOb<FwdIterType> forward_iterator_to_object
 )
 {
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
@@ -246,8 +246,8 @@ PyObject* SortedDictViewType::iter(PyTypeObject* type)
 }
 
 PyObject* SortedDictViewType::New(
-    PyTypeObject* type, SortedDictType* sd, FwdIterToOb forward_iterator_to_object,
-    RevIterToOb reverse_iterator_to_object
+    PyTypeObject* type, SortedDictType* sd, IterToOb<FwdIterType> forward_iterator_to_object,
+    IterToOb<RevIterType> reverse_iterator_to_object
 )
 {
     PyObject* self = type->tp_alloc(type, 0);  // 🆕

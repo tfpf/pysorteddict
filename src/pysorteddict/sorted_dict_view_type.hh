@@ -9,10 +9,8 @@
 #include "sorted_dict_type.hh"
 
 using FwdIterType = std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator;
-using FwdIterToOb = PyObject* (*)(FwdIterType);
-
 using RevIterType = std::reverse_iterator<FwdIterType>;
-using RevIterToOb = PyObject* (*)(RevIterType);
+template <typename T> using IterToOb = PyObject* (*)(T);
 
 template <typename T> struct SortedDictViewIterType
 {
@@ -25,7 +23,7 @@ protected:
     bool should_raise_stop_iteration;
 
     // See below for why this is required.
-    PyObject* (*iterator_to_object)(T);
+    IterToOb<T> iterator_to_object;
 
 private:
     void track(T);
@@ -34,7 +32,7 @@ private:
 public:
     static void Delete(PyObject* self);
     PyObject* next(void);
-    static PyObject* New(PyTypeObject*, SortedDictType*, PyObject* (*iterator_to_object)(T));
+    static PyObject* New(PyTypeObject*, SortedDictType*, IterToOb<T>);
 };
 
 struct SortedDictViewType
@@ -52,8 +50,8 @@ protected:
     // members. On the other hand, the default memory allocator provided by
     // Python (which does initialise Python-specific members) does not run
     // constructors.
-    FwdIterToOb forward_iterator_to_object;
-    RevIterToOb reverse_iterator_to_object;
+    IterToOb<FwdIterType> forward_iterator_to_object;
+    IterToOb<RevIterType> reverse_iterator_to_object;
 
 private:
     PyObject* getitem(Py_ssize_t);
@@ -65,7 +63,7 @@ public:
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     PyObject* iter(PyTypeObject*);
-    static PyObject* New(PyTypeObject*, SortedDictType*, FwdIterToOb, RevIterToOb);
+    static PyObject* New(PyTypeObject*, SortedDictType*, IterToOb<FwdIterType>, IterToOb<RevIterType>);
 };
 
 extern template struct SortedDictViewIterType<FwdIterType>;
