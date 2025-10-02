@@ -30,7 +30,7 @@ private:
     void untrack(T);
 
 public:
-    static void Delete(PyObject* self);
+    static void Delete(PyObject*);
     PyObject* next(void);
     static PyObject* New(PyTypeObject*, SortedDictType*, IterToOb<T>);
 };
