@@ -11,7 +11,7 @@ static PyObject* forward_iterator_to_object(FwdIterType it)
     return Py_NewRef(it->first);  // 🆕
 }
 
-PyObject* SortedDictKeysFwdIterType::New(PyTypeObject* type, SortedDictType* sd)
+template <> PyObject* SortedDictKeysIterType<FwdIterType>::New(PyTypeObject* type, SortedDictType* sd)
 {
     return SortedDictViewIterType<FwdIterType>::New(type, sd, ::forward_iterator_to_object);
 }
@@ -25,3 +25,5 @@ PyObject* SortedDictKeysType::New(PyTypeObject* type, SortedDictType* sd)
 {
     return SortedDictViewType::New(type, sd, ::forward_iterator_to_object, nullptr);
 }
+
+template struct SortedDictKeysIterType<FwdIterType>;

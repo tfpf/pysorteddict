@@ -15,3 +15,5 @@ PyObject* SortedDictValuesType::New(PyTypeObject* type, SortedDictType* sd)
 {
     return SortedDictViewType::New(type, sd, ::forward_iterator_to_object, nullptr);
 }
+
+template struct SortedDictValuesIterType<FwdIterType>;

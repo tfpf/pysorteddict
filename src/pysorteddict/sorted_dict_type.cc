@@ -374,7 +374,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
 
 PyObject* SortedDictType::iter(PyTypeObject* type)
 {
-    return SortedDictKeysFwdIterType::New(type, this);
+    return SortedDictKeysIterType<FwdIterType>::New(type, this);
 }
 
 PyObject* SortedDictType::clear(void)

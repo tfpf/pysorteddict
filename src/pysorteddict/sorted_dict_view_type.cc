@@ -16,8 +16,7 @@
  *
  * @param it Current value of the iterator member.
  */
-template<>
-void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
+template <> void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
 {
     if (it == this->sd->map->begin())
     {
@@ -38,7 +37,7 @@ void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
 }
 
 /**
- * Do all the necessary bookkeeping required to stop tracking the given forward
+ * Do all the necessary bookkeeping required to stop tracking the given
  * iterator of the underlying sorted dictionary.
  *
  * The caller should ensure that this method is called immediately after the
@@ -46,15 +45,40 @@ void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
  *
  * @param it Previous value of the iterator member.
  */
-template<>
-void SortedDictViewIterType<FwdIterType>::untrack(FwdIterType it)
+template <typename T> void SortedDictViewIterType<T>::untrack(T it)
 {
     --it->second.known_referrers;
 }
 
-template<>
+template <typename T> void SortedDictViewIterType<T>::Delete(PyObject* self)
+{
+    SortedDictViewIterType<T>* sdvi = reinterpret_cast<SortedDictViewIterType<T>*>(self);
+    if (!sdvi->should_raise_stop_iteration)
+    {
+        sdvi->untrack(sdvi->it);
+        --sdvi->sd->known_referrers;
+        Py_DECREF(sdvi->sd);
+    }
+    Py_TYPE(self)->tp_free(self);
+}
+
+template <typename T> PyObject* SortedDictViewIterType<T>::next(void)
+{
+    if (this->should_raise_stop_iteration)
+    {
+        return nullptr;
+    }
+
+    // The 'next' key-value pair is the current one the iterator points to.
+    T curr = this->it++;
+    this->untrack(curr);
+    this->track(this->it);
+    return this->iterator_to_object(curr);
+}
+
+template <>
 PyObject* SortedDictViewIterType<FwdIterType>::New(
-    PyTypeObject* type, SortedDictType* sd, FwdIterToObj forward_iterator_to_object
+    PyTypeObject* type, SortedDictType* sd, IteratorToObject<FwdIterType> forward_iterator_to_object
 )
 {
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
@@ -84,7 +108,7 @@ PyObject* SortedDictViewType::getitem(Py_ssize_t position)
         PyErr_Format(PyExc_IndexError, "got invalid index %zd for view of length %zd", position, sz);
         return nullptr;
     }
-    std::map<PyObject*, SortedDictValue>::iterator it;
+    FwdIterType it;
     if (positive_position <= sz / 2)
     {
         it = this->sd->map->begin();
@@ -112,7 +136,7 @@ PyObject* SortedDictViewType::getitem(Py_ssize_t start, Py_ssize_t stop, Py_ssiz
         return lst;
     }
 
-    std::map<PyObject*, SortedDictValue>::iterator it;
+    FwdIterType it;
     if ((step > 0 && start <= sz - stop) || (step < 0 && sz - 1 - start < stop + 1))
     {
         if (step > 0)
@@ -220,8 +244,8 @@ PyObject* SortedDictViewType::iter(PyTypeObject* type)
 }
 
 PyObject* SortedDictViewType::New(
-    PyTypeObject* type, SortedDictType* sd, FwdIterToObj forward_iterator_to_object,
-    RevIterToObj reverse_iterator_to_object
+    PyTypeObject* type, SortedDictType* sd, IteratorToObject<FwdIterType> forward_iterator_to_object,
+    IteratorToObject<RevIterType> reverse_iterator_to_object
 )
 {
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
@@ -237,3 +261,5 @@ PyObject* SortedDictViewType::New(
     sdv->reverse_iterator_to_object = reverse_iterator_to_object;
     return self;
 }
+
+template struct SortedDictViewIterType<FwdIterType>;
