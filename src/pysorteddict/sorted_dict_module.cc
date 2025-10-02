@@ -11,7 +11,7 @@
  */
 static void sorted_dict_items_fwd_iter_type_dealloc(PyObject* self)
 {
-    SortedDictItemsFwdIterType::Delete(self);
+    SortedDictItemsIterType<FwdIterType>::Delete(self);
 }
 
 /**
@@ -19,7 +19,7 @@ static void sorted_dict_items_fwd_iter_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_items_fwd_iter_type_next(PyObject* self)
 {
-    SortedDictItemsFwdIterType* sdifi = reinterpret_cast<SortedDictItemsFwdIterType*>(self);
+    SortedDictItemsIterType<FwdIterType>* sdifi = reinterpret_cast<SortedDictItemsIterType<FwdIterType>*>(self);
     return sdifi->next();
 }
 
@@ -28,7 +28,7 @@ static PyTypeObject sorted_dict_items_fwd_iter_type = {
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
     .tp_name = "pysorteddict.SortedDictItemsFwdIter",
     // clang-format on
-    .tp_basicsize = sizeof(SortedDictItemsFwdIterType),
+    .tp_basicsize = sizeof(SortedDictItemsIterType<FwdIterType>),
     .tp_dealloc = sorted_dict_items_fwd_iter_type_dealloc,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
@@ -124,7 +124,7 @@ static PyTypeObject sorted_dict_items_type = {
  */
 static void sorted_dict_keys_fwd_iter_type_dealloc(PyObject* self)
 {
-    SortedDictKeysFwdIterType::Delete(self);
+    SortedDictKeysIterType<FwdIterType>::Delete(self);
 }
 
 /**
@@ -132,7 +132,7 @@ static void sorted_dict_keys_fwd_iter_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_keys_fwd_iter_type_next(PyObject* self)
 {
-    SortedDictKeysFwdIterType* sdkfi = reinterpret_cast<SortedDictKeysFwdIterType*>(self);
+    SortedDictKeysIterType<FwdIterType>* sdkfi = reinterpret_cast<SortedDictKeysIterType<FwdIterType>*>(self);
     return sdkfi->next();
 }
 
@@ -141,7 +141,7 @@ static PyTypeObject sorted_dict_keys_fwd_iter_type = {
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
     .tp_name = "pysorteddict.SortedDictKeysFwdIter",
     // clang-format on
-    .tp_basicsize = sizeof(SortedDictKeysFwdIterType),
+    .tp_basicsize = sizeof(SortedDictKeysIterType<FwdIterType>),
     .tp_dealloc = sorted_dict_keys_fwd_iter_type_dealloc,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,
@@ -237,7 +237,7 @@ static PyTypeObject sorted_dict_keys_type = {
  */
 static void sorted_dict_values_fwd_iter_type_dealloc(PyObject* self)
 {
-    SortedDictValuesFwdIterType::Delete(self);
+    SortedDictValuesIterType<FwdIterType>::Delete(self);
 }
 
 /**
@@ -245,7 +245,7 @@ static void sorted_dict_values_fwd_iter_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_values_fwd_iter_type_next(PyObject* self)
 {
-    SortedDictValuesFwdIterType* sdvfi = reinterpret_cast<SortedDictValuesFwdIterType*>(self);
+    SortedDictValuesIterType<FwdIterType>* sdvfi = reinterpret_cast<SortedDictValuesIterType<FwdIterType>*>(self);
     return sdvfi->next();
 }
 
@@ -254,7 +254,7 @@ static PyTypeObject sorted_dict_values_fwd_iter_type = {
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
     .tp_name = "pysorteddict.SortedDictValuesFwdIter",
     // clang-format on
-    .tp_basicsize = sizeof(SortedDictValuesFwdIterType),
+    .tp_basicsize = sizeof(SortedDictValuesIterType<FwdIterType>),
     .tp_dealloc = sorted_dict_values_fwd_iter_type_dealloc,
     .tp_getattro = PyObject_GenericGetAttr,
     .tp_flags = Py_TPFLAGS_DEFAULT,

@@ -6,7 +6,7 @@
 
 #include "sorted_dict_view_type.hh"
 
-struct SortedDictItemsFwdIterType : public SortedDictViewIterType<FwdIterType>
+template <typename T> struct SortedDictItemsIterType : public SortedDictViewIterType<T>
 {
 };
 
@@ -16,5 +16,7 @@ public:
     int contains(PyObject*);
     static PyObject* New(PyTypeObject*, SortedDictType*);
 };
+
+extern template struct SortedDictItemsIterType<FwdIterType>;
 
 #endif
