@@ -53,6 +53,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pypa/cibuildwheel@v2.23.3
         env:
+          # I force the use of GCC instead of Clang on macOS because the latter
+          # can't resolve template specialisations when explicit instantiations
+          # are provided. However, doing so requires this environment variable
+          # to be set.
           MACOSX_DEPLOYMENT_TARGET: ${{ matrix.os.version }}
         with:
           output-dir: wheelhouse
