@@ -52,14 +52,12 @@ class TestFuzz:
         attrs = {*dir(SortedDict)}.difference((
             "__class__", "__dict__", "__dir__", "__doc__", "__eq__", "__format__", "__ge__", "__getattr__",
             "__getattribute__", "__getstate__", "__gt__", "__hash__", "__init__", "__init_subclass__", "__iter__",
-            "__le__", "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__setattr__",
-            "__sizeof__", "__str__", "__subclasshook__", "__weakref__", "key_type",
+            "__le__", "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__reversed__",
+            "__setattr__", "__sizeof__", "__str__", "__subclasshook__", "__weakref__", "key_type",
         ))  # fmt: skip
         for attr in self._rg.choices([*attrs], k=16_000):
             getattr(self, f"_test_{attr}")()
 
-            with pytest.raises(TypeError, match="^unhashable type: 'pysorteddict.SortedDict'$"):
-                hash(self.sorted_dict)
             if self.is_sorted_dict_new:
                 assert self.sorted_dict.key_type is None
             else:
@@ -69,6 +67,10 @@ class TestFuzz:
             assert len(self.sorted_dict) == len(sorted_normal_dict)
             assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
             assert [*self.sorted_dict] == [*sorted_normal_dict]
+            assert [*reversed(self.sorted_dict)] == [*reversed(sorted_normal_dict)]
+
+        with pytest.raises(TypeError, match="^unhashable type: 'pysorteddict.SortedDict'$"):
+            hash(self.sorted_dict)
 
     def _test___contains__(self):
         for container in (self.sorted_dict, self.sorted_dict_keys, self.sorted_dict_items):
@@ -299,3 +301,4 @@ class TestFuzz:
         assert view[:stop] == view_as_list[:stop]
         assert view[:] == view_as_list
         assert [*view] == view_as_list
+        assert [*reversed(view)] == [*reversed(view_as_list)]

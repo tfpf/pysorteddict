@@ -64,7 +64,7 @@ CFLAGS = "--coverage"
 
 [tool.hatch.envs.cov.scripts]
 cov = [
-    "rm -fr build/ cov/ && pip install . && pytest -n logical",
+    "rm -fr build/ cov/ && pip install . && pytest --dist=worksteal -n logical",
     "mkdir -p cov/ && gcovr --html-details cov/index.html",
 ]
 
