@@ -42,6 +42,39 @@ static PyTypeObject sorted_dict_items_fwd_iter_type = {
 /**
  * Deinitialise and deallocate.
  */
+static void sorted_dict_items_rev_iter_type_dealloc(PyObject* self)
+{
+    SortedDictItemsIterType<RevIterType>::Delete(self);
+}
+
+/**
+ * Retrieve the next element.
+ */
+static PyObject* sorted_dict_items_rev_iter_type_next(PyObject* self)
+{
+    SortedDictItemsIterType<RevIterType>* sdiri = reinterpret_cast<SortedDictItemsIterType<RevIterType>*>(self);
+    return sdiri->next();
+}
+
+static PyTypeObject sorted_dict_items_rev_iter_type = {
+    // clang-format off
+    .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    .tp_name = "pysorteddict.SortedDictItemsRevIter",
+    // clang-format on
+    .tp_basicsize = sizeof(SortedDictItemsIterType<RevIterType>),
+    .tp_dealloc = sorted_dict_items_rev_iter_type_dealloc,
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_doc = "Reverse iterator over the items in a sorted dictionary.",
+    .tp_iter = PyObject_SelfIter,
+    .tp_iternext = sorted_dict_items_rev_iter_type_next,
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_free = PyObject_Free,
+};
+
+/**
+ * Deinitialise and deallocate.
+ */
 static void sorted_dict_items_type_dealloc(PyObject* self)
 {
     SortedDictItemsType::Delete(self);
@@ -92,13 +125,34 @@ static PyMappingMethods sorted_dict_items_type_mapping = {
 };
 
 /**
- * Create an iterator.
+ * Create a forward iterator.
  */
 static PyObject* sorted_dict_items_type_iter(PyObject* self)
 {
     SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
     return sdi->iter(&sorted_dict_items_fwd_iter_type);
 }
+
+PyDoc_STRVAR(sorted_dict_items_type_reversed_doc, "Implement reversed(self).");
+
+/**
+ * Create a reverse iterator.
+ */
+static PyObject* sorted_dict_items_type_reversed(PyObject* self, PyObject* args)
+{
+    SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
+    return sdi->reversed(&sorted_dict_items_rev_iter_type);
+}
+
+static PyMethodDef sorted_dict_items_type_methods[] = {
+    {
+        .ml_name = "__reversed__",
+        .ml_meth = sorted_dict_items_type_reversed,
+        .ml_flags = METH_NOARGS,
+        .ml_doc = sorted_dict_items_type_reversed_doc,
+    },
+    { nullptr },
+};
 
 static PyTypeObject sorted_dict_items_type = {
     // clang-format off
@@ -115,6 +169,7 @@ static PyTypeObject sorted_dict_items_type = {
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_doc = "Dynamic view on the items in a sorted dictionary.",
     .tp_iter = sorted_dict_items_type_iter,
+    .tp_methods = sorted_dict_items_type_methods,
     .tp_alloc = PyType_GenericAlloc,
     .tp_free = PyObject_Free,
 };
@@ -205,7 +260,7 @@ static PyMappingMethods sorted_dict_keys_type_mapping = {
 };
 
 /**
- * Create an iterator.
+ * Create a forward iterator.
  */
 static PyObject* sorted_dict_keys_type_iter(PyObject* self)
 {
@@ -308,7 +363,7 @@ static PyMappingMethods sorted_dict_values_type_mapping = {
 };
 
 /**
- * Create an iterator.
+ * Create a forward iterator.
  */
 static PyObject* sorted_dict_values_type_iter(PyObject* self)
 {

@@ -63,6 +63,7 @@ public:
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     PyObject* iter(PyTypeObject*);
+    PyObject* reversed(PyTypeObject*);
     static PyObject* New(PyTypeObject*, SortedDictType*, IteratorToObject<FwdIterType>, IteratorToObject<RevIterType>);
 };
 
