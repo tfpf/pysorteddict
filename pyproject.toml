@@ -49,7 +49,7 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 archs = ["auto64"]
 build-verbosity = 1
 enable = ["pypy"]
-test-command = "pytest -n logical {package}"
+test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
 [tool.hatch.envs.default]
@@ -64,7 +64,7 @@ CFLAGS = "--coverage"
 
 [tool.hatch.envs.cov.scripts]
 cov = [
-    "rm -fr build/ cov/ && pip install . && pytest --dist=worksteal -n logical",
+    "rm -fr build/ cov/ && pip install . && pytest",
     "mkdir -p cov/ && gcovr --html-details cov/index.html",
 ]
 
@@ -78,6 +78,9 @@ detached = true
 # in this environment manually from the dependency group. Otherwise, the below
 # command will fail.
 docs = "sphinx-build docs/ docs/_build/"
+
+[tool.pytest.ini_options]
+addopts = "--dist=worksteal -n logical"
 
 [tool.ruff]
 line-length = 119
