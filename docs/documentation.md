@@ -453,7 +453,8 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 #### `iter(d)`
 
-Return an iterator over the keys in the sorted dictionary `d`. This is an efficient shorthand for `iter(d.keys())`.
+Return a forward iterator over the keys in the sorted dictionary `d`. This is an efficient shorthand for
+`iter(d.keys())`. Typical usage is to iterate directly over `d` instead of using this method.
 
 ```python
 from pysorteddict import *
@@ -469,6 +470,27 @@ for key in d:
 bar
 baz
 foo
+```
+
+#### `reversed(d)`
+
+Return a reverse iterator over the keys in the sorted dictionary `d`. This is an efficient shorthand for
+`reversed(d.keys())`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ()
+d["bar"] = [100]
+d["baz"] = 3.14
+for key in reversed(d):
+    print(key)
+```
+
+```text
+foo
+baz
+bar
 ```
 
 ### Other Methods
@@ -820,7 +842,8 @@ bar eggs {}
 
 #### `iter(v)`
 
-Return an iterator over the sorted dictionary view `v`.
+Return a forward iterator over the sorted dictionary view `v`. Typical usage is to iterate directly over `v` instead of
+using this method.
 
 <details class="notice">
 
@@ -845,6 +868,39 @@ print(d)
 
 ```text
 SortedDict({'a_bar': 'eggs', 'a_baz': 'eggs', 'bar': 'spam', 'baz': 'spam'})
+```
+
+Some modifications are prohibited, however. See [`del d[key]`](#del-dkey) and [`d.clear()`](#dclear) for details.
+
+</details>
+
+#### `reversed(v)`
+
+Return a reverse iterator over the sorted dictionary view `v`.
+
+<details class="notice">
+
+<summary>This method returns a mostly mutation-safe iterator.</summary>
+
+A sorted dictionary can be modified while iterating over any of its views. (Whether this is good practice is a separate
+question.)
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ()
+d["bar"] = [100]
+d["baz"] = 3.14
+for key in reversed(d.keys()):
+    d[key] = "spam"
+    d["z_" + key] = "eggs"
+    if "foo" in d:
+        del d["foo"]
+print(d)
+```
+
+```text
+segmentation fault (core dumped)
 ```
 
 Some modifications are prohibited, however. See [`del d[key]`](#del-dkey) and [`d.clear()`](#dclear) for details.
