@@ -71,6 +71,7 @@ public:
     PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
     PyObject* iter(PyTypeObject*);
+    PyObject* reversed(PyTypeObject*);
     PyObject* clear(void);
     PyObject* copy(void);
     PyObject* get(PyObject*);

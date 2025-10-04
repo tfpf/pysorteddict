@@ -37,6 +37,35 @@ template <> void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
 }
 
 /**
+ * Do all the necessary bookkeeping required to start tracking the given
+ * reverse iterator of the underlying sorted dictionary.
+ *
+ * The caller should ensure that this method is called immediately after the
+ * iterator member is updated.
+ *
+ * @param it Current value of the iterator member.
+ */
+template <> void SortedDictViewIterType<RevIterType>::track(RevIterType it)
+{
+    if (it == this->sd->map->rbegin())
+    {
+        Py_INCREF(this->sd);
+        ++this->sd->known_referrers;
+        this->should_raise_stop_iteration = false;
+    }
+    if (it != this->sd->map->rend())
+    {
+        ++it->second.known_referrers;
+    }
+    else
+    {
+        this->should_raise_stop_iteration = true;
+        --this->sd->known_referrers;
+        Py_DECREF(this->sd);
+    }
+}
+
+/**
  * Do all the necessary bookkeeping required to stop tracking the given
  * iterator of the underlying sorted dictionary.
  *
@@ -92,6 +121,25 @@ PyObject* SortedDictViewIterType<FwdIterType>::New(
     sdvi->it = sdvi->sd->map->begin();
     sdvi->track(sdvi->it);
     sdvi->iterator_to_object = forward_iterator_to_object;
+    return self;
+}
+
+template <>
+PyObject* SortedDictViewIterType<RevIterType>::New(
+    PyTypeObject* type, SortedDictType* sd, IteratorToObject<RevIterType> reverse_iterator_to_object
+)
+{
+    PyObject* self = type->tp_alloc(type, 0);  // 🆕
+    if (self == nullptr)
+    {
+        return nullptr;
+    }
+
+    SortedDictViewIterType<RevIterType>* sdvi = reinterpret_cast<SortedDictViewIterType<RevIterType>*>(self);
+    sdvi->sd = sd;
+    sdvi->it = sdvi->sd->map->rbegin();
+    sdvi->track(sdvi->it);
+    sdvi->iterator_to_object = reverse_iterator_to_object;
     return self;
 }
 
@@ -243,6 +291,11 @@ PyObject* SortedDictViewType::iter(PyTypeObject* type)
     return SortedDictViewIterType<FwdIterType>::New(type, this->sd, this->forward_iterator_to_object);
 }
 
+PyObject* SortedDictViewType::reversed(PyTypeObject* type)
+{
+    return SortedDictViewIterType<RevIterType>::New(type, this->sd, this->reverse_iterator_to_object);
+}
+
 PyObject* SortedDictViewType::New(
     PyTypeObject* type, SortedDictType* sd, IteratorToObject<FwdIterType> forward_iterator_to_object,
     IteratorToObject<RevIterType> reverse_iterator_to_object
@@ -263,3 +316,4 @@ PyObject* SortedDictViewType::New(
 }
 
 template struct SortedDictViewIterType<FwdIterType>;
+template struct SortedDictViewIterType<RevIterType>;

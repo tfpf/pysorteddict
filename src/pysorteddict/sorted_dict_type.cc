@@ -377,6 +377,11 @@ PyObject* SortedDictType::iter(PyTypeObject* type)
     return SortedDictKeysIterType<FwdIterType>::New(type, this);
 }
 
+PyObject* SortedDictType::reversed(PyTypeObject* type)
+{
+    return SortedDictKeysIterType<RevIterType>::New(type, this);
+}
+
 PyObject* SortedDictType::clear(void)
 {
     if (!this->is_deletion_allowed())
