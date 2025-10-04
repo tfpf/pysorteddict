@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.12.0](https://github.com/tfpf/pysorteddict/compare/v0.11.0...v0.12.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/210">#210</a> Define
+  <code>SortedDictItems.__reversed__</code>. Define <code>SortedDictItemsRevIter</code> as a reverse iterator over the
+  values of a sorted dictionary. Define <code>SortedDictItemsRevIter.__next__</code>. Define
+  <code>SortedDictKeys.__reversed__</code> and <code>SortedDict.__reversed__</code>. Define
+  <code>SortedDictKeysRevIter</code> as a reverse iterator over the keys of a sorted dictionary. Define
+  <code>SortedDictKeysRevIter.__next__</code>. Define <code>SortedDictValues.__reversed__</code>. Define
+  <code>SortedDictValuesRevIter</code> as a reverse iterator over the values of a sorted dictionary. Define
+  <code>SortedDictValuesRevIter.__next__</code>.</li>
+</ul>
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/205">#205</a> Add homepage build dependencies to project
+  metadata.</li>
+</ul>
+
+<ul class="change-break">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/211">#211</a> Rename <code>SortedDictItemsIter</code> to
+  <code>SortedDictItemsFwdIter</code>, <code>SortedDictKeysIter</code> to <code>SortedDictKeysFwdIter</code> and
+  <code>SortedDictValuesIter</code> to <code>SortedDictValuesFwdIter</code>.</li>
+</ul>
+
 ## [0.11.0](https://github.com/tfpf/pysorteddict/compare/v0.10.0...v0.11.0)
 
 <ul class="change-new">
