@@ -6,7 +6,8 @@
 #include "sorted_dict_values_type.hh"
 #include "sorted_dict_view_type.hh"
 
-template <typename T> static PyObject* iterator_to_object(T it)
+template<typename T>
+static PyObject* iterator_to_object(T it)
 {
     return Py_NewRef(it->second.value);  // 🆕
 }

@@ -16,7 +16,8 @@
  *
  * @param it Current value of the iterator member.
  */
-template <> void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
+template<>
+void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
 {
     if (it == this->sd->map->begin())
     {
@@ -45,7 +46,8 @@ template <> void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
  *
  * @param it Current value of the iterator member.
  */
-template <> void SortedDictViewIterType<RevIterType>::track(RevIterType it)
+template<>
+void SortedDictViewIterType<RevIterType>::track(RevIterType it)
 {
     if (it == this->sd->map->rbegin())
     {
@@ -74,12 +76,14 @@ template <> void SortedDictViewIterType<RevIterType>::track(RevIterType it)
  *
  * @param it Previous value of the iterator member.
  */
-template <typename T> void SortedDictViewIterType<T>::untrack(T it)
+template<typename T>
+void SortedDictViewIterType<T>::untrack(T it)
 {
     --it->second.known_referrers;
 }
 
-template <typename T> void SortedDictViewIterType<T>::Delete(PyObject* self)
+template<typename T>
+void SortedDictViewIterType<T>::Delete(PyObject* self)
 {
     SortedDictViewIterType<T>* sdvi = reinterpret_cast<SortedDictViewIterType<T>*>(self);
     if (!sdvi->should_raise_stop_iteration)
@@ -91,7 +95,8 @@ template <typename T> void SortedDictViewIterType<T>::Delete(PyObject* self)
     Py_TYPE(self)->tp_free(self);
 }
 
-template <typename T> PyObject* SortedDictViewIterType<T>::next(void)
+template<typename T>
+PyObject* SortedDictViewIterType<T>::next(void)
 {
     if (this->should_raise_stop_iteration)
     {
@@ -105,7 +110,7 @@ template <typename T> PyObject* SortedDictViewIterType<T>::next(void)
     return this->iterator_to_object(curr);
 }
 
-template <>
+template<>
 PyObject* SortedDictViewIterType<FwdIterType>::New(
     PyTypeObject* type, SortedDictType* sd, IteratorToObject<FwdIterType> forward_iterator_to_object
 )
@@ -124,7 +129,7 @@ PyObject* SortedDictViewIterType<FwdIterType>::New(
     return self;
 }
 
-template <>
+template<>
 PyObject* SortedDictViewIterType<RevIterType>::New(
     PyTypeObject* type, SortedDictType* sd, IteratorToObject<RevIterType> reverse_iterator_to_object
 )

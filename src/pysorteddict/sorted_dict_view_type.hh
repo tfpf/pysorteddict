@@ -10,9 +10,11 @@
 
 using FwdIterType = std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator;
 using RevIterType = std::reverse_iterator<FwdIterType>;
-template <typename T> using IteratorToObject = PyObject* (*)(T);
+template<typename T>
+using IteratorToObject = PyObject* (*)(T);
 
-template <typename T> struct SortedDictViewIterType
+template<typename T>
+struct SortedDictViewIterType
 {
 public:
     PyObject_HEAD;
