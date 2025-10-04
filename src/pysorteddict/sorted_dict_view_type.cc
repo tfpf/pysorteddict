@@ -57,7 +57,11 @@ void SortedDictViewIterType<RevIterType>::track(RevIterType it)
     }
     if (it != this->sd->map->rend())
     {
-        ++it->second.known_referrers;
+        FwdIterType it_base = it.base();
+        if (it_base != this->sd->map->end())
+        {
+            ++it_base->second.known_referrers;
+        }
     }
     else
     {
@@ -68,7 +72,7 @@ void SortedDictViewIterType<RevIterType>::track(RevIterType it)
 }
 
 /**
- * Do all the necessary bookkeeping required to stop tracking the given
+ * Do all the necessary bookkeeping required to stop tracking the given forward
  * iterator of the underlying sorted dictionary.
  *
  * The caller should ensure that this method is called immediately after the
@@ -76,10 +80,29 @@ void SortedDictViewIterType<RevIterType>::track(RevIterType it)
  *
  * @param it Previous value of the iterator member.
  */
-template<typename T>
-void SortedDictViewIterType<T>::untrack(T it)
+template<>
+void SortedDictViewIterType<FwdIterType>::untrack(FwdIterType it)
 {
     --it->second.known_referrers;
+}
+
+/**
+ * Do all the necessary bookkeeping required to stop tracking the given reverse
+ * iterator of the underlying sorted dictionary.
+ *
+ * The caller should ensure that this method is called immediately after the
+ * iterator member is updated.
+ *
+ * @param it Previous value of the iterator member.
+ */
+template<>
+void SortedDictViewIterType<RevIterType>::untrack(RevIterType it)
+{
+    FwdIterType it_base = it.base();
+    if (it_base != this->sd->map->end())
+    {
+        --it->second.known_referrers;
+    }
 }
 
 template<typename T>
