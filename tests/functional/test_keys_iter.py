@@ -77,15 +77,14 @@ def test_destructive_forward_iteration(sorted_dict):
 
 @pytest.mark.parametrize("sorted_dict", [*range(10), 100, 1_000, 10_000, 100_000], indirect=True)
 def test_destructive_reverse_iteration(sorted_dict):
-    sorted_dict_len = len(sorted_dict)
     prev_key = None
     for key in reversed(sorted_dict):
         # A quirk of the implementation of reverse iterators: the current key
         # cannot be deleted.
-        if prev_key:
+        if prev_key is not None:
             del sorted_dict[prev_key]
         prev_key = key
-    if sorted_dict_len > 0:
+    if prev_key is not None:
         del sorted_dict[prev_key]
     assert len(sorted_dict) == 0
     assert not [*sorted_dict]
