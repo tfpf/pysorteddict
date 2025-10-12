@@ -101,7 +101,7 @@ void SortedDictViewIterType<RevIterType>::untrack(RevIterType it)
     FwdIterType it_base = it.base();
     if (it_base != this->sd->map->end())
     {
-        --it->second.known_referrers;
+        --it_base->second.known_referrers;
     }
 }
 
