@@ -53,7 +53,7 @@ class TestFuzz:
             "__class__", "__dict__", "__dir__", "__doc__", "__eq__", "__format__", "__ge__", "__getattr__",
             "__getattribute__", "__getstate__", "__gt__", "__hash__", "__init__", "__init_subclass__", "__iter__",
             "__le__", "__len__", "__lt__", "__ne__", "__reduce__", "__reduce_ex__", "__repr__", "__reversed__",
-            "__setattr__", "__sizeof__", "__str__", "__subclasshook__", "__weakref__", "key_type",
+            "__setattr__", "__sizeof__", "__str__", "__subclasshook__", "__weakref__", "_debug", "key_type",
         ))  # fmt: skip
         for attr in self._rg.choices([*attrs], k=16_000):
             getattr(self, f"_test_{attr}")()

@@ -72,6 +72,7 @@ public:
     int setitem(PyObject*, PyObject*);
     PyObject* iter(PyTypeObject*);
     PyObject* reversed(PyTypeObject*);
+    PyObject* debug(void);
     PyObject* clear(void);
     PyObject* copy(void);
     PyObject* get(PyObject*);
