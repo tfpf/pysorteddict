@@ -1,6 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <cmath>
+#include <iostream>
 #include <map>
 #include <string>
 #include <utility>
@@ -387,7 +388,7 @@ PyObject* SortedDictType::debug(void)
 {
     char const* delimiter = "";
     char const* actual_delimiter = ", ";
-    std::string this_debug_utf8 = LEFT_CURLY_BRACKET;
+    std::clog << LEFT_CURLY_BRACKET;
     for (auto& item : *this->map)
     {
         PyObjectWrapper key_repr(PyObject_Repr(item.first));  // 🆕
@@ -403,16 +404,14 @@ PyObject* SortedDictType::debug(void)
         Py_ssize_t key_repr_size, value_repr_size;
         char const* key_repr_utf8 = PyUnicode_AsUTF8AndSize(key_repr.get(), &key_repr_size);
         char const* value_repr_utf8 = PyUnicode_AsUTF8AndSize(value_repr.get(), &value_repr_size);
-        this_debug_utf8.append(delimiter)
-            .append(key_repr_utf8, key_repr_size)
-            .append(": ")
-            .append(value_repr_utf8, value_repr_size)
-            .append(" #")
-            .append(std::to_string(item.second.known_referrers));
+        std::clog << delimiter;
+        std::clog.write(key_repr_utf8, key_repr_size) << ": ";
+        std::clog.write(value_repr_utf8, value_repr_size) << " #";
+        std::clog << item.second.known_referrers;
         delimiter = actual_delimiter;
     }
-    this_debug_utf8.append(RIGHT_CURLY_BRACKET);
-    return PyUnicode_FromStringAndSize(this_debug_utf8.data(), this_debug_utf8.size());  // 🆕
+    std::clog << RIGHT_CURLY_BRACKET "\n";
+    Py_RETURN_NONE;
 }
 
 // GCOVR_EXCL_STOP
