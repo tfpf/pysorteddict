@@ -577,8 +577,8 @@ static PyObject* sorted_dict_type_reversed(PyObject* self, PyObject* args)
 
 PyDoc_STRVAR(
     sorted_dict_type_debug_doc,
-    "d._debug() -> str\n"
-    "Return debugging information about the sorted dictionary ``d``."
+    "d._debug()\n"
+    "Write debugging information about the sorted dictionary ``d`` to standard error."
 );
 
 // GCOVR_EXCL_START
