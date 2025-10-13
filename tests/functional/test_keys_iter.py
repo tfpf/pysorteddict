@@ -65,3 +65,26 @@ def test_modify_with_active_iterators(sorted_dict, iterators, advance):
         ):
             sorted_dict.clear()
     sorted_dict_copy.clear()
+
+
+@pytest.mark.parametrize("sorted_dict", [*range(10), 100, 1_000, 10_000, 100_000], indirect=True)
+def test_destructive_forward_iteration(sorted_dict):
+    for key in sorted_dict:
+        del sorted_dict[key]
+    assert len(sorted_dict) == 0
+    assert not [*sorted_dict]
+
+
+@pytest.mark.parametrize("sorted_dict", [*range(10), 100, 1_000, 10_000, 100_000], indirect=True)
+def test_destructive_reverse_iteration(sorted_dict):
+    prev_key = None
+    for key in reversed(sorted_dict):
+        # A quirk of the implementation of reverse iterators: the current key
+        # cannot be deleted.
+        if prev_key is not None:
+            del sorted_dict[prev_key]
+        prev_key = key
+    if prev_key is not None:
+        del sorted_dict[prev_key]
+    assert len(sorted_dict) == 0
+    assert not [*sorted_dict]
