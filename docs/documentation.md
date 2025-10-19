@@ -4,6 +4,7 @@
 
 <summary>Documentation of older versions is available on GitHub.</summary>
 
+▸ [0.11.0](https://github.com/tfpf/pysorteddict/blob/v0.11.0/docs/documentation.md)  
 ▸ [0.10.0](https://github.com/tfpf/pysorteddict/blob/v0.10.0/docs/documentation.md)  
 ▸ [0.9.0](https://github.com/tfpf/pysorteddict/blob/v0.9.0/docs/documentation.md)  
 ▸ [0.8.2](https://github.com/tfpf/pysorteddict/blob/v0.8.2/docs/documentation.md)
@@ -158,7 +159,7 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 
 <summary>This method may raise exceptions.</summary>
 
-If the number of key-value pairs in `d` exceeds `PY_SSIZE_T_MAX`, raise `OverflowError`.
+If the number of key-value pairs in `d` exceeds `PY_SSIZE_T_MAX`, raises `OverflowError`.
 
 ```python
 from pysorteddict import *
@@ -393,25 +394,49 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-Otherwise, if there exists an iterator over the items, keys or values of `d` pointing to `key` (meaning that calling
-`next` on the iterator would return `(key, d[key])`, `key` or `d[key]` respectively), raises `RuntimeError`.
+Otherwise, if there exists a forward iterator over the items, keys or values of `d` pointing to `key` (meaning that
+calling `next` on the iterator would return `(key, d[key])`, `key` or `d[key]` respectively), raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
 d = SortedDict()
-d["foo"] = "bar"
-d["baz"] = 1
+for i in range(5):
+  d[i] = None
 ii = iter(d.items())
 ki = iter(d.keys())
 vi = iter(d.values())
-del d["baz"]
+del d[0]
 ```
 
 ```text
 Traceback (most recent call last):
   File "…", line 8, in <module>
-    del d["baz"]
-        ~^^^^^^^
+    del d[0]
+        ~^^^
+RuntimeError: operation not permitted: key-value pair locked by 3 iterator(s)
+```
+
+Otherwise, if there exists a reverse iterator over the items, keys or values of `d` pointing to the key immediately
+less than `key` (meaning that calling `next` on the iterator last returned `(key, d[key])`, `key` or `d[key]`
+respectively), raises `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+for i in range(5):
+  d[i] = None
+ii = reversed(d.items())
+ki = reversed(d.keys())
+vi = reversed(d.values())
+assert (next(ii), next(ki), next(vi)) == ((4, None), 4, None)
+del d[4]
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 9, in <module>
+    del d[4]
+        ~^^^
 RuntimeError: operation not permitted: key-value pair locked by 3 iterator(s)
 ```
 
@@ -452,7 +477,8 @@ Uncommenting the commented line runs any required destructors and makes this err
 
 #### `iter(d)`
 
-Return an iterator over the keys in the sorted dictionary `d`. This is an efficient shorthand for `iter(d.keys())`.
+Return a forward iterator over the keys in the sorted dictionary `d`. This is an efficient shorthand for
+`iter(d.keys())`. Typical usage is to iterate directly over `d` instead of using this method.
 
 ```python
 from pysorteddict import *
@@ -470,6 +496,27 @@ baz
 foo
 ```
 
+#### `reversed(d)`
+
+Return a reverse iterator over the keys in the sorted dictionary `d`. This is an efficient shorthand for
+`reversed(d.keys())`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ()
+d["bar"] = [100]
+d["baz"] = 3.14
+for key in reversed(d):
+    print(key)
+```
+
+```text
+foo
+baz
+bar
+```
+
 ### Other Methods
 
 #### `d.clear()`
@@ -480,7 +527,7 @@ Remove all key-value pairs in the sorted dictionary `d`.
 
 <summary>This method may raise exceptions.</summary>
 
-If there exists an unexhausted iterator over the items, keys or values of `d`, raises `RuntimeError`.
+If there exist unexhausted iterators over the items, keys or values of `d`, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
@@ -488,7 +535,7 @@ d = SortedDict()
 d["foo"] = "bar"
 ii = iter(d.items())
 ki = iter(d.keys())
-vi = iter(d.values())
+vi = reversed(d.values())
 d.clear()
 ```
 
@@ -515,7 +562,7 @@ d = SortedDict()
 d["foo"] = "bar"
 ii = iter(d.items())
 ki = iter(d.keys())
-vi = iter(d.values())
+vi = reversed(d.values())
 del ii, ki, vi
 # gc.collect()
 d.clear()
@@ -819,7 +866,8 @@ bar eggs {}
 
 #### `iter(v)`
 
-Return an iterator over the sorted dictionary view `v`.
+Return a forward iterator over the sorted dictionary view `v`. Typical usage is to iterate directly over `v` instead of
+using this method.
 
 <details class="notice">
 
@@ -847,5 +895,35 @@ SortedDict({'a_bar': 'eggs', 'a_baz': 'eggs', 'bar': 'spam', 'baz': 'spam'})
 ```
 
 Some modifications are prohibited, however. See [`del d[key]`](#del-dkey) and [`d.clear()`](#dclear) for details.
+
+</details>
+
+#### `reversed(v)`
+
+Return a reverse iterator over the sorted dictionary view `v`.
+
+<details class="notice">
+
+<summary>This method returns a mostly mutation-safe iterator.</summary>
+
+As explained under [`iter(v)`](#iterv).
+
+```python
+from pysorteddict import *
+d = SortedDict()
+d["foo"] = ()
+d["bar"] = [100]
+d["baz"] = 3.14
+for key in reversed(d.keys()):
+    d[key] = "spam"
+    d["z_" + key] = "eggs"
+    if "bar" in d:
+        del d["bar"]
+print(d)
+```
+
+```text
+SortedDict({'baz': 'spam', 'foo': 'spam', 'z_baz': 'eggs', 'z_foo': 'eggs'})
+```
 
 </details>
