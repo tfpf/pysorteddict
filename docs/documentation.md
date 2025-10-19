@@ -4,21 +4,21 @@
 
 <summary>Documentation of older versions is available on GitHub.</summary>
 
-▸ [0.11.0](https://github.com/tfpf/pysorteddict/blob/v0.11.0/docs/documentation.md)  
-▸ [0.10.0](https://github.com/tfpf/pysorteddict/blob/v0.10.0/docs/documentation.md)  
-▸ [0.9.0](https://github.com/tfpf/pysorteddict/blob/v0.9.0/docs/documentation.md)  
+▸ [0.11.0](https://github.com/tfpf/pysorteddict/blob/v0.11.0/docs/documentation.md)
+▸ [0.10.0](https://github.com/tfpf/pysorteddict/blob/v0.10.0/docs/documentation.md)
+▸ [0.9.0](https://github.com/tfpf/pysorteddict/blob/v0.9.0/docs/documentation.md)
 ▸ [0.8.2](https://github.com/tfpf/pysorteddict/blob/v0.8.2/docs/documentation.md)
 ▸ [0.8.1](https://github.com/tfpf/pysorteddict/blob/v0.8.1/docs/documentation.md)
-▸ [0.8.0](https://github.com/tfpf/pysorteddict/blob/v0.8.0/docs/documentation.md)  
+▸ [0.8.0](https://github.com/tfpf/pysorteddict/blob/v0.8.0/docs/documentation.md)
 ▸ [0.7.3](https://github.com/tfpf/pysorteddict/blob/v0.7.3/docs/documentation.md)
 ▸ [0.7.2](https://github.com/tfpf/pysorteddict/blob/v0.7.2/docs/documentation.md)
 ▸ [0.7.1](https://github.com/tfpf/pysorteddict/blob/v0.7.1/docs/documentation.md)
-▸ [0.7.0](https://github.com/tfpf/pysorteddict/blob/v0.7.0/docs/documentation.md)  
-▸ [0.6.0](https://github.com/tfpf/pysorteddict/blob/v0.6.0/docs/documentation.md)  
+▸ [0.7.0](https://github.com/tfpf/pysorteddict/blob/v0.7.0/docs/documentation.md)
+▸ [0.6.0](https://github.com/tfpf/pysorteddict/blob/v0.6.0/docs/documentation.md)
 ▸ [0.5.3](https://github.com/tfpf/pysorteddict/blob/v0.5.3/docs/documentation.md)
 ▸ [0.5.2](https://github.com/tfpf/pysorteddict/blob/v0.5.2/docs/documentation.md)
 ▸ [0.5.1](https://github.com/tfpf/pysorteddict/blob/v0.5.1/docs/documentation.md)
-▸ [0.5.0](https://github.com/tfpf/pysorteddict/blob/v0.5.0/docs/documentation.md)  
+▸ [0.5.0](https://github.com/tfpf/pysorteddict/blob/v0.5.0/docs/documentation.md)
 ▸ [0.4.6](https://github.com/tfpf/pysorteddict/blob/v0.4.6/docs/documentation.md)
 ▸ [0.4.5](https://github.com/tfpf/pysorteddict/blob/v0.4.5/docs/index.md)
 ▸ [0.4.4](https://github.com/tfpf/pysorteddict/blob/v0.4.4/docs/index.md)
@@ -394,25 +394,49 @@ Traceback (most recent call last):
 KeyError: 'spam'
 ```
 
-Otherwise, if there exists an iterator over the items, keys or values of `d` pointing to `key` (meaning that calling
-`next` on the iterator would return `(key, d[key])`, `key` or `d[key]` respectively), raises `RuntimeError`.
+Otherwise, if there exists a forward iterator over the items, keys or values of `d` pointing to `key` (meaning that
+calling `next` on the iterator would return `(key, d[key])`, `key` or `d[key]` respectively), raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
 d = SortedDict()
-d["foo"] = "bar"
-d["baz"] = 1
+for i in range(5):
+  d[i] = None
 ii = iter(d.items())
 ki = iter(d.keys())
 vi = iter(d.values())
-del d["baz"]
+del d[0]
 ```
 
 ```text
 Traceback (most recent call last):
   File "…", line 8, in <module>
-    del d["baz"]
-        ~^^^^^^^
+    del d[0]
+        ~^^^
+RuntimeError: operation not permitted: key-value pair locked by 3 iterator(s)
+```
+
+Otherwise, if there exists a reverse iterator over the items, keys or values of `d` pointing to the key immediately
+less than `key` (meaning that calling `next` on the iterator last returned `(key, d[key])`, `key` or `d[key]`
+respectively), raise `RuntimeError`.
+
+```python
+from pysorteddict import *
+d = SortedDict()
+for i in range(5):
+  d[i] = None
+ii = reversed(d.items())
+ki = reversed(d.keys())
+vi = reversed(d.values())
+assert (next(ii), next(ki), next(vi)) == ((4, None), 4, None)
+del d[4]
+```
+
+```text
+Traceback (most recent call last):
+  File "…", line 9, in <module>
+    del d[4]
+        ~^^^
 RuntimeError: operation not permitted: key-value pair locked by 3 iterator(s)
 ```
 
@@ -503,7 +527,7 @@ Remove all key-value pairs in the sorted dictionary `d`.
 
 <summary>This method may raise exceptions.</summary>
 
-If there exists an unexhausted iterator over the items, keys or values of `d`, raises `RuntimeError`.
+If there exist unexhausted iterators over the items, keys or values of `d`, raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
@@ -511,7 +535,7 @@ d = SortedDict()
 d["foo"] = "bar"
 ii = iter(d.items())
 ki = iter(d.keys())
-vi = iter(d.values())
+vi = reversed(d.values())
 d.clear()
 ```
 
@@ -538,7 +562,7 @@ d = SortedDict()
 d["foo"] = "bar"
 ii = iter(d.items())
 ki = iter(d.keys())
-vi = iter(d.values())
+vi = reversed(d.values())
 del ii, ki, vi
 # gc.collect()
 d.clear()
@@ -882,8 +906,7 @@ Return a reverse iterator over the sorted dictionary view `v`.
 
 <summary>This method returns a mostly mutation-safe iterator.</summary>
 
-A sorted dictionary can be modified while iterating over any of its views. (Whether this is good practice is a separate
-question.)
+As explained under [`iter(v)`](#iterv).
 
 ```python
 from pysorteddict import *
@@ -894,15 +917,13 @@ d["baz"] = 3.14
 for key in reversed(d.keys()):
     d[key] = "spam"
     d["z_" + key] = "eggs"
-    if "foo" in d:
-        del d["foo"]
+    if "bar" in d:
+        del d["bar"]
 print(d)
 ```
 
 ```text
-segmentation fault (core dumped)
+SortedDict({'baz': 'spam', 'foo': 'spam', 'z_baz': 'eggs', 'z_foo': 'eggs'})
 ```
-
-Some modifications are prohibited, however. See [`del d[key]`](#del-dkey) and [`d.clear()`](#dclear) for details.
 
 </details>
