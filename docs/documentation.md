@@ -159,7 +159,7 @@ Return the number of key-value pairs in the sorted dictionary `d`.
 
 <summary>This method may raise exceptions.</summary>
 
-If the number of key-value pairs in `d` exceeds `PY_SSIZE_T_MAX`, raise `OverflowError`.
+If the number of key-value pairs in `d` exceeds `PY_SSIZE_T_MAX`, raises `OverflowError`.
 
 ```python
 from pysorteddict import *
@@ -418,7 +418,7 @@ RuntimeError: operation not permitted: key-value pair locked by 3 iterator(s)
 
 Otherwise, if there exists a reverse iterator over the items, keys or values of `d` pointing to the key immediately
 less than `key` (meaning that calling `next` on the iterator last returned `(key, d[key])`, `key` or `d[key]`
-respectively), raise `RuntimeError`.
+respectively), raises `RuntimeError`.
 
 ```python
 from pysorteddict import *
