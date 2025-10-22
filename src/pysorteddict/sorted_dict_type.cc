@@ -45,7 +45,7 @@ static PyTypeObject* import_python_type(char const* module_name, char const* typ
 }
 
 // Key types which have to be imported explicitly using the above function.
-static PyTypeObject* const PyDecimal_Type = import_python_type("decimal", "Decimal");
+static PyTypeObject* PyDecimal_Type = import_python_type("decimal", "Decimal");
 
 /**
  * Check whether the given key can be inserted into this sorted dictionary. For
@@ -108,7 +108,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         }
 
         // The first key-value pair is being inserted.
-        static PyTypeObject* const allowed_key_types[] = {
+        static PyTypeObject* allowed_key_types[] = {
             &PyBytes_Type,
             &PyFloat_Type,
             &PyLong_Type,
@@ -116,7 +116,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
             // The following types are not built-in.
             PyDecimal_Type,
         };
-        for (PyTypeObject* const allowed_key_type : allowed_key_types)
+        for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
             if (allowed_key_type != nullptr && Py_IS_TYPE(key, allowed_key_type) != 0)
             {
