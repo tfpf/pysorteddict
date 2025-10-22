@@ -26,6 +26,7 @@
  */
 static PyTypeObject* import_python_type(char const* module_name, char const* type_name)
 {
+    PyError_Clearer _;
     PyObjectWrapper module_ob(PyImport_ImportModule(module_name));  // 🆕
     if (module_ob == nullptr)
     {
@@ -61,7 +62,6 @@ static bool import_supported_key_types(void)
     }();
     if (!import_decimal)
     {
-        PyErr_Clear();
         PyErr_SetString(PyExc_ImportError, "failed to import the `decimal.Decimal` type");
         return false;
     }
@@ -88,6 +88,7 @@ bool SortedDictType::is_key_good(PyObject* key)
     }
     if (this->key_type == PyDecimal_Type)
     {
+        PyError_Clearer _;
         PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));  // 🆕
         if (key_is_nan_callable == nullptr)
         {
@@ -163,7 +164,6 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
     // it is safe to call this method.
     if (!this->is_key_good(key))
     {
-        PyErr_Clear();
         PyErr_Format(PyExc_ValueError, "got bad key %R of type %R", key, Py_TYPE(key));
         if (key_type_set_here)
         {
