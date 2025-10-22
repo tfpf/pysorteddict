@@ -45,7 +45,16 @@ static PyTypeObject* import_python_type(char const* module_name, char const* typ
 }
 
 // Key types which have to be imported explicitly using the above function.
-static PyTypeObject* PyDecimal_Type = import_python_type("decimal", "Decimal");
+static PyTypeObject* PyDecimal_Type;
+
+/**
+ * Import all supported key types from Python which are not built-in. Make them
+ * available globally so that their reference counts need not be managed.
+ */
+void import_supported_key_types(void)
+{
+    PyDecimal_Type = import_python_type("decimal", "Decimal");
+}
 
 /**
  * Check whether the given key can be inserted into this sorted dictionary. For
