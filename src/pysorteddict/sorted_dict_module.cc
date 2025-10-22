@@ -826,5 +826,6 @@ PyMODINIT_FUNC PyInit_pysorteddict(void)
         Py_DECREF(mod);
         return nullptr;
     }
+    import_supported_key_types();
     return mod;
 }

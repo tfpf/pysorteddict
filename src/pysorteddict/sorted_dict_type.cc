@@ -50,22 +50,10 @@ static PyTypeObject* PyDecimal_Type;
 /**
  * Import all supported key types from Python which are not built-in. Make them
  * available globally so that their reference counts need not be managed.
- *
- * @return `true` if successful, else `false`.
  */
-static bool import_supported_key_types(void)
+void import_supported_key_types(void)
 {
-    // Import each type only once.
-    static bool import_decimal = []
-    {
-        return (PyDecimal_Type = import_python_type("decimal", "Decimal")) != nullptr;
-    }();
-    if (!import_decimal)
-    {
-        PyErr_SetString(PyExc_ImportError, "failed to import the `decimal.Decimal` type");
-        return false;
-    }
-    return true;
+    PyDecimal_Type = import_python_type("decimal", "Decimal");
 }
 
 /**
@@ -139,7 +127,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
-            if (Py_IS_TYPE(key, allowed_key_type) != 0)
+            if (allowed_key_type != nullptr && Py_IS_TYPE(key, allowed_key_type) != 0)
             {
                 this->key_type = allowed_key_type;
                 key_type_set_here = true;
@@ -523,11 +511,6 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    if (!import_supported_key_types())
-    {
-        return nullptr;
-    }
-
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
     if (self == nullptr)
     {
