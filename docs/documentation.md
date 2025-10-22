@@ -4,6 +4,7 @@
 
 <summary>Documentation of older versions is available on GitHub.</summary>
 
+▸ [0.12.0](https://github.com/tfpf/pysorteddict/blob/v0.12.0/docs/documentation.md)  
 ▸ [0.11.0](https://github.com/tfpf/pysorteddict/blob/v0.11.0/docs/documentation.md)  
 ▸ [0.10.0](https://github.com/tfpf/pysorteddict/blob/v0.10.0/docs/documentation.md)  
 ▸ [0.9.0](https://github.com/tfpf/pysorteddict/blob/v0.9.0/docs/documentation.md)  
@@ -39,12 +40,16 @@ or implicitly using the wildcard (though this is not recommended).
 from pysorteddict import *
 ```
 
-The following key types are supported.
+The following key types are always supported.
 
 * `bytes`
 * `float`
 * `int`
 * `str`
+
+The following key types are supported if they are importable (which they should always be—failure to import them may be
+a sign of a corrupt or damaged Python installation).
+
 * `decimal.Decimal`
 
 ### Constructor
@@ -52,27 +57,6 @@ The following key types are supported.
 #### `SortedDict(*args, **kwargs) -> SortedDict`
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
-
-<details class="warning">
-
-<summary>This method may raise exceptions.</summary>
-
-If any of the supported key types which are not built-in (only `decimal.Decimal` as of this version) cannot be imported
-(which might be a symptom of a corrupt or damaged Python installation), raises `ImportError`.
-
-```python
-from pysorteddict import *
-d = SortedDict()
-```
-
-```text
-Traceback (most recent call last):
-  File "…", line 2, in <module>
-    d = SortedDict()
-ImportError: failed to import the `decimal.Decimal` type
-```
-
-</details>
 
 ### Properties
 
