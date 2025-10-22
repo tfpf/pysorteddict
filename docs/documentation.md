@@ -52,6 +52,27 @@ a sign of a corrupt or damaged Python installation).
 
 * `decimal.Decimal`
 
+<details class="warning">
+
+<summary>Shadowing these standard library types with custom types may lead to undefined behaviour.</summary>
+
+```python
+from pathlib import Path
+with Path(__file__).with_name("decimal.py").open("w") as writer:
+    print("import math", file=writer)
+    print('Decimal = type("Decimal", (float,), {"is_nan": lambda self: math.isnan(self)})', file=writer)
+from pysorteddict import *
+from decimal import Decimal
+d = SortedDict()
+d[Decimal(0)] = None
+```
+
+Here, the imported `Decimal` is actually `float` with an `is_nan` method defined. This will work. However, comparisons
+between two such `Decimal`s can be made to error out (by overriding `Decimal.__eq__` and friends). Errors in the
+comparator of a C++ `std::map` (the underlying type of a sorted dictionary) invoke undefined behaviour.
+
+</details>
+
 ### Constructor
 
 #### `SortedDict(*args, **kwargs) -> SortedDict`
