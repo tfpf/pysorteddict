@@ -287,7 +287,7 @@ Py_ssize_t SortedDictViewType::len(void)
 
 PyObject* SortedDictViewType::getitem(PyObject* idx)
 {
-    if (PyIndex_Check(idx) != 0)
+    if (PyIndex_Check(idx))
     {
         Py_ssize_t position = PyNumber_AsSsize_t(idx, PyExc_IndexError);
         if (position == -1 && PyErr_Occurred() != nullptr)

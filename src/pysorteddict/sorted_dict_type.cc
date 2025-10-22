@@ -37,7 +37,7 @@ static PyTypeObject* import_python_type(char const* module_name, char const* typ
     {
         return nullptr;
     }
-    if (Py_IS_TYPE(type_ob, &PyType_Type) == 0)
+    if (!Py_IS_TYPE(type_ob, &PyType_Type))
     {
         return nullptr;
     }
@@ -127,7 +127,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
-            if (allowed_key_type != nullptr && Py_IS_TYPE(key, allowed_key_type) != 0)
+            if (allowed_key_type != nullptr && Py_IS_TYPE(key, allowed_key_type))
             {
                 this->key_type = allowed_key_type;
                 key_type_set_here = true;
@@ -142,7 +142,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
     }
 
     // At this point, the key type is guaranteed to be non-null.
-    if (!key_type_set_here && Py_IS_TYPE(key, this->key_type) == 0)
+    if (!key_type_set_here && !Py_IS_TYPE(key, this->key_type))
     {
         PyErr_Format(PyExc_TypeError, "got key %R of type %R, want key of type %R", key, Py_TYPE(key), this->key_type);
         return false;
