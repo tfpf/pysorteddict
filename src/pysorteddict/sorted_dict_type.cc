@@ -118,7 +118,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         };
         for (PyTypeObject* const allowed_key_type : allowed_key_types)
         {
-            if (Py_IS_TYPE(key, allowed_key_type) != 0)
+            if (allowed_key_type != nullptr && Py_IS_TYPE(key, allowed_key_type) != 0)
             {
                 this->key_type = allowed_key_type;
                 key_type_set_here = true;
