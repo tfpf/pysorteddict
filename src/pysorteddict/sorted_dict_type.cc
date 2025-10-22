@@ -26,6 +26,7 @@
  */
 static PyTypeObject* import_python_type(char const* module_name, char const* type_name)
 {
+    PyError_Clearer _;
     PyObjectWrapper module_ob(PyImport_ImportModule(module_name));  // 🆕
     if (module_ob == nullptr)
     {
@@ -44,29 +45,7 @@ static PyTypeObject* import_python_type(char const* module_name, char const* typ
 }
 
 // Key types which have to be imported explicitly using the above function.
-static PyTypeObject* PyDecimal_Type;
-
-/**
- * Import all supported key types from Python which are not built-in. Make them
- * available globally so that their reference counts need not be managed.
- *
- * @return `true` if successful, else `false`.
- */
-static bool import_supported_key_types(void)
-{
-    // Import each type only once.
-    static bool import_decimal = []
-    {
-        return (PyDecimal_Type = import_python_type("decimal", "Decimal")) != nullptr;
-    }();
-    if (!import_decimal)
-    {
-        PyErr_Clear();
-        PyErr_SetString(PyExc_ImportError, "failed to import the `decimal.Decimal` type");
-        return false;
-    }
-    return true;
-}
+static PyTypeObject* PyDecimal_Type = import_python_type("decimal", "Decimal");
 
 /**
  * Check whether the given key can be inserted into this sorted dictionary. For
@@ -88,6 +67,7 @@ bool SortedDictType::is_key_good(PyObject* key)
     }
     if (this->key_type == PyDecimal_Type)
     {
+        PyError_Clearer _;
         PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));  // 🆕
         if (key_is_nan_callable == nullptr)
         {
@@ -163,7 +143,6 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
     // it is safe to call this method.
     if (!this->is_key_good(key))
     {
-        PyErr_Clear();
         PyErr_Format(PyExc_ValueError, "got bad key %R of type %R", key, Py_TYPE(key));
         if (key_type_set_here)
         {
@@ -523,11 +502,6 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
 {
-    if (!import_supported_key_types())
-    {
-        return nullptr;
-    }
-
     PyObject* self = type->tp_alloc(type, 0);  // 🆕
     if (self == nullptr)
     {
