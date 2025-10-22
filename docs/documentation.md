@@ -4,6 +4,7 @@
 
 <summary>Documentation of older versions is available on GitHub.</summary>
 
+▸ [0.12.0](https://github.com/tfpf/pysorteddict/blob/v0.12.0/docs/documentation.md)  
 ▸ [0.11.0](https://github.com/tfpf/pysorteddict/blob/v0.11.0/docs/documentation.md)  
 ▸ [0.10.0](https://github.com/tfpf/pysorteddict/blob/v0.10.0/docs/documentation.md)  
 ▸ [0.9.0](https://github.com/tfpf/pysorteddict/blob/v0.9.0/docs/documentation.md)  
@@ -39,40 +40,44 @@ or implicitly using the wildcard (though this is not recommended).
 from pysorteddict import *
 ```
 
-The following key types are supported.
+The following key types are always supported.
 
 * `bytes`
 * `float`
 * `int`
 * `str`
+
+The following key types are supported if they are importable (which they should always be—failure to import them may be
+a sign of a corrupt or damaged Python installation).
+
 * `decimal.Decimal`
+
+<details class="warning">
+
+<summary>Shadowing these standard library types with custom types may lead to undefined behaviour.</summary>
+
+```python
+from pathlib import Path
+with Path(__file__).with_name("decimal.py").open("w") as writer:
+    print("import math", file=writer)
+    print('Decimal = type("Decimal", (float,), {"is_nan": lambda self: math.isnan(self)})', file=writer)
+from pysorteddict import *
+from decimal import Decimal
+d = SortedDict()
+d[Decimal(0)] = None
+```
+
+Here, the imported `Decimal` is actually `float` with an `is_nan` method defined. This will work. However, comparisons
+between two such `Decimal`s can be made to error out (by overriding `Decimal.__eq__` and friends). Errors in the
+comparator of a C++ `std::map` (the underlying type of a sorted dictionary) invoke undefined behaviour.
+
+</details>
 
 ### Constructor
 
 #### `SortedDict(*args, **kwargs) -> SortedDict`
 
 Create an empty sorted dictionary. `args` and `kwargs` are ignored.
-
-<details class="warning">
-
-<summary>This method may raise exceptions.</summary>
-
-If any of the supported key types which are not built-in (only `decimal.Decimal` as of this version) cannot be imported
-(which might be a symptom of a corrupt or damaged Python installation), raises `ImportError`.
-
-```python
-from pysorteddict import *
-d = SortedDict()
-```
-
-```text
-Traceback (most recent call last):
-  File "…", line 2, in <module>
-    d = SortedDict()
-ImportError: failed to import the `decimal.Decimal` type
-```
-
-</details>
 
 ### Properties
 

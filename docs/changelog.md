@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/tfpf/pysorteddict/compare/v0.12.0...v0.12.1)
+
+<ul class="change-fix">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/219">#219</a> Allow using a sorted dictionary even if
+  importing <code>decimal.Decimal</code> fails.</li>
+</ul>
+
 ## [0.12.0](https://github.com/tfpf/pysorteddict/compare/v0.11.0...v0.12.0)
 
 <ul class="change-new">
