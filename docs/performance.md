@@ -30,16 +30,17 @@ run the benchmarks.
 
 The average execution times of some expressions are tabulated against the lengths of the sorted dictionaries used.
 
-| Expression             | &emsp;10<sup>2</sup>&emsp; | &emsp;10<sup>3</sup>&emsp; | &emsp;10<sup>4</sup>&emsp; | &emsp;10<sup>5</sup>&emsp; | &emsp;10<sup>6</sup>&emsp; | &emsp;10<sup>7</sup>&emsp; |
-| :--------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: |
-| `0.00 in d`            | 37.9 ns                    | 50.0 ns                    | 65.2 ns                    | 84.0 ns                    | 95.1 ns                    | 112 ns                     |
-| `0.33 in d`            | 47.0 ns                    | 61.4 ns                    | 69.5 ns                    | 86.2 ns                    | 103 ns                     | 117 ns                     |
-| `0.67 in d`            | 41.2 ns                    | 58.3 ns                    | 69.9 ns                    | 78.6 ns                    | 100 ns                     | 118 ns                     |
-| `1.00 in d`            | 31.7 ns                    | 60.8 ns                    | 64.2 ns                    | 88.4 ns                    | 94.9 ns                    | 112 ns                     |
-| `set_del(d, keys_33)`  | 4.14 μs                    | 5.08 μs                    | 6.10 μs                    | 7.07 μs                    | 8.06 μs                    | 9.44 μs                    |
-| `set_del(d, keys_67)`  | 8.46 μs                    | 10.4 μs                    | 12.7 μs                    | 15.3 μs                    | 19.2 μs                    | 24.1 μs                    |
-| `set_del(d, keys_100)` | 13.0 μs                    | 15.9 μs                    | 21.2 μs                    | 26.8 μs                    | 33.9 μs                    | 43.3 μs                    |
-| `for _ in d: pass`     | 818 ns                     | 8.37 μs                    | 119 μs                     | 2.01 ms                    | 97.1 ms                    | 1.06 s                     |
+| Expression                       | &emsp;10<sup>2</sup>&emsp; | &emsp;10<sup>3</sup>&emsp; | &emsp;10<sup>4</sup>&emsp; | &emsp;10<sup>5</sup>&emsp; | &emsp;10<sup>6</sup>&emsp; | &emsp;10<sup>7</sup>&emsp; |
+| :------------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: |
+| `0.00 in d`                      | 36.8 ns                    | 49.6 ns                    | 65.0 ns                    | 83.0 ns                    | 93.2 ns                    | 105 ns                     |
+| `0.33 in d`                      | 46.3 ns                    | 60.5 ns                    | 67.4 ns                    | 82.9 ns                    | 98.7 ns                    | 112 ns                     |
+| `0.67 in d`                      | 40.4 ns                    | 57.0 ns                    | 67.6 ns                    | 77.1 ns                    | 97.2 ns                    | 113 ns                     |
+| `1.00 in d`                      | 31.7 ns                    | 58.9 ns                    | 62.9 ns                    | 82.3 ns                    | 90.4 ns                    | 111 ns                     |
+| `set_del(d, keys_33)`            | 4.10 μs                    | 5.08 μs                    | 6.06 μs                    | 6.96 μs                    | 8.02 μs                    | 9.89 μs                    |
+| `set_del(d, keys_67)`            | 8.50 μs                    | 10.3 μs                    | 12.7 μs                    | 15.9 μs                    | 21.7 μs                    | 31.5 μs                    |
+| `set_del(d, keys_100)`           | 13.0 μs                    | 16.1 μs                    | 22.6 μs                    | 30.2 μs                    | 42.6 μs                    | 62.8 μs                    |
+| `for _ in d: pass`               | 857 ns                     | 8.73 μs                    | 132 μs                     | 2.65 ms                    | 117 ms                     | 1.32 s                     |
+| `for _ in reversed(d): pass`     | 1.12 μs                    | 11.6 μs                    | 160 μs                     | 3.02 ms                    | 119 ms                     | 1.40 s                     |
 
 ## Details
 
