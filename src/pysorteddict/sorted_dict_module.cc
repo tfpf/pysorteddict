@@ -817,8 +817,13 @@ static int sorted_dict_module_exec(PyObject* mod)
 }
 
 static PyModuleDef_Slot sorted_dict_module_slots[] = {
-    { Py_mod_exec, sorted_dict_module_exec },
+    { Py_mod_exec, reinterpret_cast<void*>(sorted_dict_module_exec) },
+#if PY_VERSION_HEX >= 0x030C0000
     { Py_mod_multiple_interpreters, Py_MOD_MULTIPLE_INTERPRETERS_NOT_SUPPORTED },
+#endif
+#if PY_VERSION_HEX >= 0x030D0000
+    { Py_mod_gil, Py_MOD_GIL_USED },
+#endif
     { 0, nullptr },
 };
 
