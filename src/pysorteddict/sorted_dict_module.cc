@@ -798,15 +798,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_free = PyObject_Free,
 };
 
-static PyModuleDef sorted_dict_module = {
-    .m_base = PyModuleDef_HEAD_INIT,
-    .m_name = "pysorteddict",
-    .m_doc = "enriches Python with a sorted dictionary\n\n"
-             "See https://tfpf.github.io/pysorteddict/.",
-    .m_size = -1,
-};
-
-PyMODINIT_FUNC PyInit_pysorteddict(void)
+static int sorted_dict_module_exec(PyObject* mod)
 {
     if (PyType_Ready(&sorted_dict_items_fwd_iter_type) < 0 || PyType_Ready(&sorted_dict_items_rev_iter_type) < 0
         || PyType_Ready(&sorted_dict_items_type) < 0 || PyType_Ready(&sorted_dict_keys_fwd_iter_type) < 0
@@ -814,18 +806,32 @@ PyMODINIT_FUNC PyInit_pysorteddict(void)
         || PyType_Ready(&sorted_dict_values_fwd_iter_type) < 0 || PyType_Ready(&sorted_dict_values_rev_iter_type) < 0
         || PyType_Ready(&sorted_dict_values_type) < 0 || PyType_Ready(&sorted_dict_type) < 0)
     {
-        return nullptr;
-    }
-    PyObject* mod = PyModule_Create(&sorted_dict_module);  // 🆕
-    if (mod == nullptr)
-    {
-        return nullptr;
+        return -1;
     }
     if (PyModule_AddObjectRef(mod, "SortedDict", reinterpret_cast<PyObject*>(&sorted_dict_type)) < 0)  // 🆕
     {
-        Py_DECREF(mod);
-        return nullptr;
+        return -1;
     }
     import_supported_key_types();
-    return mod;
+    return 0;
+}
+
+static PyModuleDef_Slot sorted_dict_module_slots[] = {
+    { Py_mod_exec, sorted_dict_module_exec },
+    { Py_mod_multiple_interpreters, Py_MOD_MULTIPLE_INTERPRETERS_NOT_SUPPORTED },
+    { 0, nullptr },
+};
+
+static PyModuleDef sorted_dict_module = {
+    .m_base = PyModuleDef_HEAD_INIT,
+    .m_name = "pysorteddict",
+    .m_doc = "enriches Python with a sorted dictionary\n\n"
+             "See https://tfpf.github.io/pysorteddict/.",
+    .m_size = 0,
+    .m_slots = sorted_dict_module_slots,
+};
+
+PyMODINIT_FUNC PyInit_pysorteddict(void)
+{
+    return PyModuleDef_Init(&sorted_dict_module);
 }
