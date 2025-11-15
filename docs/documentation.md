@@ -28,7 +28,8 @@
 
 ## Sorted Dictionary
 
-`SortedDict` is a thread-unsafe sorted dictionary. It may be imported explicitly:
+`SortedDict` is a sorted dictionary which wraps the C++ sorted dictionary type (`std::map`). It may be imported
+explicitly:
 
 ```python
 from pysorteddict import SortedDict
@@ -54,7 +55,7 @@ a sign of a corrupt or damaged Python installation).
 
 <details class="warning">
 
-<summary>Shadowing these standard library types with custom types may lead to undefined behaviour.</summary>
+<summary>Shadowing standard library modules providing these types may lead to undefined behaviour.</summary>
 
 ```python
 from pathlib import Path
@@ -67,9 +68,10 @@ d = SortedDict()
 d[Decimal(0)] = None
 ```
 
-Here, the imported `Decimal` is actually `float` with an `is_nan` method defined. This will work. However, comparisons
-between two such `Decimal`s can be made to error out (by overriding `Decimal.__eq__` and friends). Errors in the
-comparator of a C++ `std::map` (the underlying type of a sorted dictionary) invoke undefined behaviour.
+Here, the imported `Decimal` (which is actually `float` with an `is_nan` method defined) came from the newly created
+`decimal.py` instead of the standard library module `decimal`. This will work. However, comparisons between two such
+`Decimal`s can be made to error out (by overriding `Decimal.__eq__` and friends). Errors in the comparison function of
+the underlying C++ `std::map` invoke undefined behaviour.
 
 </details>
 
