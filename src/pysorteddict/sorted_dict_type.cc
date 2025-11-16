@@ -118,6 +118,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
 
         // The first key-value pair is being inserted.
         static PyTypeObject* allowed_key_types[] = {
+            &PyBool_Type,
             &PyBytes_Type,
             &PyFloat_Type,
             &PyLong_Type,

@@ -10,9 +10,9 @@ import pytest
 
 from pysorteddict import SortedDict
 
-unsupported_types = {bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
+unsupported_types = {bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
 # Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
-supported_types = [bytes, int, float, str, decimal.Decimal]
+supported_types = [bool, bytes, int, float, str, decimal.Decimal]
 all_types = [*unsupported_types.union(supported_types)]
 
 
