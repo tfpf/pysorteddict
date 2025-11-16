@@ -17,13 +17,14 @@ unsupported_types = {bytearray, complex, dict, Exception, frozenset, list, set, 
 # Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
 supported_types = [
     bool, bytes, int, float, str,
-    datetime.date, decimal.Decimal, fractions.Fraction, time.struct_time, datetime.timedelta,
+    # The type of `Fraction` is `ABCMeta`, not `type`. The representation of
+    # `struct_time` is different across Python versions. It will be a lot of
+    # work to generalise these tests for these key types. Since there is no
+    # custom code handling them, they are no different from `int` in that
+    # regard. Exclude them from tests.
+    datetime.date, decimal.Decimal, datetime.timedelta,
 ]  # fmt: skip
 all_types = [*unsupported_types.union(supported_types)]
-# The type of the fraction type is `ABCMeta`, not `type`. Hence, some error
-# messages will contain the former while I expect the latter. Define this to
-# exclude it from some scenarios.
-all_good_types = [t for t in all_types if t is not fractions.Fraction]
 
 
 class TestFuzz:
@@ -49,7 +50,7 @@ class TestFuzz:
             case builtins.str:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
             case builtins.type:
-                return self._rg.choice(all_good_types)
+                return self._rg.choice(all_types)
             case datetime.date:
                 return datetime.date.fromordinal(self._rg.randrange(datetime.date.max.toordinal()))
             case fractions.Fraction:
