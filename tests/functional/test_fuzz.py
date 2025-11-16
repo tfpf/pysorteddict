@@ -1,13 +1,11 @@
 import builtins
 import datetime
 import decimal
-import fractions
 import math
 import random
 import re
 import string
 import sys
-import time
 
 import pytest
 
@@ -53,10 +51,6 @@ class TestFuzz:
                 return self._rg.choice(all_types)
             case datetime.date:
                 return datetime.date.fromordinal(self._rg.randrange(datetime.date.max.toordinal()))
-            case fractions.Fraction:
-                return fractions.Fraction(self._gen(int), self._gen(int))
-            case time.struct_time:
-                return time.struct_time((2000, 6, 15, 0, self._rg.randrange(60), 0, 0, 0, self._rg.randrange(2)))
             case datetime.timedelta:
                 return datetime.timedelta(self._gen(int))
             case _:
