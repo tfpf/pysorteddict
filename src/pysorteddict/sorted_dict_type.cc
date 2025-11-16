@@ -44,10 +44,12 @@ static PyTypeObject* import_python_type(char const* module_name, char const* typ
     return reinterpret_cast<PyTypeObject*>(type_ob);
 }
 
-// Key types which are not built-in and thus have to be imported explicitly
-// using the above function.
+// Key types which have to be imported explicitly using the above function.
 static PyTypeObject* PyDate_Type;
 static PyTypeObject* PyDecimal_Type;
+static PyTypeObject* PyFraction_Type;
+static PyTypeObject* PyStructtime_Type;
+static PyTypeObject* PyTimedelta_Type;
 
 /**
  * Import all supported key types from Python which are not built-in. Make them
@@ -57,6 +59,9 @@ void import_supported_key_types(void)
 {
     PyDate_Type = import_python_type("datetime", "date");
     PyDecimal_Type = import_python_type("decimal", "Decimal");
+    PyFraction_Type = import_python_type("fractions", "Fraction");
+    PyStructtime_Type = import_python_type("time", "struct_time");
+    PyTimedelta_Type = import_python_type("datetime", "timedelta");
 }
 
 /**
@@ -126,9 +131,12 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
             &PyFloat_Type,
             &PyLong_Type,
             &PyUnicode_Type,
-
+            // The following types are not built-in.
             PyDate_Type,
             PyDecimal_Type,
+            PyFraction_Type,
+            PyStructtime_Type,
+            PyTimedelta_Type,
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
