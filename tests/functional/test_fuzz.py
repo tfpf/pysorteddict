@@ -50,7 +50,7 @@ class TestFuzz:
             case builtins.type:
                 return self._rg.choice(all_types)
             case datetime.date:
-                return datetime.date.fromordinal(self._rg.randrange(datetime.date.max.toordinal()))
+                return datetime.date.fromordinal(self._rg.randrange(1, datetime.date.max.toordinal()))
             case datetime.timedelta:
                 return datetime.timedelta(self._gen(int))
             case _:
