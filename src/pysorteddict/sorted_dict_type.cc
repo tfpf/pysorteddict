@@ -37,7 +37,7 @@ static PyTypeObject* import_python_type(char const* module_name, char const* typ
     {
         return nullptr;
     }
-    if (!Py_IS_TYPE(type_ob, &PyType_Type))
+    if (PyObject_IsInstance(type_ob, reinterpret_cast<PyObject*>(&PyType_Type)) != 1)
     {
         return nullptr;
     }
