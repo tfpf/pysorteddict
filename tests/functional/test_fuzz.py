@@ -1,4 +1,5 @@
 import builtins
+import datetime
 import decimal
 import math
 import random
@@ -12,7 +13,7 @@ from pysorteddict import SortedDict
 
 unsupported_types = {bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
 # Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
-supported_types = [bool, bytes, int, float, str, decimal.Decimal]
+supported_types = [bool, bytes, int, float, str, datetime.date, decimal.Decimal]
 all_types = [*unsupported_types.union(supported_types)]
 
 
@@ -40,6 +41,8 @@ class TestFuzz:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
             case builtins.type:
                 return self._rg.choice(all_types)
+            case datetime.date:
+                return datetime.date.fromordinal(self._rg.randrange(datetime.date.max.toordinal()))
             case _:
                 raise RuntimeError(key_type)
 
