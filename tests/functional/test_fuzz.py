@@ -20,6 +20,10 @@ supported_types = [
     datetime.date, decimal.Decimal, fractions.Fraction, time.struct_time, datetime.timedelta,
 ]  # fmt: skip
 all_types = [*unsupported_types.union(supported_types)]
+# The type of the fraction type is `ABCMeta`, not `type`. Hence, some error
+# messages will contain the former while I expect the latter. Define this to
+# exclude it from some scenarios.
+all_good_types = [t for t in all_types if t is not fractions.Fraction]
 
 
 class TestFuzz:
@@ -45,7 +49,7 @@ class TestFuzz:
             case builtins.str:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
             case builtins.type:
-                return self._rg.choice(all_types)
+                return self._rg.choice(all_good_types)
             case datetime.date:
                 return datetime.date.fromordinal(self._rg.randrange(datetime.date.max.toordinal()))
             case fractions.Fraction:
