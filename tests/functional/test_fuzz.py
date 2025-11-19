@@ -53,7 +53,7 @@ class TestFuzz:
             case builtins.type:
                 return self._rg.choice(all_types)
             case datetime.date:
-                return datetime.date.fromordinal(self._rg.randrange(1, datetime.date.max.toordinal()))
+                return datetime.date.fromordinal(self._gen(int))
             case ipaddress.IPv4Address | ipaddress.IPv4Interface | ipaddress.IPv4Network:
                 return key_type(self._rg.randrange(2**32 - 1))
             case ipaddress.IPv6Address | ipaddress.IPv6Interface | ipaddress.IPv6Network:
