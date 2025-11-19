@@ -55,7 +55,7 @@ static PyTypeObject* PyIPv6Address_Type;
 static PyTypeObject* PyIPv6Interface_Type;
 static PyTypeObject* PyIPv6Network_Type;
 static PyTypeObject* PyStructTime_Type;
-static PyTypeObject* PyTimedelta_Type;
+static PyTypeObject* PyTimeDelta_Type;
 static PyTypeObject* PyUUID_Type;
 
 /**
@@ -74,7 +74,7 @@ void import_supported_key_types(void)
     PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface");
     PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network");
     PyStructTime_Type = import_python_type("time", "struct_time");
-    PyTimedelta_Type = import_python_type("datetime", "timedelta");
+    PyTimeDelta_Type = import_python_type("datetime", "timedelta");
     PyUUID_Type = import_python_type("uuid", "UUID");
 }
 
@@ -156,7 +156,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
             PyIPv6Interface_Type,
             PyIPv6Network_Type,
             PyStructTime_Type,
-            PyTimedelta_Type,
+            PyTimeDelta_Type,
             PyUUID_Type,
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
