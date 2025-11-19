@@ -3,6 +3,7 @@ import datetime
 import decimal
 import ipaddress
 import math
+import pathlib
 import random
 import re
 import string
@@ -21,9 +22,11 @@ supported_types = [
     # `struct_time` is different across Python versions. It will be a lot of
     # work to generalise these tests for these key types. Since there is no
     # custom code handling them, they are no different from `int` in that
-    # regard. Exclude them from tests.
+    # regard. Exclude them from tests. Also, concrete paths cannot be
+    # instantiated on an incompatible system, so let the library decide.
     datetime.date, decimal.Decimal, ipaddress.IPv4Address, ipaddress.IPv4Interface, ipaddress.IPv4Network,
-    ipaddress.IPv6Address, ipaddress.IPv6Interface, ipaddress.IPv6Network, datetime.timedelta, uuid.UUID,
+    ipaddress.IPv6Address, ipaddress.IPv6Interface, ipaddress.IPv6Network, type(pathlib.Path()),
+    type(pathlib.PurePath()), datetime.timedelta, uuid.UUID,
 ]  # fmt: skip
 all_types = [*unsupported_types.union(supported_types)]
 
@@ -58,6 +61,8 @@ class TestFuzz:
                 return key_type(self._rg.randrange(2**32 - 1))
             case ipaddress.IPv6Address | ipaddress.IPv6Interface | ipaddress.IPv6Network:
                 return key_type(self._rg.randrange(2**64 - 1))
+            case pathlib.PosixPath | pathlib.PurePosixPath | pathlib.PureWindowsPath | pathlib.WindowsPath:
+                return key_type(self._gen(str))
             case datetime.timedelta:
                 return datetime.timedelta(self._gen(int))
             case uuid.UUID:

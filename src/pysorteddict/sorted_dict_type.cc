@@ -54,9 +54,13 @@ static PyTypeObject* PyIPv4Network_Type;
 static PyTypeObject* PyIPv6Address_Type;
 static PyTypeObject* PyIPv6Interface_Type;
 static PyTypeObject* PyIPv6Network_Type;
+static PyTypeObject* PyPosixPath_Type;
+static PyTypeObject* PyPurePosixPath_Type;
+static PyTypeObject* PyPureWindowsPath_Type;
 static PyTypeObject* PyStructTime_Type;
 static PyTypeObject* PyTimeDelta_Type;
 static PyTypeObject* PyUUID_Type;
+static PyTypeObject* PyWindowsPath_Type;
 
 /**
  * Import all supported key types from Python which are not built-in. Make them
@@ -73,9 +77,13 @@ void import_supported_key_types(void)
     PyIPv6Address_Type = import_python_type("ipaddress", "IPv6Address");
     PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface");
     PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network");
+    PyPosixPath_Type = import_python_type("pathlib", "PosixPath");
+    PyPurePosixPath_Type = import_python_type("pathlib", "PurePosixPath");
+    PyPureWindowsPath_Type = import_python_type("pathlib", "PureWindowsPath");
     PyStructTime_Type = import_python_type("time", "struct_time");
     PyTimeDelta_Type = import_python_type("datetime", "timedelta");
     PyUUID_Type = import_python_type("uuid", "UUID");
+    PyWindowsPath_Type = import_python_type("pathlib", "WindowsPath");
 }
 
 /**
@@ -155,9 +163,13 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
             PyIPv6Address_Type,
             PyIPv6Interface_Type,
             PyIPv6Network_Type,
+            PyPosixPath_Type,
+            PyPurePosixPath_Type,
+            PyPureWindowsPath_Type,
             PyStructTime_Type,
             PyTimeDelta_Type,
             PyUUID_Type,
+            PyWindowsPath_Type,
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
