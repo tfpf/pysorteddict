@@ -1,18 +1,33 @@
 import builtins
+import datetime
 import decimal
+import ipaddress
 import math
+import pathlib
 import random
 import re
 import string
 import sys
+import uuid
 
 import pytest
 
 from pysorteddict import SortedDict
 
-unsupported_types = {bool, bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
+unsupported_types = {bytearray, complex, dict, Exception, frozenset, list, set, tuple, type}
 # Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
-supported_types = [bytes, int, float, str, decimal.Decimal]
+supported_types = [
+    bool, bytes, float, int, str,
+    # The type of `Fraction` is `ABCMeta`, not `type`. The representation of
+    # `struct_time` is different across Python versions. It will be a lot of
+    # work to generalise these tests for these key types. Since there is no
+    # custom code handling them, they are no different from `int` in that
+    # regard. Exclude them from tests. Also, concrete paths cannot be
+    # instantiated on an incompatible system, so let the library decide.
+    datetime.date, decimal.Decimal, ipaddress.IPv4Address, ipaddress.IPv4Interface, ipaddress.IPv4Network,
+    ipaddress.IPv6Address, ipaddress.IPv6Interface, ipaddress.IPv6Network, type(pathlib.Path()),
+    type(pathlib.PurePath()), datetime.timedelta, uuid.UUID,
+]  # fmt: skip
 all_types = [*unsupported_types.union(supported_types)]
 
 
@@ -40,6 +55,18 @@ class TestFuzz:
                 return "".join(self._rg.choices(string.ascii_lowercase, k=self._rg.randrange(20, 30)))
             case builtins.type:
                 return self._rg.choice(all_types)
+            case datetime.date:
+                return datetime.date.fromordinal(self._gen(int))
+            case ipaddress.IPv4Address | ipaddress.IPv4Interface | ipaddress.IPv4Network:
+                return key_type(self._rg.randrange(2**32 - 1))
+            case ipaddress.IPv6Address | ipaddress.IPv6Interface | ipaddress.IPv6Network:
+                return key_type(self._rg.randrange(2**64 - 1))
+            case pathlib.PosixPath | pathlib.PurePosixPath | pathlib.PureWindowsPath | pathlib.WindowsPath:
+                return key_type(self._gen(str))
+            case datetime.timedelta:
+                return datetime.timedelta(self._gen(int))
+            case uuid.UUID:
+                return uuid.uuid4()
             case _:
                 raise RuntimeError(key_type)
 
