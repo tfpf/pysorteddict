@@ -48,8 +48,15 @@ static PyTypeObject* import_python_type(char const* module_name, char const* typ
 static PyTypeObject* PyDate_Type;
 static PyTypeObject* PyDecimal_Type;
 static PyTypeObject* PyFraction_Type;
-static PyTypeObject* PyStructtime_Type;
+static PyTypeObject* PyIPv4Address_Type;
+static PyTypeObject* PyIPv4Interface_Type;
+static PyTypeObject* PyIPv4Network_Type;
+static PyTypeObject* PyIPv6Address_Type;
+static PyTypeObject* PyIPv6Interface_Type;
+static PyTypeObject* PyIPv6Network_Type;
+static PyTypeObject* PyStructTime_Type;
 static PyTypeObject* PyTimedelta_Type;
+static PyTypeObject* PyUUID_Type;
 
 /**
  * Import all supported key types from Python which are not built-in. Make them
@@ -60,8 +67,15 @@ void import_supported_key_types(void)
     PyDate_Type = import_python_type("datetime", "date");
     PyDecimal_Type = import_python_type("decimal", "Decimal");
     PyFraction_Type = import_python_type("fractions", "Fraction");
-    PyStructtime_Type = import_python_type("time", "struct_time");
+    PyIPv4Address_Type = import_python_type("ipaddress", "IPv4Address");
+    PyIPv4Interface_Type = import_python_type("ipaddress", "IPv4Interface");
+    PyIPv4Network_Type = import_python_type("ipaddress", "IPv4Network");
+    PyIPv6Address_Type = import_python_type("ipaddress", "IPv6Address");
+    PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface");
+    PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network");
+    PyStructTime_Type = import_python_type("time", "struct_time");
     PyTimedelta_Type = import_python_type("datetime", "timedelta");
+    PyUUID_Type = import_python_type("uuid", "UUID");
 }
 
 /**
@@ -135,8 +149,15 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
             PyDate_Type,
             PyDecimal_Type,
             PyFraction_Type,
-            PyStructtime_Type,
+            PyIPv4Address_Type,
+            PyIPv4Interface_Type,
+            PyIPv4Network_Type,
+            PyIPv6Address_Type,
+            PyIPv6Interface_Type,
+            PyIPv6Network_Type,
+            PyStructTime_Type,
             PyTimedelta_Type,
+            PyUUID_Type,
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
