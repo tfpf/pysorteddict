@@ -79,7 +79,7 @@ class TestFuzz:
                 supported_type,
                 marks=pytest.mark.skipif(
                     supported_type not in {float, int, str, decimal.Decimal}
-                    and "CI" in os.environ
+                    and os.environ["CI"]
                     and "rc" in version("pysorteddict"),
                     reason="not important in CI pipelines; reduce pre-release testing time",
                 ),
