@@ -3,12 +3,14 @@ import datetime
 import decimal
 import ipaddress
 import math
+import os
 import pathlib
 import random
 import re
 import string
 import sys
 import uuid
+from importlib.metadata import version
 
 import pytest
 
@@ -70,7 +72,16 @@ class TestFuzz:
             case _:
                 raise RuntimeError(key_type)
 
-    @pytest.mark.parametrize("key_type", supported_types)
+    @pytest.mark.parametrize(
+        "key_type",
+        (
+            pytest.param(
+                supported_type,
+                marks=pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") and "rc" in version("pysorteddict")),
+            )
+            for supported_type in supported_types
+        ),
+    )
     def test_fuzz(self, key_type: type):
         self._rg = random.Random(f"{__name__}-{key_type.__name__}")
         self.key_type = key_type
