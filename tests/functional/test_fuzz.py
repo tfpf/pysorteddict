@@ -20,7 +20,7 @@ unsupported_types = {bytearray, complex, dict, Exception, frozenset, list, set, 
 always_supported_types = {bool, bytes, float, int, str}
 # Needs to be ordered. See https://github.com/pytest-dev/pytest-xdist/issues/432.
 supported_types = [
-*always_supported_types,
+    *always_supported_types,
     # The type of `Fraction` is `ABCMeta`, not `type`. The representation of
     # `struct_time` is different across Python versions. It will be a lot of
     # work to generalise these tests for these key types. Since there is no
