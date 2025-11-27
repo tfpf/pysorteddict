@@ -1,7 +1,4 @@
 name: ci
-env:
-  # This should be set automatically, but isn't in the Ubuntu runner.
-  CI: true
 on:
   push:
     paths:
