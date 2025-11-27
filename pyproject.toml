@@ -84,12 +84,13 @@ docs = "sphinx-build docs/ docs/_build/"
 addopts = "--dist=worksteal -n logical"
 
 [tool.ruff]
+extend-exclude = ["tests/performance/"]
 line-length = 119
 
 [tool.ruff.lint.per-file-ignores]
 "docs/conf.py" = ["A001", "INP001"]
 "examples/*" = ["S101", "T201"]
-"tests/*" = ["PLR2004", "S101", "S311"]
+"tests/functional/*" = ["S101", "S311"]
 
 [tool.setuptools]
 include-package-data = false
