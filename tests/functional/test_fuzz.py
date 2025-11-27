@@ -112,7 +112,7 @@ class TestFuzz:
             assert [*self.sorted_dict] == [*sorted_normal_dict]
             assert [*reversed(self.sorted_dict)] == [*reversed(sorted_normal_dict)]
 
-        with pytest.raises(TypeError, match="^unhashable type: 'pysorteddict.SortedDict'$"):
+        with pytest.raises(TypeError, match=r"^unhashable type: 'pysorteddict.SortedDict'$"):
             hash(self.sorted_dict)
 
     def _test___contains__(self):
@@ -122,7 +122,7 @@ class TestFuzz:
                 key = self._gen(key_type)
                 query = (key, self._gen()) if container_contains_items else key
                 if self.is_sorted_dict_new:
-                    with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
+                    with pytest.raises(RuntimeError, match=r"^key type not set: insert at least one item first$"):
                         query in container  # noqa: B015
                     continue
                 if key_type is not self.key_type:
@@ -159,7 +159,7 @@ class TestFuzz:
         for key_type in all_types:
             key = self._gen(key_type)
             if self.is_sorted_dict_new:
-                with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
+                with pytest.raises(RuntimeError, match=r"^key type not set: insert at least one item first$"):
                     del self.sorted_dict[key]
                 continue
             if key_type is not self.key_type:
@@ -184,7 +184,7 @@ class TestFuzz:
         for key_type in all_types:
             key = self._gen(key_type)
             if self.is_sorted_dict_new:
-                with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
+                with pytest.raises(RuntimeError, match=r"^key type not set: insert at least one item first$"):
                     self.sorted_dict[key]
                 continue
             if key_type is not self.key_type:
@@ -256,7 +256,7 @@ class TestFuzz:
         for key_type in all_types:
             key = self._gen(key_type)
             if self.is_sorted_dict_new:
-                with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
+                with pytest.raises(RuntimeError, match=r"^key type not set: insert at least one item first$"):
                     self.sorted_dict.get(key)
                 continue
             if key_type is not self.key_type:
@@ -286,7 +286,7 @@ class TestFuzz:
         for key_type in all_types:
             key = self._gen(key_type)
             if self.is_sorted_dict_new:
-                with pytest.raises(RuntimeError, match="^key type not set: insert at least one item first$"):
+                with pytest.raises(RuntimeError, match=r"^key type not set: insert at least one item first$"):
                     self.sorted_dict.setdefault(key)
                 continue
             if key_type is not self.key_type:
@@ -326,13 +326,13 @@ class TestFuzz:
                     IndexError, match=rf"^got invalid index {idx} for view of length {view_as_list_len}$"
                 ):
                     view[idx]
-        with pytest.raises(IndexError, match="^cannot fit 'int' into an index-sized integer$"):
+        with pytest.raises(IndexError, match=r"^cannot fit 'int' into an index-sized integer$"):
             view[sys.maxsize + 1]
         with pytest.raises(TypeError, match=rf"^got index 0.0 of type {float}, want index of type {int} or {slice}$"):
             view[0.0]
         step = self._rg.randint(-view_as_list_len_ex, view_as_list_len_ex)
         if step == 0:
-            with pytest.raises(ValueError, match="^slice step cannot be zero$"):
+            with pytest.raises(ValueError, match=r"^slice step cannot be zero$"):
                 view[start:stop:step]
         else:
             assert view[start:stop:step] == view_as_list[start:stop:step]
