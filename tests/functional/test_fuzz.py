@@ -78,7 +78,7 @@ class TestFuzz:
             pytest.param(
                 supported_type,
                 marks=pytest.mark.skipif(
-                    supported_type not in {float, int, str, decimal.Decimal}
+                    supported_type not in {float, str, decimal.Decimal}
                     and "CIBUILDWHEEL" in os.environ
                     and "rc" in version("pysorteddict"),
                     reason="reduce running time of cibuildwheel GitHub Action for pre-releases",
