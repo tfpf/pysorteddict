@@ -47,9 +47,9 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 
 [tool.cibuildwheel]
 archs = ["auto64"]
+build = ["cp314t-*"]
 build-verbosity = 1
 enable = ["pypy"]
-skip = ["cp3??t-*"]
 test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
