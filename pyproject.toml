@@ -11,7 +11,7 @@ docs = ["furo~=2024.8", "myst-parser~=4.0"]
 
 [project]
 name = "pysorteddict"
-version = "0.13.0rc0"
+version = "0.13.0"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
