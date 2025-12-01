@@ -49,7 +49,7 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 [tool.cibuildwheel]
 archs = ["auto64"]
 build-verbosity = 1
-enable = ["pypy"]
+enable = ["pypy", "pypy-eol"]
 skip = ["cp3??t-win*"]
 test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
