@@ -48,7 +48,7 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 archs = ["auto64"]
 build = ["cp314t-win*", "pp31?-macosx*"]
 build-verbosity = 1
-enable = ["pypy", "pypy-eol"]
+enable = ["pypy"]
 test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
