@@ -2,7 +2,7 @@
 requires = [
     # See https://github.com/pypa/cibuildwheel/issues/2015 for the reason this
     # version is required.
-    "setuptools==72.1.0",
+    "setuptools",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -21,7 +21,6 @@ requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU Affero General Public License v3",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX",
@@ -47,9 +46,9 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 
 [tool.cibuildwheel]
 archs = ["auto64"]
-build = ["cp314t-*"]
+build = ["cp314t-win*", "pp31?-macosx*"]
 build-verbosity = 1
-enable = ["pypy"]
+enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
