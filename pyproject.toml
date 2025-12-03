@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     # See https://github.com/pypa/cibuildwheel/issues/2015.
-    "setuptools==72.1.0; platform_python_implementation == 'PyPy' and platform_system == 'Darwin'",
+    "setuptools==72.1.0; platform_system == 'Darwin' and platform_python_implementation == 'PyPy'",
     "setuptools<=76.1.0",
 ]
 build-backend = "setuptools.build_meta"
