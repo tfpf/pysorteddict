@@ -67,7 +67,7 @@ detached = true
 features = ["cov"]
 
 [tool.hatch.envs.cov.env-vars]
-CFLAGS = "--coverage"
+CXXFLAGS = "--coverage"
 
 [tool.hatch.envs.cov.scripts]
 cov = [
