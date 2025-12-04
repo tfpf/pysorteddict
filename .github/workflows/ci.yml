@@ -33,7 +33,7 @@ jobs:
           gcovr --json-summary-pretty | tee coverage.json
           [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
         env:
-          CFLAGS: --coverage
+          CXXFLAGS: --coverage
       - uses: stellarhub/push-gist-action@v1
         with:
           token: ${{ secrets.PAT }}
