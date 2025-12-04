@@ -3,7 +3,6 @@ import datetime
 import decimal
 import ipaddress
 import math
-import os
 import pathlib
 import random
 import re
@@ -78,8 +77,7 @@ class TestFuzz:
             pytest.param(
                 supported_type,
                 marks=pytest.mark.skipif(
-                    supported_type not in {float, str, decimal.Decimal}
-                    and "rc" in version("pysorteddict"),
+                    supported_type not in {float, str, decimal.Decimal} and "rc" in version("pysorteddict"),
                     reason="reduce running time of cibuildwheel GitHub Action for pre-releases",
                 ),
             )
