@@ -6,9 +6,8 @@ on:
       - 'src/**'
       - 'tests/**'
       - '.clang-format'
-      - 'MANIFEST.in'
+      - 'meson.build'
       - 'pyproject.toml'
-      - 'setup.py'
   workflow_dispatch:
 
 jobs:

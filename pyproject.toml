@@ -61,8 +61,8 @@ CXXFLAGS = "--coverage"
 
 [tool.hatch.envs.cov.scripts]
 cov = [
-    "rm -fr build/ cov/ && pip install . && pytest",
-    "mkdir -p cov/ && gcovr --html-details cov/index.html",
+    "rm -fr cov/ && pip install . && pytest",
+    "mkdir cov/ && gcovr --html-details cov/index.html",
 ]
 
 [tool.hatch.envs.docs]
@@ -87,6 +87,3 @@ line-length = 119
 "docs/conf.py" = ["A001", "INP001"]
 "examples/*" = ["S101", "T201"]
 "tests/functional/*" = ["S101", "S311"]
-
-[tool.setuptools]
-include-package-data = false
