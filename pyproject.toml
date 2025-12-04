@@ -1,8 +1,14 @@
 [build-system]
 requires = [
-    # See https://github.com/pypa/cibuildwheel/issues/2015 for the reason this
-    # version is required.
-    "setuptools==72.1.0",
+    # See https://github.com/pypa/cibuildwheel/issues/2015. The macOS linker
+    # receives an unrecognised flag when building a PyPy 3.10 wheel if a
+    # different version is used.
+    "setuptools==72.1.0; platform_system == 'Darwin' and platform_python_implementation == 'PyPy'",
+    # See https://github.com/pypa/cibuildwheel/issues/2676. The Windows linker
+    # can't find the static Python library file when building a CPython 3.14t
+    # wheel if the above version is used. In newer versions, licence
+    # classifiers are deprecated. Hence, find a middle ground.
+    "setuptools<=76.1.0",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -50,7 +56,6 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 archs = ["auto64"]
 build-verbosity = 1
 enable = ["pypy", "pypy-eol"]
-skip = ["cp3??t-win*"]
 test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
@@ -62,7 +67,7 @@ detached = true
 features = ["cov"]
 
 [tool.hatch.envs.cov.env-vars]
-CFLAGS = "--coverage"
+CXXFLAGS = "--coverage"
 
 [tool.hatch.envs.cov.scripts]
 cov = [
