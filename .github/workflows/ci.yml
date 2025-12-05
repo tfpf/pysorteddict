@@ -28,11 +28,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
       - run: |
-          pip install -Ccompile-args=-v -v .[cov] && pytest
+          # Specify a persistent build directory so that Meson does not delete
+          # it after installation. It is required to determine the coverage.
+          pip install -Cbuild-dir=build -Ccompile-args=-v -Csetup-args=-Db_coverage=true -v .[cov] && pytest
           gcovr --json-summary-pretty | tee coverage.json
           [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
-        env:
-          CXXFLAGS: --coverage
       - uses: stellarhub/push-gist-action@v1
         with:
           token: ${{ secrets.PAT }}

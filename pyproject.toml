@@ -56,12 +56,9 @@ dev-mode = false
 detached = true
 features = ["cov"]
 
-[tool.hatch.envs.cov.env-vars]
-CXXFLAGS = "--coverage"
-
 [tool.hatch.envs.cov.scripts]
 cov = [
-    "rm -fr cov/ && pip install . && pytest",
+    "rm -fr build/ cov/ && pip install -Cbuild-dir=build -Csetup-args=-Db_coverage=true -q . && pytest",
     "mkdir cov/ && gcovr --html-details cov/index.html",
 ]
 
