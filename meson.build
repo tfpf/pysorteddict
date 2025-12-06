@@ -11,7 +11,7 @@ source_files = files(
 )
 
 if host_machine.system() == 'windows'
-    cpp_arg_cto_off = '/O0'
+    cpp_arg_cto_off = '/Od'
     cpp_arg_lto_on = '/GL'
     cpp_arg_std = '/std:c++20'
     link_arg_lto_on = '/LTCG'
