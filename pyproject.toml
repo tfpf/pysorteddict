@@ -1,6 +1,6 @@
 [build-system]
-build-backend = "mesonpy"
 requires = ["meson-python"]
+build-backend = "mesonpy"
 
 [dependency-groups]
 docs = ["furo~=2024.8", "myst-parser~=4.0"]
