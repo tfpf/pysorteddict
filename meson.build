@@ -10,24 +10,13 @@ source_files = files(
     source_directory + 'sorted_dict_view_type.cc',
 )
 
-if host_machine.system() == 'windows'
-    cpp_arg_cto_off = '/Od'
-    cpp_arg_lto_on = '/GL'
-    cpp_arg_std = '/std:c++20'
-    link_arg_lto_on = '/LTCG'
-else
-    cpp_arg_cto_off = '-O0'
-    cpp_arg_lto_on = '-flto'
-    cpp_arg_std = '-std=c++20'
-    link_arg_lto_on = '-flto'
-endif
-cpp_args = [cpp_arg_std]
+cpp_args = ['-std=c++20']
 link_args = []
 if get_option('b_coverage')
-    cpp_args += [cpp_arg_cto_off]
+    cpp_args += ['-O0']
 else
-    cpp_args += [cpp_arg_lto_on]
-    link_args += [link_arg_lto_on]
+    cpp_args += ['-flto']
+    link_args += ['-flto']
 endif
 
 py = import('python').find_installation(pure: false)
