@@ -1,16 +1,6 @@
 [build-system]
-requires = [
-    # See https://github.com/pypa/cibuildwheel/issues/2015. The macOS linker
-    # receives an unrecognised flag when building a PyPy 3.10 wheel if a
-    # different version is used.
-    "setuptools==72.1.0; platform_system == 'Darwin' and platform_python_implementation == 'PyPy'",
-    # See https://github.com/pypa/cibuildwheel/issues/2676. The Windows linker
-    # can't find the static Python library file when building a CPython 3.14t
-    # wheel if the above version is used. In newer versions, licence
-    # classifiers are deprecated. Hence, find a middle ground.
-    "setuptools<=76.1.0",
-]
-build-backend = "setuptools.build_meta"
+requires = ["meson-python"]
+build-backend = "mesonpy"
 
 [dependency-groups]
 docs = ["furo~=2024.8", "myst-parser~=4.0"]
@@ -66,13 +56,13 @@ dev-mode = false
 detached = true
 features = ["cov"]
 
-[tool.hatch.envs.cov.env-vars]
-CXXFLAGS = "--coverage"
-
 [tool.hatch.envs.cov.scripts]
+# To measure the coverage of C++ code, the build directory must persist,
+# because the coverage files are supposed to be read in tandem with the object
+# files.
 cov = [
-    "rm -fr build/ cov/ && pip install . && pytest",
-    "mkdir -p cov/ && gcovr --html-details cov/index.html",
+    "rm -fr build/ cov/ && pip install -Cbuild-dir=build -Csetup-args=-Db_coverage=true -q . && pytest",
+    "mkdir cov/ && gcovr --html-details cov/index.html",
 ]
 
 [tool.hatch.envs.docs]
@@ -97,6 +87,3 @@ line-length = 119
 "docs/conf.py" = ["A001", "INP001"]
 "examples/*" = ["S101", "T201"]
 "tests/functional/*" = ["S101", "S311"]
-
-[tool.setuptools]
-include-package-data = false
