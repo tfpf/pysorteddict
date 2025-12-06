@@ -57,6 +57,9 @@ detached = true
 features = ["cov"]
 
 [tool.hatch.envs.cov.scripts]
+# To measure the coverage of C++ code, the build directory must persist,
+# because the coverage files are supposed to be read in tandem with the object
+# files.
 cov = [
     "rm -fr build/ cov/ && pip install -Cbuild-dir=build -Csetup-args=-Db_coverage=true -q . && pytest",
     "mkdir cov/ && gcovr --html-details cov/index.html",
