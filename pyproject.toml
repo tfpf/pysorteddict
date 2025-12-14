@@ -50,6 +50,11 @@ test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
 [tool.cibuildwheel.config-settings]
+compile-args = "-v"
+# Meson uses the MinGW C++ compiler if it is available on Windows, but building
+# the extension module requires MSVC. If it is not available, Meson falls back
+# to the default compiler, so it is safe to use this option on all platforms.
+# It is anyway not currently possible to specify it only on Windows.
 setup-args = "--vsenv"
 
 [tool.hatch.envs.default]
