@@ -49,7 +49,7 @@ enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
-[tool.cibuildwheel.config-settings-windows]
+[tool.cibuildwheel.config-settings]
 setup-args = "--vsenv"
 
 [tool.hatch.envs.default]
