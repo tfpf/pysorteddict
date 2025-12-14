@@ -1,13 +1,13 @@
 project('pysorteddict', 'cpp')
 
-source_directory = 'src/pysorteddict/'
+source_directory = 'src' / 'pysorteddict'
 source_files = files(
-    source_directory + 'sorted_dict_items_type.cc',
-    source_directory + 'sorted_dict_keys_type.cc',
-    source_directory + 'sorted_dict_module.cc',
-    source_directory + 'sorted_dict_type.cc',
-    source_directory + 'sorted_dict_values_type.cc',
-    source_directory + 'sorted_dict_view_type.cc',
+    source_directory / 'sorted_dict_items_type.cc',
+    source_directory / 'sorted_dict_keys_type.cc',
+    source_directory / 'sorted_dict_module.cc',
+    source_directory / 'sorted_dict_type.cc',
+    source_directory / 'sorted_dict_values_type.cc',
+    source_directory / 'sorted_dict_view_type.cc',
 )
 
 if host_machine.system() == 'windows'
