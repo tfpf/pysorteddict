@@ -49,14 +49,6 @@ enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
-[tool.cibuildwheel.config-settings]
-compile-args = "-v"
-# Meson uses the MinGW C++ compiler if it is available on Windows, but building
-# the extension module requires MSVC. If it is not available, Meson falls back
-# to the default compiler, so it is safe to use this option on all platforms.
-# It is anyway not currently possible to specify it only on Windows.
-setup-args = "--vsenv"
-
 [tool.hatch.envs.default]
 dev-mode = false
 
@@ -83,6 +75,13 @@ detached = true
 # in this environment manually from the dependency group. Otherwise, the below
 # command will fail.
 docs = "sphinx-build docs/ docs/_build/"
+
+[tool.meson-python.args]
+# Building an extension module on Windows requires MSVC, but Meson uses the
+# MinGW C++ compiler if it is available. Hence, force it to use MSVC. This has
+# no effect on other platforms.
+setup = ["-Dcpp_std=c++20", "--vsenv"]
+compile = ["-v"]
 
 [tool.pytest.ini_options]
 addopts = "--dist=worksteal -n logical"
