@@ -49,6 +49,9 @@ enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
+[tool.cibuildwheel.config-settings]
+setup-args = ["-Db_lto=true"]
+
 [tool.hatch.envs.default]
 dev-mode = false
 
@@ -57,12 +60,14 @@ detached = true
 features = ["cov"]
 
 [tool.hatch.envs.cov.scripts]
-# To measure the coverage of C++ code, the build directory must persist,
-# because the coverage files are supposed to be read in tandem with the object
-# files.
+# To report C++ code coverage, the build directory must persist, because
+# reporting coverage requires data from both coverage and object files.
 cov = [
-    "rm -fr build/ cov/ && pip install -Cbuild-dir=build -Csetup-args=-Db_coverage=true -q . && pytest",
-    "mkdir cov/ && gcovr --html-details cov/index.html",
+    "rm -fr build/ cov/",
+    "pip install -C build-dir=build -C setup-args=-Db_coverage=true -C setup-args=-Dbuildtype=debug -v .",
+    "pytest",
+    "mkdir cov/",
+    "gcovr --html-details cov/index.html",
 ]
 
 [tool.hatch.envs.docs]
@@ -77,9 +82,10 @@ detached = true
 docs = "sphinx-build docs/ docs/_build/"
 
 [tool.meson-python.args]
-# Building an extension module on Windows requires MSVC, but Meson uses the
-# MinGW C++ compiler if it is available. Hence, force it to use MSVC. This has
-# no effect on other platforms.
+# On Windows, MSVC must be used, but Meson uses the MinGW C++ compiler if it is
+# available. Hence, force it to use MSVC. This has no effect on other
+# platforms. See
+# https://mesonbuild.com/meson-python/how-to-guides/meson-args.html.
 setup = ["-Dcpp_std=c++20", "--vsenv"]
 compile = ["-v"]
 
