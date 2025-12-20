@@ -64,7 +64,7 @@ features = ["cov"]
 # reporting coverage requires data from both coverage and object files.
 cov = [
     "rm -fr build/ cov/",
-    "pip install -C build-dir=build -C setup-args=-Db_coverage=true -C setup-args=-Dbuildtype=debug -v .",
+    "pip install -C build-dir=build -C setup-args=-Db_coverage=true -C setup-args=-Dbuildtype=debug -q .",
     "pytest",
     "mkdir cov/",
     "gcovr --html-details cov/index.html",
