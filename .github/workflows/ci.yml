@@ -6,9 +6,8 @@ on:
       - 'src/**'
       - 'tests/**'
       - '.clang-format'
-      - 'MANIFEST.in'
+      - 'meson.build'
       - 'pyproject.toml'
-      - 'setup.py'
   workflow_dispatch:
 
 jobs:
@@ -29,11 +28,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
       - run: |
-          pip install -v .[cov] && pytest
+          pip install -C build-dir=build -C setup-args=-Db_coverage=true -C setup-args=-Dbuildtype=debug -v .[cov]
+          pytest
           gcovr --json-summary-pretty | tee coverage.json
           [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
-        env:
-          CXXFLAGS: --coverage
       - uses: stellarhub/push-gist-action@v1
         with:
           token: ${{ secrets.PAT }}
