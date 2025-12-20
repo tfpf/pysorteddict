@@ -1,4 +1,14 @@
-project('pysorteddict', 'cpp')
+project(
+    'pysorteddict',
+    'cpp',
+    default_options: [
+        'cpp_std=c++20',
+        # On Windows, MSVC must be used, but Meson uses MinGW (if available).
+        # Hence, force it to use MSVC. This is harmless on other platforms. See
+        # https://mesonbuild.com/meson-python/how-to-guides/meson-args.html.
+        'vsenv=true',
+    ]
+)
 
 source_directory = 'src' / 'pysorteddict'
 source_files = files(

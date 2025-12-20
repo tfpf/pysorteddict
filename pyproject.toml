@@ -82,11 +82,6 @@ detached = true
 docs = "sphinx-build docs/ docs/_build/"
 
 [tool.meson-python.args]
-# On Windows, MSVC must be used, but Meson uses the MinGW C++ compiler if it is
-# available. Hence, force it to use MSVC. This has no effect on other
-# platforms. See
-# https://mesonbuild.com/meson-python/how-to-guides/meson-args.html.
-setup = ["-Dcpp_std=c++20", "--vsenv"]
 compile = ["-v"]
 
 [tool.pytest.ini_options]
