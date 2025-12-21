@@ -1,6 +1,7 @@
 /.idea/
 /cov/
 /dist/
+/docs/.jupyterlite.doit.db
 /docs/_build/
 /docs/_static/fonts/
 /docs/_static/images/
