@@ -36,8 +36,9 @@ times -> easier than
 execute: False
 height: 600px
 kernel: python
+showbanner: 0
 theme: JupyterLab Light
-toolbar: True
+toolbar: 1
 width: 100%
 ---
 print(1)
@@ -52,8 +53,9 @@ print(1)
 execute: False
 height: 600px
 kernel: python
+showbanner: 0
 theme: JupyterLab Dark
-toolbar: True
+toolbar: 1
 width: 100%
 ---
 print(1)
