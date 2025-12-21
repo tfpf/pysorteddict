@@ -27,7 +27,7 @@ losing -> ['weight']
 times -> easier than
 ```
 
-## Try it on JupyterLite
+You can try it out in the JupyterLite notebook below.
 
 <div class="only-light">
 
