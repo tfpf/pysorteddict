@@ -27,6 +27,8 @@ losing -> ['weight']
 times -> easier than
 ```
 
+## Try it on JupyterLite
+
 <div class="only-light">
 
 ```{replite}
@@ -34,7 +36,6 @@ times -> easier than
 execute: False
 height: 600px
 kernel: python
-showbanner: False
 theme: JupyterLab Light
 toolbar: True
 width: 100%
@@ -51,7 +52,6 @@ print(1)
 execute: False
 height: 600px
 kernel: python
-showbanner: False
 theme: JupyterLab Dark
 toolbar: True
 width: 100%
