@@ -27,17 +27,36 @@ losing -> ['weight']
 times -> easier than
 ```
 
+<div class="only-light">
+
 ```{replite}
 ---
+execute: False
 height: 600px
+kernel: python
+showbanner: False
+theme: JupyterLab Light
+toolbar: True
+width: 100%
 ---
-import matplotlib.pyplot as plt
-import numpy as np
-
-x = np.linspace(0, 2 * np.pi, 200)
-y = np.sin(x)
-
-fig, ax = plt.subplots()
-ax.plot(x, y)
-plt.show()
+print(1)
 ```
+
+</div>
+
+<div class="only-dark">
+
+```{replite}
+---
+execute: False
+height: 600px
+kernel: python
+showbanner: False
+theme: JupyterLab Dark
+toolbar: True
+width: 100%
+---
+print(1)
+```
+
+</div>
