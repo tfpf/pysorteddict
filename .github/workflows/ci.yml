@@ -73,7 +73,7 @@ jobs:
 
   release:
     if: github.ref_type == 'tag'
-    needs: [coverage, build-native]
+    needs: [coverage, build-native, build-wasm]
     runs-on: ubuntu-latest
     environment:
       name: pypi
