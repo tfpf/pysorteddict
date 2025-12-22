@@ -52,6 +52,10 @@ test-requires = ["pytest-xdist"]
 [tool.cibuildwheel.config-settings]
 setup-args = ["-Db_lto=true"]
 
+[tool.cibuildwheel.pyodide]
+archs = ["wasm32"]
+test-command = "pytest -n 0 {package}"
+
 [tool.hatch.envs.default]
 dev-mode = false
 
