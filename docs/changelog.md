@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.13.0](https://github.com/tfpf/pysorteddict/compare/v0.12.1...v0.13.0)
+
+<ul class="change-new">
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/224">#224</a> Provide built distributions for the GIL-enabled
+  build of Python 3.14.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/230">#230</a> Support <code>datetime.date</code>,
+  <code>datetime.timedelta</code>, <code>fractions.Fraction</code>, <code>ipaddress.IPv4Address</code>,
+  <code>ipaddress.IPv4Interface</code>, <code>ipaddress.IPv4Network</code>, <code>ipaddress.IPv6Address</code>,
+  <code>ipaddress.IPv6Interface</code>, <code>ipaddress.IPv6Network</code>, <code>pathlib.PosixPath</code>,
+  <code>pathlib.PurePosixPath</code>, <code>pathlib.PureWindowsPath</code>, <code>pathlib.WindowsPath</code>,
+  <code>time.struct_time</code> and <code>uuid.UUID</code> keys.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/235">#235</a> Provide built distributions for the GIL-disabled
+  build of Python 3.14 on Linux and macOS.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/234">#234</a> Provide a built distribution for the
+  GIL-disabled build of Python 3.14 on Windows.</li>
+  <li><a href="https://github.com/tfpf/pysorteddict/pull/239">#239</a> Provide built distributions for the Pyodide
+  build of Python 3.12 and 3.13.</li>
+</ul>
+
 ## [0.12.1](https://github.com/tfpf/pysorteddict/compare/v0.12.0...v0.12.1)
 
 <ul class="change-fix">

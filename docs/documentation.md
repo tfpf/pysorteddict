@@ -4,6 +4,7 @@
 
 <summary>Documentation of older versions is available on GitHub.</summary>
 
+▸ [0.12.1](https://github.com/tfpf/pysorteddict/blob/v0.12.1/docs/documentation.md)
 ▸ [0.12.0](https://github.com/tfpf/pysorteddict/blob/v0.12.0/docs/documentation.md)  
 ▸ [0.11.0](https://github.com/tfpf/pysorteddict/blob/v0.11.0/docs/documentation.md)  
 ▸ [0.10.0](https://github.com/tfpf/pysorteddict/blob/v0.10.0/docs/documentation.md)  
@@ -51,7 +52,22 @@ The following key types are always supported.
 The following key types are supported if they are importable (which they should always be—failure to import them may be
 a sign of a corrupt or damaged Python installation).
 
+* `datetime.date`
+* `datetime.timedelta`
 * `decimal.Decimal`
+* `fractions.Fraction`
+* `ipaddress.IPv4Address`
+* `ipaddress.IPv4Interface`
+* `ipaddress.IPv4Network`
+* `ipaddress.IPv6Address`,
+* `ipaddress.IPv6Interface`
+* `ipaddress.IPv6Network`
+* `pathlib.PosixPath`
+* `pathlib.PurePosixPath`
+* `pathlib.PureWindowsPath`
+* `pathlib.WindowsPath`
+* `time.struct_time`
+* `uuid.UUID`
 
 <details class="warning">
 
