@@ -14,10 +14,10 @@ authors = [
 description = "Python dictionary in which the keys are always in ascending order"
 readme = "README.md"
 requires-python = ">=3.10"
+license = "AGPL-3.0-or-later"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU Affero General Public License v3",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX",
@@ -51,6 +51,10 @@ test-requires = ["pytest-xdist"]
 
 [tool.cibuildwheel.config-settings]
 setup-args = ["-Db_lto=true"]
+
+[tool.cibuildwheel.pyodide]
+archs = ["wasm32"]
+test-command = "pytest -n 0 {package}"
 
 [tool.hatch.envs.default]
 dev-mode = false
