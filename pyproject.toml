@@ -3,7 +3,7 @@ requires = ["meson-python"]
 build-backend = "mesonpy"
 
 [dependency-groups]
-docs = ["furo~=2024.8", "jupyterlite-sphinx~=0.22", "myst-parser~=4.0"]
+docs = ["furo~=2024.8", "jupyterlite-pyodide-kernel~=0.7.0", "jupyterlite-sphinx~=0.22.0", "myst-parser~=4.0"]
 
 [project]
 name = "pysorteddict"
