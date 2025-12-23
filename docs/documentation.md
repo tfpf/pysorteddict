@@ -59,7 +59,7 @@ a sign of a corrupt or damaged Python installation).
 * `ipaddress.IPv4Address`
 * `ipaddress.IPv4Interface`
 * `ipaddress.IPv4Network`
-* `ipaddress.IPv6Address`,
+* `ipaddress.IPv6Address`
 * `ipaddress.IPv6Interface`
 * `ipaddress.IPv6Network`
 * `pathlib.PosixPath`
