@@ -7,7 +7,7 @@ docs = ["furo~=2024.8", "jupyterlite-sphinx~=0.22", "myst-parser~=4.0"]
 
 [project]
 name = "pysorteddict"
-version = "0.13.0rc0"
+version = "0.13.0"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
@@ -51,6 +51,10 @@ test-requires = ["pytest-xdist"]
 
 [tool.cibuildwheel.config-settings]
 setup-args = ["-Db_lto=true"]
+
+[tool.cibuildwheel.pyodide]
+archs = ["wasm32"]
+test-command = "pytest -n 0 {package}"
 
 [tool.hatch.envs.default]
 dev-mode = false
