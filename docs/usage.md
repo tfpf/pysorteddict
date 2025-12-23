@@ -26,3 +26,51 @@ honestly -> weight
 losing -> ['weight']
 times -> easier than
 ```
+
+You can try it out in the JupyterLite notebook below.
+
+<div class="only-light">
+
+```{replite}
+---
+execute: True
+height: 600px
+kernel: python
+showbanner: 0
+theme: JupyterLab Light
+toolbar: 1
+width: 100%
+---
+import micropip
+
+await micropip.install("/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl")
+
+from pysorteddict import SortedDict
+
+d = SortedDict()
+```
+
+</div>
+
+<div class="only-dark">
+
+```{replite}
+---
+execute: True
+height: 600px
+kernel: python
+showbanner: 0
+theme: JupyterLab Dark
+toolbar: 1
+width: 100%
+---
+import micropip
+
+await micropip.install("/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl")
+
+from pysorteddict import SortedDict
+
+d = SortedDict()
+```
+
+</div>
