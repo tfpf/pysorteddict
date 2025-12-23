@@ -5,6 +5,7 @@
 /docs/_build/
 /docs/_static/fonts/
 /docs/_static/images/
+/docs/_static/wheels/
 /tests/performance/.ipynb_checkpoints/
 
 __pycache__

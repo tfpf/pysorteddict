@@ -33,7 +33,7 @@ You can try it out in the JupyterLite notebook below.
 
 ```{replite}
 ---
-execute: False
+execute: True
 height: 600px
 kernel: python
 showbanner: 0
@@ -41,7 +41,13 @@ theme: JupyterLab Light
 toolbar: 1
 width: 100%
 ---
-print(1)
+import micropip
+
+await micropip.install("/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl")
+
+from pysorteddict import SortedDict
+
+d = SortedDict()
 ```
 
 </div>
@@ -50,7 +56,7 @@ print(1)
 
 ```{replite}
 ---
-execute: False
+execute: True
 height: 600px
 kernel: python
 showbanner: 0
@@ -58,7 +64,13 @@ theme: JupyterLab Dark
 toolbar: 1
 width: 100%
 ---
-print(1)
+import micropip
+
+await micropip.install("/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl")
+
+from pysorteddict import SortedDict
+
+d = SortedDict()
 ```
 
 </div>
