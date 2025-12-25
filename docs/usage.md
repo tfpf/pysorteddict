@@ -43,7 +43,7 @@ width: 100%
 ---
 import micropip
 
-await micropip.install("/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl")
+await micropip.install("/pysorteddict/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl")
 
 from pysorteddict import SortedDict
 
@@ -66,7 +66,7 @@ width: 100%
 ---
 import micropip
 
-await micropip.install("/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl")
+await micropip.install("/pysorteddict/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl")
 
 from pysorteddict import SortedDict
 
