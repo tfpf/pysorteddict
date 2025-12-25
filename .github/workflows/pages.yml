@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/pages.yml'
       - 'docs/**'
   workflow_dispatch:
 
@@ -30,6 +31,8 @@ jobs:
           lfs: true
       - uses: actions/configure-pages@v5
       - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       - run: pip install -U pip
       - run: pip install --group docs
       - run: sphinx-build . _build/
