@@ -46,7 +46,7 @@ theme: JupyterLab Light
 toolbar: 1
 width: 100%
 ---
-%pip install /pysorteddict/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
+%pip install /pysorteddict/simple/pysorteddict/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
 
 from pysorteddict import SortedDict
 
@@ -67,7 +67,7 @@ theme: JupyterLab Dark
 toolbar: 1
 width: 100%
 ---
-%pip install /pysorteddict/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
+%pip install /pysorteddict/simple/pysorteddict/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
 
 from pysorteddict import SortedDict
 
