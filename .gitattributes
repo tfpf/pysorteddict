@@ -1,1 +1,1 @@
-docs/assets.zip filter=lfs diff=lfs merge=lfs -text
+docs/assets.zip diff=lfs filter=lfs merge=lfs -text
