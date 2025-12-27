@@ -32,7 +32,7 @@ times -> easier than
 ## Demo
 
 You can try pysorteddict out in the JupyterLite REPL below. When you click on 'Try Now', it will start a Pyodide kernel
-and run some code to install pysorteddict and import it. This will take a few seconds.
+and run some code to install pysorteddict (using one of the hosted wheels) and import it. This will take a few seconds.
 
 <div class="only-light">
 
