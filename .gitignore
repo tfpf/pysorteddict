@@ -5,7 +5,6 @@
 /docs/_build/
 /docs/_static/fonts/
 /docs/_static/images/
-/docs/_static/wheels/
 /docs/extra/simple/pysorteddict/*.whl
 /tests/performance/.ipynb_checkpoints/
 
