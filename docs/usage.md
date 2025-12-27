@@ -32,7 +32,7 @@ times -> easier than
 ## Demo
 
 You can try pysorteddict out in the JupyterLite REPL below. When you click on 'Try Now', it will start a Pyodide kernel
-and run some code to install pysorteddict and import it. This will take a few seconds.
+and run some code to install pysorteddict (using one of the hosted wheels) and import it. This will take a few seconds.
 
 <div class="only-light">
 
@@ -46,7 +46,7 @@ theme: JupyterLab Light
 toolbar: 1
 width: 100%
 ---
-%pip install /pysorteddict/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
+%pip install /pysorteddict/simple/pysorteddict/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
 
 from pysorteddict import SortedDict
 
@@ -67,7 +67,7 @@ theme: JupyterLab Dark
 toolbar: 1
 width: 100%
 ---
-%pip install /pysorteddict/_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
+%pip install /pysorteddict/simple/pysorteddict/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
 
 from pysorteddict import SortedDict
 
