@@ -22,18 +22,15 @@ pip install -i https://www.piwheels.org/simple pysorteddict
 
 [View the project on piwheels.](https://www.piwheels.org/project/pysorteddict/)
 
-## Emscripten/WebAssembly
+## Emscripten
 
-Pyodide wheels (compiled to WebAssembly) are available here.
+Pyodide wheels for the Emscripten runtime are hosted here.
 
-* [pysorteddict-0.13.0-cp312-cp312-pyodide_2024_0_wasm32.whl](_static/wheels/pysorteddict-0.13.0-cp312-cp312-pyodide_2024_0_wasm32.whl)
-* [pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl](_static/wheels/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl)
+```shell
+pip install -i https://tfpf.github.io/pysorteddict/simple/ pysorteddict
+```
 
-To download Pyodide wheels for an older version, check the corresponding GitHub release.
-
-[View all releases on GitHub.](https://github.com/tfpf/pysorteddict/releases)
-
-
+<a href="simple/pysorteddict/">View all available Pyodide wheels.</a>
 
 <div class="notice">
 If there are no wheels available for your platform, running the above installation command will result in compilation
