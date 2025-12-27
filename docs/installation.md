@@ -24,7 +24,7 @@ pip install --extra-index-url https://www.piwheels.org/simple pysorteddict
 
 ## Emscripten
 
-Pyodide wheels for the Emscripten runtime are hosted here.
+Pyodide wheels for the Emscripten runtime (targeting WebAssembly) are hosted here.
 
 ```shell
 pip install --extra-index-url https://tfpf.github.io/pysorteddict/simple/ pysorteddict
