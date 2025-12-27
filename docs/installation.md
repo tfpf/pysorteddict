@@ -26,14 +26,10 @@ pip install --extra-index-url https://www.piwheels.org/simple pysorteddict
 
 Pyodide wheels for the Emscripten runtime (targeting WebAssembly) are hosted here.
 
-```shell
-pip install --extra-index-url https://tfpf.github.io/pysorteddict/simple/ pysorteddict
-```
-
 <a href="simple/pysorteddict/">View all available Pyodide wheels.</a>
 
 <div class="notice">
-If there are no wheels available for your platform, running the above installation command will result in compilation
-from source. For this to be successful, a C++20 compiler must be available, and the Python development headers and
-libraries must be installed. This has been tested only with Clang, GCC and MSVC.
+If there are no wheels available for your platform, attempting installation will result in compilation from source. For
+this to be successful, a C++20 compiler must be available, and the Python development headers and libraries must be
+installed. This has been tested only with Clang, GCC and MSVC.
 </div>
