@@ -5,7 +5,7 @@ from pathlib import Path
 
 import tomllib
 
-with zipfile.ZipFile(assets_src := Path(__file__).with_name("assets.zip") as zf:
+with zipfile.ZipFile(assets_src := Path(__file__).with_name("assets.zip")) as zf:
     assets_dst, modification_time_tuples = assets_src.parent, {}
     for zi in zf.infolist():
         if not (target := assets_dst / zi.filename).exists():
