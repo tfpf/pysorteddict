@@ -31,6 +31,7 @@ source_suffix = [".md", ".rst"]
 exclude_patterns = ["_build"]
 
 html_css_files = ["styles/custom.css"]
+html_extra_path = ["extra/"]
 html_favicon = "_static/images/favicon.svg"
 html_logo = "_static/images/logo.svg"
 html_static_path = ["_static"]
