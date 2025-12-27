@@ -85,7 +85,7 @@ cov = [
 detached = true
 
 [tool.hatch.envs.docs.scripts]
-assets = "cd docs/ && zip -ru assets.zip _static/fonts/ _static/images/ extra/simple/pysorteddict/*.whl"
+assets = "cd docs/ && zip -FSr assets.zip _static/fonts/ _static/images/ extra/simple/pysorteddict/*.whl"
 # Building the documentation does not require installing this project, but does
 # require some dependencies. I can't figure out a way to get Hatch to only
 # install those dependencies without repeating them here. Hence, install them
