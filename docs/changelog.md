@@ -1,5 +1,10 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [0.13.0](https://github.com/tfpf/pysorteddict/compare/v0.12.1...v0.13.0)
 
 <ul class="change-new">
@@ -269,42 +274,34 @@ No user-facing changes of note.
   key-value pairs from a sorted dictionary.</li>
 </ul>
 
-## [0.0.8](https://github.com/tfpf/pysorteddict/compare/v0.0.7...v0.0.8)
+## [0.0.8](https://github.com/tfpf/pysorteddict/compare/v0.0.7...v0.0.8) (2024-11-28)
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/22">#22</a> Change the type of the error raised when the
-  constructor argument is an unsupported type from <code>ValueError</code> to <code>TypeError</code>. Prohibit
-  subclasses of supported key types. Update <code>SortedDict.__str__</code> and <code>SortedDict.items</code> to raise
-  allocation errors.</li>
-</ul>
+### Fixed
 
-## [0.0.7](https://github.com/tfpf/pysorteddict/compare/v0.0.6...v0.0.7)
+* `SortedDict` constructor throws `TypeError` instead of `ValueError` when it receives an unsupported type, and treats
+  subclasses of supported types as unsupported ([#22](https://github.com/tfpf/pysorteddict/pull/22)).
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/commit/e377dc4266f683daba99427e4955c3065d5f63a3">e377dc4266f6</a>
-  Add intended audience, supported operating systems and targeted Python implementations to project metadata.</li>
-</ul>
-
-## [0.0.6](https://github.com/tfpf/pysorteddict/compare/v0.0.5...v0.0.6)
+## [0.0.7](https://github.com/tfpf/pysorteddict/compare/v0.0.6...v0.0.7) (2024-11-27)
 
 No user-facing changes of note.
 
-## [0.0.5](https://github.com/tfpf/pysorteddict/compare/v0.0.4...v0.0.5)
+## [0.0.6](https://github.com/tfpf/pysorteddict/compare/v0.0.5...v0.0.6) (2024-11-24)
 
 No user-facing changes of note.
 
-## 0.0.4
+## [0.0.5](https://github.com/tfpf/pysorteddict/compare/v0.0.4...v0.0.5) (2024-11-23)
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/commit/8ef0310913b47b1539b6524d0cf94424825c0a38">8ef0310913b4</a>
-  Define <code>SortedDict</code>. Define the <code>SortedDict</code> constructor to accept the key type, which must be
-  <code>int</code>.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/1">#1</a> Define the <code>SortedDict</code> destructor.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/2">#2</a> Define <code>SortedDict.__len__</code>,
-  <code>SortedDict.__getitem__</code>, <code>SortedDict.__setitem__</code>, <code>SortedDict.__delitem__</code> and
-  <code>SortedDict.__str__</code>. Prohibit insertion of a key if its type is not a subclass of what was passed to the
-  constructor.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/3">#3</a> Define <code>SortedDict.items</code>,
-  <code>SortedDict.keys</code> and <code>SortedDict.values</code> to return lists (not views) containing the key-value
-  pairs, keys and values in a sorted dictionary.</li>
-</ul>
+No user-facing changes of note.
+
+## 0.0.4 (2024-11-23)
+
+### Added
+
+* `SortedDict` and its constructor accepting the key type, which must be `int`
+  ([8ef0310913b4](https://github.com/tfpf/pysorteddict/commit/8ef0310913b47b1539b6524d0cf94424825c0a38)).
+* `SortedDict` destructor ([#1](https://github.com/tfpf/pysorteddict/pull/1)).
+* `SortedDict` methods `__len__`, `__getitem__`, `__setitem__`, `__delitem__` and `__str__`
+  ([#2](https://github.com/tfpf/pysorteddict/pull/2)).
+  * `__setitem__` rejects a key if it is not a subclass of what was passed to the constructor.
+* `SortedDict` methods `items`, `keys` and `values` ([#3](https://github.com/tfpf/pysorteddict/pull/3)).
+  * All three return lists, not views.
