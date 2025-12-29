@@ -240,39 +240,38 @@ No user-facing changes of note.
   type of a sorted dictionary.</li>
 </ul>
 
-## [0.3.0](https://github.com/tfpf/pysorteddict/compare/v0.2.1...v0.3.0)
+## [0.3.0](https://github.com/tfpf/pysorteddict/compare/v0.2.1...v0.3.0) (2025-04-27)
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/55">#55</a> Support <code>bytes</code> and <code>str</code>
-  keys.
-</ul>
+### Added
 
-<ul class="change-break">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/47">#47</a> Update the <code>SortedDict</code> constructor to
-  ignore all arguments. Update <code>SortedDict.__setitem__</code> to set the key type upon succeeding the first
-  time.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/49">#49</a> Remove <code>SortedDict.__str__</code>. Define
-  <code>SortedDict.__repr__</code>.</li>
-</ul>
+* `SortedDict` method `__repr__` ([#49](https://github.com/tfpf/pysorteddict/pull/49)).
+* `bytes` and `str` as supported key types ([#55](https://github.com/tfpf/pysorteddict/pull/55)).
 
-## [0.2.1](https://github.com/tfpf/pysorteddict/compare/v0.2.0...v0.2.1)
+### Changed
+
+* `SortedDict` constructor ignores all arguments; `SortedDict` method `__setitem__` sets the key type upon succeeding
+  for the first time ([#47](https://github.com/tfpf/pysorteddict/pull/47)).
+
+### Removed
+
+* `SortedDict` method `__str__` ([#49](https://github.com/tfpf/pysorteddict/pull/49)).
+
+## [0.2.1](https://github.com/tfpf/pysorteddict/compare/v0.2.0...v0.2.1) (2024-12-14)
 
 No user-facing changes of note.
 
-## [0.2.0](https://github.com/tfpf/pysorteddict/compare/v0.1.0...v0.2.0)
+## [0.2.0](https://github.com/tfpf/pysorteddict/compare/v0.1.0...v0.2.0) (2024-12-14)
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/36">#36</a> Define <code>SortedDict.copy</code> to return a
-  shallow copy of a sorted dictionary.</li>
-</ul>
+### Added
 
-## [0.1.0](https://github.com/tfpf/pysorteddict/compare/v0.0.8...v0.1.0)
+* `SortedDict` method `copy` ([#36](https://github.com/tfpf/pysorteddict/pull/36)).
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/29">#29</a> Define <code>SortedDict.__contains__</code>.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/31">#31</a> Define <code>SortedDict.clear</code> to remove all
-  key-value pairs from a sorted dictionary.</li>
-</ul>
+## [0.1.0](https://github.com/tfpf/pysorteddict/compare/v0.0.8...v0.1.0) (2024-12-01)
+
+### Added
+
+* `SortedDict` method `__contains__` ([#29](https://github.com/tfpf/pysorteddict/pull/29)).
+* `SortedDict` method `clear` ([#31](https://github.com/tfpf/pysorteddict/pull/31)).
 
 ## [0.0.8](https://github.com/tfpf/pysorteddict/compare/v0.0.7...v0.0.8) (2024-11-28)
 
