@@ -154,91 +154,74 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   Prohibit modifications to a sorted dictionary while iterating over its keys.</li>
 </ul>
 
-## [0.6.0](https://github.com/tfpf/pysorteddict/compare/v0.5.3...v0.6.0)
+## [0.6.0](https://github.com/tfpf/pysorteddict/compare/v0.5.3...v0.6.0) (2025-05-18)
 
-<ul class="change-break">
-  <li><a href="https://github.com/tfpf/pysorteddict/commit/84830cb2d98afa28a1be188f42da5938080a5435">84830cb2d98a</a>
-  Update the check for the import of <code>decimal.Decimal</code> with type verification. Change the error message to
-  reflect that importing the type failed.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/118">#118</a> Update <code>SortedDict.__contains__</code> to
-  raise the same errors <code>SortedDict.__getitem__</code> raises (excluding <code>KeyError</code>) instead of
-  silently returning <code>False</code>.</li>
-</ul>
+### Changed
 
-## [0.5.3](https://github.com/tfpf/pysorteddict/compare/v0.5.2...v0.5.3)
+* `SortedDict` constructor checks whether the supported key type it imported is actually a type, and describes the
+  problem more clearly in the exception message in case of failure
+  ([84830cb2d98a](https://github.com/tfpf/pysorteddict/commit/84830cb2d98afa28a1be188f42da5938080a5435)).
+* `SortedDict` method `__contains__` raises the same exceptions as `__getitem__` (except `KeyError`) instead of
+  silently returning `False` in case of errors ([#118](https://github.com/tfpf/pysorteddict/pull/118)).
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/commit/61c6d76c88c2849bed2c092afe2aeb7349bd33bf">61c6d76c88c2</a>
-  Add GitHub links to project metadata.</li>
-</ul>
-
-## [0.5.2](https://github.com/tfpf/pysorteddict/compare/v0.5.1...v0.5.2)
-
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/commit/6bf7bbdef8cbc83d64d57e2eb50b2c3a5146a63b">6bf7bbdef8cb</a>
-  Remove GitHub links from project metadata.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/111">#111</a> Change the error message about failure to import
-  Python types which are not built-in to report the problem more precisely.</li>
-</ul>
-
-## [0.5.1](https://github.com/tfpf/pysorteddict/compare/v0.5.0...v0.5.1)
+## [0.5.3](https://github.com/tfpf/pysorteddict/compare/v0.5.2...v0.5.3) (2025-05-17)
 
 No user-facing changes of note.
 
-## [0.5.0](https://github.com/tfpf/pysorteddict/compare/v0.4.6...v0.5.0)
+## [0.5.2](https://github.com/tfpf/pysorteddict/compare/v0.5.1...v0.5.2) (2025-05-17)
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/102">#102</a> Support <code>decimal.Decimal</code> keys.
-  Prohibit the insertion of a key if it is NaN.</li>
-</ul>
+### Fixed
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/commit/8c145e38eb98d623a640521ec996d49cc1af90fd">8c145e38eb98</a>
-  Add GitHub and homepage links to project metadata.</li>
-</ul>
+* `SortedDict` constructor always raises `ImportError` upon failure to import supported key types which are not
+  built-in instead of relying on the exception raised by the import machinery
+  ([#111](https://github.com/tfpf/pysorteddict/pull/111)).
 
-## [0.4.6](https://github.com/tfpf/pysorteddict/compare/v0.4.5...v0.4.6)
+## [0.5.1](https://github.com/tfpf/pysorteddict/compare/v0.5.0...v0.5.1) (2025-05-17)
 
 No user-facing changes of note.
 
-## [0.4.5](https://github.com/tfpf/pysorteddict/compare/v0.4.4...v0.4.5)
+## [0.5.0](https://github.com/tfpf/pysorteddict/compare/v0.4.6...v0.5.0) (2025-05-16)
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/95">#95</a> Change the type of the error raised when the key
-  type is not set from <code>ValueError</code> to <code>RuntimeError</code>. Add documentation link to project
-  metadata.</li>
-</ul>
+### Added
 
-## [0.4.4](https://github.com/tfpf/pysorteddict/compare/v0.4.3...v0.4.4)
+* `decimal.Decimal` as a supported key type ([#102](https://github.com/tfpf/pysorteddict/pull/102)).
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/91">#91</a> Change error messages to provide actionable
-  information.</li>
-</ul>
-
-## [0.4.3](https://github.com/tfpf/pysorteddict/compare/v0.4.2...v0.4.3)
+## [0.4.6](https://github.com/tfpf/pysorteddict/compare/v0.4.5...v0.4.6) (2025-05-15)
 
 No user-facing changes of note.
 
-## [0.4.2](https://github.com/tfpf/pysorteddict/compare/v0.4.1...v0.4.2)
+## [0.4.5](https://github.com/tfpf/pysorteddict/compare/v0.4.4...v0.4.5) (2025-05-14)
+
+### Fixed
+
+* `SortedDict` methods `__delitem__` and `__setitem__` raise `RuntimeError` instead of `ValueError` when the key type
+  is not set ([#95](https://github.com/tfpf/pysorteddict/pull/95)).
+
+## [0.4.4](https://github.com/tfpf/pysorteddict/compare/v0.4.3...v0.4.4) (2025-05-11)
+
+### Changed
+
+* Indexing a `SortedDict` instance with invalid keys shows the key and its type in the exception message
+  ([#91](https://github.com/tfpf/pysorteddict/pull/91)).
+
+## [0.4.3](https://github.com/tfpf/pysorteddict/compare/v0.4.2...v0.4.3) (2025-05-11)
 
 No user-facing changes of note.
 
-## [0.4.1](https://github.com/tfpf/pysorteddict/compare/v0.4.0...v0.4.1)
+## [0.4.2](https://github.com/tfpf/pysorteddict/compare/v0.4.1...v0.4.2) (2025-05-07)
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/75">#75</a> Include the C++ header files from the project in
-  the source and built distributions.</li>
-</ul>
+No user-facing changes of note.
 
-## [0.4.0](https://github.com/tfpf/pysorteddict/compare/v0.3.0...v0.4.0)
+## [0.4.1](https://github.com/tfpf/pysorteddict/compare/v0.4.0...v0.4.1) (2025-05-01)
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/67">#67</a> Support <code>float</code> keys. Prohibit the
-  insertion of a key if it is NaN.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/71">#71</a> Define <code>SortedDict.key_type</code> as the key
-  type of a sorted dictionary.</li>
-</ul>
+No user-facing changes of note.
+
+## [0.4.0](https://github.com/tfpf/pysorteddict/compare/v0.3.0...v0.4.0) (2025-05-01)
+
+### Added
+
+* `float` as a supported key type ([#67](https://github.com/tfpf/pysorteddict/pull/67)).
+* `SortedDict` property `key_type` ([#71](https://github.com/tfpf/pysorteddict/pull/71)).
 
 ## [0.3.0](https://github.com/tfpf/pysorteddict/compare/v0.2.1...v0.3.0) (2025-04-27)
 
@@ -277,7 +260,7 @@ No user-facing changes of note.
 
 ### Fixed
 
-* `SortedDict` constructor throws `TypeError` instead of `ValueError` when it receives an unsupported type, and treats
+* `SortedDict` constructor raises `TypeError` instead of `ValueError` when it receives an unsupported type, and treats
   subclasses of supported types as unsupported ([#22](https://github.com/tfpf/pysorteddict/pull/22)).
 
 ## [0.0.7](https://github.com/tfpf/pysorteddict/compare/v0.0.6...v0.0.7) (2024-11-27)
