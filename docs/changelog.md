@@ -261,7 +261,8 @@ No user-facing changes of note.
 ### Fixed
 
 * `SortedDict` constructor raises `TypeError` instead of `ValueError` when it receives an unsupported type, and treats
-  subclasses of supported types as unsupported ([#22](https://github.com/tfpf/pysorteddict/pull/22)).
+  subclasses of supported types as unsupported; `SortedDict` method `__setitem__` rejects instances of subclasses of
+  the key type ([#22](https://github.com/tfpf/pysorteddict/pull/22)).
 
 ## [0.0.7](https://github.com/tfpf/pysorteddict/compare/v0.0.6...v0.0.7) (2024-11-27)
 
