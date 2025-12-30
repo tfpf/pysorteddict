@@ -55,104 +55,93 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   <code>SortedDictValuesIter</code> to <code>SortedDictValuesFwdIter</code>.</li>
 </ul>
 
-## [0.11.0](https://github.com/tfpf/pysorteddict/compare/v0.10.0...v0.11.0)
+## [0.11.0](https://github.com/tfpf/pysorteddict/compare/v0.10.0...v0.11.0) (2025-07-20)
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/196">#196</a> Define <code>SortedDict.get</code> to return the
-  value mapped to a key or a specified default.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/198">#198</a> Define <code>SortedDict.setdefault</code> to
-  return the value mapped to a key or a specified default and map that default to the key.</li>
-</ul>
+### Added
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/commit/8fe14d796917482f830af5921d5b18546a9d7843">8fe14d796917</a>
-  Add optional testing dependencies to project metadata.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/197">#197</a> Define
-  <code>SortedDictItems.__contains__</code>.</li>
-</ul>
+* `SortedDict` method `get` ([#196](https://github.com/tfpf/pysorteddict/pull/196)).
+* `SortedDictItems` method `__contains__` ([#197](https://github.com/tfpf/pysorteddict/pull/197)).
+* `SortedDict` method `setdefault` ([#198](https://github.com/tfpf/pysorteddict/pull/198)).
 
-## [0.10.0](https://github.com/tfpf/pysorteddict/compare/v0.9.0...v0.10.0)
+## [0.10.0](https://github.com/tfpf/pysorteddict/compare/v0.9.0...v0.10.0) (2025-07-13)
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/184">#184</a> Define <code>SortedDictValues</code> as a view
-  over the values of a sorted dictionary. Define <code>SortedDictValues.__repr__</code>,
-  <code>SortedDictValues.__len__</code>, <code>SortedDictValues.__getitem__</code> and
-  <code>SortedDictValues.__iter__</code>. Define <code>SortedDictValuesIter</code> as an iterator over the values of a
-  sorted dictionary. Define <code>SortedDictValuesIter.__iter__</code> and <code>SortedDictValuesIter.__next__</code>.
-  Update <code>SortedDict.values</code> to return the aforementioned view.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/187">#187</a> Define <code>SortedDictItems</code> as a view
-  over the items of a sorted dictionary. Define <code>SortedDictItems.__repr__</code>,
-  <code>SortedDictItems.__len__</code>, <code>SortedDictItems.__getitem__</code> and
-  <code>SortedDictItems.__iter__</code>. Define <code>SortedDictItemsIter</code> as an iterator over the items of a
-  sorted dictionary. Define <code>SortedDictItemsIter.__iter__</code> and <code>SortedDictItemsIter.__next__</code>.
-  Update <code>SortedDict.items</code> to return the aforementioned view.</li>
-</ul>
+### Added
 
-## [0.9.0](https://github.com/tfpf/pysorteddict/compare/v0.8.2...v0.9.0)
+* `SortedDictValues` and methods `__repr__`, `__len__`, `__getitem__` and `__iter__`; and `SortedDictValuesIter` and
+  method `__next__` ([#184](https://github.com/tfpf/pysorteddict/pull/184)).
+* `SortedDictItems` and methods `__repr__`, `__len__`, `__getitem__` and `__iter__`; and `SortedDictItemsIter` and
+  method `__next__` ([#187](https://github.com/tfpf/pysorteddict/pull/187)).
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/179">#179</a> Define <code>SortedDict.__iter__</code>.</li>
-</ul>
+### Changed
 
-## [0.8.2](https://github.com/tfpf/pysorteddict/compare/v0.8.1...v0.8.2)
+* `SortedDict` method `values` returns a view (`SortedDictValues`) instead of a list
+  ([#184](https://github.com/tfpf/pysorteddict/pull/184)).
+* `SortedDict` method `items` returns a view (`SortedDictItems`) instead of a list
+  ([#187](https://github.com/tfpf/pysorteddict/pull/187)).
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/175">#175</a> Update <code>SortedDictKeys.__getitem__</code>
-  to speed up the creation of a positive slice near the end or a negative slice near the beginning.</li>
-</ul>
+## [0.9.0](https://github.com/tfpf/pysorteddict/compare/v0.8.2...v0.9.0) (2025-07-05)
 
-## [0.8.1](https://github.com/tfpf/pysorteddict/compare/v0.8.0...v0.8.1)
+### Added
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/169">#169</a> Update <code>SortedDictKeys.__getitem__</code>
-  to raise the same errors <code>list.__getitem__</code> raises.</li>
-</ul>
+* `SortedDict` method `__iter__` ([#179](https://github.com/tfpf/pysorteddict/pull/179)).
 
-## [0.8.0](https://github.com/tfpf/pysorteddict/compare/v0.7.3...v0.8.0)
+## [0.8.2](https://github.com/tfpf/pysorteddict/compare/v0.8.1...v0.8.2) (2025-07-04)
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/163">#163</a> Define
-  <code>SortedDictKeys.__getitem__</code>.</li>
-</ul>
+### Changed
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/164">#164</a> Update <code>SortedDict.__len__</code> to raise
-  <code>OverflowError</code> if the length exceeds the maximum value a <code>Py_ssize_t</code> can have.</li>
-</ul>
+* `SortedDictKeys` method `__getitem__` creates forward slices near the end and reverse slices near the beginning
+  faster ([#175](https://github.com/tfpf/pysorteddict/pull/175)).
 
-## [0.7.3](https://github.com/tfpf/pysorteddict/compare/v0.7.2...v0.7.3)
+## [0.8.1](https://github.com/tfpf/pysorteddict/compare/v0.8.0...v0.8.1) (2025-07-04)
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/149">#149</a> Exclude test files from the source distribution.
-  Exclude source files from the built distributions.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/157">#157</a> Define
-  <code>SortedDictKeys.__contains__</code>.</li>
-</ul>
+### Fixed
 
-## [0.7.2](https://github.com/tfpf/pysorteddict/compare/v0.7.1...v0.7.2)
+* `SortedDictKeys` method `__getitem__` raises the same exceptions as `list.__getitem__`
+  ([#169](https://github.com/tfpf/pysorteddict/pull/169)).
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/141">#141</a> Add changelog link to project metadata.</li>
-</ul>
+## [0.8.0](https://github.com/tfpf/pysorteddict/compare/v0.7.3...v0.8.0) (2025-07-02)
 
-## [0.7.1](https://github.com/tfpf/pysorteddict/compare/v0.7.0...v0.7.1)
+### Added
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/131">#131</a> Allow most modifications to a sorted dictionary
-  while iterating over its keys. Prohibit deleting the key any iterator is about to yield next. Prohibit clearing the
-  sorted dictionary when any unexhausted iterators exist.</li>
-</ul>
+* `SortedDictKeys` method `__getitem__` ([#163](https://github.com/tfpf/pysorteddict/pull/163)).
 
-## [0.7.0](https://github.com/tfpf/pysorteddict/compare/v0.6.0...v0.7.0)
+### Changed
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/120">#120</a> Define <code>SortedDictKeys</code> as a view
-  over the keys of a sorted dictionary. Define <code>SortedDictKeys.__repr__</code>,
-  <code>SortedDictKeys.__len__</code> and <code>SortedDictKeys.__iter__</code>. Define <code>SortedDictKeysIter</code>
-  as an iterator over the keys of a sorted dictionary. Define <code>SortedDictKeysIter.__iter__</code> and
-  <code>SortedDictKeysIter.__next__</code>. Update <code>SortedDict.keys</code> to return the aforementioned view.
-  Prohibit modifications to a sorted dictionary while iterating over its keys.</li>
-</ul>
+* `SortedDict` method `__len__` raises `OverflowError` if its length exceeds `PY_SSIZE_T_MAX`
+  ([#164](https://github.com/tfpf/pysorteddict/pull/164)).
+
+## [0.7.3](https://github.com/tfpf/pysorteddict/compare/v0.7.2...v0.7.3) (2025-06-22)
+
+### Added
+
+* `SortedDictKeys` method `__contains__` ([#157](https://github.com/tfpf/pysorteddict/pull/157)).
+
+## [0.7.2](https://github.com/tfpf/pysorteddict/compare/v0.7.1...v0.7.2) (2025-06-08)
+
+No user-facing changes of note.
+
+## [0.7.1](https://github.com/tfpf/pysorteddict/compare/v0.7.0...v0.7.1) (2025-06-05)
+
+### Fixed
+
+* `SortedDict` method `__setitem__` never raises `RuntimeError`; `SortedDict` method `__delitem__` raises
+  `RuntimeError` if there exists an iterator about to yield the key to be deleted; `SortedDict` method `clear` raises
+  `RuntimeError` if there exists any unexhausted iterator over it
+  ([#131](https://github.com/tfpf/pysorteddict/pull/131)).
+
+## [0.7.0](https://github.com/tfpf/pysorteddict/compare/v0.6.0...v0.7.0) (2025-05-25)
+
+### Added
+
+* `SortedDictKeys` and methods `__repr__`, `__len__` and `__iter__`; and `SortedDictKeysIter` and method `__next__`
+  ([#120](https://github.com/tfpf/pysorteddict/pull/120)).
+  * `SortedDict` methods `__setitem__`, `__delitem__` and `clear` raise `RuntimeError` if called while iterating over
+    a view.
+
+### Changed
+
+* `SortedDict` method `keys` returns a view (`SortedDictKeys`) instead of a list
+  ([#120](https://github.com/tfpf/pysorteddict/pull/120)).
 
 ## [0.6.0](https://github.com/tfpf/pysorteddict/compare/v0.5.3...v0.6.0) (2025-05-18)
 
