@@ -14,7 +14,7 @@ docs = [
 
 [project]
 name = "pysorteddict"
-version = "0.13.0"
+version = "0.14.0rc0"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
@@ -22,8 +22,11 @@ description = "Python dictionary in which the keys are always in ascending order
 readme = "README.md"
 requires-python = ">=3.10"
 license = "AGPL-3.0-or-later"
+keywords = ["sorted", "dictionary", "map", "RB Tree", "cross-platform"]
 classifiers = [
     "Development Status :: 4 - Beta",
+    "Environment :: WebAssembly",
+    "Environment :: WebAssembly :: Emscripten",
     "Intended Audience :: Developers",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
