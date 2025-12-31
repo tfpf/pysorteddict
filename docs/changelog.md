@@ -7,53 +7,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [0.13.0](https://github.com/tfpf/pysorteddict/compare/v0.12.1...v0.13.0)
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/224">#224</a> Provide built distributions for the GIL-enabled
-  build of Python 3.14.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/230">#230</a> Support <code>datetime.date</code>,
-  <code>datetime.timedelta</code>, <code>fractions.Fraction</code>, <code>ipaddress.IPv4Address</code>,
-  <code>ipaddress.IPv4Interface</code>, <code>ipaddress.IPv4Network</code>, <code>ipaddress.IPv6Address</code>,
-  <code>ipaddress.IPv6Interface</code>, <code>ipaddress.IPv6Network</code>, <code>pathlib.PosixPath</code>,
-  <code>pathlib.PurePosixPath</code>, <code>pathlib.PureWindowsPath</code>, <code>pathlib.WindowsPath</code>,
-  <code>time.struct_time</code> and <code>uuid.UUID</code> keys.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/235">#235</a> Provide built distributions for the GIL-disabled
-  build of Python 3.14 on Linux and macOS.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/234">#234</a> Provide a built distribution for the
-  GIL-disabled build of Python 3.14 on Windows.</li>
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/239">#239</a> Provide built distributions for the Pyodide
-  build of Python 3.12 and 3.13.</li>
-</ul>
+### Added
 
-## [0.12.1](https://github.com/tfpf/pysorteddict/compare/v0.12.0...v0.12.1)
+* `datetime.date`, `datetime.timedelta`, `fractions.Fraction`, `ipaddress.IPv4Address`, `ipaddress.IPv4Interface`,
+  `ipaddress.IPv4Network`, `ipaddress.IPv6Address`, `ipaddress.IPv6Interface`, `ipaddress.IPv6Network`,
+  `pathlib.PosixPath`, `pathlib.PurePosixPath`, `pathlib.PureWindowsPath`, `pathlib.WindowsPath`, `time.struct_time`
+  and `uuid.UUID` as supported key types ([#230](https://github.com/tfpf/pysorteddict/pull/230)).
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/219">#219</a> Allow using a sorted dictionary even if
-  importing <code>decimal.Decimal</code> fails.</li>
-</ul>
+## [0.12.1](https://github.com/tfpf/pysorteddict/compare/v0.12.0...v0.12.1) (2025-10-22)
 
-## [0.12.0](https://github.com/tfpf/pysorteddict/compare/v0.11.0...v0.12.0)
+### Fixed
 
-<ul class="change-new">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/210">#210</a> Define
-  <code>SortedDictItems.__reversed__</code>. Define <code>SortedDictItemsRevIter</code> as a reverse iterator over the
-  values of a sorted dictionary. Define <code>SortedDictItemsRevIter.__next__</code>. Define
-  <code>SortedDictKeys.__reversed__</code> and <code>SortedDict.__reversed__</code>. Define
-  <code>SortedDictKeysRevIter</code> as a reverse iterator over the keys of a sorted dictionary. Define
-  <code>SortedDictKeysRevIter.__next__</code>. Define <code>SortedDictValues.__reversed__</code>. Define
-  <code>SortedDictValuesRevIter</code> as a reverse iterator over the values of a sorted dictionary. Define
-  <code>SortedDictValuesRevIter.__next__</code>.</li>
-</ul>
+* `SortedDict` constructor never raises `ImportError`; if importing a supported key type fails, it silently demoted to
+  an unsupported key type ([#219](https://github.com/tfpf/pysorteddict/pull/219)).
 
-<ul class="change-fix">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/205">#205</a> Add homepage build dependencies to project
-  metadata.</li>
-</ul>
+## [0.12.0](https://github.com/tfpf/pysorteddict/compare/v0.11.0...v0.12.0) (2025-10-19)
 
-<ul class="change-break">
-  <li><a href="https://github.com/tfpf/pysorteddict/pull/211">#211</a> Rename <code>SortedDictItemsIter</code> to
-  <code>SortedDictItemsFwdIter</code>, <code>SortedDictKeysIter</code> to <code>SortedDictKeysFwdIter</code> and
-  <code>SortedDictValuesIter</code> to <code>SortedDictValuesFwdIter</code>.</li>
-</ul>
+### Added
+
+* `SortedDictItems` method `__reversed__`; `SortedDictItemsRevIter` and method `__next__`; `SortedDict` method
+  `__reversed__`; `SortedDictKeys` method `__reversed__`; `SortedDictKeysRevIter` and method `__next__`;
+  `SortedDictValues` method `__reversed__`; and `SortedDictValuesRevIter` and method `__next__`
+  ([#210](https://github.com/tfpf/pysorteddict/pull/210)).
+  * `SortedDict` method `__delitem__` raises `RuntimeError` if there exists an unexhausted reverse iterator which just
+    yielded the key to be deleted.
+
+### Changed
+
+* `SortedDictItemsIter` is renamed to `SortedDictItemsFwdIter`; `SortedDictKeysIter` is renamed to
+  `SortedDictKeysFwdIter`; and `SortedDictValuesIter` is renamed to `SortedDictValuesFwdIter`
+  ([#211](https://github.com/tfpf/pysorteddict/pull/211)).
 
 ## [0.11.0](https://github.com/tfpf/pysorteddict/compare/v0.10.0...v0.11.0) (2025-07-20)
 
@@ -89,8 +72,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
-* `SortedDictKeys` method `__getitem__` creates forward slices near the end and reverse slices near the beginning
-  faster ([#175](https://github.com/tfpf/pysorteddict/pull/175)).
+* `SortedDictKeys` method `__getitem__` creates positive-step slices near the end and negative-step slices near the
+  beginning faster ([#175](https://github.com/tfpf/pysorteddict/pull/175)).
 
 ## [0.8.1](https://github.com/tfpf/pysorteddict/compare/v0.8.0...v0.8.1) (2025-07-04)
 
