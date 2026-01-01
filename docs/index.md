@@ -15,4 +15,13 @@ changelog
 repository
 ```
 
-![installation](_static/images/installation.svg)
+<span>
+
+[![installation](_static/images/installation.svg)](installation)
+[![usage](_static/images/usage.svg)](usage)
+[![documentation](_static/images/documentation.svg)](documentation)
+[![performance](_static/images/performance.svg)](performance)
+[![changelog](_static/images/changelog.svg)](changelog)
+[![repository](_static/images/repository.svg)](repository)
+
+</span>
