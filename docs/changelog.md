@@ -18,8 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
-* `SortedDict` constructor never raises `ImportError`; if importing a supported key type fails, it silently demoted to
-  an unsupported key type ([#219](https://github.com/tfpf/pysorteddict/pull/219)).
+* `SortedDict` constructor never raises `ImportError`; if importing a supported key type fails, it is silently demoted
+  to an unsupported key type ([#219](https://github.com/tfpf/pysorteddict/pull/219)).
 
 ## [0.12.0](https://github.com/tfpf/pysorteddict/compare/v0.11.0...v0.12.0) (2025-10-19)
 
