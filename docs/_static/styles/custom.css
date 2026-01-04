@@ -49,21 +49,6 @@ summary:hover {
   text-decoration: underline;
 }
 
-ul.change-break::before {
-  content: "Breaking Changes 🚨";
-  font-weight: bold;
-}
-
-ul.change-fix::before {
-  content: "Fixes and Improvements 🛠️";
-  font-weight: bold;
-}
-
-ul.change-new::before {
-  content: "New Features 🧩";
-  font-weight: bold;
-}
-
 .notice {
   background: rgba(39, 180, 166, 0.2);
   border-left: 4px solid rgb(39, 180, 166);
@@ -78,4 +63,18 @@ ul.change-new::before {
   border-radius: 6px;
   margin: 20px 0px 20px 0px;
   padding: 10px;
+}
+
+.card-container {
+  column-gap: 8em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 1em;
+}
+
+.card {
+  display: inline-flex;
+  flex-direction: column;
+  text-align: center;
 }
