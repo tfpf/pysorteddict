@@ -66,7 +66,7 @@ summary:hover {
 }
 
 .card-container {
-  column-gap: 8em;
+  column-gap: 6em;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
