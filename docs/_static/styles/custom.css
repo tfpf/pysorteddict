@@ -78,7 +78,3 @@ summary:hover {
   flex-direction: column;
   text-align: center;
 }
-
-.card:hover {
-  outline: 1px solid #27B4A6;
-}
