@@ -50,4 +50,5 @@ html_title = project
 html_use_index = False
 
 myst_heading_anchors = 4
+myst_enable_extensions = ["html_image"]
 templates_path = ["_templates"]
