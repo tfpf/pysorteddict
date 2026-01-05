@@ -22,7 +22,7 @@ with zipfile.ZipFile(assets_src := Path(__file__).with_name("assets.zip")) as zf
 with open(Path(__file__).parents[1] / "pyproject.toml", "rb") as reader:
     metadata = tomllib.load(reader)["project"]
 author = metadata["authors"][0]["name"]
-copyright = f"2025, {author}"
+copyright = f"2025–2026, {author}"
 release = metadata["version"]
 project = metadata["name"] + " " + release
 

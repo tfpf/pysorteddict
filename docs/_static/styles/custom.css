@@ -66,11 +66,11 @@ summary:hover {
 }
 
 .card-container {
-  column-gap: 6em;
+  column-gap: 12%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  row-gap: 1em;
+  row-gap: 32px;
 }
 
 .card {
