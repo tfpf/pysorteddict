@@ -19,6 +19,15 @@ with zipfile.ZipFile(assets_src := Path(__file__).with_name("assets.zip")) as zf
         modification_timestamp = time.mktime((*modification_time_tuple, 0, 0, -1))
         os.utime(target, (modification_timestamp, modification_timestamp))
 
+# Show all available wheels similar to how PyPI does.
+whl_dir = Path(__file__).with_name("extra") / "simple" / "pysorteddict"
+with open(whl_dir / "index.html", "w") as writer:
+    print("<!DOCTYPE html><html><head><title>Links for pysorteddict</title></head><body>", file=writer)
+    for whl_file in sorted(whl_dir.iterdir(), reverse=True):
+        if whl_file.suffix == ".whl":
+            print(f'<a href="{whl_file.name}">{whl_file.name}</a><br />', file=writer)
+    print("</body></html>", file=writer)
+
 with open(Path(__file__).parents[1] / "pyproject.toml", "rb") as reader:
     metadata = tomllib.load(reader)["project"]
 author = metadata["authors"][0]["name"]
