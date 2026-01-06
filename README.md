@@ -2,7 +2,7 @@
 
 Enriches Python with `SortedDict`, a sorted dictionary: a dictionary in which the keys are always in ascending order.
 
-[Read more on the homepage.](https://tfpf.github.io/pysorteddict/)
+[Read more on the website.](https://tfpf.github.io/pysorteddict/)
 
 [View the project on PyPI.](https://pypi.org/project/pysorteddict/)
 
