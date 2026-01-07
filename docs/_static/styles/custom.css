@@ -49,10 +49,6 @@ summary:hover {
   text-decoration: underline;
 }
 
-::-moz-selection {
-  background: rgba(39, 180, 166, 0.4);
-}
-
 ::selection {
   background: rgba(39, 180, 166, 0.4);
 }
