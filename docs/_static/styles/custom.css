@@ -40,6 +40,10 @@
   src: url(../fonts/Signika/Signika-Bold.woff2);
 }
 
+::selection {
+  background: rgba(39, 180, 166, 0.4);
+}
+
 summary {
   color: var(--color-link);
   cursor: pointer;
