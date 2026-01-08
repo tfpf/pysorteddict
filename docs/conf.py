@@ -58,5 +58,6 @@ html_theme_options = {
 html_title = project
 html_use_index = False
 
+myst_enable_extensions = ["attrs_inline"]
 myst_heading_anchors = 4
 templates_path = ["_templates"]
