@@ -107,6 +107,6 @@ extend-exclude = ["tests/performance/"]
 line-length = 119
 
 [tool.ruff.lint.per-file-ignores]
-"docs/conf.py" = ["A001", "INP001"]
+"docs/conf.py" = ["A001", "INP001", "RUF001"]
 "examples/*" = ["S101", "T201"]
 "tests/functional/*" = ["S101", "S311"]
