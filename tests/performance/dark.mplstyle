@@ -20,13 +20,14 @@ legend.borderaxespad: 0.3125
 legend.borderpad: 0.25
 legend.edgecolor: black
 legend.facecolor: black
-legend.fontsize: large
+legend.fontsize: small
 legend.framealpha: 0.5
 legend.handleheight: 0.5
 legend.handlelength: 1
 legend.handletextpad: 0.5
 legend.labelspacing: 0.3125
 legend.loc: upper left
+legend.title_fontsize: small
 lines.linestyle: :
 lines.linewidth: 0.8
 lines.marker: .
