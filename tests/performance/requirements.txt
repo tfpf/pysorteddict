@@ -2,3 +2,4 @@ jupyter
 matplotlib
 pandas
 pysorteddict==0.13.0
+sortedcontainers==2.4.0
