@@ -30,8 +30,8 @@ legend.loc: upper left
 legend.title_fontsize: small
 lines.linestyle: :
 lines.linewidth: 0.8
-lines.markeredgewidth: 0.5
-lines.markersize: 3
+lines.markeredgewidth: 0
+lines.markersize: 4
 text.color: CCCCCC
 xtick.color: CCCCCC
 xtick.direction: in
