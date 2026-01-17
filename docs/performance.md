@@ -1,29 +1,46 @@
 # Performance
 
-The table below describes the environment the performance benchmarks were run in.
+## Goals
 
-| Component                      | Specification                              |
-| :----------------------------: | :----------------------------------------: |
-| CPU                            | Intel Core i9-12900H                       |
-| CPU Frequency Scaling Governor | powersave                                  |
-| RAM                            | 16 GiB DDR4                                |
-| Kernel                         | Linux 6.1.0 (64-bit)                       |
-| Operating System               | Debian 12 "bookworm"                       |
-| Operating System Libraries     | GNU C Library 2.36, GNU C++ Library 12.2.0 |
-| Python Interpreter             | CPython 3.11.2                             |
-| Python Interpreter Libraries   | pysorteddict 0.13.0                        |
+pysorteddict was performance-benchmarked in order to:
+
+* evaluate it under workloads resembling real applications; and
+* see where it stands in comparison to the sorted dictionary implementation of Sorted Containers.
+
+Sorted Containers is a mature Python library which has seen use in popular open-source projects, and is thus a good
+yardstick to measure pysorteddict against.
+
+<div class="notice">
+pysorteddict and Sorted Containers differ greatly in their sorted dictionary implementations.
+
+* `pysorteddict.SortedDict` is typically a red-black tree—it is faster (by microseconds) for writes.
+* `sortedcontainers.SortedDict` is typically a hash table and a sorted set of keys—it is faster (by nanoseconds) for
+  reads.
+</div>
+
+## Environment
+
+| Component                      | Specification                                |
+| :----------------------------: | :------------------------------------------: |
+| CPU                            | Intel Core i9-12900H                         |
+| CPU Frequency Scaling Governor | powersave                                    |
+| RAM                            | 16 GiB DDR4                                  |
+| Kernel                         | Linux 6.1.0 (64-bit)                         |
+| Operating System               | Debian 12 "bookworm"                         |
+| Operating System Libraries     | GNU C Library 2.36, GNU C++ Library 12.2.0   |
+| Python Interpreter             | CPython 3.11.2                               |
+| Python Interpreter Libraries   | pysorteddict 0.13.0, Sorted Containers 2.4.0 |
+
+## Strategy
 
 The key type chosen was `float`, since it is easy to generate floating-point numbers uniformly distributed in the unit
 interval. Comparing two `float`s is straightforward (as opposed to comparing, say, two `str`s—if their lengths are
 different, they may introduce noise in the benchmarks). Before every benchmark, the random number generator was seeded
 with _π_, a nothing-up-my-sleeve number.
 
-There is an extra step required when using `float` keys: the check for NaN. Hence, the performance will be marginally
-worse than if `int` keys were used.
-
 <div class="notice">
 The performance benchmarking code is in a Jupyter notebook in the GitHub repository. It contains everything required to
-run the benchmarks.
+generate the data on this page.
 </div>
 
 ## Overview
