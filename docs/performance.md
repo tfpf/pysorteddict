@@ -14,8 +14,8 @@ yardstick to measure pysorteddict against.
 pysorteddict and Sorted Containers differ greatly in their sorted dictionary implementations.
 
 * `pysorteddict.SortedDict` is typically a red-black tree—it is faster (by microseconds) for writes.
-* `sortedcontainers.SortedDict` is typically a hash table and a sorted set of keys—it is faster (by nanoseconds) for
-  reads.
+* `sortedcontainers.sorteddict.SortedDict` is typically a hash table and a sorted set of keys—it is faster (by
+  nanoseconds) for reads.
 </div>
 
 ## Environment
@@ -40,7 +40,7 @@ with _π_, a nothing-up-my-sleeve number.
 
 <div class="notice">
 The performance benchmarking code is in a Jupyter notebook in the GitHub repository. It contains everything required to
-generate the data on this page.
+generate the data and graphs on this page.
 </div>
 
 ## Overview
