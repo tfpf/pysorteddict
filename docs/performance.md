@@ -45,34 +45,35 @@ generate the data and graphs on this page.
 
 ## Overview
 
-The average execution times of some expressions are tabulated against the lengths of the sorted dictionaries used.
+The average execution times of some expressions are tabulated against the lengths of the `pysorteddict.SortedDict`s
+used.
 
 ```{eval-rst}
 .. table::
    :widths: 3 1 1 1 1 1 1
 
    +--------------------------------+-----------------------------------------------------------------------------------------------------+
-   | Expression                     | Sorted Dictionary Length                                                                            |
+   | Expression                     | ``pysorteddict.SortedDict`` Length                                                                  |
    |                                +----------------+----------------+----------------+----------------+----------------+----------------+
    |                                | 10\ :sup:`2`   | 10\ :sup:`3`   | 10\ :sup:`4`   | 10\ :sup:`5`   | 10\ :sup:`6`   | 10\ :sup:`7`   |
    +================================+================+================+================+================+================+================+
-   | ``0.00 in d``                  | 35.3 ns        | 47.4 ns        |                |                |                |                |
+   | ``0.00 in d``                  | 35.3 ns        | 47.4 ns        | 62.8 ns        | 81.1 ns        | 91.4 ns        | 102 ns         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``0.33 in d``                  | 42.9 ns        | 59.8 ns        |                |                |                |                |
+   | ``0.33 in d``                  | 42.9 ns        | 59.8 ns        | 66.8 ns        | 82.8 ns        | 100 ns         | 114 ns         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``0.67 in d``                  | 38.8 ns        | 55.6 ns        |                |                |                |                |
+   | ``0.67 in d``                  | 38.8 ns        | 55.6 ns        | 67.3 ns        | 76.2 ns        | 98.5 ns        | 115 ns         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``1.00 in d``                  | 29.2 ns        | 56.8 ns        |                |                |                |                |
+   | ``1.00 in d``                  | 29.2 ns        | 56.8 ns        | 60.6 ns        | 79.7 ns        | 87.1 ns        | 111 ns         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``set_del(d, keys_33)``        |                |                |                |                |                |                |
+   | ``set_del(d, keys_33)``        | 3.97 μs        | 4.94 μs        | 5.93 μs        | 6.94 μs        | 7.86 μs        | 9.39 μs        |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``set_del(d, keys_67)``        |                |                |                |                |                |                |
+   | ``set_del(d, keys_67)``        | 8.33 μs        | 10.1 μs        | 12.6 μs        | 15.5 μs        | 20.8 μs        | 29.9 μs        |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``set_del(d, keys_100)``       |                |                |                |                |                |                |
+   | ``set_del(d, keys_100)``       | 12.7 μs        | 15.6 μs        | 21.4 μs        | 28.6 μs        | 41.0 μs        | 60.2 μs        |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``for _ in d: pass``           |                |                |                |                |                |                |
+   | ``for _ in d: pass``           | 590 ns         | 6.26 μs        | 104 μs         | 2.17 ms        | 111 ms         | 1.34 s         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``for _ in reversed(d): pass`` |                |                |                |                |                |                |
+   | ``for _ in reversed(d): pass`` | 873 ns         | 8.71 μs        | 130 μs         | 2.42 ms        | 114 ms         | 1.32 s         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
 ```
 
@@ -95,6 +96,9 @@ those sorted dictionaries will not terminate permaturely.
 :class: only-dark
 :width: 100%
 ```
+
+Since `sortedcontainers.sorteddict.SortedDict` looks up keys in a hash table in constant time, its performance is
+independent of the length of the sorted dictionary.
 
 ### Insertion and Deletion
 
@@ -125,6 +129,9 @@ This benchmark was repeated for three different lengths of the `list` of random 
 :width: 100%
 ```
 
+Since `pysorteddict.SortedDict` inserts and deletes keys from a red-black tree in logarithmic time, it is much faster
+at mutating data.
+
 ### Iteration
 
 ```{image} _static/images/perf-iter-light.svg
@@ -138,3 +145,6 @@ This benchmark was repeated for three different lengths of the `list` of random 
 :class: only-dark
 :width: 100%
 ```
+
+Since `pysorteddict.SortedDict` does a lot of bookkeeping to allow mutation during iteration, it is slower at
+iterating.
