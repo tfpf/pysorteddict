@@ -7,8 +7,8 @@ pysorteddict was performance-benchmarked in order to:
 * evaluate it under workloads resembling real applications; and
 * see where it stands in comparison to the sorted dictionary implementation of Sorted Containers.
 
-Sorted Containers is a mature Python library which has seen use in popular open-source projects, and is thus a good
-yardstick to measure pysorteddict against.
+Sorted Containers is a mature Python library which has seen use in popular open-source projects, and is thus an
+appropriate yardstick to measure pysorteddict against.
 
 <div class="notice">
 pysorteddict and Sorted Containers differ greatly in their sorted dictionary implementations.
@@ -24,7 +24,7 @@ pysorteddict and Sorted Containers differ greatly in their sorted dictionary imp
 | :----------------------------: | :------------------------------------------: |
 | CPU                            | Intel Core i9-12900H                         |
 | CPU Frequency Scaling Governor | powersave                                    |
-| RAM                            | 16 GiB DDR4                                  |
+| RAM                            | 16 GiB DDR5                                  |
 | Kernel                         | Linux 6.1.0 (64-bit)                         |
 | Operating System               | Debian 12 "bookworm"                         |
 | Operating System Libraries     | GNU C Library 2.36, GNU C++ Library 12.2.0   |
@@ -46,6 +46,9 @@ generate the data and graphs on this page.
 ## Overview
 
 The average execution times of some expressions are tabulated against the lengths of the sorted dictionaries used.
+
+<table>
+</table>
 
 | Expression                       | &emsp;10<sup>2</sup>&emsp; | &emsp;10<sup>3</sup>&emsp; | &emsp;10<sup>4</sup>&emsp; | &emsp;10<sup>5</sup>&emsp; | &emsp;10<sup>6</sup>&emsp; | &emsp;10<sup>7</sup>&emsp; |
 | :------------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: |
