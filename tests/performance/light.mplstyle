@@ -17,18 +17,18 @@ legend.borderaxespad: 0.3125
 legend.borderpad: 0.25
 legend.edgecolor: D5D5D5
 legend.facecolor: D5D5D5
-legend.fontsize: large
+legend.fontsize: small
 legend.framealpha: 0.5
 legend.handleheight: 0.5
 legend.handlelength: 1
 legend.handletextpad: 0.5
 legend.labelspacing: 0.3125
 legend.loc: upper left
+legend.title_fontsize: small
 lines.linestyle: :
 lines.linewidth: 0.8
-lines.marker: .
-lines.markeredgewidth: 0.5
-lines.markersize: 8
+lines.markeredgewidth: 0
+lines.markersize: 4
 xtick.direction: in
 xtick.labelsize: large
 xtick.major.pad: 6.1875

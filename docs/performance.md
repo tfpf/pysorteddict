@@ -1,46 +1,81 @@
 # Performance
 
-The table below describes the environment the performance benchmarks were run in.
+## Goals
 
-| Component                      | Specification                              |
-| :----------------------------: | :----------------------------------------: |
-| CPU                            | Intel Core i9-12900H                       |
-| CPU Frequency Scaling Governor | powersave                                  |
-| RAM                            | 16 GiB DDR4                                |
-| Kernel                         | Linux 6.1.0 (64-bit)                       |
-| Operating System               | Debian 12 "bookworm"                       |
-| Operating System Libraries     | GNU C Library 2.36, GNU C++ Library 12.2.0 |
-| Python Interpreter             | CPython 3.11.2                             |
-| Python Interpreter Libraries   | Jupyter 1.1.1, pysorteddict 0.12.1         |
+pysorteddict was performance-benchmarked in order to:
+
+* evaluate it under workloads resembling real applications; and
+* see where it stands in comparison to the sorted dictionary implementation of Sorted Containers.
+
+Sorted Containers is a mature Python library which has seen use in popular open-source projects, and is thus an
+appropriate yardstick to measure pysorteddict against.
+
+<div class="notice">
+pysorteddict and Sorted Containers differ greatly in their sorted dictionary implementations.
+
+* `pysorteddict.SortedDict` is typically a red-black tree—it is faster (by microseconds) for writes.
+* `sortedcontainers.sorteddict.SortedDict` is typically a hash table and a sorted set of keys—it is faster (by
+  nanoseconds) for reads.
+</div>
+
+## Environment
+
+| Component                      | Specification                                |
+| :----------------------------: | :------------------------------------------: |
+| CPU                            | Intel Core i9-12900H                         |
+| CPU Frequency Scaling Governor | powersave                                    |
+| RAM                            | 16 GiB DDR5                                  |
+| Kernel                         | Linux 6.1.0 (64-bit)                         |
+| Operating System               | Debian 12 "bookworm"                         |
+| Operating System Libraries     | GNU C Library 2.36, GNU C++ Library 12.2.0   |
+| Python Interpreter             | CPython 3.11.2                               |
+| Python Interpreter Libraries   | pysorteddict 0.13.0, Sorted Containers 2.4.0 |
+
+## Strategy
 
 The key type chosen was `float`, since it is easy to generate floating-point numbers uniformly distributed in the unit
 interval. Comparing two `float`s is straightforward (as opposed to comparing, say, two `str`s—if their lengths are
 different, they may introduce noise in the benchmarks). Before every benchmark, the random number generator was seeded
 with _π_, a nothing-up-my-sleeve number.
 
-There is an extra step required when using `float` keys: the check for NaN. Hence, the performance will be marginally
-worse than if `int` keys were used.
-
 <div class="notice">
 The performance benchmarking code is in a Jupyter notebook in the GitHub repository. It contains everything required to
-run the benchmarks.
+generate the data and graphs on this page.
 </div>
 
 ## Overview
 
-The average execution times of some expressions are tabulated against the lengths of the sorted dictionaries used.
+The average execution times of some expressions are tabulated against the lengths of the `pysorteddict.SortedDict`s
+used.
 
-| Expression                       | &emsp;10<sup>2</sup>&emsp; | &emsp;10<sup>3</sup>&emsp; | &emsp;10<sup>4</sup>&emsp; | &emsp;10<sup>5</sup>&emsp; | &emsp;10<sup>6</sup>&emsp; | &emsp;10<sup>7</sup>&emsp; |
-| :------------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: | :------------------------: |
-| `0.00 in d`                      | 36.8 ns                    | 49.6 ns                    | 65.0 ns                    | 83.0 ns                    | 93.2 ns                    | 105 ns                     |
-| `0.33 in d`                      | 46.3 ns                    | 60.5 ns                    | 67.4 ns                    | 82.9 ns                    | 98.7 ns                    | 112 ns                     |
-| `0.67 in d`                      | 40.4 ns                    | 57.0 ns                    | 67.6 ns                    | 77.1 ns                    | 97.2 ns                    | 113 ns                     |
-| `1.00 in d`                      | 31.7 ns                    | 58.9 ns                    | 62.9 ns                    | 82.3 ns                    | 90.4 ns                    | 111 ns                     |
-| `set_del(d, keys_33)`            | 4.10 μs                    | 5.08 μs                    | 6.06 μs                    | 6.96 μs                    | 8.02 μs                    | 9.89 μs                    |
-| `set_del(d, keys_67)`            | 8.50 μs                    | 10.3 μs                    | 12.7 μs                    | 15.9 μs                    | 21.7 μs                    | 31.5 μs                    |
-| `set_del(d, keys_100)`           | 13.0 μs                    | 16.1 μs                    | 22.6 μs                    | 30.2 μs                    | 42.6 μs                    | 62.8 μs                    |
-| `for _ in d: pass`               | 857 ns                     | 8.73 μs                    | 132 μs                     | 2.65 ms                    | 117 ms                     | 1.32 s                     |
-| `for _ in reversed(d): pass`     | 1.12 μs                    | 11.6 μs                    | 160 μs                     | 3.02 ms                    | 119 ms                     | 1.40 s                     |
+```{eval-rst}
+.. table::
+   :widths: 3 1 1 1 1 1 1
+
+   +--------------------------------+-----------------------------------------------------------------------------------------------------+
+   | Expression                     | ``pysorteddict.SortedDict`` Length                                                                  |
+   |                                +----------------+----------------+----------------+----------------+----------------+----------------+
+   |                                | 10\ :sup:`2`   | 10\ :sup:`3`   | 10\ :sup:`4`   | 10\ :sup:`5`   | 10\ :sup:`6`   | 10\ :sup:`7`   |
+   +================================+================+================+================+================+================+================+
+   | ``0.00 in d``                  | 35.3 ns        | 47.4 ns        | 62.8 ns        | 81.1 ns        | 91.4 ns        | 102 ns         |
+   +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
+   | ``0.33 in d``                  | 42.9 ns        | 59.8 ns        | 66.8 ns        | 82.8 ns        | 100 ns         | 114 ns         |
+   +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
+   | ``0.67 in d``                  | 38.8 ns        | 55.6 ns        | 67.3 ns        | 76.2 ns        | 98.5 ns        | 115 ns         |
+   +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
+   | ``1.00 in d``                  | 29.2 ns        | 56.8 ns        | 60.6 ns        | 79.7 ns        | 87.1 ns        | 111 ns         |
+   +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
+   | ``set_del(d, keys_33)``        | 3.97 μs        | 4.94 μs        | 5.93 μs        | 6.94 μs        | 7.86 μs        | 9.39 μs        |
+   +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
+   | ``set_del(d, keys_67)``        | 8.33 μs        | 10.1 μs        | 12.6 μs        | 15.5 μs        | 20.8 μs        | 29.9 μs        |
+   +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
+   | ``set_del(d, keys_100)``       | 12.7 μs        | 15.6 μs        | 21.4 μs        | 28.6 μs        | 41.0 μs        | 60.2 μs        |
+   +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
+   | ``for _ in d: pass``           | 590 ns         | 6.26 μs        | 104 μs         | 2.17 ms        | 111 ms         | 1.34 s         |
+   +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
+   | ``for _ in reversed(d): pass`` | 873 ns         | 8.71 μs        | 130 μs         | 2.42 ms        | 114 ms         | 1.32 s         |
+   +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
+```
 
 ## Details
 
@@ -61,6 +96,9 @@ those sorted dictionaries will not terminate permaturely.
 :class: only-dark
 :width: 100%
 ```
+
+Since `sortedcontainers.sorteddict.SortedDict` looks up keys in a hash table in constant time, its performance is
+independent of the length of the sorted dictionary.
 
 ### Insertion and Deletion
 
@@ -91,6 +129,9 @@ This benchmark was repeated for three different lengths of the `list` of random 
 :width: 100%
 ```
 
+Since `pysorteddict.SortedDict` inserts and deletes keys from a red-black tree in logarithmic time, it is much faster
+at mutating data.
+
 ### Iteration
 
 ```{image} _static/images/perf-iter-light.svg
@@ -104,3 +145,6 @@ This benchmark was repeated for three different lengths of the `list` of random 
 :class: only-dark
 :width: 100%
 ```
+
+Since `pysorteddict.SortedDict` does a lot of bookkeeping to allow mutation during iteration, it is slower at
+iterating.

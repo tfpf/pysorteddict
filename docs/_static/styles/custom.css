@@ -91,3 +91,12 @@ summary:hover {
 .card:active {
   background: rgba(39, 180, 166, 0.6);
 }
+
+/*
+ * Markdown does not support row and column spans, so I used reStructuredText
+ * to draw a table on the performance page. However, the latter does not offer
+ * a way to centre the contents of all table cells. This hack does it.
+ */
+#overview table td {
+  text-align: center;
+}

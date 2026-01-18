@@ -1,4 +1,5 @@
-jupyter==1.1.1
+jupyter
 matplotlib
 pandas
-pysorteddict==0.12.1
+pysorteddict==0.13.0
+sortedcontainers==2.4.0

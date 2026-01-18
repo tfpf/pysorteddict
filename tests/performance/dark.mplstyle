@@ -6,7 +6,7 @@ axes.labelcolor: 999999
 axes.labelpad: 2.5
 axes.labelsize: large
 axes.linewidth: 1
-axes.prop_cycle: cycler('color', ['yellow', 'cyan', 'lightgreen', 'violet'])
+axes.prop_cycle: cycler('color', ['salmon', 'cyan', 'lightgreen', 'violet'])
 axes.titlepad: 8.75
 axes.titlesize: x-large
 figure.autolayout: True
@@ -20,18 +20,18 @@ legend.borderaxespad: 0.3125
 legend.borderpad: 0.25
 legend.edgecolor: black
 legend.facecolor: black
-legend.fontsize: large
+legend.fontsize: small
 legend.framealpha: 0.5
 legend.handleheight: 0.5
 legend.handlelength: 1
 legend.handletextpad: 0.5
 legend.labelspacing: 0.3125
 legend.loc: upper left
+legend.title_fontsize: small
 lines.linestyle: :
 lines.linewidth: 0.8
-lines.marker: .
-lines.markeredgewidth: 0.5
-lines.markersize: 8
+lines.markeredgewidth: 0
+lines.markersize: 4
 text.color: CCCCCC
 xtick.color: CCCCCC
 xtick.direction: in
