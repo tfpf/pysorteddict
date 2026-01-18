@@ -93,9 +93,10 @@ summary:hover {
 }
 
 /*
- * I used reST to draw the table on the performance page because it requires
- * spanning rows and columns, but reST does not offer a way to centre the
- * contents of all table cells. This hack does it.
+ * I used reStructuredText to draw the table on the performance page because it
+ * requires spanning rows and columns, which Markdown does not support.
+ * However, reST does not offer a way to centre the contents of all table
+ * cells. This hack does it.
  */
 #overview table td {
   text-align: center;
