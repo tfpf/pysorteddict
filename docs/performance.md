@@ -5,10 +5,11 @@
 pysorteddict was performance-benchmarked in order to:
 
 * evaluate it under workloads resembling real applications; and
-* see where it stands in comparison to the sorted dictionary implementation of Sorted Containers.
+* see where it stands in comparison to Sorted Containers.
 
 Sorted Containers is a mature Python library which has seen use in popular open-source projects, and is thus an
-appropriate yardstick to measure pysorteddict against.
+appropriate yardstick to measure pysorteddict against. While it provides sorted list, set and dictionary types, only
+the latter falls within the scope of this exercise.
 
 <div class="notice">
 pysorteddict and Sorted Containers differ greatly in their sorted dictionary implementations.
@@ -85,17 +86,17 @@ The numbers 0.00, 0.33, 0.67 and 1.00 are spaced equally in the range spanned by
 dictionaries constructed using the seeded random number generator described above. Hence, a search for them in any of
 those sorted dictionaries will not terminate permaturely.
 
-```{image} _static/images/perf-contains-light.svg
+:::{image} _static/images/perf-contains-light.svg
 :align: center
 :class: only-light
 :width: 100%
-```
+:::
 
-```{image} _static/images/perf-contains-dark.svg
+:::{image} _static/images/perf-contains-dark.svg
 :align: center
 :class: only-dark
 :width: 100%
-```
+:::
 
 Since `sortedcontainers.sorteddict.SortedDict` looks up keys in a hash table in constant time, its performance is
 independent of the length of the sorted dictionary.
@@ -117,34 +118,34 @@ real-world effects of insertions and deletions, so this is a sound strategy.
 
 This benchmark was repeated for three different lengths of the `list` of random `float`s: 33, 67 and 100.
 
-```{image} _static/images/perf-setitem-light.svg
+:::{image} _static/images/perf-setitem-light.svg
 :align: center
 :class: only-light
 :width: 100%
-```
+:::
 
-```{image} _static/images/perf-setitem-dark.svg
+:::{image} _static/images/perf-setitem-dark.svg
 :align: center
 :class: only-dark
 :width: 100%
-```
+:::
 
 Since `pysorteddict.SortedDict` inserts and deletes keys from a red-black tree in logarithmic time, it is much faster
 at mutating data.
 
 ### Iteration
 
-```{image} _static/images/perf-iter-light.svg
+:::{image} _static/images/perf-iter-light.svg
 :align: center
 :class: only-light
 :width: 100%
-```
+:::
 
-```{image} _static/images/perf-iter-dark.svg
+:::{image} _static/images/perf-iter-dark.svg
 :align: center
 :class: only-dark
 :width: 100%
-```
+:::
 
 Since `pysorteddict.SortedDict` does a lot of bookkeeping to allow mutation during iteration, it is slower at
 iterating.

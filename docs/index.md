@@ -4,7 +4,7 @@ Enriches Python with `SortedDict`, a sorted dictionary: a dictionary in which th
 
 pysorteddict is implemented entirely in C++. `SortedDict` provides a Python interface to `std::map`.
 
-```{toctree}
+:::{toctree}
 :hidden:
 
 installation
@@ -13,7 +13,7 @@ documentation
 performance
 changelog
 repository
-```
+:::
 
 <!--
 Putting an HTML tag in a Markdown link containing an image is probably not a

@@ -36,42 +36,38 @@ and run some code to install pysorteddict (using one of the hosted wheels) and i
 
 <div class="only-light">
 
-```{replite}
----
-execute: True
-height: 600px
-kernel: python
-prompt: Try Now
-theme: JupyterLab Light
-toolbar: 1
-width: 100%
----
+:::{replite}
+:height: 600px
+:kernel: python
+:prompt: Try Now
+:theme: JupyterLab Light
+:toolbar: 1
+:width: 100%
+
 %pip install /pysorteddict/simple/pysorteddict/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
 
 from pysorteddict import SortedDict
 
 d = SortedDict()
-```
+:::
 
 </div>
 
 <div class="only-dark">
 
-```{replite}
----
-execute: True
-height: 600px
-kernel: python
-prompt: Try Now
-theme: JupyterLab Dark
-toolbar: 1
-width: 100%
----
+:::{replite}
+:height: 600px
+:kernel: python
+:prompt: Try Now
+:theme: JupyterLab Dark
+:toolbar: 1
+:width: 100%
+
 %pip install /pysorteddict/simple/pysorteddict/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
 
 from pysorteddict import SortedDict
 
 d = SortedDict()
-```
+:::
 
 </div>
