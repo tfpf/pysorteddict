@@ -5,10 +5,11 @@
 pysorteddict was performance-benchmarked in order to:
 
 * evaluate it under workloads resembling real applications; and
-* see where it stands in comparison to the sorted dictionary implementation of Sorted Containers.
+* see where it stands in comparison to Sorted Containers.
 
 Sorted Containers is a mature Python library which has seen use in popular open-source projects, and is thus an
-appropriate yardstick to measure pysorteddict against.
+appropriate yardstick to measure pysorteddict against. While it provides sorted list, set and dictionary types, only
+the latter falls within the scope of this exercise.
 
 <div class="notice">
 pysorteddict and Sorted Containers differ greatly in their sorted dictionary implementations.
