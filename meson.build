@@ -25,4 +25,5 @@ py.extension_module(
     'pysorteddict',
     source_files,
     install: true,
+    gnu_symbol_visibility: 'hidden',
 )
