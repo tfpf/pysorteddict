@@ -14,7 +14,7 @@ docs = [
 
 [project]
 name = "pysorteddict"
-version = "0.13.0"
+version = "0.14.0rc0"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
@@ -60,7 +60,7 @@ test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
 [tool.cibuildwheel.config-settings]
-setup-args = ["-Db_lto=true"]
+setup-args = ["-Db_lto=true", "-Doptimization=2"]
 
 [tool.cibuildwheel.pyodide]
 archs = ["wasm32"]
