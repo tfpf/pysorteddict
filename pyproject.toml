@@ -55,7 +55,6 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 [tool.cibuildwheel]
 archs = ["auto64"]
 build-verbosity = 1
-enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
