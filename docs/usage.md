@@ -36,9 +36,8 @@ and run some code to install pysorteddict (using one of the hosted wheels) and i
 
 <div class="only-light">
 
-```{replite}
+:::{replite}
 ---
-execute: True
 height: 600px
 kernel: python
 prompt: Try Now
@@ -51,15 +50,14 @@ width: 100%
 from pysorteddict import SortedDict
 
 d = SortedDict()
-```
+:::
 
 </div>
 
 <div class="only-dark">
 
-```{replite}
+:::{replite}
 ---
-execute: True
 height: 600px
 kernel: python
 prompt: Try Now
@@ -72,6 +70,6 @@ width: 100%
 from pysorteddict import SortedDict
 
 d = SortedDict()
-```
+:::
 
 </div>
