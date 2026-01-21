@@ -85,17 +85,17 @@ The numbers 0.00, 0.33, 0.67 and 1.00 are spaced equally in the range spanned by
 dictionaries constructed using the seeded random number generator described above. Hence, a search for them in any of
 those sorted dictionaries will not terminate permaturely.
 
-```{image} _static/images/perf-contains-light.svg
+:::{image} _static/images/perf-contains-light.svg
 :align: center
 :class: only-light
 :width: 100%
-```
+:::
 
-```{image} _static/images/perf-contains-dark.svg
+:::{image} _static/images/perf-contains-dark.svg
 :align: center
 :class: only-dark
 :width: 100%
-```
+:::
 
 Since `sortedcontainers.sorteddict.SortedDict` looks up keys in a hash table in constant time, its performance is
 independent of the length of the sorted dictionary.
@@ -117,34 +117,34 @@ real-world effects of insertions and deletions, so this is a sound strategy.
 
 This benchmark was repeated for three different lengths of the `list` of random `float`s: 33, 67 and 100.
 
-```{image} _static/images/perf-setitem-light.svg
+:::{image} _static/images/perf-setitem-light.svg
 :align: center
 :class: only-light
 :width: 100%
-```
+:::
 
-```{image} _static/images/perf-setitem-dark.svg
+:::{image} _static/images/perf-setitem-dark.svg
 :align: center
 :class: only-dark
 :width: 100%
-```
+:::
 
 Since `pysorteddict.SortedDict` inserts and deletes keys from a red-black tree in logarithmic time, it is much faster
 at mutating data.
 
 ### Iteration
 
-```{image} _static/images/perf-iter-light.svg
+:::{image} _static/images/perf-iter-light.svg
 :align: center
 :class: only-light
 :width: 100%
-```
+:::
 
-```{image} _static/images/perf-iter-dark.svg
+:::{image} _static/images/perf-iter-dark.svg
 :align: center
 :class: only-dark
 :width: 100%
-```
+:::
 
 Since `pysorteddict.SortedDict` does a lot of bookkeeping to allow mutation during iteration, it is slower at
 iterating.
