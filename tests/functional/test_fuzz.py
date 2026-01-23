@@ -22,7 +22,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         return v
 
     @rule(k=keys, v=values)
-    def write(self, k, v):
+    def setitem(self, k, v):
         self.key_type = type(k)
         self.normal_dict[k] = v
         self.sorted_dict[k] = v
