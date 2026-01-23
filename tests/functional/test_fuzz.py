@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import pytest
 from hypothesis import settings
 from hypothesis import strategies as st
@@ -6,6 +8,22 @@ from hypothesis.stateful import Bundle, RuleBasedStateMachine, invariant, precon
 from pysorteddict import SortedDict
 
 settings.register_profile("default", max_examples=200, stateful_step_count=100)
+supported_keys = (
+    st.booleans()
+    | st.binary()
+    | st.floats(allow_nan=False)
+    | st.integers()
+    | st.text()
+    | st.dates()
+    | st.timedeltas()
+    | st.decimals(allow_nan=False)
+    | st.fractions()
+    | st.ip_addresses(v=4)
+    | st.ip_addresses(v=6)
+    | st.uuids()
+)
+unsupported_keys = st.none() | st.lists(st.integers()) | st.tuples(st.integers())
+unsupported_supported_keys = supported_keys | unsupported_keys
 
 
 class SortedDictionaryChecker(RuleBasedStateMachine):
@@ -17,13 +35,13 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
 
     keys, values = Bundle("keys"), Bundle("values")
 
-    @rule(target=keys, k=st.integers())
-    def add_key(self, k):
-        return k
+    @rule(target=keys, key=supported_keys)
+    def add_key(self, key):
+        return key
 
-    @rule(target=values, v=st.integers())
-    def add_value(self, v):
-        return v
+    @rule(target=values, value=st.integers())
+    def add_value(self, value):
+        return value
 
     @invariant()
     def always(self):
@@ -33,22 +51,33 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         assert all(a == b for a, b in zip(self.sorted_dict, sorted_normal_dict, strict=True))
         assert all(a == b for a, b in zip(reversed(self.sorted_dict), reversed(sorted_normal_dict), strict=True))
 
-    @rule(k=keys, v=values)
-    def setitem(self, k, v):
-        self.key_type = type(k)
-        self.normal_dict[k] = v
-        self.sorted_dict[k] = v
+    @precondition(lambda self: self.key_type is None)
+    @rule(key=unsupported_supported_keys)
+    def contains_key_type_not_set(self, key):
+        with pytest.raises(RuntimeError):
+            _ = key in self.sorted_dict
 
     @precondition(lambda self: self.key_type is not None)
-    @rule(k=keys)
-    def contains(self, k):
-        assert (k in self.normal_dict) == (k in self.sorted_dict)
+    @rule(key=unsupported_supported_keys | keys)
+    def contains_wrong_type(self, key):
+        if type(key) is not self.key_type:
+            with pytest.raises(TypeError):
+                _ = key in self.sorted_dict
+        else:
+            assert (key in self.sorted_dict) == (key in self.normal_dict)
 
-    @precondition(lambda self: self.key_type is None)
-    @rule(k=keys)
-    def contains_error(self, k):
-        with pytest.raises(RuntimeError):
-            _ = k in self.sorted_dict
+    @precondition(lambda self: self.key_type is float or self.key_type is Decimal)
+    @rule()
+    def contains_nan(self):
+        key = self.key_type("nan")
+        with pytest.raises(ValueError, match=rf"^got bad key {key} of type {type(key)}$"):
+            _ = key in self.sorted_dict
+
+    @rule(key=st.floats(), value=st.integers())
+    def setitem(self, key, value):
+        self.key_type = self.key_type or type(key)
+        self.normal_dict[key] = value
+        self.sorted_dict[key] = value
 
 
 TestSortedDictionary = SortedDictionaryChecker.TestCase
