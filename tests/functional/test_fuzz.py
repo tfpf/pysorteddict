@@ -1,8 +1,11 @@
 import pytest
+from hypothesis import settings
 from hypothesis import strategies as st
-from hypothesis.stateful import Bundle, RuleBasedStateMachine, precondition, rule
+from hypothesis.stateful import Bundle, RuleBasedStateMachine, invariant, precondition, rule
 
 from pysorteddict import SortedDict
+
+settings.register_profile("default", max_examples=200, stateful_step_count=100)
 
 
 class SortedDictionaryChecker(RuleBasedStateMachine):
@@ -21,6 +24,14 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     @rule(target=values, v=st.integers())
     def add_value(self, v):
         return v
+
+    @invariant()
+    def always(self):
+        sorted_normal_dict = dict(sorted(self.normal_dict.items()))
+        assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
+        assert len(self.sorted_dict) == len(sorted_normal_dict)
+        assert all(a == b for a, b in zip(self.sorted_dict, sorted_normal_dict, strict=True))
+        assert all(a == b for a, b in zip(reversed(self.sorted_dict), reversed(sorted_normal_dict), strict=True))
 
     @rule(k=keys, v=values)
     def setitem(self, k, v):
