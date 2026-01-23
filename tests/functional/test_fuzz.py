@@ -1,5 +1,6 @@
+import pytest
 from hypothesis import strategies as st
-from hypothesis.stateful import Bundle, RuleBasedStateMachine, rule, precondition
+from hypothesis.stateful import Bundle, RuleBasedStateMachine, precondition, rule
 
 from pysorteddict import SortedDict
 
@@ -31,6 +32,12 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     @rule(k=keys)
     def contains(self, k):
         assert (k in self.normal_dict) == (k in self.sorted_dict)
+
+    @precondition(lambda self: self.key_type is None)
+    @rule(k=keys)
+    def contains_error(self, k):
+        with pytest.raises(RuntimeError):
+            _ = k in self.sorted_dict
 
 
 TestSortedDictionary = SortedDictionaryChecker.TestCase
