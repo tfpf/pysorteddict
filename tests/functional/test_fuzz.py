@@ -67,14 +67,16 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     @precondition(prec_key_type_not_set)
     @rule(key=unsupported_supported_keys)
     def contains_key_type_not_set(self, key):
-        with pytest.raises(RuntimeError):
+        with pytest.raises(RuntimeError, match="key type not set: insert at least one item first"):
             _ = key in self.sorted_dict
 
     @precondition(prec_key_type_set)
     @rule(key=unsupported_supported_keys | keys)
     def contains_wrong_type(self, key):
         if type(key) is not self.key_type:
-            with pytest.raises(TypeError):
+            with pytest.raises(
+                TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+            ):
                 _ = key in self.sorted_dict
         else:
             assert (key in self.sorted_dict) == (key in self.normal_dict)
@@ -93,7 +95,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     @precondition(prec_key_type_not_set)
     @rule(key=unsupported_keys)
     def setitem_key_unsupported(self, key):
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match=re.escape(f"got key {key!r} of unsupported type {type(key)}")):
             self.sorted_dict[key] = None
 
     @precondition(prec_key_type_not_set)
@@ -106,7 +108,9 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     @rule(key=unsupported_supported_keys | keys, value=st.integers())
     def setitem_wrong_type(self, key, value):
         if type(key) is not self.key_type:
-            with pytest.raises(TypeError):
+            with pytest.raises(
+                TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+            ):
                 self.sorted_dict[key] = None
         else:
             self.normal_dict[key] = value
