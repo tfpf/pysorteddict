@@ -9,19 +9,19 @@ from hypothesis.stateful import Bundle, RuleBasedStateMachine, invariant, precon
 from pysorteddict import SortedDict
 
 settings.register_profile("default", max_examples=200, stateful_step_count=100)
-supported_keys = (
-    st.booleans()
-    | st.binary()
-    | st.floats(allow_nan=False)
-    | st.integers()
-    | st.text()
-    | st.dates()
-    | st.timedeltas()
-    | st.decimals(allow_nan=False)
-    | st.fractions()
-    | st.ip_addresses(v=4)
-    | st.ip_addresses(v=6)
-    | st.uuids()
+supported_keys = st.one_of(
+    st.booleans(),
+    st.binary(),
+    st.floats(allow_nan=False),
+    st.integers(),
+    st.text(),
+    st.dates(),
+    st.timedeltas(),
+    st.decimals(allow_nan=False),
+    st.fractions(),
+    st.ip_addresses(v=4),
+    st.ip_addresses(v=6),
+    st.uuids(),
 )
 unsupported_keys = st.none() | st.lists(st.integers()) | st.tuples(st.integers())
 unsupported_supported_keys = unsupported_keys | supported_keys
@@ -100,6 +100,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
 
     @precondition(prec_key_type_not_set)
     @rule(key=st.just(float("nan")) | st.just(Decimal("nan")))
+    use st.sampled_from
     def setitem_nan_empty(self, key):
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
             self.sorted_dict[key] = None
