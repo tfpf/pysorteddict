@@ -63,30 +63,6 @@ static PyTypeObject* PyUUID_Type;
 static PyTypeObject* PyWindowsPath_Type;
 
 /**
- * Import all supported key types from Python which are not built-in. Make them
- * available globally so that their reference counts need not be managed.
- */
-void import_supported_key_types(void)
-{
-    PyDate_Type = import_python_type("datetime", "date");
-    PyDecimal_Type = import_python_type("decimal", "Decimal");
-    PyFraction_Type = import_python_type("fractions", "Fraction");
-    PyIPv4Address_Type = import_python_type("ipaddress", "IPv4Address");
-    PyIPv4Interface_Type = import_python_type("ipaddress", "IPv4Interface");
-    PyIPv4Network_Type = import_python_type("ipaddress", "IPv4Network");
-    PyIPv6Address_Type = import_python_type("ipaddress", "IPv6Address");
-    PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface");
-    PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network");
-    PyPosixPath_Type = import_python_type("pathlib", "PosixPath");
-    PyPurePosixPath_Type = import_python_type("pathlib", "PurePosixPath");
-    PyPureWindowsPath_Type = import_python_type("pathlib", "PureWindowsPath");
-    PyStructTime_Type = import_python_type("time", "struct_time");
-    PyTimeDelta_Type = import_python_type("datetime", "timedelta");
-    PyUUID_Type = import_python_type("uuid", "UUID");
-    PyWindowsPath_Type = import_python_type("pathlib", "WindowsPath");
-}
-
-/**
  * Check whether the given key can be inserted into this sorted dictionary. For
  * instance, NaN cannot be compared with other floating-point numbers, so it
  * cannot be inserted.
@@ -154,22 +130,22 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
             &PyLong_Type,
             &PyUnicode_Type,
             // The following types are not built-in.
-            PyDate_Type,
-            PyDecimal_Type,
-            PyFraction_Type,
-            PyIPv4Address_Type,
-            PyIPv4Interface_Type,
-            PyIPv4Network_Type,
-            PyIPv6Address_Type,
-            PyIPv6Interface_Type,
-            PyIPv6Network_Type,
-            PyPosixPath_Type,
-            PyPurePosixPath_Type,
-            PyPureWindowsPath_Type,
-            PyStructTime_Type,
-            PyTimeDelta_Type,
-            PyUUID_Type,
-            PyWindowsPath_Type,
+            PyDate_Type = import_python_type("datetime", "date"),
+            PyTimeDelta_Type = import_python_type("datetime", "timedelta"),
+            PyDecimal_Type = import_python_type("decimal", "Decimal"),
+            PyFraction_Type = import_python_type("fractions", "Fraction"),
+            PyIPv4Address_Type = import_python_type("ipaddress", "IPv4Address"),
+            PyIPv4Interface_Type = import_python_type("ipaddress", "IPv4Interface"),
+            PyIPv4Network_Type = import_python_type("ipaddress", "IPv4Network"),
+            PyIPv6Address_Type = import_python_type("ipaddress", "IPv6Address"),
+            PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface"),
+            PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network"),
+            PyPosixPath_Type = import_python_type("pathlib", "PosixPath"),
+            PyPurePosixPath_Type = import_python_type("pathlib", "PurePosixPath"),
+            PyPureWindowsPath_Type = import_python_type("pathlib", "PureWindowsPath"),
+            PyWindowsPath_Type = import_python_type("pathlib", "WindowsPath"),
+            PyStructTime_Type = import_python_type("time", "struct_time"),
+            PyUUID_Type = import_python_type("uuid", "UUID"),
         };
         for (PyTypeObject* allowed_key_type : allowed_key_types)
         {
