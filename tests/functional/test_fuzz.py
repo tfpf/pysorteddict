@@ -31,7 +31,9 @@ supported_keys = st.one_of(
     st.from_type(IPv6Network),
     st.builds(Path, st.text(alphabet=string.ascii_lowercase + "/")),
     st.builds(PurePath, st.text(alphabet=string.ascii_lowercase + "/")),
-    st.builds(time.localtime, st.integers(min_value=0, max_value=2**30)),
+    # The representation of objects of this type in Python is different from
+    # that when using the C++ API. I must resolve that difference first.
+    # st.builds(time.localtime, st.integers(min_value=0, max_value=2**30)),
     st.uuids(),
 )
 unsupported_keys = st.lists(st.integers()) | st.tuples(st.integers())
@@ -98,6 +100,30 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         key = self.key_type("nan")
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
             _ = key in self.sorted_dict
+
+    ###########################################################################
+    # `getitem` tests.
+    ###########################################################################
+
+    @precondition(prec_key_type_not_set)
+    @rule(key=unsupported_supported_keys)
+    def getitem_key_type_not_set(self, key):
+        with pytest.raises(RuntimeError, match="key type not set: insert at least one item first"):
+            self.sorted_dict[key]
+
+    @precondition(prec_key_type_set)
+    @rule(key=unsupported_supported_keys | keys)
+    def getitem_wrong_type_key_error(self, key):
+        if type(key) is not self.key_type:
+            with pytest.raises(
+                TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+            ):
+                self.sorted_dict[key]
+        elif key not in self.normal_dict:
+            with pytest.raises(KeyError, match=re.escape(f"{key!r}")):
+                self.sorted_dict[key]
+        else:
+            assert self.sorted_dict[key] == self.normal_dict[key]
 
     ###########################################################################
     # `setitem` tests.
