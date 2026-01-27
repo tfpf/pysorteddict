@@ -95,7 +95,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         assert all(a == b for a, b in zip(reversed(self.sorted_dict), reversed(sorted_normal_dict), strict=True))
 
     ###########################################################################
-    # `contains` tests.
+    # `contains`.
     ###########################################################################
 
     @precondition(prec_key_type_not_set)
@@ -129,7 +129,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         assert key in self.sorted_dict
 
     ###########################################################################
-    # `getitem` tests.
+    # `getitem`.
     ###########################################################################
 
     @precondition(prec_key_type_not_set)
@@ -167,7 +167,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         assert self.sorted_dict[key] == self.normal_dict[key]
 
     ###########################################################################
-    # `setitem` tests.
+    # `setitem`.
     ###########################################################################
 
     @precondition(prec_key_type_not_set)
@@ -217,6 +217,10 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     def setitem_existing(self, key, value):
         self.normal_dict[key] = value
         self.sorted_dict[key] = value
+
+    ###########################################################################
+    # `delitem`.
+    ###########################################################################
 
 
 TestSortedDictionary = SortedDictionaryChecker.TestCase
