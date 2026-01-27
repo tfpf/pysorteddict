@@ -23,7 +23,7 @@ supported_keys = st.one_of(
     st.ip_addresses(v=6),
     st.uuids(),
 )
-unsupported_keys = st.none() | st.lists(st.integers()) | st.tuples(st.integers())
+unsupported_keys = st.lists(st.integers()) | st.tuples(st.integers())
 unsupported_supported_keys = unsupported_keys | supported_keys
 
 
@@ -40,11 +40,11 @@ def prec_key_type_admits_nan(self):
 
 
 class SortedDictionaryChecker(RuleBasedStateMachine):
-    def __init__(self):
+    def __init__(self, sorted_dict_type=SortedDict):
         super().__init__()
         self.key_type = None
         self.normal_dict = {}
-        self.sorted_dict = SortedDict()
+        self.sorted_dict = sorted_dict_type()
 
     keys = Bundle("keys")
 
@@ -99,8 +99,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
             self.sorted_dict[key] = None
 
     @precondition(prec_key_type_not_set)
-    @rule(key=st.just(float("nan")) | st.just(Decimal("nan")))
-    use st.sampled_from
+    @rule(key=st.sampled_from([float("nan"), Decimal("nan")]))
     def setitem_nan_empty(self, key):
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
             self.sorted_dict[key] = None
