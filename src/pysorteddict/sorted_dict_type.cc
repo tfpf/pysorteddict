@@ -46,6 +46,7 @@ static PyTypeObject* import_python_type(char const* module_name, char const* typ
 
 // Key types which have to be imported explicitly using the above function.
 static PyTypeObject* PyDate_Type;
+static PyTypeObject* PyTimeDelta_Type;
 static PyTypeObject* PyDecimal_Type;
 static PyTypeObject* PyFraction_Type;
 static PyTypeObject* PyIPv4Address_Type;
@@ -57,10 +58,9 @@ static PyTypeObject* PyIPv6Network_Type;
 static PyTypeObject* PyPosixPath_Type;
 static PyTypeObject* PyPurePosixPath_Type;
 static PyTypeObject* PyPureWindowsPath_Type;
-static PyTypeObject* PyStructTime_Type;
-static PyTypeObject* PyTimeDelta_Type;
-static PyTypeObject* PyUUID_Type;
 static PyTypeObject* PyWindowsPath_Type;
+static PyTypeObject* PyStructTime_Type;
+static PyTypeObject* PyUUID_Type;
 
 /**
  * Check whether the given key can be inserted into this sorted dictionary. For
