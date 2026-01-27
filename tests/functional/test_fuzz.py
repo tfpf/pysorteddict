@@ -44,7 +44,6 @@ strategy_mapping_complement = {
     for tp, strat in strategy_mapping.items()
 }
 all_keys = (supported_keys := st.one_of(strategy_mapping.values())) | (unsupported_keys := st.lists(st.integers()))
-strategy_mapping[None] = supported_keys
 
 
 def prec_key_type_not_set(self):
