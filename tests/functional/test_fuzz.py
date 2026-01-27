@@ -1,5 +1,9 @@
 import re
+import string
+import time
 from decimal import Decimal
+from ipaddress import IPv4Interface, IPv4Network, IPv6Interface, IPv6Network
+from pathlib import Path, PurePath
 
 import pytest
 from hypothesis import settings
@@ -20,7 +24,14 @@ supported_keys = st.one_of(
     st.decimals(allow_nan=False),
     st.fractions(),
     st.ip_addresses(v=4),
+    st.from_type(IPv4Interface),
+    st.from_type(IPv4Network),
     st.ip_addresses(v=6),
+    st.from_type(IPv6Interface),
+    st.from_type(IPv6Network),
+    st.builds(Path, st.text(alphabet=string.ascii_lowercase + "/")),
+    st.builds(PurePath, st.text(alphabet=string.ascii_lowercase + "/")),
+    st.builds(time.struct_time, st.integers(min_value=0, max_value=2**30)),
     st.uuids(),
 )
 unsupported_keys = st.lists(st.integers()) | st.tuples(st.integers())
