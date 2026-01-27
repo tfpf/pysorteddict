@@ -5,8 +5,6 @@
 #include <Python.h>
 #include <map>
 
-void import_supported_key_types(void);
-
 /**
  * C++-style comparison implementation for Python objects.
  */
