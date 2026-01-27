@@ -97,7 +97,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
             _ = key in self.sorted_dict
 
     @precondition(prec_key_type_set)
-    @rule(key=rule_key_wrong_type)
+    @rule(key=rule_key_wrong_type())
     def contains_wrong_type(self, key):
         with pytest.raises(
             TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
@@ -112,12 +112,12 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
             _ = key in self.sorted_dict
 
     @precondition(prec_key_type_set)
-    @rule(key=rule_key_right_type)
+    @rule(key=rule_key_right_type())
     def contains_probably_false(self, key):
         assert (key in self.sorted_dict) == (key in self.normal_dict)
 
     @precondition(prec_key_type_set)
-    @rule(key=rule_key_exists)
+    @rule(key=rule_key_exists())
     def contains_true(self, key):
         assert key in self.sorted_dict
 
