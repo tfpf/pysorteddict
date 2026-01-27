@@ -58,6 +58,18 @@ def prec_key_type_admits_nan(self):
     return any(self.key_type is key_type for key_type in [float, Decimal])
 
 
+def rule_key_wrong_type():
+    return st.runner().flatmap(lambda self: strategy_mapping_complement[self.key_type])
+
+
+def rule_key_right_type():
+    return st.runner().flatmap(lambda self: strategy_mapping[self.key_type])
+
+
+def rule_key_exists():
+    return st.runner().flatmap(lambda self: st.sampled_from(self.keys))
+
+
 class SortedDictionaryChecker(RuleBasedStateMachine):
     def __init__(self, sorted_dict_type=SortedDict):
         super().__init__()
@@ -85,7 +97,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
             _ = key in self.sorted_dict
 
     @precondition(prec_key_type_set)
-    @rule(key=st.runner().flatmap(lambda self: strategy_mapping_complement[self.key_type]))
+    @rule(key=rule_key_wrong_type)
     def contains_wrong_type(self, key):
         with pytest.raises(
             TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
@@ -100,12 +112,12 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
             _ = key in self.sorted_dict
 
     @precondition(prec_key_type_set)
-    @rule(key=st.runner().flatmap(lambda self: strategy_mapping[self.key_type]))
+    @rule(key=rule_key_right_type)
     def contains_probably_false(self, key):
         assert (key in self.sorted_dict) == (key in self.normal_dict)
 
     @precondition(prec_key_type_set)
-    @rule(key=st.runner().flatmap(lambda self: st.sampled_from(self.keys)))
+    @rule(key=rule_key_exists)
     def contains_true(self, key):
         assert key in self.sorted_dict
 
