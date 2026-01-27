@@ -44,6 +44,7 @@ from pysorteddict import *
 
 The following key types are always supported.
 
+* `bool`
 * `bytes`
 * `float`
 * `int`
