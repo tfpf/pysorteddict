@@ -44,7 +44,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-cov = ["gcovr", "pytest-xdist"]
+cov = ["gcovr", "hypothesis", "pytest-xdist"]
 
 [project.urls]
 Homepage = "https://tfpf.github.io/pysorteddict/"
@@ -57,7 +57,7 @@ archs = ["auto64"]
 build-verbosity = 1
 enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
-test-requires = ["pytest-xdist"]
+test-requires = ["hypothesis", "pytest-xdist"]
 
 [tool.cibuildwheel.config-settings]
 setup-args = ["-Db_lto=true"]
