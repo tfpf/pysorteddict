@@ -128,29 +128,43 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     def contains_true(self, key):
         assert key in self.sorted_dict
 
-    # ###########################################################################
-    # # `getitem` tests.
-    # ###########################################################################
+    ###########################################################################
+    # `getitem` tests.
+    ###########################################################################
 
-    # @precondition(prec_key_type_not_set)
-    # @rule(key=all_keys)
-    # def getitem_key_type_not_set(self, key):
-    #     with pytest.raises(RuntimeError, match="key type not set: insert at least one item first"):
-    #         self.sorted_dict[key]
+    @precondition(prec_key_type_not_set)
+    @rule(key=all_keys)
+    def getitem_key_type_not_set(self, key):
+        with pytest.raises(RuntimeError, match="key type not set: insert at least one item first"):
+            self.sorted_dict[key]
 
-    # @precondition(prec_key_type_set)
-    # @rule(key=all_keys | keys)
-    # def getitem_wrong_type_key_error(self, key):
-    #     if type(key) is not self.key_type:
-    #         with pytest.raises(
-    #             TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
-    #         ):
-    #             self.sorted_dict[key]
-    #     elif key not in self.normal_dict:
-    #         with pytest.raises(KeyError, match=re.escape(f"{key!r}")):
-    #             self.sorted_dict[key]
-    #     else:
-    #         assert self.sorted_dict[key] == self.normal_dict[key]
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_wrong_type())
+    def getitem_wrong_type(self, key):
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+        ):
+            self.sorted_dict[key]
+
+    @precondition(prec_key_type_admits_nan)
+    @rule(key=rule_key_is_nan())
+    def getitem_nan(self, key):
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
+            self.sorted_dict[key]
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_right_type())
+    def getitem_probably_key_error(self, key):
+        if key not in self.normal_dict:
+            with pytest.raises(KeyError, match="asd"):
+                self.sorted_dict[key]
+        else:
+            assert self.sorted_dict[key] == self.normal_dict[key]
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_exists())
+    def getitem(self, key):
+        assert self.sorted_dict[key] == self.normal_dict[key]
 
     ###########################################################################
     # `setitem` tests.
