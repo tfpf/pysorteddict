@@ -163,7 +163,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
             self.sorted_dict[key] = None
 
     @precondition(prec_key_type_not_set)
-    @rule(key=st.sampled_from([float("nan"), Decimal("nan")]))
+    @rule(key=rule_key_is_nan())
     def setitem_nan_empty(self, key):
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
             self.sorted_dict[key] = None
@@ -177,9 +177,8 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
             self.sorted_dict[key] = None
 
     @precondition(prec_key_type_admits_nan)
-    @rule()
-    def setitem_nan(self):
-        key = self.key_type("nan")
+    @rule(key=rule_key_is_nan())
+    def setitem_nan(self, key):
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
             self.sorted_dict[key] = None
 
@@ -192,7 +191,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         self.sorted_dict[key] = value
 
     @precondition(prec_key_type_set)
-    @rule(key=st.runner().flatmap(lambda self: strategy_mapping[self.key_type]), value=st.integers())
+    @rule(key=rule_key_right_type(), value=st.integers())
     def setitem_probably_new(self, key, value):
         if key not in self.normal_dict:
             self.keys.append(key)
@@ -200,7 +199,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         self.sorted_dict[key] = value
 
     @precondition(prec_key_type_set)
-    @rule(key=st.runner().flatmap(lambda self: st.sampled_from(self.keys)), value=st.integers())
+    @rule(key=rule_key_exists(), value=st.integers())
     def setitem_existing(self, key, value):
         self.normal_dict[key] = value
         self.sorted_dict[key] = value
