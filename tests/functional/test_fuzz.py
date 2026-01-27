@@ -70,6 +70,14 @@ def rule_key_exists():
     return st.runner().flatmap(lambda self: st.sampled_from(self.keys))
 
 
+def rule_key_is_nan():
+    return st.runner().flatmap(
+        lambda self: st.sampled_from([float("nan"), Decimal("nan")])
+        if self.key_type is None
+        else st.just(self.key_type("nan"))
+    )
+
+
 class SortedDictionaryChecker(RuleBasedStateMachine):
     def __init__(self, sorted_dict_type=SortedDict):
         super().__init__()
@@ -105,9 +113,8 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
             _ = key in self.sorted_dict
 
     @precondition(prec_key_type_admits_nan)
-    @rule()
-    def contains_nan(self):
-        key = self.key_type("nan")
+    @rule(key=rule_key_is_nan())
+    def contains_nan(self, key):
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
             _ = key in self.sorted_dict
 
@@ -162,7 +169,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
             self.sorted_dict[key] = None
 
     @precondition(prec_key_type_set)
-    @rule(key=st.runner().flatmap(lambda self: strategy_mapping_complement[self.key_type]))
+    @rule(key=rule_key_wrong_type())
     def setitem_wrong_type(self, key):
         with pytest.raises(
             TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
