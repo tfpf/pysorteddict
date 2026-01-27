@@ -31,7 +31,7 @@ supported_keys = st.one_of(
     st.from_type(IPv6Network),
     st.builds(Path, st.text(alphabet=string.ascii_lowercase + "/")),
     st.builds(PurePath, st.text(alphabet=string.ascii_lowercase + "/")),
-    st.builds(time.struct_time, st.integers(min_value=0, max_value=2**30)),
+    st.builds(time.localtime, st.integers(min_value=0, max_value=2**30)),
     st.uuids(),
 )
 unsupported_keys = st.lists(st.integers()) | st.tuples(st.integers())
