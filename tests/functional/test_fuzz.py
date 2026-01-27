@@ -156,7 +156,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     @rule(key=rule_key_right_type())
     def getitem_probably_key_error(self, key):
         if key not in self.normal_dict:
-            with pytest.raises(KeyError, match="asd"):
+            with pytest.raises(KeyError, match=re.escape(f"{key!r}")):
                 self.sorted_dict[key]
         else:
             assert self.sorted_dict[key] == self.normal_dict[key]
