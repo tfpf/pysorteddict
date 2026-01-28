@@ -54,13 +54,13 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 
 [tool.cibuildwheel]
 archs = ["auto64"]
+build = ["cp31{1,4}-manylinux*"]
 build-verbosity = 1
-enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
 [tool.cibuildwheel.config-settings]
-setup-args = ["-Db_lto=true"]
+setup-args = ["-Db_lto=true", "-Doptimization=2"]
 
 [tool.cibuildwheel.pyodide]
 archs = ["wasm32"]
