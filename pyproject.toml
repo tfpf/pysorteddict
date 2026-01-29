@@ -14,7 +14,7 @@ docs = [
 
 [project]
 name = "pysorteddict"
-version = "0.13.1rc2"
+version = "0.13.1rc3"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
@@ -58,7 +58,7 @@ build = ["cp311-manylinux*"]
 build-verbosity = 1
 
 [tool.cibuildwheel.config-settings]
-setup-args = ["-Db_lto=true", "-Doptimization=2"]
+setup-args = ["-Db_lto=true", "-Doptimization=3"]
 
 [tool.hatch.envs.default]
 dev-mode = false
