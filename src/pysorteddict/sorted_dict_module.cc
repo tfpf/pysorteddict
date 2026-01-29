@@ -812,7 +812,6 @@ static int sorted_dict_module_exec(PyObject* mod)
     {
         return -1;
     }
-    import_supported_key_types();
     return 0;
 }
 
