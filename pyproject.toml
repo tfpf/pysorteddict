@@ -14,7 +14,7 @@ docs = [
 
 [project]
 name = "pysorteddict"
-version = "0.13.1rc0"
+version = "0.13.1rc2"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
@@ -54,17 +54,11 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 
 [tool.cibuildwheel]
 archs = ["auto64"]
-build = ["cp31{1,4}-manylinux*"]
+build = ["cp311-manylinux*"]
 build-verbosity = 1
-test-command = "pytest {package}"
-test-requires = ["pytest-xdist"]
 
 [tool.cibuildwheel.config-settings]
 setup-args = ["-Db_lto=true", "-Doptimization=2"]
-
-[tool.cibuildwheel.pyodide]
-archs = ["wasm32"]
-test-command = "pytest -n 0 {package}"
 
 [tool.hatch.envs.default]
 dev-mode = false
