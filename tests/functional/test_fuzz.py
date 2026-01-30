@@ -40,10 +40,12 @@ strategy_mapping = {
     UUID: st.uuids(),
 }
 strategy_mapping_complement = {
-    tp: st.one_of(other_strat for other_strat in strategy_mapping.values() if other_strat != strat)
-    for tp, strat in strategy_mapping.items()
+    tp: st.one_of(other_strat for other_tp, other_strat in strategy_mapping.items() if other_tp is not tp)
+    for tp in strategy_mapping
 }
-all_keys = (supported_keys := st.one_of(strategy_mapping.values())) | (unsupported_keys := st.lists(st.integers()))
+supported_keys = st.one_of(strategy_mapping.values())
+unsupported_keys = st.lists(st.integers())
+all_keys = st.one_of(supported_keys, unsupported_keys)
 
 
 def prec_key_type_not_set(self):
