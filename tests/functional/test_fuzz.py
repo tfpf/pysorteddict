@@ -74,9 +74,9 @@ def rule_key_exists():
 
 def rule_key_is_nan():
     return st.runner().flatmap(
-        lambda self: st.sampled_from([float("nan"), Decimal("nan")])
-        if self.key_type is None
-        else st.just(self.key_type("nan"))
+        lambda self: st.just(self.key_type("nan"))
+        if self.key_type is not None
+        else st.sampled_from([float("nan"), Decimal("nan")])
     )
 
 
