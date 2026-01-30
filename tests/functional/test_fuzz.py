@@ -60,6 +60,10 @@ def prec_key_type_admits_nan(self):
     return any(self.key_type is key_type for key_type in [float, Decimal])
 
 
+def prec_keys_not_empty(self):
+    return bool(self.keys)
+
+
 def rule_key_wrong_type():
     return st.runner().flatmap(lambda self: strategy_mapping_complement[self.key_type])
 
@@ -125,7 +129,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     def contains_probably_false(self, key):
         assert (key in self.sorted_dict) == (key in self.normal_dict)
 
-    @precondition(prec_key_type_set)
+    @precondition(prec_keys_not_empty)
     @rule(key=rule_key_exists())
     def contains_true(self, key):
         assert key in self.sorted_dict
@@ -163,7 +167,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         else:
             assert self.sorted_dict[key] == self.normal_dict[key]
 
-    @precondition(prec_key_type_set)
+    @precondition(prec_keys_not_empty)
     @rule(key=rule_key_exists())
     def getitem(self, key):
         assert self.sorted_dict[key] == self.normal_dict[key]
@@ -214,7 +218,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         self.normal_dict[key] = value
         self.sorted_dict[key] = value
 
-    @precondition(prec_key_type_set)
+    @precondition(prec_keys_not_empty)
     @rule(key=rule_key_exists(), value=st.integers())
     def setitem_existing(self, key, value):
         self.normal_dict[key] = value
@@ -223,6 +227,44 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     ###########################################################################
     # `delitem`.
     ###########################################################################
+
+    @precondition(prec_key_type_not_set)
+    @rule(key=all_keys)
+    def delitem_key_type_not_set(self, key):
+        with pytest.raises(RuntimeError, match="key type not set: insert at least one item first"):
+            del self.sorted_dict[key]
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_wrong_type())
+    def delitem_wrong_type(self, key):
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+        ):
+            del self.sorted_dict[key]
+
+    @precondition(prec_key_type_admits_nan)
+    @rule(key=rule_key_is_nan())
+    def delitem_nan(self, key):
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
+            del self.sorted_dict[key]
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_right_type())
+    def delitem_probably_key_error(self, key):
+        if key not in self.normal_dict:
+            with pytest.raises(KeyError, match=re.escape(f"{key!r}")):
+                del self.sorted_dict[key]
+        else:
+            self.keys.remove(key)
+            del self.normal_dict[key]
+            del self.sorted_dict[key]
+
+    @precondition(prec_keys_not_empty)
+    @rule(key=rule_key_exists())
+    def delitem(self, key):
+        self.keys.remove(key)
+        del self.normal_dict[key]
+        del self.sorted_dict[key]
 
 
 TestSortedDictionary = SortedDictionaryChecker.TestCase
