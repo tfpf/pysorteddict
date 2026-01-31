@@ -266,5 +266,15 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         del self.normal_dict[key]
         del self.sorted_dict[key]
 
+    ###########################################################################
+    # `clear`.
+    ###########################################################################
+
+    @rule()
+    def clear(self):
+        self.keys.clear()
+        self.normal_dict.clear()
+        self.sorted_dict.clear()
+
 
 TestSortedDictionary = SortedDictionaryChecker.TestCase
