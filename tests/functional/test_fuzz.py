@@ -99,6 +99,7 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         assert len(self.sorted_dict) == len(sorted_normal_dict)
         assert all(a == b for a, b in zip(self.sorted_dict, sorted_normal_dict, strict=True))
         assert all(a == b for a, b in zip(reversed(self.sorted_dict), reversed(sorted_normal_dict), strict=True))
+        assert self.sorted_dict.key_type is self.key_type
 
     ###########################################################################
     # `contains`.
@@ -275,6 +276,14 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         self.keys.clear()
         self.normal_dict.clear()
         self.sorted_dict.clear()
+
+    ###########################################################################
+    # `copy`.
+    ###########################################################################
+
+    @rule()
+    def copy(self):
+        self.sorted_dict = self.sorted_dict.copy()
 
 
 TestSortedDictionary = SortedDictionaryChecker.TestCase
