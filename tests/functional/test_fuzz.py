@@ -84,13 +84,16 @@ def rule_key_is_nan():
     )
 
 
-class SortedDictionaryChecker(RuleBasedStateMachine):
-    def __init__(self, sorted_dict_type=SortedDict):
+class SortedDictChecker(RuleBasedStateMachine):
+    def __init__(self):
         super().__init__()
+        self.reinitialise()
+
+    def reinitialise(self):
         self.key_type = None
         self.keys = []
         self.normal_dict = {}
-        self.sorted_dict = sorted_dict_type()
+        self.sorted_dict = SortedDict()
 
     @invariant()
     def always(self):
@@ -326,5 +329,13 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
         assert self.sorted_dict.get(key) == self.normal_dict.get(key)
         assert self.sorted_dict.get(key, value) == self.normal_dict.get(key, value)
 
+    ###########################################################################
+    # `init`.
+    ###########################################################################
 
-TestSortedDictionary = SortedDictionaryChecker.TestCase
+    @rule()
+    def init(self):
+        self.reinitialise()
+
+
+TestSortedDictionary = SortedDictChecker.TestCase
