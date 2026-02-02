@@ -285,5 +285,46 @@ class SortedDictionaryChecker(RuleBasedStateMachine):
     def copy(self):
         self.sorted_dict = self.sorted_dict.copy()
 
+    ###########################################################################
+    # `get`.
+    ###########################################################################
+
+    @rule()
+    def get_wrong_call(self):
+        with pytest.raises(TypeError, match=re.escape("get() takes at most 2 arguments (3 given)")):
+            self.sorted_dict.get(object, object, object)
+
+    @precondition(prec_key_type_not_set)
+    @rule(key=all_keys)
+    def get_key_type_not_set(self, key):
+        with pytest.raises(RuntimeError, match="key type not set: insert at least one item first"):
+            self.sorted_dict.get(key)
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_wrong_type())
+    def get_wrong_type(self, key):
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+        ):
+            self.sorted_dict.get(key)
+
+    @precondition(prec_key_type_admits_nan)
+    @rule(key=rule_key_is_nan())
+    def get_nan(self, key):
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
+            self.sorted_dict.get(key)
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_right_type(), value=st.integers())
+    def get_probably_something(self, key, value):
+        assert self.sorted_dict.get(key) == self.normal_dict.get(key)
+        assert self.sorted_dict.get(key, value) == self.normal_dict.get(key, value)
+
+    @precondition(prec_keys_not_empty)
+    @rule(key=rule_key_exists(), value=st.integers())
+    def get_existing(self, key, value):
+        assert self.sorted_dict.get(key) == self.normal_dict.get(key)
+        assert self.sorted_dict.get(key, value) == self.normal_dict.get(key, value)
+
 
 TestSortedDictionary = SortedDictionaryChecker.TestCase
