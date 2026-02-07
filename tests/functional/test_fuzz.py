@@ -330,6 +330,54 @@ class SortedDictChecker(RuleBasedStateMachine):
         assert self.sorted_dict.get(key, value) == self.normal_dict.get(key, value)
 
     ###########################################################################
+    # `setdefault`.
+    ###########################################################################
+
+    @rule()
+    def setdefault_wrong_call(self):
+        with pytest.raises(TypeError, match=re.escape("setdefault() takes at most 2 arguments (3 given)")):
+            self.sorted_dict.setdefault(object, object, object)
+
+    @precondition(prec_key_type_not_set)
+    @rule(key=all_keys)
+    def setdefault_key_type_not_set(self, key):
+        with pytest.raises(RuntimeError, match="key type not set: insert at least one item first"):
+            self.sorted_dict.setdefault(key)
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_wrong_type())
+    def setdefault_wrong_type(self, key):
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+        ):
+            self.sorted_dict.setdefault(key)
+
+    @precondition(prec_key_type_admits_nan)
+    @rule(key=rule_key_is_nan())
+    def setdefault_nan(self, key):
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
+            self.sorted_dict.setdefault(key)
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_right_type())
+    def setdefault_probably_new(self, key):
+        if key not in self.normal_dict:
+            self.keys.append(key)
+        assert self.sorted_dict.setdefault(key) == self.normal_dict.setdefault(key)
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_right_type(), value=st.integers())
+    def setdefault_probably_new_default(self, key, value):
+        if key not in self.normal_dict:
+            self.keys.append(key)
+        assert self.sorted_dict.setdefault(key, value) == self.normal_dict.setdefault(key, value)
+
+    @precondition(prec_keys_not_empty)
+    @rule(key=rule_key_exists())
+    def sedefault_existing(self, key):
+        assert self.sorted_dict.setdefault(key) == self.normal_dict.setdefault(key)
+
+    ###########################################################################
     # `init`.
     ###########################################################################
 
