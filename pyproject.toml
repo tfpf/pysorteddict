@@ -60,14 +60,19 @@ test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
 [tool.cibuildwheel.config-settings]
-setup-args = ["-Db_lto=true"]
+setup-args = [
+    "-Db_lto=true",
+    # Python for Windows is built using MSVC, so C++ extension modules for it
+    # must also be built using MSVC. However, Meson uses Clang or GCC (if
+    # available). Hence, force it to use MSVC. This is harmless on other
+    # platforms. See
+    # https://mesonbuild.com/meson-python/how-to-guides/meson-args.html.
+    "-Dvsenv=true",
+]
 
 [tool.cibuildwheel.pyodide]
 archs = ["wasm32"]
 test-command = "pytest -n 0 {package}"
-
-[tool.hatch.envs.default]
-dev-mode = false
 
 [tool.hatch.envs.cov]
 detached = true
