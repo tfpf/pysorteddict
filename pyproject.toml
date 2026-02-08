@@ -74,6 +74,17 @@ setup-args = [
 archs = ["wasm32"]
 test-command = "pytest -n 0 {package}"
 
+[tool.hatch.envs.default]
+# Set an environment variable to disable build isolation. (Hatch does not
+# expose a setting to do so.) This is required for editable installations of a
+# C++ extension module to work correctly. See
+# https://mesonbuild.com/meson-python/how-to-guides/editable-installs.html.
+# The build dependencies must therefore be available in the environment.
+env-vars = {PIP_NO_BUILD_ISOLATION = "false"}
+pre-install-commands = [
+    "pip install meson-python ninja",
+]
+
 [tool.hatch.envs.cov]
 detached = true
 features = ["cov"]
