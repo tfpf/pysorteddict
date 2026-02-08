@@ -74,9 +74,6 @@ setup-args = [
 archs = ["wasm32"]
 test-command = "pytest -n 0 {package}"
 
-[tool.hatch.envs.default]
-dev-mode = false
-
 [tool.hatch.envs.cov]
 detached = true
 features = ["cov"]
