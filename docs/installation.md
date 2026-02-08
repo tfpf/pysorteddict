@@ -48,7 +48,7 @@ that's probably due to the editable installation not working as expected. Just i
 ```shell
 python -m venv pysorteddict-venv
 . pysorteddict-venv/bin/activate
-pip install meson-python
+pip install meson-python ninja
 pip install --editable . --no-build-isolation
 ```
 
