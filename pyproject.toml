@@ -114,6 +114,7 @@ docs = "sphinx-build docs/ docs/_build/"
 
 [tool.meson-python.args]
 compile = ["-v"]
+setup = ["-Ddebug=true", "-Doptimization=g"]
 
 [tool.pytest.ini_options]
 addopts = "--dist=worksteal -n logical"
