@@ -80,8 +80,12 @@ def rule_key_is_nan():
     return st.runner().flatmap(
         lambda self: st.just(self.key_type("nan"))
         if self.key_type is not None
-        else st.sampled_from([float("nan"), Decimal("nan")])
+        else st.sampled_from((float("nan"), Decimal("nan")))
     )
+
+
+def rule_sorted_dict_or_sorted_dict_keys():
+    return st.runner().flatmap(lambda self: st.sampled_from((self.sorted_dict, self.sorted_dict_keys)))
 
 
 class SortedDictChecker(RuleBasedStateMachine):
@@ -102,7 +106,12 @@ class SortedDictChecker(RuleBasedStateMachine):
     def always(self):
         sorted_normal_dict = dict(sorted(self.normal_dict.items()))
         assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
-        assert len(self.sorted_dict) == len(sorted_normal_dict)
+
+        sorted_normal_dict_len = len(sorted_normal_dict)
+        assert len(self.sorted_dict) == sorted_normal_dict_len
+        assert len(self.sorted_dict_items) == sorted_normal_dict_len
+        assert len(self.sorted_dict_keys) == sorted_normal_dict_len
+        assert len(self.sorted_dict_values) == sorted_normal_dict_len
 
         assert [*self.sorted_dict] == [*sorted_normal_dict]
         assert [*reversed(self.sorted_dict)] == [*reversed(sorted_normal_dict)]
@@ -119,38 +128,38 @@ class SortedDictChecker(RuleBasedStateMachine):
         assert self.sorted_dict.key_type is self.key_type
 
     ###########################################################################
-    # `contains`.
+    # `contains` for the sorted dictionary and its keys.
     ###########################################################################
 
     @precondition(prec_key_type_not_set)
-    @rule(key=all_keys)
-    def contains_key_type_not_set(self, key):
+    @rule(instance=rule_sorted_dict_or_sorted_dict_keys(), key=all_keys)
+    def contains_key_type_not_set(self, instance, key):
         with pytest.raises(RuntimeError, match="key type not set: insert at least one item first"):
-            _ = key in self.sorted_dict
+            _ = key in instance
 
     @precondition(prec_key_type_set)
-    @rule(key=rule_key_wrong_type())
-    def contains_wrong_type(self, key):
+    @rule(instance=rule_sorted_dict_or_sorted_dict_keys(), key=rule_key_wrong_type())
+    def contains_wrong_type(self, instance, key):
         with pytest.raises(
             TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
         ):
-            _ = key in self.sorted_dict
+            _ = key in instance
 
     @precondition(prec_key_type_admits_nan)
-    @rule(key=rule_key_is_nan())
-    def contains_nan(self, key):
+    @rule(instance=rule_sorted_dict_or_sorted_dict_keys(), key=rule_key_is_nan())
+    def contains_nan(self, instance, key):
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
-            _ = key in self.sorted_dict
+            _ = key in instance
 
     @precondition(prec_key_type_set)
-    @rule(key=rule_key_right_type())
-    def contains_probably_false(self, key):
-        assert (key in self.sorted_dict) == (key in self.normal_dict)
+    @rule(instance=rule_sorted_dict_or_sorted_dict_keys(), key=rule_key_right_type())
+    def contains_probably_false(self, instance, key):
+        assert (key in instance) == (key in self.normal_dict)
 
     @precondition(prec_keys_not_empty)
-    @rule(key=rule_key_exists())
-    def contains_true(self, key):
-        assert key in self.sorted_dict
+    @rule(instance=rule_sorted_dict_or_sorted_dict_keys(), key=rule_key_exists())
+    def contains_true(self, instance, key):
+        assert key in instance
 
     ###########################################################################
     # `getitem`.
