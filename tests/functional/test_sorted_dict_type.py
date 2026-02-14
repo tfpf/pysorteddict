@@ -88,7 +88,7 @@ def rule_sorted_dict_or_sorted_dict_keys():
     return st.runner().flatmap(lambda self: st.sampled_from((self.sorted_dict, self.sorted_dict_keys)))
 
 
-class SortedDictChecker(RuleBasedStateMachine):
+class MachineSortedDictType(RuleBasedStateMachine):
     def __init__(self):
         super().__init__()
         self.reinitialise()
@@ -165,8 +165,28 @@ class SortedDictChecker(RuleBasedStateMachine):
         assert key in instance
 
     ###########################################################################
-    # `contains` the sorted dictionary items.
+    # `contains` for the sorted dictionary items.
     ###########################################################################
+
+    @rule()
+    def contains2_wrong_call(self):
+        assert [object, object, object] not in self.sorted_dict_items
+        assert (object, object, object) not in self.sorted_dict_items
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_right_type(), value=st.integers())
+    def contains2_probably_false_because_of_key(self, key, value):
+        assert ((key, value) in self.sorted_dict_items) == ((key, value) in self.normal_dict.items())
+
+    @precondition(prec_keys_not_empty)
+    @rule(key=rule_key_exists(), value=st.integers())
+    def contains2_probably_false_because_of_value(self, key, value):
+        assert ((key, value) in self.sorted_dict_items) == ((key, value) in self.normal_dict.items())
+
+    @precondition(prec_keys_not_empty)
+    @rule(key=rule_key_exists())
+    def contains2_true(self, key):
+        assert (key, self.normal_dict[key]) in self.sorted_dict_items
 
     ###########################################################################
     # `getitem`.
@@ -419,4 +439,4 @@ class SortedDictChecker(RuleBasedStateMachine):
         self.reinitialise()
 
 
-TestSortedDictionary = SortedDictChecker.TestCase
+TestSortedDictType = MachineSortedDictType.TestCase
