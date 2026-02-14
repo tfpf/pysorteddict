@@ -105,7 +105,13 @@ class SortedDictChecker(RuleBasedStateMachine):
     @invariant()
     def always(self):
         sorted_normal_dict = dict(sorted(self.normal_dict.items()))
+        sorted_normal_dict_items_list = [*sorted_normal_dict.items()]
+        sorted_normal_dict_keys_list = [*sorted_normal_dict.keys()]
+        sorted_normal_dict_values_list = [*sorted_normal_dict.values()]
         assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
+        assert repr(self.sorted_dict_items) == f"SortedDictItems({sorted_normal_dict_items_list})"
+        assert repr(self.sorted_dict_keys) == f"SortedDictKeys({sorted_normal_dict_keys_list})"
+        assert repr(self.sorted_dict_values) == f"SortedDictValues({sorted_normal_dict_values_list})"
 
         sorted_normal_dict_len = len(sorted_normal_dict)
         assert len(self.sorted_dict) == sorted_normal_dict_len
@@ -115,15 +121,12 @@ class SortedDictChecker(RuleBasedStateMachine):
 
         assert [*self.sorted_dict] == [*sorted_normal_dict]
         assert [*reversed(self.sorted_dict)] == [*reversed(sorted_normal_dict)]
-        sorted_normal_dict_items = sorted_normal_dict.items()
-        assert [*self.sorted_dict_items] == [*sorted_normal_dict_items]
-        assert [*reversed(self.sorted_dict_items)] == [*reversed(sorted_normal_dict_items)]
-        sorted_normal_dict_keys = sorted_normal_dict.keys()
-        assert [*self.sorted_dict_keys] == [*sorted_normal_dict_keys]
-        assert [*reversed(self.sorted_dict_keys)] == [*reversed(sorted_normal_dict_keys)]
-        sorted_normal_dict_values = sorted_normal_dict.values()
-        assert [*self.sorted_dict_values] == [*sorted_normal_dict_values]
-        assert [*reversed(self.sorted_dict_values)] == [*reversed(sorted_normal_dict_values)]
+        assert [*self.sorted_dict_items] == sorted_normal_dict_items_list
+        assert [*reversed(self.sorted_dict_items)] == sorted_normal_dict_items_list[::-1]
+        assert [*self.sorted_dict_keys] == sorted_normal_dict_keys_list
+        assert [*reversed(self.sorted_dict_keys)] == sorted_normal_dict_keys_list[::-1]
+        assert [*self.sorted_dict_values] == sorted_normal_dict_values_list
+        assert [*reversed(self.sorted_dict_values)] == sorted_normal_dict_values_list[::-1]
 
         assert self.sorted_dict.key_type is self.key_type
 
@@ -160,6 +163,10 @@ class SortedDictChecker(RuleBasedStateMachine):
     @rule(instance=rule_sorted_dict_or_sorted_dict_keys(), key=rule_key_exists())
     def contains_true(self, instance, key):
         assert key in instance
+
+    ###########################################################################
+    # `contains` the sorted dictionary items.
+    ###########################################################################
 
     ###########################################################################
     # `getitem`.
