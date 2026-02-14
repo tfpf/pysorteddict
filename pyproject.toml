@@ -98,7 +98,7 @@ features = ["cov"]
 cov = [
     "rm -fr cov/",
     "pip install -C build-dir=cov -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -q .",
-    "pytest",
+    "pytest -q",
     "gcovr --html-details cov/index.html",
 ]
 

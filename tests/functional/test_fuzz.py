@@ -94,14 +94,28 @@ class SortedDictChecker(RuleBasedStateMachine):
         self.keys = []
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
+        self.sorted_dict_items = self.sorted_dict.items()
+        self.sorted_dict_keys = self.sorted_dict.keys()
+        self.sorted_dict_values = self.sorted_dict.values()
 
     @invariant()
     def always(self):
         sorted_normal_dict = dict(sorted(self.normal_dict.items()))
         assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
         assert len(self.sorted_dict) == len(sorted_normal_dict)
-        assert all(a == b for a, b in zip(self.sorted_dict, sorted_normal_dict, strict=True))
-        assert all(a == b for a, b in zip(reversed(self.sorted_dict), reversed(sorted_normal_dict), strict=True))
+
+        assert [*self.sorted_dict] == [*sorted_normal_dict]
+        assert [*reversed(self.sorted_dict)] == [*reversed(sorted_normal_dict)]
+        sorted_normal_dict_items = sorted_normal_dict.items()
+        assert [*self.sorted_dict_items] == [*sorted_normal_dict_items]
+        assert [*reversed(self.sorted_dict_items)] == [*reversed(sorted_normal_dict_items)]
+        sorted_normal_dict_keys = sorted_normal_dict.keys()
+        assert [*self.sorted_dict_keys] == [*sorted_normal_dict_keys]
+        assert [*reversed(self.sorted_dict_keys)] == [*reversed(sorted_normal_dict_keys)]
+        sorted_normal_dict_values = sorted_normal_dict.values()
+        assert [*self.sorted_dict_values] == [*sorted_normal_dict_values]
+        assert [*reversed(self.sorted_dict_values)] == [*reversed(sorted_normal_dict_values)]
+
         assert self.sorted_dict.key_type is self.key_type
 
     ###########################################################################
@@ -287,6 +301,9 @@ class SortedDictChecker(RuleBasedStateMachine):
     @rule()
     def copy(self):
         self.sorted_dict = self.sorted_dict.copy()
+        self.sorted_dict_items = self.sorted_dict.items()
+        self.sorted_dict_keys = self.sorted_dict.keys()
+        self.sorted_dict_values = self.sorted_dict.values()
 
     ###########################################################################
     # `get`.
