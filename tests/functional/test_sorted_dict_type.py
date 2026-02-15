@@ -1,10 +1,12 @@
 import re
 import string
+from collections.abc import Iterator
 from datetime import date, timedelta
 from decimal import Decimal
 from fractions import Fraction
 from ipaddress import IPv4Address, IPv4Interface, IPv4Network, IPv6Address, IPv6Interface, IPv6Network
 from pathlib import Path, PurePath
+from typing import Any
 from uuid import UUID
 
 import pytest
@@ -89,6 +91,21 @@ def rule_sorted_dict_or_sorted_dict_keys() -> SearchStrategy:
     return st.runner().flatmap(lambda self: st.sampled_from((self.sorted_dict, self.sorted_dict_keys)))
 
 
+class IteratorWrapper:
+    def __init__(self, iterator: Iterator, *, fwd: bool, keys: list[Any]):
+        self.iterator = iterator
+        self.fwd = fwd
+        self.keys = keys
+        if not self.keys:
+            self.exhausted = True
+            self.locked_key = None
+            return
+        if self.fwd:
+            self.locked_key = min(self.keys)
+        else:
+            self.locked_key = None
+
+
 class MachineSortedDictType(RuleBasedStateMachine):
     def __init__(self):
         super().__init__()
@@ -102,6 +119,7 @@ class MachineSortedDictType(RuleBasedStateMachine):
         self.sorted_dict_items = self.sorted_dict.items()
         self.sorted_dict_keys = self.sorted_dict.keys()
         self.sorted_dict_values = self.sorted_dict.values()
+        self.iterator_wrappers = []
 
     @invariant()
     def always(self):
@@ -322,14 +340,25 @@ class MachineSortedDictType(RuleBasedStateMachine):
         del self.sorted_dict[key]
 
     ###########################################################################
+    # `iter`.
+    ###########################################################################
+
+    @rule()
+    def iter(self):
+        self.iterator_wrappers.append(IteratorWrapper(iter(self.sorted_dict), fwd=True, keys=self.keys))
+
+    ###########################################################################
     # `clear`.
     ###########################################################################
 
     @rule()
     def clear(self):
+        # Do not reassign this member because references to it are held by
+        # another member.
         self.keys.clear()
         self.normal_dict.clear()
         self.sorted_dict.clear()
+        self.iterator_wrappers.clear()
 
     ###########################################################################
     # `copy`.
@@ -341,6 +370,7 @@ class MachineSortedDictType(RuleBasedStateMachine):
         self.sorted_dict_items = self.sorted_dict.items()
         self.sorted_dict_keys = self.sorted_dict.keys()
         self.sorted_dict_values = self.sorted_dict.values()
+        self.iterator_wrappers.clear()
 
     ###########################################################################
     # `get`.
