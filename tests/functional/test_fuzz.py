@@ -106,7 +106,7 @@ class IteratorWrapper:
             self.locked_key = None
 
 
-class MachineSortedDictType(RuleBasedStateMachine):
+class FuzzMachine(RuleBasedStateMachine):
     def __init__(self):
         super().__init__()
         self.reinitialise()
@@ -470,4 +470,4 @@ class MachineSortedDictType(RuleBasedStateMachine):
         self.reinitialise()
 
 
-TestSortedDictType = MachineSortedDictType.TestCase
+TestFuzz = FuzzMachine.TestCase
