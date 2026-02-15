@@ -75,29 +75,29 @@ Tests to benchmark the performance of some methods.
 
 First, ensure that a C++20 compiler and the Python development headers and libraries are available.
 
-### Linux and macOS
-
+:::{tab} Linux and macOS
 ```shell
 python -m venv pysorteddict-venv
 . pysorteddict-venv/bin/activate
 pip install meson-python ninja
 pip install --editable . --no-build-isolation
 ```
+:::
 
-### Windows with Command Prompt
-
+:::{tab} Windows with Command Prompt
 ```bat
 python -m venv pysorteddict-venv
 pysorteddict-venv\Scripts\activate.bat
 pip install meson-python ninja
 pip install --editable . --no-build-isolation
 ```
+:::
 
-### Windows with MSYS2 UCRT64
-
+:::{tab} Windows with MSYS2 UCRT64
 ```shell
 pacman -S mingw-w64-ucrt-x86_64-meson-python
 python -m venv --system-site-packages pysorteddict-venv
 . pysorteddict-venv/bin/activate
 pip install --editable . --no-build-isolation
 ```
+:::

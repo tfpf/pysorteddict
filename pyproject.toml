@@ -10,6 +10,7 @@ docs = [
     "jupyterlite-pyodide-kernel~=0.7.0",
     "jupyterlite-sphinx~=0.22.0",
     "myst-parser~=4.0",
+    "sphinx-inline-tabs~=2025.12",
 ]
 
 [project]
