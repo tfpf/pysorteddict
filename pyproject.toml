@@ -60,27 +60,45 @@ test-command = "pytest {package}"
 test-requires = ["pytest-xdist"]
 
 [tool.cibuildwheel.config-settings]
-setup-args = ["-Db_lto=true"]
+setup-args = [
+    "-Db_lto=true",
+    "-Ddebug=false",
+    "-Doptimization=3",
+    # Python for Windows is built using MSVC, so C++ extension modules for it
+    # must also be built using MSVC. However, Meson uses Clang or GCC (if
+    # available). Hence, force it to use MSVC. This is harmless on other
+    # platforms. See
+    # https://mesonbuild.com/meson-python/how-to-guides/meson-args.html.
+    "-Dvsenv=true",
+]
 
 [tool.cibuildwheel.pyodide]
 archs = ["wasm32"]
 test-command = "pytest -n 0 {package}"
 
 [tool.hatch.envs.default]
-dev-mode = false
+# Set an environment variable to disable build isolation. (Hatch does not
+# expose a setting to do so.) This is required for editable installations of a
+# C++ extension module to work correctly. See
+# https://mesonbuild.com/meson-python/how-to-guides/editable-installs.html.
+# The build dependencies must therefore be available in the environment.
+env-vars = {PIP_NO_BUILD_ISOLATION = "false"}
+pre-install-commands = [
+    "pip install meson-python ninja",
+]
 
 [tool.hatch.envs.cov]
 detached = true
+env-exclude = ["PIP_NO_BUILD_ISOLATION"]
 features = ["cov"]
 
 [tool.hatch.envs.cov.scripts]
 # To report C++ code coverage, the build directory must persist, because
 # reporting coverage requires data from both coverage and object files.
 cov = [
-    "rm -fr build/ cov/",
-    "pip install -C build-dir=build -C setup-args=-Db_coverage=true -C setup-args=-Dbuildtype=debug -q .",
+    "rm -fr cov/",
+    "pip install -C build-dir=cov -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -q .",
     "pytest",
-    "mkdir cov/",
     "gcovr --html-details cov/index.html",
 ]
 
@@ -98,6 +116,12 @@ docs = "sphinx-build docs/ docs/_build/"
 
 [tool.meson-python.args]
 compile = ["-v"]
+setup = [
+    "-Ddebug=true",
+    "-Doptimization=g",
+    "-Dwarning_level=1",
+    "-Dwerror=true",
+]
 
 [tool.pytest.ini_options]
 addopts = "--dist=worksteal -n logical"

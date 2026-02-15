@@ -88,3 +88,14 @@ def test_destructive_reverse_iteration(sorted_dict):
         del sorted_dict[prev_key]
     assert len(sorted_dict) == 0
     assert not [*sorted_dict]
+
+
+@pytest.mark.parametrize("sorted_dict", [*range(10), 100, 1_000, 10_000, 100_000], indirect=True)
+def test_reverse_iterator_automatic_exhaustion(sorted_dict):
+    reverse_iterator = reversed(sorted_dict)
+    if len(sorted_dict) != 0:
+        key = sorted_dict.keys()[0]
+        [*itertools.islice(reverse_iterator, len(sorted_dict) - 1)]
+        del sorted_dict[key]
+    with pytest.raises(StopIteration):
+        next(reverse_iterator)

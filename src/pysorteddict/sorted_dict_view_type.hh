@@ -30,6 +30,7 @@ protected:
 private:
     void track(T);
     void untrack(T);
+    PyObject* next_when_has_next(void);
 
 public:
     static void Delete(PyObject*);
