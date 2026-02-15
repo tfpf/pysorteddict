@@ -131,11 +131,7 @@ PyObject* SortedDictViewIterType<FwdIterType>::next(void)
         return nullptr;
     }
 
-    // The 'next' key-value pair is the current one the iterator points to.
-    FwdIterType curr = this->it++;
-    this->untrack(curr);
-    this->track(this->it);
-    return this->iterator_to_object(curr);
+    return this->next_when_has_next();
 }
 
 template<>
@@ -159,8 +155,14 @@ PyObject* SortedDictViewIterType<RevIterType>::next(void)
         return nullptr;
     }
 
-    // Otherwise, the logic is similar to its counterpart.
-    RevIterType curr = this->it++;
+    return this->next_when_has_next();
+}
+
+template<typename T>
+PyObject* SortedDictViewIterType<T>::next_when_has_next(void)
+{
+    // The 'next' key-value pair is the current one the iterator points to.
+    T curr = this->it++;
     this->untrack(curr);
     this->track(this->it);
     return this->iterator_to_object(curr);
