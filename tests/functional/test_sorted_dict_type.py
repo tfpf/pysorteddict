@@ -11,6 +11,7 @@ import pytest
 from hypothesis import settings
 from hypothesis import strategies as st
 from hypothesis.stateful import RuleBasedStateMachine, invariant, precondition, rule
+from hypothesis.strategies import SearchStrategy
 
 from pysorteddict import SortedDict
 
@@ -48,35 +49,35 @@ unsupported_keys = st.lists(st.integers())
 all_keys = st.one_of(supported_keys, unsupported_keys)
 
 
-def prec_key_type_not_set(self):
+def prec_key_type_not_set(self) -> bool:
     return self.key_type is None
 
 
-def prec_key_type_set(self):
+def prec_key_type_set(self) -> bool:
     return self.key_type is not None
 
 
-def prec_key_type_admits_nan(self):
+def prec_key_type_admits_nan(self) -> bool:
     return any(self.key_type is key_type for key_type in [float, Decimal])
 
 
-def prec_keys_not_empty(self):
+def prec_keys_not_empty(self) -> bool:
     return bool(self.keys)
 
 
-def rule_key_wrong_type():
+def rule_key_wrong_type() -> SearchStrategy:
     return st.runner().flatmap(lambda self: strategy_mapping_complement[self.key_type])
 
 
-def rule_key_right_type():
+def rule_key_right_type() -> SearchStrategy:
     return st.runner().flatmap(lambda self: strategy_mapping[self.key_type])
 
 
-def rule_key_exists():
+def rule_key_exists() -> SearchStrategy:
     return st.runner().flatmap(lambda self: st.sampled_from(self.keys))
 
 
-def rule_key_is_nan():
+def rule_key_is_nan() -> SearchStrategy:
     return st.runner().flatmap(
         lambda self: st.just(self.key_type("nan"))
         if self.key_type is not None
@@ -84,7 +85,7 @@ def rule_key_is_nan():
     )
 
 
-def rule_sorted_dict_or_sorted_dict_keys():
+def rule_sorted_dict_or_sorted_dict_keys() -> SearchStrategy:
     return st.runner().flatmap(lambda self: st.sampled_from((self.sorted_dict, self.sorted_dict_keys)))
 
 
