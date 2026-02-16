@@ -15,7 +15,7 @@ docs = [
 
 [project]
 name = "pysorteddict"
-version = "0.13.1rc0"
+version = "0.13.1"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
