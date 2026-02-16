@@ -4,7 +4,7 @@
 
 [Explore the repository on GitHub.](https://github.com/tfpf/pysorteddict)
 
-Related components are grouped into directories.
+The organisation of the code is rather straightforward. Related components are grouped into directories.
 
 ### `docs/`
 
@@ -71,11 +71,22 @@ Performance tests.
 
 Tests to benchmark the performance of some methods.
 
-## Install pysorteddict for Develpoment
+## Developer's Setup
 
-First, ensure that a C++20 compiler and the Python development headers and libraries are available.
+To begin with, ensure that a C++20 compiler and the Python 3.10 (or newer) development headers and libraries are
+available.
 
-:::{tab} Linux and macOS
+[Hatch](https://hatch.pypa.io/latest/) is recommended to set up pysorteddict for development. Enter the command
+
+```shell
+hatch shell
+```
+
+to automatically enter a managed virtual environment and install the project in editable mode.
+
+Alternatively, create a virtual environment and install the project manually.
+
+:::{tab} Linux, macOS
 ```shell
 python -m venv pysorteddict-venv
 . pysorteddict-venv/bin/activate
@@ -84,7 +95,7 @@ pip install --editable . --no-build-isolation
 ```
 :::
 
-:::{tab} Windows with Command Prompt
+:::{tab} Windows (Command Prompt, MSVC)
 ```bat
 python -m venv pysorteddict-venv
 pysorteddict-venv\Scripts\activate.bat
@@ -93,7 +104,7 @@ pip install --editable . --no-build-isolation
 ```
 :::
 
-:::{tab} Windows with MSYS2 UCRT64
+:::{tab} Windows (MSYS2 UCRT64, GCC)
 ```shell
 pacman -S mingw-w64-ucrt-x86_64-meson-python
 python -m venv --system-site-packages pysorteddict-venv
