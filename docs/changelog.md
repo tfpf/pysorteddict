@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 * `SortedDictItemsRevIter`, `SortedDictKeysRevIter` and `SortedDictValuesRevIter` do not crash the program when the
-  key-value pair they were referencing is erased.
+  key-value pair they were referencing is erased ([#260](https://github.com/tfpf/pysorteddict/pull/260)).
 
 ## [0.13.0](https://github.com/tfpf/pysorteddict/compare/v0.12.1...v0.13.0) (2025-12-23)
 
