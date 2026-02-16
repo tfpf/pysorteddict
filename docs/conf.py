@@ -35,7 +35,7 @@ copyright = f"2025–2026, {author}"
 release = metadata["version"]
 project = metadata["name"] + " " + release
 
-extensions = ["jupyterlite_sphinx", "myst_parser"]
+extensions = ["jupyterlite_sphinx", "myst_parser", "sphinx_inline_tabs"]
 source_suffix = [".md", ".rst"]
 exclude_patterns = ["_build"]
 
@@ -50,6 +50,10 @@ html_theme_options = {
         "font-stack": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--headings": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--monospace": "JetBrainsMono pysorteddict, Consolas, Monaco, Liberation Mono, monospace",
+        "tabs--label-border--active": "rgb(7, 148, 134)",
+        "tabs--label-text--active": "rgb(7, 148, 134)",
+        "tabs--label-border--active--hover": "rgb(7, 148, 134)",
+        "tabs--label-text--active--hover": "rgb(7, 148, 134)",
     },
     "source_branch": "main",
     "source_directory": "docs",
