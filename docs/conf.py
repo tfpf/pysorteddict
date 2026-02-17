@@ -45,15 +45,18 @@ html_favicon = "_static/images/favicon.svg"
 html_logo = "_static/images/logo.svg"
 html_static_path = ["_static"]
 html_theme = "furo"
+html_theme_colour = "rgb(1, 140, 126)"
 html_theme_options = {
     "light_css_variables": {
+        "color-sidebar-link-text--top-level": html_theme_colour,
+        "color-toc-item-text--active": html_theme_colour,
         "font-stack": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--headings": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--monospace": "JetBrainsMono pysorteddict, Consolas, Monaco, Liberation Mono, monospace",
-        "tabs--label-border--active": "rgb(7, 148, 134)",
-        "tabs--label-text--active": "rgb(7, 148, 134)",
-        "tabs--label-border--active--hover": "rgb(7, 148, 134)",
-        "tabs--label-text--active--hover": "rgb(7, 148, 134)",
+        "tabs--label-border--active": html_theme_colour,
+        "tabs--label-text--active": html_theme_colour,
+        "tabs--label-border--active--hover": html_theme_colour,
+        "tabs--label-text--active--hover": html_theme_colour,
     },
     "source_branch": "main",
     "source_directory": "docs",
