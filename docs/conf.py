@@ -35,7 +35,7 @@ copyright = f"2025–2026, {author}"
 release = metadata["version"]
 project = metadata["name"] + " " + release
 
-extensions = ["jupyterlite_sphinx", "myst_parser"]
+extensions = ["jupyterlite_sphinx", "myst_parser", "sphinx_inline_tabs"]
 source_suffix = [".md", ".rst"]
 exclude_patterns = ["_build"]
 
@@ -45,11 +45,18 @@ html_favicon = "_static/images/favicon.svg"
 html_logo = "_static/images/logo.svg"
 html_static_path = ["_static"]
 html_theme = "furo"
+html_theme_colour = "rgb(1, 140, 126)"
 html_theme_options = {
     "light_css_variables": {
+        "color-sidebar-link-text--top-level": html_theme_colour,
+        "color-toc-item-text--active": html_theme_colour,
         "font-stack": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--headings": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--monospace": "JetBrainsMono pysorteddict, Consolas, Monaco, Liberation Mono, monospace",
+        "tabs--label-border--active": html_theme_colour,
+        "tabs--label-text--active": html_theme_colour,
+        "tabs--label-border--active--hover": html_theme_colour,
+        "tabs--label-text--active--hover": html_theme_colour,
     },
     "source_branch": "main",
     "source_directory": "docs",

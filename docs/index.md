@@ -12,7 +12,7 @@ usage
 documentation
 performance
 changelog
-repository
+development
 :::
 
 <!--
@@ -27,5 +27,5 @@ desired, though.
 [[![documentation](_static/images/documentation.svg)<br>Documentation](documentation)]{.card}
 [[![performance](_static/images/performance.svg)<br>Performance](performance)]{.card}
 [[![changelog](_static/images/changelog.svg)<br>Changelog](changelog)]{.card}
-[[![repository](_static/images/repository.svg)<br>Repository](repository)]{.card}
+[[![development](_static/images/development.svg)<br>Development](development)]{.card}
 ]{.card-container}
