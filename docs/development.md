@@ -73,8 +73,8 @@ Tests to benchmark the performance of some methods.
 
 ## Developer's Setup
 
-To begin with, ensure that a C++20 compiler and the Python 3.10 (or newer) development headers and libraries are
-available.
+To begin with, ensure that a C++20 compiler and Python 3.10 (or newer) along with its development headers and libraries
+are available.
 
 [Hatch](https://hatch.pypa.io/latest/) is recommended to set up pysorteddict for development. Enter the command
 
@@ -95,16 +95,16 @@ pip install --editable . --no-build-isolation
 ```
 :::
 
-:::{tab} Windows (Command Prompt, MSVC)
+:::{tab} Windows
 ```bat
-python -m venv pysorteddict-venv
-pysorteddict-venv\Scripts\activate.bat
+py -m venv pysorteddict-venv
+pysorteddict-venv\Scripts\activate
 pip install meson-python ninja
 pip install --editable . --no-build-isolation
 ```
 :::
 
-:::{tab} Windows (MSYS2 UCRT64, GCC)
+:::{tab} MSYS2 UCRT64
 ```shell
 pacman -S mingw-w64-ucrt-x86_64-meson-python
 python -m venv --system-site-packages pysorteddict-venv
