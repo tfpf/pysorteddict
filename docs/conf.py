@@ -45,18 +45,22 @@ html_favicon = "_static/images/favicon.svg"
 html_logo = "_static/images/logo.svg"
 html_static_path = ["_static"]
 html_theme = "furo"
-html_theme_colour = "rgb(1, 140, 126)"
+html_theme_activated_colour = "rgba(39, 180, 166, 0.2)"
+html_theme_background_colour = "rgba(39, 180, 166, 0.1)"
+html_theme_foreground_colour = "rgb(1, 140, 126)"
 html_theme_options = {
     "light_css_variables": {
-        "color-sidebar-link-text--top-level": html_theme_colour,
-        "color-toc-item-text--active": html_theme_colour,
+        "color-sidebar-item-background--current": html_theme_activated_colour,
+        "color-sidebar-item-background--hover": html_theme_background_colour,
+        "color-sidebar-link-text--top-level": html_theme_foreground_colour,
+        "color-toc-item-text--active": html_theme_foreground_colour,
         "font-stack": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--headings": "Signika pysorteddict, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji",
         "font-stack--monospace": "JetBrainsMono pysorteddict, Consolas, Monaco, Liberation Mono, monospace",
-        "tabs--label-border--active": html_theme_colour,
-        "tabs--label-text--active": html_theme_colour,
-        "tabs--label-border--active--hover": html_theme_colour,
-        "tabs--label-text--active--hover": html_theme_colour,
+        "tabs--label-border--active": html_theme_foreground_colour,
+        "tabs--label-text--active": html_theme_foreground_colour,
+        "tabs--label-border--active--hover": html_theme_foreground_colour,
+        "tabs--label-text--active--hover": html_theme_foreground_colour,
     },
     "source_branch": "main",
     "source_directory": "docs",
