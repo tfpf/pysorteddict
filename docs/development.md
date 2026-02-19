@@ -76,6 +76,12 @@ Tests to benchmark the performance of some methods.
 To begin with, ensure that a C++20 compiler and Python 3.10 (or newer) along with its development headers and libraries
 are available.
 
+An editable installation of pysorteddict allows modification of C++ source files without a manual rebuild. The changed
+files are automatically recompiled when pysorteddict is imported. However, [a full reinstall is required when adding new
+files or updating metadata](https://mesonbuild.com/meson-python/how-to-guides/editable-installs.html).
+
+### Automatic Setup
+
 [Hatch](https://hatch.pypa.io/latest/) is recommended to set up pysorteddict for development. Enter the command
 
 ```shell
@@ -83,6 +89,8 @@ hatch shell
 ```
 
 to automatically enter a managed virtual environment and install the project in editable mode.
+
+### Manual Setup
 
 Alternatively, create a virtual environment and install the project manually.
 
