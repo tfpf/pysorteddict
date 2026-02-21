@@ -56,7 +56,7 @@ def prec_key_type_not_set(self) -> bool:
 
 
 def prec_key_type_set(self) -> bool:
-    return self.key_type is not None
+    return not prec_key_type_not_set(self)
 
 
 def prec_key_type_admits_nan(self) -> bool:
@@ -66,6 +66,11 @@ def prec_key_type_admits_nan(self) -> bool:
 def prec_keys_not_empty(self) -> bool:
     return bool(self.keys)
 
+def prec_active_iterators_exist(self) -> bool:
+    return any(iterator.active for iterator in self.iterators)
+
+def prec_no_active_iterators_exist(self) -> bool:
+    return not prec_active_iterators_exist(self)
 
 def rule_key_wrong_type() -> SearchStrategy:
     return st.runner().flatmap(lambda self: strategy_mapping_complement[self.key_type])
@@ -93,11 +98,13 @@ def rule_sorted_dict_or_sorted_dict_keys() -> SearchStrategy:
 
 def rule_sorted_dict_or_sorted_dict_items_or_keys_or_values() -> SearchStrategy:
     return st.runner().flatmap(
-        lambda self: st.sampled_from(
+        lambda self: st.sampled_from((
             self.sorted_dict, self.sorted_dict_items, self.sorted_dict_keys, self.sorted_dict_values
-        )
+        ))
     )
 
+def rule_locked_key() -> SearchStrategy:
+    return st.runner().flatmap(lambda self: st.sampled_from(iterator for iterator in self.iterators if iterator.active))
 
 class IteratorWrapper:
     def __init__(self, iterator: Iterator, *, fwd: bool, keys: list[Any]):
@@ -105,9 +112,10 @@ class IteratorWrapper:
         self.fwd = fwd
         self.keys = keys
         if not self.keys:
-            self.exhausted = True
+            self.active = False
             self.locked_key = None
             return
+        self.active = True
         if self.fwd:
             self.locked_key = min(self.keys)
         else:
@@ -127,7 +135,7 @@ class FuzzMachine(RuleBasedStateMachine):
         self.sorted_dict_items = self.sorted_dict.items()
         self.sorted_dict_keys = self.sorted_dict.keys()
         self.sorted_dict_values = self.sorted_dict.values()
-        self.iterator_wrappers = []
+        self.iterators = []
 
     @invariant()
     def always(self):
@@ -335,10 +343,9 @@ class FuzzMachine(RuleBasedStateMachine):
         if key not in self.normal_dict:
             with pytest.raises(KeyError, match=re.escape(f"{key!r}")):
                 del self.sorted_dict[key]
-        else:
-            self.keys.remove(key)
-            del self.normal_dict[key]
-            del self.sorted_dict[key]
+
+    @precondition(prec_active_iterators_exist)
+    @rule(key=rule_locked_key())
 
     @precondition(prec_keys_not_empty)
     @rule(key=rule_key_exists())
@@ -351,14 +358,21 @@ class FuzzMachine(RuleBasedStateMachine):
     # `iter`.
     ###########################################################################
 
-    @rule(rule_sorted_dict_or_sorted_dict_items_or_keys_or_values)
-    def iter(self):
-        self.iterator_wrappers.append(IteratorWrapper(iter(self.sorted_dict), fwd=True, keys=self.keys))
+    @rule(instance=rule_sorted_dict_or_sorted_dict_items_or_keys_or_values())
+    def iter(self, instance):
+        self.iterators.append(IteratorWrapper(iter(instance), fwd=True, keys=self.keys))
 
     ###########################################################################
     # `clear`.
     ###########################################################################
 
+    @precondition(prec_active_iterators_exist)
+    @rule()
+    def clear_runtime_error(self):
+        with pytest.raises(RuntimeError, match=r"operation not permitted: sorted dictionary locked by [\d]+ iterator\(s\)"):
+            self.sorted_dict.clear()
+
+    @precondition(prec_no_active_iterators_exist)
     @rule()
     def clear(self):
         # Do not reassign this member because references to it are held by
@@ -366,7 +380,7 @@ class FuzzMachine(RuleBasedStateMachine):
         self.keys.clear()
         self.normal_dict.clear()
         self.sorted_dict.clear()
-        self.iterator_wrappers.clear()
+        self.iterators.clear()
 
     ###########################################################################
     # `copy`.
@@ -378,7 +392,7 @@ class FuzzMachine(RuleBasedStateMachine):
         self.sorted_dict_items = self.sorted_dict.items()
         self.sorted_dict_keys = self.sorted_dict.keys()
         self.sorted_dict_values = self.sorted_dict.values()
-        self.iterator_wrappers.clear()
+        self.iterators.clear()
 
     ###########################################################################
     # `get`.
