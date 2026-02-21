@@ -91,6 +91,14 @@ def rule_sorted_dict_or_sorted_dict_keys() -> SearchStrategy:
     return st.runner().flatmap(lambda self: st.sampled_from((self.sorted_dict, self.sorted_dict_keys)))
 
 
+def rule_sorted_dict_or_sorted_dict_items_or_keys_or_values() -> SearchStrategy:
+    return st.runner().flatmap(
+        lambda self: st.sampled_from(
+            self.sorted_dict, self.sorted_dict_items, self.sorted_dict_keys, self.sorted_dict_values
+        )
+    )
+
+
 class IteratorWrapper:
     def __init__(self, iterator: Iterator, *, fwd: bool, keys: list[Any]):
         self.iterator = iterator
@@ -343,7 +351,7 @@ class FuzzMachine(RuleBasedStateMachine):
     # `iter`.
     ###########################################################################
 
-    @rule()
+    @rule(rule_sorted_dict_or_sorted_dict_items_or_keys_or_values)
     def iter(self):
         self.iterator_wrappers.append(IteratorWrapper(iter(self.sorted_dict), fwd=True, keys=self.keys))
 
