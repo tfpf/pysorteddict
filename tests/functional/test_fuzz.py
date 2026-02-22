@@ -66,20 +66,28 @@ def prec_key_type_admits_nan(self) -> bool:
 def prec_keys_not_empty(self) -> bool:
     return bool(self.keys)
 
+
 def prec_active_iterators_not_empty(self) -> bool:
     return bool(self.active_iterators)
+
 
 def prec_active_iterators_empty(self) -> bool:
     return not prec_active_iterators_not_empty(self)
 
+
 def prec_active_iterators_locked_no_keys(self) -> bool:
     return all(iterator.locked_key is None for iterator in self.active_iterators)
+
 
 def prec_active_iterators_locked_some_keys(self) -> bool:
     return not prec_active_iterators_locked_no_keys(self)
 
+
 def prec_active_iterators_locked_not_all_keys(self) -> bool:
-    return len({iterator.locked_key for iterator in self.active_iterators if iterator.locked_key is not None}) < len(self.keys)
+    return len({iterator.locked_key for iterator in self.active_iterators if iterator.locked_key is not None}) < len(
+        self.keys
+    )
+
 
 def rule_key_wrong_type() -> SearchStrategy:
     return st.runner().flatmap(lambda self: strategy_mapping_complement[self.key_type])
@@ -107,10 +115,11 @@ def rule_sorted_dict_or_sorted_dict_keys() -> SearchStrategy:
 
 def rule_sorted_dict_or_sorted_dict_items_or_keys_or_values() -> SearchStrategy:
     return st.runner().flatmap(
-        lambda self: st.sampled_from((
-            self.sorted_dict, self.sorted_dict_items, self.sorted_dict_keys, self.sorted_dict_values
-        ))
+        lambda self: st.sampled_from(
+            (self.sorted_dict, self.sorted_dict_items, self.sorted_dict_keys, self.sorted_dict_values)
+        )
     )
+
 
 def rule_locked_key() -> SearchStrategy:
     return st.runner().flatmap(
@@ -119,12 +128,14 @@ def rule_locked_key() -> SearchStrategy:
         )
     )
 
+
 def rule_unlocked_key() -> SearchStrategy:
     return st.runner().flatmap(
         lambda self: st.sampled_from(
             [key for key in self.keys if key not in {iterator.locked_key for iterator in self.active_iterators}]
         )
     )
+
 
 class IteratorWrapper:
     def __init__(self, iterator: Iterator, *, fwd: bool, keys: list[Any]):
@@ -378,7 +389,9 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_active_iterators_locked_some_keys)
     @rule(key=rule_locked_key())
     def delitem_runtime_error(self, key):
-        with pytest.raises(RuntimeError, match=r"operation not permitted: key-value pair locked by [\d]+ iterator\(s\)"):
+        with pytest.raises(
+            RuntimeError, match=r"operation not permitted: key-value pair locked by [\d]+ iterator\(s\)"
+        ):
             del self.sorted_dict[key]
 
     @precondition(prec_active_iterators_locked_not_all_keys)
@@ -403,7 +416,9 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_active_iterators_not_empty)
     @rule()
     def clear_runtime_error(self):
-        with pytest.raises(RuntimeError, match=r"operation not permitted: sorted dictionary locked by [\d]+ iterator\(s\)"):
+        with pytest.raises(
+            RuntimeError, match=r"operation not permitted: sorted dictionary locked by [\d]+ iterator\(s\)"
+        ):
             self.sorted_dict.clear()
 
     @precondition(prec_active_iterators_empty)
