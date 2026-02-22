@@ -75,7 +75,7 @@ setup-args = [
 
 [tool.cibuildwheel.pyodide]
 archs = ["wasm32"]
-test-command = "pytest {package}"
+test-command = "pytest {package}"  # This is not needed, is it?
 
 [tool.hatch.envs.default]
 # Set an environment variable to disable build isolation. (Hatch does not
