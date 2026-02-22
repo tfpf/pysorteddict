@@ -72,6 +72,15 @@ def prec_active_iterators_not_empty(self) -> bool:
 def prec_active_iterators_empty(self) -> bool:
     return not prec_active_iterators_not_empty(self)
 
+def prec_active_iterators_locked_no_keys(self) -> bool:
+    return all(iterator.locked_key is None for iterator in self.active_iterators)
+
+def prec_active_iterators_locked_some_keys(self) -> bool:
+    return not prec_active_iterators_locked_no_keys(self)
+
+def prec_active_iterators_locked_not_all_keys(self) -> bool:
+    return len({iterator.locked_key for iterator in self.active_iterators if iterator.locked_key is not None}) < len(self.keys)
+
 def rule_key_wrong_type() -> SearchStrategy:
     return st.runner().flatmap(lambda self: strategy_mapping_complement[self.key_type])
 
@@ -101,6 +110,20 @@ def rule_sorted_dict_or_sorted_dict_items_or_keys_or_values() -> SearchStrategy:
         lambda self: st.sampled_from((
             self.sorted_dict, self.sorted_dict_items, self.sorted_dict_keys, self.sorted_dict_values
         ))
+    )
+
+def rule_locked_key() -> SearchStrategy:
+    return st.runner().flatmap(
+        lambda self: st.sampled_from(
+            [iterator.locked_key for iterator in self.active_iterators if iterator.locked_key is not None]
+        )
+    )
+
+def rule_unlocked_key() -> SearchStrategy:
+    return st.runner().flatmap(
+        lambda self: st.sampled_from(
+            [key for key in self.keys if key not in {iterator.locked_key for iterator in self.active_iterators}]
+        )
     )
 
 class IteratorWrapper:
@@ -351,6 +374,19 @@ class FuzzMachine(RuleBasedStateMachine):
         if key not in self.normal_dict:
             with pytest.raises(KeyError, match=re.escape(f"{key!r}")):
                 del self.sorted_dict[key]
+
+    @precondition(prec_active_iterators_locked_some_keys)
+    @rule(key=rule_locked_key())
+    def delitem_runtime_error(self, key):
+        with pytest.raises(RuntimeError, match=r"operation not permitted: key-value pair locked by [\d]+ iterator\(s\)"):
+            del self.sorted_dict[key]
+
+    @precondition(prec_active_iterators_locked_not_all_keys)
+    @rule(key=rule_unlocked_key())
+    def delitem(self, key):
+        self.keys.remove(key)
+        del self.normal_dict[key]
+        del self.sorted_dict[key]
 
     ###########################################################################
     # `iter`.
