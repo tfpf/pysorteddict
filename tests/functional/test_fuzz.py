@@ -410,6 +410,14 @@ class FuzzMachine(RuleBasedStateMachine):
         self.active_iterators.append(IteratorWrapper(iter(instance), fwd=True, keys=self.keys))
 
     ###########################################################################
+    # `reversed`.
+    ###########################################################################
+
+    @rule(instance=rule_sorted_dict_or_sorted_dict_items_or_keys_or_values())
+    def reversed(self, instance):
+        self.active_iterators.append(IteratorWrapper(reversed(instance), fwd=False, keys=self.keys))
+
+    ###########################################################################
     # `clear`.
     ###########################################################################
 
