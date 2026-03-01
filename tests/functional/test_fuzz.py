@@ -20,6 +20,8 @@ from hypothesis.strategies import SearchStrategy
 from pysorteddict import SortedDict
 
 settings.register_profile("default", max_examples=200, stateful_step_count=100)
+settings.register_profile("ci", settings.get_profile("ci"), max_examples=300, stateful_step_count=200)
+
 
 strategy_mapping = {
     bool: st.booleans(),
@@ -213,11 +215,16 @@ class IteratorWrapper:
             # Nothing has been yielded yet.
             self.locked_key = max(self.keys)
         else:
-            self.locked_key = max(key for key in self.keys if key < self.locked_key)
+            try:
+                self.locked_key = max(key for key in self.keys if key < self.locked_key)
+            except ValueError:
+                # This edge case is tested in another file.
+                self.active = False
+                return None, None
         correct_key = self.locked_key
         observed = next(self.iterator)
         if self.locked_key == min(self.keys):
-            # The last key has been yielded.
+            # All keys have been yielded.
             self.active = False
         return correct_key, observed
 

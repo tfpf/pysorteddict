@@ -19,7 +19,7 @@ def test_value_repr_error():
         str(sorted_dict)
 
 
-def test_reverse_iterator_remove_first_element_while_referenced():
+def test_remove_first_element_while_referenced_by_reverse_iterator():
     sorted_dict = SortedDict()
     sorted_dict[0] = 0
     sorted_dict[1] = 1
