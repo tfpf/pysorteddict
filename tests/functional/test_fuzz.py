@@ -137,6 +137,10 @@ def rule_unlocked_key() -> SearchStrategy:
     )
 
 
+def rule_active_iterator() -> SearchStrategy:
+    return st.runner().flatmap(lambda self: st.sampled_from(self.active_iterators))
+
+
 class IteratorWrapper:
     def __init__(self, iterator: Iterator, *, fwd: bool, keys: list[Any]):
         self.iterator = iterator
@@ -150,6 +154,37 @@ class IteratorWrapper:
             self.locked_key = min(self.keys)
         else:
             self.locked_key = None
+
+    def next(self):
+        # It shall be an error to call this method on inactive iterators.
+        if self.fwd:
+            return self.next_fwd()
+        return self.next_rev()
+
+    def next_fwd(self):
+        # Forward iterators yield the locked key and then lock the next key.
+        correct_key = self.locked_key
+        observed = next(self.iterator)
+        try:
+            self.locked_key = min(key for key in self.keys if key > self.locked_key)
+        except ValueError:
+            self.active = False
+        return correct_key, observed
+
+    def next_rev(self):
+        # Reverse iterators lock the key they just yielded. The difference is
+        # due to the way C++ reverse iterators work.
+        if self.locked_key is None:
+            # Nothing has been yielded yet.
+            self.locked_key = max(self.keys)
+        else:
+            self.locked_key = max(key for key in self.keys if key < self.locked_key)
+        correct_key = self.locked_key
+        observed = next(self.iterator)
+        if self.locked_key == min(self.keys):
+            # The last key has been yielded.
+            self.active = False
+        return correct_key, observed
 
 
 class FuzzMachine(RuleBasedStateMachine):
@@ -416,6 +451,26 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule(instance=rule_sorted_dict_or_sorted_dict_items_or_keys_or_values())
     def reversed(self, instance):
         self.active_iterators.append(IteratorWrapper(reversed(instance), fwd=False, keys=self.keys))
+
+    ###########################################################################
+    # `next`.
+    ###########################################################################
+
+    @precondition(prec_keys_not_empty)
+    @precondition(prec_active_iterators_not_empty)
+    @rule(iterator=rule_active_iterator())
+    def next(self, iterator):
+        correct_key, observed = iterator.next()
+        iterator_class_name = iterator.iterator.__class__.__name__
+        if "Items" in iterator_class_name:
+            expected = (correct_key, self.normal_dict[correct_key])
+        elif "Keys" in iterator_class_name:
+            expected = correct_key
+        elif "Values" in iterator_class_name:
+            expected = self.normal_dict[correct_key]
+        else:
+            raise NotImplementedError(iterator_class_name)
+        assert expected == observed
 
     ###########################################################################
     # `clear`.
