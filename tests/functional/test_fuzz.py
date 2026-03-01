@@ -1,3 +1,4 @@
+import heapq
 import re
 import string
 import sys
@@ -233,6 +234,16 @@ class FuzzMachine(RuleBasedStateMachine):
         self.active_iterators = []
         self.inactive_iterators = []
 
+    def key_to_item_or_key_or_value(self, key, obj):
+        obj_class_name = obj.__class__.__name__
+        if "Items" in obj_class_name:
+            return key, self.normal_dict[key]
+        if "Keys" in obj_class_name:
+            return key
+        if "Values" in obj_class_name:
+            return self.normal_dict[key]
+        raise NotImplementedError(obj_class_name)
+
     @invariant()
     def always(self):
         sorted_normal_dict = dict(sorted(self.normal_dict.items()))
@@ -396,7 +407,11 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_keys_not_empty)
     @rule(instance=rule_sorted_dict_items_or_keys_or_values(), idx=rule_valid_position())
     def getitem2_position(self, instance, idx):
-        pass
+        observed = instance[idx]
+        if idx < 0:
+            idx += len(self.keys)
+        expected = self.key_to_item_or_key_or_value(heapq.nsmallest(idx + 1, self.keys)[-1], instance)
+        assert observed == expected
 
     ###########################################################################
     # `setitem`.
@@ -521,16 +536,8 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule(iterator=rule_active_iterator())
     def next_active(self, iterator):
         correct_key, observed = iterator.next()
-        iterator_class_name = iterator.iterator.__class__.__name__
-        if "Items" in iterator_class_name:
-            expected = (correct_key, self.normal_dict[correct_key])
-        elif "Keys" in iterator_class_name:
-            expected = correct_key
-        elif "Values" in iterator_class_name:
-            expected = self.normal_dict[correct_key]
-        else:
-            raise NotImplementedError(iterator_class_name)
-        assert expected == observed
+        expected = self.key_to_item_or_key_or_value(correct_key, iterator.iterator)
+        assert observed == expected
 
     @precondition(prec_inactive_iterators_not_empty)
     @rule(iterator=rule_inactive_iterator())
