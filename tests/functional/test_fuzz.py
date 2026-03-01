@@ -19,8 +19,7 @@ from hypothesis.strategies import SearchStrategy
 
 from pysorteddict import SortedDict
 
-settings.register_profile("default", max_examples=200, stateful_step_count=100)
-settings.register_profile("ci", settings.get_profile("ci"), max_examples=250, stateful_step_count=150)
+settings.register_profile("default", max_examples=300, stateful_step_count=150)
 
 
 strategy_mapping = {
@@ -200,13 +199,13 @@ class IteratorWrapper:
 
     def next_fwd(self):
         # Forward iterators yield the locked key and then lock the next key.
-        correct_key = self.locked_key
+        next_key = self.locked_key
         observed = next(self.iterator)
         try:
             self.locked_key = min(key for key in self.keys if key > self.locked_key)
         except ValueError:
             self.active = False
-        return correct_key, observed
+        return next_key, observed
 
     def next_rev(self):
         # Reverse iterators lock the key they just yielded. The difference is
@@ -221,12 +220,12 @@ class IteratorWrapper:
                 # This edge case is tested in another file.
                 self.active = False
                 return None, None
-        correct_key = self.locked_key
+        next_key = self.locked_key
         observed = next(self.iterator)
         if self.locked_key == min(self.keys):
             # All keys have been yielded.
             self.active = False
-        return correct_key, observed
+        return next_key, observed
 
 
 class FuzzMachine(RuleBasedStateMachine):
@@ -554,9 +553,13 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_active_iterators_not_empty)
     @rule(iterator=rule_active_iterator())
     def next_active(self, iterator):
-        correct_key, observed = iterator.next()
-        expected = self.key_to_item_or_key_or_value(correct_key, iterator.iterator)
-        assert observed == expected
+        next_key, observed = iterator.next()
+        if next_key is None:
+            with pytest.raises(StopIteration):
+                next(iterator.iterator)
+        else:
+            expected = self.key_to_item_or_key_or_value(next_key, iterator.iterator)
+            assert observed == expected
 
     @precondition(prec_inactive_iterators_not_empty)
     @rule(iterator=rule_inactive_iterator())

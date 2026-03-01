@@ -29,6 +29,8 @@ protected:
 
 private:
     void track(T);
+    void track_begin(void);
+    void track_end(void);
     void untrack(T);
     PyObject* next_when_has_next(void);
 

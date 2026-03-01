@@ -576,20 +576,6 @@ static PyObject* sorted_dict_type_reversed(PyObject* self, PyObject* args)
 }
 
 PyDoc_STRVAR(
-    sorted_dict_type_debug_doc,
-    "d._debug()\n"
-    "Write debugging information about the sorted dictionary ``d`` to standard error."
-);
-
-// GCOVR_EXCL_START
-static PyObject* sorted_dict_type_debug(PyObject* self, PyObject* args)
-{
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->debug();
-}
-
-// GCOVR_EXCL_STOP
-PyDoc_STRVAR(
     sorted_dict_type_clear_doc,
     "d.clear()\n"
     "Remove all key-value pairs in the sorted dictionary ``d``."
@@ -679,12 +665,6 @@ static PyMethodDef sorted_dict_type_methods[] = {
         .ml_meth = sorted_dict_type_reversed,
         .ml_flags = METH_NOARGS,
         .ml_doc = sorted_dict_type_reversed_doc,
-    },
-    {
-        .ml_name = "_debug",
-        .ml_meth = sorted_dict_type_debug,
-        .ml_flags = METH_NOARGS,
-        .ml_doc = sorted_dict_type_debug_doc,
     },
     {
         .ml_name = "clear",
