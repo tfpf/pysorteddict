@@ -393,38 +393,6 @@ PyObject* SortedDictType::reversed(PyTypeObject* type)
     return SortedDictKeysIterType<RevIterType>::New(type, this);
 }
 
-// GCOVR_EXCL_START
-PyObject* SortedDictType::debug(void)
-{
-    char const* delimiter = "";
-    char const* actual_delimiter = ", ";
-    std::clog << LEFT_CURLY_BRACKET;
-    for (auto& item : *this->map)
-    {
-        PyObjectWrapper key_repr(PyObject_Repr(item.first));  // 🆕
-        if (key_repr == nullptr)
-        {
-            return nullptr;
-        }
-        PyObjectWrapper value_repr(PyObject_Repr(item.second.value));  // 🆕
-        if (value_repr == nullptr)
-        {
-            return nullptr;
-        }
-        Py_ssize_t key_repr_size, value_repr_size;
-        char const* key_repr_utf8 = PyUnicode_AsUTF8AndSize(key_repr.get(), &key_repr_size);
-        char const* value_repr_utf8 = PyUnicode_AsUTF8AndSize(value_repr.get(), &value_repr_size);
-        std::clog << delimiter;
-        std::clog.write(key_repr_utf8, key_repr_size) << ": ";
-        std::clog.write(value_repr_utf8, value_repr_size) << " #";
-        std::clog << item.second.known_referrers;
-        delimiter = actual_delimiter;
-    }
-    std::clog << RIGHT_CURLY_BRACKET "\n";
-    Py_RETURN_NONE;
-}
-
-// GCOVR_EXCL_STOP
 PyObject* SortedDictType::clear(void)
 {
     if (!this->is_deletion_allowed())
