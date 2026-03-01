@@ -83,8 +83,8 @@ used.
 ### Membership Check
 
 The numbers 0.00, 0.33, 0.67 and 1.00 are spaced equally in the range spanned by the keys, but are absent in the sorted
-dictionaries constructed using the seeded random number generator described above. Hence, a search for them in any of
-those sorted dictionaries will not terminate permaturely.
+dictionaries constructed using the seeded random number generator described above. Hence, a search for them in the
+red-black tree backing any `pysorteddict.SortedDict` will not terminate permaturely.
 
 :::{image} _static/images/perf-contains-light.svg
 :align: center
