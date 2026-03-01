@@ -45,7 +45,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-cov = ["gcovr", "pytest-xdist"]
+cov = ["gcovr", "hypothesis", "pytest"]
 
 [project.urls]
 Homepage = "https://tfpf.github.io/pysorteddict/"
@@ -58,7 +58,7 @@ archs = ["auto64"]
 build-verbosity = 1
 enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
-test-requires = ["pytest-xdist"]
+test-requires = ["hypothesis", "pytest"]
 
 [tool.cibuildwheel.config-settings]
 setup-args = [
@@ -75,7 +75,6 @@ setup-args = [
 
 [tool.cibuildwheel.pyodide]
 archs = ["wasm32"]
-test-command = "pytest -n 0 {package}"
 
 [tool.hatch.envs.default]
 # Set an environment variable to disable build isolation. (Hatch does not
@@ -99,7 +98,7 @@ features = ["cov"]
 cov = [
     "rm -fr cov/",
     "pip install -C build-dir=cov -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -q .",
-    "pytest",
+    "pytest -q",
     "gcovr --html-details cov/index.html",
 ]
 
@@ -123,9 +122,6 @@ setup = [
     "-Dwarning_level=1",
     "-Dwerror=true",
 ]
-
-[tool.pytest.ini_options]
-addopts = "--dist=worksteal -n logical"
 
 [tool.ruff]
 extend-exclude = ["tests/performance/"]
