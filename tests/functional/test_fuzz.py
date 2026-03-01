@@ -172,6 +172,10 @@ def rule_valid_position() -> SearchStrategy:
     )
 
 
+def rule_valid_slice() -> SearchStrategy:
+    return st.runner().flatmap(lambda self: st.slices(len(self.keys)))
+
+
 class IteratorWrapper:
     def __init__(self, iterator: Iterator, *, fwd: bool, keys: list[Any]):
         self.iterator = iterator
@@ -411,6 +415,14 @@ class FuzzMachine(RuleBasedStateMachine):
         if idx < 0:
             idx += len(self.keys)
         expected = self.key_to_item_or_key_or_value(heapq.nsmallest(idx + 1, self.keys)[-1], instance)
+        assert observed == expected
+
+    @rule(instance=rule_sorted_dict_items_or_keys_or_values(), idx=rule_valid_slice())
+    def getitem2_slice(self, instance, idx):
+        observed = instance[idx]
+        sorted_keys = sorted(self.keys)
+        idx_range = range(*idx.indices(len(self.keys)))
+        expected = [self.key_to_item_or_key_or_value(sorted_keys[i], instance) for i in idx_range]
         assert observed == expected
 
     ###########################################################################
