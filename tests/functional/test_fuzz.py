@@ -113,6 +113,12 @@ def rule_sorted_dict_or_sorted_dict_keys() -> SearchStrategy:
     return st.runner().flatmap(lambda self: st.sampled_from((self.sorted_dict, self.sorted_dict_keys)))
 
 
+def rule_sorted_dict_items_or_keys_or_values() -> SearchStrategy:
+    return st.runner().flatmap(
+        lambda self: st.sampled_from((self.sorted_dict_items, self.sorted_dict_keys, self.sorted_dict_values))
+    )
+
+
 def rule_sorted_dict_or_sorted_dict_items_or_keys_or_values() -> SearchStrategy:
     return st.runner().flatmap(
         lambda self: st.sampled_from(
@@ -301,7 +307,7 @@ class FuzzMachine(RuleBasedStateMachine):
         assert (key, self.normal_dict[key]) in self.sorted_dict_items
 
     ###########################################################################
-    # `getitem`.
+    # `getitem` for the sorted dictionary.
     ###########################################################################
 
     @precondition(prec_key_type_not_set)
@@ -337,6 +343,21 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule(key=rule_key_exists())
     def getitem(self, key):
         assert self.sorted_dict[key] == self.normal_dict[key]
+
+    ###########################################################################
+    # `getitem` for the sorted dictionary items, keys and values.
+    ###########################################################################
+
+    @rule(instance=rule_sorted_dict_items_or_keys_or_values())
+    def getitem2_wrong_call(self, instance):
+        idx = 0.0
+        with pytest.raises(
+            TypeError,
+            match=re.escape(
+                f"got index {idx} of type {type(idx)}, want index of type <class 'int'> or <class 'slice'>"
+            ),
+        ):
+            instance[idx]
 
     ###########################################################################
     # `setitem`.
