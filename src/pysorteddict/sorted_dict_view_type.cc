@@ -157,9 +157,7 @@ PyObject* SortedDictViewIterType<RevIterType>::next(void)
     if (this->it == this->sd->map->rend())
     {
         this->untrack(this->it);
-        this->should_raise_stop_iteration = true;
-        --this->sd->known_referrers;
-        Py_DECREF(this->sd);
+        this->track_end();
         return nullptr;
     }
 
