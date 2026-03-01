@@ -1,5 +1,6 @@
 import re
 import string
+import sys
 from collections.abc import Iterator
 from datetime import date, timedelta
 from decimal import Decimal
@@ -75,6 +76,10 @@ def prec_active_iterators_empty(self) -> bool:
     return not prec_active_iterators_not_empty(self)
 
 
+def prec_inactive_iterators_not_empty(self) -> bool:
+    return bool(self.inactive_iterators)
+
+
 def prec_active_iterators_locked_no_keys(self) -> bool:
     return all(iterator.locked_key is None for iterator in self.active_iterators)
 
@@ -145,6 +150,25 @@ def rule_unlocked_key() -> SearchStrategy:
 
 def rule_active_iterator() -> SearchStrategy:
     return st.runner().flatmap(lambda self: st.sampled_from(self.active_iterators))
+
+
+def rule_inactive_iterator() -> SearchStrategy:
+    return st.runner().flatmap(lambda self: st.sampled_from(self.inactive_iterators))
+
+
+def rule_invalid_position() -> SearchStrategy:
+    return st.runner().flatmap(
+        lambda self: st.one_of(
+            st.integers(min_value=-sys.maxsize - 1, max_value=-(keys_len := len(self.keys)) - 1),
+            st.integers(min_value=keys_len, max_value=sys.maxsize),
+        )
+    )
+
+
+def rule_valid_position() -> SearchStrategy:
+    return st.runner().flatmap(
+        lambda self: st.integers(min_value=-(keys_len := len(self.keys)), max_value=keys_len - 1)
+    )
 
 
 class IteratorWrapper:
@@ -359,6 +383,21 @@ class FuzzMachine(RuleBasedStateMachine):
         ):
             instance[idx]
 
+    @rule(instance=rule_sorted_dict_items_or_keys_or_values())
+    def getitem2_index_error_cannot_convert(self, instance):
+        with pytest.raises(IndexError, match="cannot fit 'int' into an index-sized integer"):
+            instance[sys.maxsize + 1]
+
+    @rule(instance=rule_sorted_dict_items_or_keys_or_values(), idx=rule_invalid_position())
+    def getitem2_index_error_out_of_range(self, instance, idx):
+        with pytest.raises(IndexError, match=f"got invalid index {idx} for view of length {len(self.normal_dict)}"):
+            instance[idx]
+
+    @precondition(prec_keys_not_empty)
+    @rule(instance=rule_sorted_dict_items_or_keys_or_values(), idx=rule_valid_position())
+    def getitem2_position(self, instance, idx):
+        pass
+
     ###########################################################################
     # `setitem`.
     ###########################################################################
@@ -480,7 +519,7 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_keys_not_empty)
     @precondition(prec_active_iterators_not_empty)
     @rule(iterator=rule_active_iterator())
-    def next(self, iterator):
+    def next_active(self, iterator):
         correct_key, observed = iterator.next()
         iterator_class_name = iterator.iterator.__class__.__name__
         if "Items" in iterator_class_name:
@@ -492,6 +531,12 @@ class FuzzMachine(RuleBasedStateMachine):
         else:
             raise NotImplementedError(iterator_class_name)
         assert expected == observed
+
+    @precondition(prec_inactive_iterators_not_empty)
+    @rule(iterator=rule_inactive_iterator())
+    def next_inactive(self, iterator):
+        with pytest.raises(StopIteration):
+            next(iterator.iterator)
 
     ###########################################################################
     # `clear`.
