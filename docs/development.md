@@ -55,10 +55,6 @@ Functional (behavioural) tests.
 
 Randomised tests which cover most scenarios.
 
-#### `test_keys_iter.py`
-
-Tests for `SortedDictKeysIter`.
-
 #### `test_uncommon_errors.py`
 
 Tests for errors not expected to occur during regular usage.
