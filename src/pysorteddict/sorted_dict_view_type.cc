@@ -21,9 +21,7 @@ void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
 {
     if (it == this->sd->map->begin())
     {
-        Py_INCREF(this->sd);
-        ++this->sd->known_referrers;
-        this->should_raise_stop_iteration = false;
+        this->track_begin();
     }
     if (it != this->sd->map->end())
     {
@@ -33,9 +31,7 @@ void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
     }
     else
     {
-        this->should_raise_stop_iteration = true;
-        --this->sd->known_referrers;
-        Py_DECREF(this->sd);
+        this->track_end();
     }
 }
 
@@ -53,9 +49,7 @@ void SortedDictViewIterType<RevIterType>::track(RevIterType it)
 {
     if (it == this->sd->map->rbegin())
     {
-        Py_INCREF(this->sd);
-        ++this->sd->known_referrers;
-        this->should_raise_stop_iteration = false;
+        this->track_begin();
     }
     if (it != this->sd->map->rend())
     {
@@ -70,10 +64,24 @@ void SortedDictViewIterType<RevIterType>::track(RevIterType it)
     }
     else
     {
-        this->should_raise_stop_iteration = true;
-        --this->sd->known_referrers;
-        Py_DECREF(this->sd);
+        this->track_end();
     }
+}
+
+template<typename T>
+void SortedDictViewIterType<T>::track_begin(void)
+{
+    Py_INCREF(this->sd);
+    ++this->sd->known_referrers;
+    this->should_raise_stop_iteration = false;
+}
+
+template<typename T>
+void SortedDictViewIterType<T>::track_end(void)
+{
+    this->should_raise_stop_iteration = true;
+    --this->sd->known_referrers;
+    Py_DECREF(this->sd);
 }
 
 /**
