@@ -4,6 +4,7 @@
 
 <summary>Documentation of older versions is available on GitHub.</summary>
 
+▸ [0.13.1](https://github.com/tfpf/pysorteddict/blob/v0.13.1/docs/documentation.md)
 ▸ [0.13.0](https://github.com/tfpf/pysorteddict/blob/v0.13.0/docs/documentation.md)  
 ▸ [0.12.1](https://github.com/tfpf/pysorteddict/blob/v0.12.1/docs/documentation.md)
 ▸ [0.12.0](https://github.com/tfpf/pysorteddict/blob/v0.12.0/docs/documentation.md)  
@@ -27,6 +28,21 @@
 ▸ [0.4.4](https://github.com/tfpf/pysorteddict/blob/v0.4.4/docs/index.md)
 
 </details>
+
+```{eval-rst}
+.. py:module:: pysorteddict
+
+   .. py:class:: SortedDict
+
+      .. py:method:: __init__
+
+      .. py:property:: key_type
+         :type: type | None
+
+```
+
+
+
 
 ## Sorted Dictionary
 

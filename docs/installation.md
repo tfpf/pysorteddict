@@ -26,6 +26,14 @@ pip install --extra-index-url https://www.piwheels.org/simple pysorteddict
 
 Pyodide wheels for the Emscripten runtime (targeting WebAssembly) are hosted here.
 
+```python
+import micropip
+
+await micropip.install(
+    "pysorteddict", index_urls=["https://tfpf.github.io/pysorteddict/simple/"]
+)
+```
+
 <a href="simple/pysorteddict/">View all available Pyodide wheels.</a>
 
 <div class="notice">
