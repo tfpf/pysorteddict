@@ -29,6 +29,21 @@
 
 </details>
 
+```{eval-rst}
+.. py:module:: pysorteddict
+
+   .. py:class:: SortedDict
+
+      .. py:method:: __init__
+
+      .. py:property:: key_type
+         :type: type | None
+
+```
+
+
+
+
 ## Sorted Dictionary
 
 `SortedDict` is a sorted dictionary which wraps the C++ sorted dictionary type (`std::map`). It may be imported
