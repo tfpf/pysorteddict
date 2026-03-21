@@ -3,10 +3,10 @@ Documentation
 
 .. default-domain:: py
 
+.. currentmodule:: pysorteddict
+
 Sorted Dictionary
 *****************
-
-.. currentmodule:: pysorteddict
 
 .. class:: SortedDict
 
@@ -590,13 +590,106 @@ Sorted Dictionary
          assert d.setdefault("spam", "eggs") == "eggs"
          assert d["spam"] == "eggs"
 
+      .. raw:: html
+
+         <details class="warning">
+
+         <summary>This method may raise exceptions.</summary>
+
+      :raises RuntimeError: if no key-value pairs have been inserted yet.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import *
+
+         d = SortedDict()
+         d.setdefault("foo")
+
+      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import *
+
+         d = SortedDict()
+         d["foo"] = ("bar", "baz")
+         d.setdefault(100)
+
+      :raises ValueError: if ``key`` is not comparable with instances of its type.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import *
+
+         d = SortedDict()
+         d[1.1] = ("racecar",)
+         d.setdefault(float("nan"))
+
+      .. raw:: html
+
+         </details>
+
+   .. method:: values() -> SortedDictValues
+
+      Return a dynamic view on the values in the sorted dictionary.
+
+      .. jupyter-execute::
+
+         from pysorteddict import *
+
+         d = SortedDict()
+         values = d.values()
+         d["foo"] = ()
+         print(values)
+         d["bar"] = [100]
+         print(values)
+         d["baz"] = 3.14
+         print(values)
+
+      See :ref:`sorted-dictionary-views`.
+
 .. _sorted-dictionary-views:
 
 Sorted Dictionary Views
 ***********************
 
+Sorted dictionary views are dynamic views on a sorted dictionary: they are immutable and cannot be used to mutate the
+sorted dictionary, but always reflect its current state.
+
+There are three view types, none of which are importable or user-constructible, since they are exposed only indirectly.
+
 .. class:: SortedDictItems
+
+   A view representing a sorted set of key-value pairs; the return type of :meth:`SortedDict.items`.
+
+   .. method:: __contains__(ob: Any) -> bool
+
+      Return whether ``ob`` is present in the sorted dictionary view.
+
+      If ``ob`` is not a two-element ``tuple``, return ``False``. Otherwise, the behaviour is equivalent to that of
+      ``ob[0] in d and d[ob[0]] == ob[1]`` where ``d`` is the underlying sorted dictionary.
 
 .. class:: SortedDictKeys
 
+   A view representing a sorted set of keys; the return type of :meth:`SortedDict.keys`.
+
+   .. method:: __contains__(ob: Any) -> bool
+
+      Return whether ``ob`` is present in the sorted dictionary view.
+
+      The behaviour is equivalent to that of ``ob in d`` where ``d`` is the underlying sorted dictionary.
+
 .. class:: SortedDictValues
+
+   A view representing an array of values ordered by the keys they are mapped to; the return type of
+   :meth:`SortedDict.values`.
+
+   .. method:: __contains__(ob: Any) -> bool
+
+      Return whether ``ob`` is present in the sorted dictionary view.
+
+      The behaviour is equivalent to that of ``ob in l`` where ``l`` is a ``list`` of the elements in the view in the
+      same order. In other words, making this call leads to an element-by-element comparison.
