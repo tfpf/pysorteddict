@@ -361,7 +361,7 @@ Sorted Dictionary
 
          </details>
 
-   .. method:: __iter__() -> SortedDictKeys
+   .. method:: __iter__() -> SortedDictKeysFwdIter
 
       Return a forward iterator over the keys in the sorted dictionary. ``iter(d)`` is an efficient shorthand for
       ``iter(d.keys())``. Typical usage is to iterate directly over the sorted dictionary instead of making this
@@ -376,6 +376,83 @@ Sorted Dictionary
          d["baz"] = 3.14
          for key in d:
              print(key)
+
+   .. method:: __reversed__() -> SortedDictKeysRevIter
+
+      Return a reverse iterator over the keys in the sorted dictionary. ``reversed(d)`` is an efficient shorthand for
+      ``reversed(d.keys())``.
+
+      .. jupyter-execute::
+
+         from pysorteddict import *
+         d = SortedDict()
+         d["foo"] = ()
+         d["bar"] = [100]
+         d["baz"] = 3.14
+         for key in reversed(d):
+             print(key)
+
+   .. method:: clear()
+
+      Remove all key-value pairs in the sorted dictionary.
+
+      .. raw:: html
+
+         <details class="warning">
+
+         <summary>This method may raise exceptions.</summary>
+
+      :raises RuntimeError: if there exist unexhausted iterators over the items, keys or values of the sorted
+       dictionary.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import *
+         d = SortedDict()
+         d["foo"] = "bar"
+         ii = iter(d.items())
+         ki = iter(d.keys())
+         vi = reversed(d.values())
+         d.clear()
+
+      .. raw:: html
+
+         </details>
+
+         <details class="warning">
+
+         <summary>This method may behave differently with PyPy.</summary>
+
+      PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, iterators deleted
+      prematurely will keep a sorted dictionary locked.
+
+      .. code-block:: python
+
+         import gc
+         from pysorteddict import *
+         d = SortedDict()
+         d["foo"] = "bar"
+         ii = iter(d.items())
+         ki = iter(d.keys())
+         vi = reversed(d.values())
+         del ii, ki, vi
+         # gc.collect()
+         d.clear()
+
+      Uncommenting the commented line runs any required destructors, ensuring that no exception is raised.
+
+      .. raw:: html
+
+         </details>
+
+   .. method:: copy() -> SortedDict
+
+      Return a shallow copy of the sorted dictionary.
+
+   .. method:: get(key: Any, default: Any = None, /) -> Any
+
+      Return the value mapped to ``key`` in the sorted dictionary, or ``default`` if ``key`` isn't in present in it.
 
 Sorted Dictionary Views
 ***********************
