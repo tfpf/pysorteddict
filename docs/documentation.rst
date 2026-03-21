@@ -50,11 +50,15 @@ Sorted Dictionary
    .. code-block:: python
 
       from pathlib import Path
+
       with Path(__file__).with_name("decimal.py").open("w") as writer:
           print("import math", file=writer)
           print('Decimal = type("Decimal", (float,), {"is_nan": lambda self: math.isnan(self)})', file=writer)
+
       from pysorteddict import *
+
       from decimal import Decimal
+
       d = SortedDict()
       d[Decimal(0)] = None
 
@@ -81,10 +85,12 @@ Sorted Dictionary
       .. jupyter-execute::
 
          from pysorteddict import *
+
          d = SortedDict()
-         print(d.key_type)
+         assert d.key_type is None
+
          d[b"foo"] = ()
-         print(d.key_type)
+         assert d.key_type is bytes
 
    .. method:: __repr__() -> str
 
@@ -106,6 +112,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          "foo" in d
 
@@ -115,6 +122,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = ("bar", "baz")
          100 in d
@@ -125,6 +133,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d[1.1] = ("racecar",)
          float("nan") in d
@@ -166,6 +175,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"]
 
@@ -175,6 +185,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = ("bar", "baz")
          d[100]
@@ -185,6 +196,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d[1.1] = ("racecar",)
          d[float("nan")]
@@ -195,6 +207,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = ("bar", "baz")
          d["spam"]
@@ -221,6 +234,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d[["eggs"]] = None
 
@@ -230,6 +244,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = ("bar", "baz")
          d[100] = "spam"
@@ -240,6 +255,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d[1.1] = ("racecar",)
          d[float("nan")] = {}
@@ -264,6 +280,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          del d["foo"]
 
@@ -273,6 +290,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = ("bar", "baz")
          del d[100]
@@ -283,6 +301,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d[1.1] = ("racecar",)
          del d[float("nan")]
@@ -293,6 +312,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = ("bar", "baz")
          del d["spam"]
@@ -305,6 +325,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          for i in range(5):
              d[i] = None
@@ -321,6 +342,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          for i in range(5):
              d[i] = None
@@ -344,7 +366,9 @@ Sorted Dictionary
       .. code-block:: python
 
          import gc
+
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = "bar"
          d["baz"] = 1
@@ -370,6 +394,7 @@ Sorted Dictionary
       .. jupyter-execute::
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = ()
          d["bar"] = [100]
@@ -385,6 +410,7 @@ Sorted Dictionary
       .. jupyter-execute::
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = ()
          d["bar"] = [100]
@@ -409,6 +435,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = "bar"
          ii = iter(d.items())
@@ -430,7 +457,9 @@ Sorted Dictionary
       .. code-block:: python
 
          import gc
+
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = "bar"
          ii = iter(d.items())
@@ -457,11 +486,12 @@ Sorted Dictionary
       .. jupyter-execute::
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = "bar"
-         print(d.get("foo"))
-         print(d.get("baz"))
-         print(d.get("spam", "eggs"))
+         assert d.get("foo") == "bar"
+         assert d.get("baz") is None
+         assert d.get("spam", "eggs") == "eggs"
 
       .. raw:: html
 
@@ -475,6 +505,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d.get("foo")
 
@@ -484,6 +515,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d["foo"] = ("bar", "baz")
          d.get(100)
@@ -494,6 +526,7 @@ Sorted Dictionary
          :raises:
 
          from pysorteddict import *
+
          d = SortedDict()
          d[1.1] = ("racecar",)
          d.get(float("nan"))
@@ -501,6 +534,63 @@ Sorted Dictionary
       .. raw:: html
 
          </details>
+
+   .. method:: items() -> SortedDictItems
+
+      Return a dynamic view on the items in the sorted dictionary.
+
+      .. jupyter-execute::
+
+         from pysorteddict import *
+
+         d = SortedDict()
+         items = d.items()
+         d["foo"] = ()
+         print(items)
+         d["bar"] = [100]
+         print(items)
+         d["baz"] = 3.14
+         print(items)
+
+      See :ref:`sorted-dictionary-views`.
+
+   .. method:: keys() -> SortedDictKeys
+
+      Return a dynamic view on the keys in the sorted dictionary.
+
+      .. jupyter-execute::
+
+         from pysorteddict import *
+
+         d = SortedDict()
+         keys = d.keys()
+         d["foo"] = ()
+         print(keys)
+         d["bar"] = [100]
+         print(keys)
+         d["baz"] = 3.14
+         print(keys)
+
+      See :ref:`sorted-dictionary-views`.
+
+   .. method:: setdefault(key: Any, default: Any = None, /) -> Any
+
+      If ``key`` is present in the sorted dictionary, return the value mapped to it. Otherwise, insert ``key`` into it,
+      map ``default`` to ``key`` and return ``default``.
+
+      .. jupyter-execute::
+
+         from pysorteddict import *
+
+         d = SortedDict()
+         d["foo"] = "bar"
+         assert d.setdefault("foo") == "bar"
+         assert d.setdefault("baz") is None
+         assert d["baz"] is None
+         assert d.setdefault("spam", "eggs") == "eggs"
+         assert d["spam"] == "eggs"
+
+.. _sorted-dictionary-views:
 
 Sorted Dictionary Views
 ***********************
