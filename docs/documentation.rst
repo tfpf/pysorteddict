@@ -91,6 +91,12 @@ Documentation
 
          Return whether ``key`` is present in the sorted dictionary.
 
+         .. raw:: html
+
+            <details class="warning">
+
+            <summary>This method may raise exceptions.</summary>
+
          :raises RuntimeError: if no key-value pairs have been inserted yet.
 
          .. jupyter-execute::
@@ -120,16 +126,36 @@ Documentation
             d[1.1] = ("racecar",)
             float("nan") in d
 
+         .. raw:: html
+
+            </details>
+
       .. method:: __len__() -> int
 
          Return the number of key-value pairs in the sorted dictionary.
 
+         .. raw:: html
+
+            <details class="warning">
+
+            <summary>This method may raise exceptions.</summary>
+
          :raises OverflowError: if the number of key-value pairs exceeds ``PY_SSIZE_T_MAX`` (which is usually
           9223372036854775807 on 64-bit operating systems, making this exception astronomically unlikely).
+
+         .. raw:: html
+
+            </details>
 
       .. method:: __getitem__(key: Any) -> Any
 
          Return the value mapped to ``key`` in the sorted dictionary.
+
+         .. raw:: html
+
+            <details class="warning">
+
+            <summary>This method may raise exceptions.</summary>
 
          :raises RuntimeError: if no key-value pairs have been inserted yet.
 
@@ -170,10 +196,20 @@ Documentation
             d["foo"] = ("bar", "baz")
             d["spam"]
 
+         .. raw:: html
+
+            </details>
+
       .. method:: __setitem__(key: Any, value: Any)
 
          Insert ``key`` into the sorted dictionary (if it isn't already in it) and map ``value`` to it, replacing the
          previously mapped value (if any).
+
+         .. raw:: html
+
+            <details class="warning">
+
+            <summary>This method may raise exceptions.</summary>
 
          :raises TypeError: if no key-value pairs have been inserted yet and ``type(key)`` isn't one of the supported
           types.
@@ -205,9 +241,19 @@ Documentation
             d[1.1] = ("racecar",)
             d[float("nan")] = {}
 
+         .. raw:: html
+
+            </details>
+
       .. method:: __detitem__(key: Any)
 
          Remove ``key`` and the value mapped to it from the sorted dictionary.
+
+         .. raw:: html
+
+            <details class="warning">
+
+            <summary>This method may raise exceptions.</summary>
 
          :raises RuntimeError: if no key-value pairs have been inserted yet.
 
@@ -280,3 +326,34 @@ Documentation
             vi = reversed(d.values())
             assert (next(ii), next(ki), next(vi)) == ((4, None), 4, None)
             del d[4]
+
+         .. raw:: html
+
+            </details>
+
+            <details class="warning">
+
+            <summary>This method may behave differently with PyPy.</summary>
+
+         PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, iterators
+         deleted prematurely will keep a key-value pair locked.
+
+         .. code-block:: python
+
+            import gc
+            from pysorteddict import *
+            d = SortedDict()
+            d["foo"] = "bar"
+            d["baz"] = 1
+            ii = iter(d.items())
+            ki = iter(d.keys())
+            vi = iter(d.values())
+            del ii, ki, vi
+            # gc.collect()
+            del d["baz"]
+
+         Uncommenting the commented line runs any required destructors, ensuring that no exception is raised.
+
+         .. raw:: html
+
+            </details>
