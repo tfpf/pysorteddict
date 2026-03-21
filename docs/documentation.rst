@@ -73,13 +73,13 @@ Documentation
 
          The key type of the sorted dictionary, or ``None`` if no key-value pairs have been inserted in it.
 
-         .. code-block:: python
+         .. jupyter-execute::
 
             from pysorteddict import *
             d = SortedDict()
-            assert d.key_type is None
+            print(d.key_type)
             d[b"foo"] = ()
-            assert d.key_type is bytes
+            print(d.key_type)
 
       .. method:: __repr__()
 
@@ -98,5 +98,22 @@ Documentation
             d = SortedDict()
             "foo" in d
 
-         :raises RuntimeError:
+         :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
 
+         .. jupyter-execute::
+            :raises:
+
+            from pysorteddict import *
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            100 in d
+
+         :raises ValueError: if ``key`` is not comparable with instances of its type.
+
+         .. jupyter-execute::
+            :raises:
+
+            from pysorteddict import *
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            float("nan") in d

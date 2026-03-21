@@ -100,3 +100,13 @@ summary:hover {
 #overview table td {
   text-align: center;
 }
+
+/*
+ * The default background colours of code and output cells do not change when
+ * the dark theme is enabled. Set them manually.
+ */
+body[data-theme=dark] .jupyter_container,
+body[data-theme=dark] .jupyter_container div.code_cell pre,
+body[data-theme=dark] .jupyter_container div.output pre {
+  background: #202020;
+}
