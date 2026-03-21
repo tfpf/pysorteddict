@@ -5,7 +5,7 @@
 All keys in a sorted dictionary must be of the same type, which is determined when the first key-value pair is inserted
 into it. The values, though, can be of any type.
 
-```python
+:::{jupyter-execute}
 from pysorteddict import SortedDict
 
 d = SortedDict()
@@ -18,16 +18,9 @@ assert d.key_type is str
 
 for key, value in d.items():
     print(key, "->", value)
-```
+:::
 
-The above Python script will output the keys in ascending order.
-
-```text
-gain is -> 31.692
-honestly -> weight
-losing -> ['weight']
-times -> easier than
-```
+The keys are seen to be output in ascending order.
 
 ## Demo
 
