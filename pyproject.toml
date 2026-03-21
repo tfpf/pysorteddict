@@ -2,17 +2,6 @@
 requires = ["meson-python"]
 build-backend = "mesonpy"
 
-[dependency-groups]
-docs = [
-    "furo~=2024.8",
-    # The JupyterLite notebook embedded in the website must install the WASM
-    # wheel for CPython 3.13, which this package provides.
-    "jupyterlite-pyodide-kernel~=0.7.0",
-    "jupyterlite-sphinx~=0.22.0",
-    "myst-parser~=4.0",
-    "sphinx-inline-tabs~=2025.12",
-]
-
 [project]
 name = "pysorteddict"
 version = "0.13.1"
@@ -46,6 +35,16 @@ classifiers = [
 
 [project.optional-dependencies]
 cov = ["gcovr", "hypothesis", "pytest"]
+docs = [
+    "furo~=2024.8",
+    "jupyter-sphinx~=0.5.3",
+    # The JupyterLite notebook embedded in the website must install the WASM
+    # wheel for CPython 3.13, which this package provides.
+    "jupyterlite-pyodide-kernel~=0.7.0",
+    "jupyterlite-sphinx~=0.22.0",
+    "myst-parser~=4.0",
+    "sphinx-inline-tabs~=2025.12",
+]
 
 [project.urls]
 Homepage = "https://tfpf.github.io/pysorteddict/"
@@ -103,15 +102,10 @@ cov = [
 ]
 
 [tool.hatch.envs.docs]
-detached = true
+features = ["docs"]
 
 [tool.hatch.envs.docs.scripts]
 assets = "cd docs/ && zip -FSr assets.zip _static/fonts/ _static/images/ extra/simple/pysorteddict/*.whl"
-# Building the documentation does not require installing this project, but does
-# require some dependencies. I can't figure out a way to get Hatch to only
-# install those dependencies without repeating them here. Hence, install them
-# in this environment manually from the dependency group. Otherwise, the below
-# command will fail.
 docs = "sphinx-build docs/ docs/_build/"
 
 [tool.meson-python.args]
