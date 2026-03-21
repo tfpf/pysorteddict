@@ -454,6 +454,54 @@ Sorted Dictionary
 
       Return the value mapped to ``key`` in the sorted dictionary, or ``default`` if ``key`` isn't in present in it.
 
+      .. jupyter-execute::
+
+         from pysorteddict import *
+         d = SortedDict()
+         d["foo"] = "bar"
+         print(d.get("foo"))
+         print(d.get("baz"))
+         print(d.get("spam", "eggs"))
+
+      .. raw:: html
+
+         <details class="warning">
+
+         <summary>This method may raise exceptions.</summary>
+
+      :raises RuntimeError: if no key-value pairs have been inserted yet.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import *
+         d = SortedDict()
+         d.get("foo")
+
+      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import *
+         d = SortedDict()
+         d["foo"] = ("bar", "baz")
+         d.get(100)
+
+      :raises ValueError: if ``key`` is not comparable with instances of its type.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import *
+         d = SortedDict()
+         d[1.1] = ("racecar",)
+         d.get(float("nan"))
+
+      .. raw:: html
+
+         </details>
+
 Sorted Dictionary Views
 ***********************
 
