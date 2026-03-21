@@ -35,7 +35,7 @@ copyright = f"2025–2026, {author}"
 release = metadata["version"]
 project = metadata["name"] + " " + release
 
-extensions = ["jupyterlite_sphinx", "myst_parser", "sphinx_inline_tabs"]
+extensions = ["jupyter_sphinx", "jupyterlite_sphinx", "myst_parser", "sphinx_inline_tabs"]
 source_suffix = [".md", ".rst"]
 exclude_patterns = ["_build"]
 

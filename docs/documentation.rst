@@ -91,18 +91,12 @@ Documentation
 
          :raises RuntimeError: if no key-value pairs have been inserted yet.
 
-         .. code-block:: python
+         .. jupyter-execute::
+            :raises:
 
             from pysorteddict import *
             d = SortedDict()
             "foo" in d
-
-         .. code-block:: text
-
-            Traceback (most recent call last):
-              File "…", line 3, in <module>
-                "foo" in d
-            RuntimeError: key type not set: insert at least one item first
 
          :raises RuntimeError:
 
