@@ -35,7 +35,7 @@ copyright = f"2025–2026, {author}"
 release = metadata["version"]
 project = metadata["name"] + " " + release
 
-extensions = ["jupyterlite_sphinx", "myst_parser", "sphinx_inline_tabs"]
+extensions = ["jupyter_sphinx", "jupyterlite_sphinx", "myst_parser", "sphinx_inline_tabs"]
 source_suffix = [".md", ".rst"]
 exclude_patterns = ["_build"]
 
@@ -72,3 +72,4 @@ html_use_index = False
 myst_enable_extensions = ["attrs_inline", "colon_fence"]
 myst_heading_anchors = 4
 templates_path = ["_templates"]
+toc_object_entries_show_parents = "hide"
