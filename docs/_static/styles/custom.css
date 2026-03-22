@@ -107,30 +107,13 @@ summary:hover {
  * more comfortable.
  */
 
-body {
-  --code-bg-input: #F7F7F7;
-  --code-bg-output: #FFFFFF;
-}
-
-body[data-theme=dark] {
-  --code-bg-input: #202020;
-  --code-bg-output: #131416;
-}
-
-@media (prefers-color-scheme: dark) {
-  body[data-theme=auto] {
-    --code-bg-input: #202020;
-    --code-bg-output: #131416;
-  }
-}
-
 body .jupyter_container .cell_input .highlight {
-  background: var(--code-bg-input);
+  background: var(--color-code-background);
 }
 
 body .jupyter_container,
 body .jupyter_container .cell_output .highlight {
-  background: var(--code-bg-output);
+  background: var(--color-background-primary);
 }
 
 .cell_input .highlight,
