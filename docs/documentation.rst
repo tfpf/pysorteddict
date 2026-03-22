@@ -659,11 +659,16 @@ Sorted Dictionary Views
 Sorted dictionary views are dynamic views on a sorted dictionary: they are immutable and cannot be used to mutate the
 sorted dictionary, but always reflect its current state.
 
-There are three view types, none of which are importable or user-constructible, since they are exposed only indirectly.
+There are three view types.
 
 .. class:: SortedDictItems
 
-   A view representing a sorted set of key-value pairs; the return type of :meth:`SortedDict.items`.
+   A view representing a sorted set of key-value pairs. Instances of this type are returned by
+   :meth:`SortedDict.items`, but it is not user-importable.
+
+   .. method:: __len__() -> int
+
+      Return the number of key-value pairs in the sorted dictionary view.
 
    .. method:: __contains__(ob: Any) -> bool
 
@@ -674,7 +679,12 @@ There are three view types, none of which are importable or user-constructible, 
 
 .. class:: SortedDictKeys
 
-   A view representing a sorted set of keys; the return type of :meth:`SortedDict.keys`.
+   A view representing a sorted set of keys. Instances of this type are returned by :meth:`SortedDict.keys`, but it is
+   not user-importable.
+
+   .. method:: __len__() -> int
+
+      Return the number of keys in the sorted dictionary view.
 
    .. method:: __contains__(ob: Any) -> bool
 
@@ -684,8 +694,12 @@ There are three view types, none of which are importable or user-constructible, 
 
 .. class:: SortedDictValues
 
-   A view representing an array of values ordered by the keys they are mapped to; the return type of
-   :meth:`SortedDict.values`.
+   A view representing an array of values ordered by the keys they are mapped to. Instances of this type are returned
+   by :meth:`SortedDict.values`, but it is not user-importable.
+
+   .. method:: __len__() -> int
+
+      Return the number of values in the sorted dictionary view.
 
    .. method:: __contains__(ob: Any) -> bool
 

@@ -72,3 +72,4 @@ html_use_index = False
 myst_enable_extensions = ["attrs_inline", "colon_fence"]
 myst_heading_anchors = 4
 templates_path = ["_templates"]
+toc_object_entries_show_parents = "hide"
