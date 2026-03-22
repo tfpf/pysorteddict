@@ -670,6 +670,9 @@ There are three view types.
 
       Return the number of key-value pairs in the sorted dictionary view.
 
+      The behaviour is equivalent to that of :meth:`len(d) <SortedDict.__len__>` where ``d`` is the underlying sorted
+      dictionary.
+
    .. method:: __contains__(ob: Any) -> bool
 
       Return whether ``ob`` is present in the sorted dictionary view.
@@ -710,11 +713,15 @@ There are three view types.
 
       Return the number of keys in the sorted dictionary view.
 
+      The behaviour is equivalent to that of :meth:`len(d) <SortedDict.__len__>` where ``d`` is the underlying sorted
+      dictionary.
+
    .. method:: __contains__(ob: Any) -> bool
 
       Return whether ``ob`` is present in the sorted dictionary view.
 
-      The behaviour is equivalent to that of ``ob in d`` where ``d`` is the underlying sorted dictionary.
+      The behaviour is equivalent to that of :meth:`ob in d <SortedDict.__contains__>` where ``d`` is the underlying
+      sorted dictionary.
 
    .. method:: __getitem__(index_or_slice: int | slice) -> Any
 
@@ -748,6 +755,9 @@ There are three view types.
    .. method:: __len__() -> int
 
       Return the number of values in the sorted dictionary view.
+
+      The behaviour is equivalent to that of :meth:`len(d) <SortedDict.__len__>` where ``d`` is the underlying sorted
+      dictionary.
 
    .. method:: __contains__(ob: Any) -> bool
 
