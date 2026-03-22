@@ -102,22 +102,37 @@ summary:hover {
 }
 
 /*
- * The default background colours of code and output cells do not change when
- * the dark theme is enabled. Set them manually.
+ * The background colours of code and output cells remain light when the dark
+ * theme is enabled. Set them manually. Also make the spacing around the cells
+ * more comfortable.
  */
 
-body[data-theme=dark] .jupyter_container .cell_input .highlight {
-  background: #202020;
+body {
+  --code-bg-input: #F7F7F7;
+  --code-bg-output: #FFFFFF;
 }
 
-body[data-theme=dark] .jupyter_container,
-body[data-theme=dark] .jupyter_container .cell_output .highlight {
-  background: #131416;
+body[data-theme=dark] {
+  --code-bg-input: #202020;
+  --code-bg-output: #131416;
 }
 
-/*
- * Make the spacing of the code snippets and their outputs more comfortable.
- */
+@media (prefers-color-scheme: dark) {
+  body[data-theme=auto] {
+    --code-bg-input: #202020;
+    --code-bg-output: #131416;
+  }
+}
+
+body .jupyter_container .cell_input .highlight {
+  background: var(--code-bg-input);
+}
+
+body .jupyter_container,
+body .jupyter_container .cell_output .highlight {
+  background: var(--code-bg-output);
+}
+
 .cell_input .highlight,
 .cell_output .highlight {
   padding: 20px;
