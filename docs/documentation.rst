@@ -677,6 +677,30 @@ There are three view types.
       If ``ob`` is not a two-element ``tuple``, return ``False``. Otherwise, the behaviour is equivalent to that of
       ``ob[0] in d and d[ob[0]] == ob[1]`` where ``d`` is the underlying sorted dictionary.
 
+   .. method:: __getitem__(index_or_slice: int | slice) -> Any
+
+      Return the key-value pair at the given index or those in the given slice. The behaviour is equivalent to indexing
+      or slicing a ``list`` containing the key-value pairs.
+
+      .. jupyter-execute::
+
+         from pysorteddict import *
+
+         d = SortedDict()
+         items = d.items()
+         d["foo"] = ()
+         d["bar"] = [100]
+         d["baz"] = 3.14
+         d["spam"] = {}
+         d["eggs"] = ""
+         print(d)
+         print(items[0], items[2], items[4])
+         print(items[:3])
+         print(items[1:])
+         print(items[-3:3])
+         print(items[-5:4:2])
+         print(items[::-1])
+
 .. class:: SortedDictKeys
 
    A view representing a sorted set of keys. Instances of this type are returned by :meth:`SortedDict.keys`, but it is
@@ -691,6 +715,30 @@ There are three view types.
       Return whether ``ob`` is present in the sorted dictionary view.
 
       The behaviour is equivalent to that of ``ob in d`` where ``d`` is the underlying sorted dictionary.
+
+   .. method:: __getitem__(index_or_slice: int | slice) -> Any
+
+      Return the key at the given index or those in the given slice. The behaviour is equivalent to indexing or slicing
+      a ``list`` containing the keys.
+
+      .. jupyter-execute::
+
+         from pysorteddict import *
+
+         d = SortedDict()
+         keys = d.keys()
+         d["foo"] = ()
+         d["bar"] = [100]
+         d["baz"] = 3.14
+         d["spam"] = {}
+         d["eggs"] = ""
+         print(d)
+         print(keys[0], keys[2], keys[4])
+         print(keys[:3])
+         print(keys[1:])
+         print(keys[-3:3])
+         print(keys[-5:4:2])
+         print(keys[::-1])
 
 .. class:: SortedDictValues
 
@@ -707,3 +755,27 @@ There are three view types.
 
       The behaviour is equivalent to that of ``ob in l`` where ``l`` is a ``list`` of the elements in the view in the
       same order. In other words, making this call leads to an element-by-element comparison.
+
+   .. method:: __getitem__(index_or_slice: int | slice) -> Any
+
+      Return the value at the given index or those in the given slice. The behaviour is equivalent to indexing or
+      slicing a ``list`` containing the values.
+
+      .. jupyter-execute::
+
+         from pysorteddict import *
+
+         d = SortedDict()
+         values = d.values()
+         d["foo"] = ()
+         d["bar"] = [100]
+         d["baz"] = 3.14
+         d["spam"] = {}
+         d["eggs"] = ""
+         print(d)
+         print(values[0], values[2], values[4])
+         print(values[:3])
+         print(values[1:])
+         print(values[-3:3])
+         print(values[-5:4:2])
+         print(values[::-1])
