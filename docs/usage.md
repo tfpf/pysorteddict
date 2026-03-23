@@ -37,7 +37,11 @@ and run some code to install pysorteddict (using one of the hosted wheels) and i
 :toolbar: 1
 :width: 100%
 
-%pip install /pysorteddict/simple/pysorteddict/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
+import micropip
+
+await micropip.install(
+    "pysorteddict", index_urls=["https://tfpf.github.io/pysorteddict/simple/"]
+)
 
 from pysorteddict import SortedDict
 
@@ -56,7 +60,11 @@ d = SortedDict()
 :toolbar: 1
 :width: 100%
 
-%pip install /pysorteddict/simple/pysorteddict/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
+import micropip
+
+await micropip.install(
+    "pysorteddict", index_urls=["https://tfpf.github.io/pysorteddict/simple/"]
+)
 
 from pysorteddict import SortedDict
 
