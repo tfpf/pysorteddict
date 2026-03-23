@@ -80,6 +80,7 @@ public:
     PyObject* setdefault(PyObject*);
     PyObject* values(PyTypeObject*);
     PyObject* get_key_type(void);
+    int set_key_type(PyObject*);
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 

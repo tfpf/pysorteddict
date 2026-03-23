@@ -723,10 +723,17 @@ static PyObject* sorted_dict_type_get_key_type(PyObject* self, void* closure)
     return sd->get_key_type();
 }
 
+static int sorted_dict_type_set_key_type(PyObject* self, PyObject* key_type, void* closure)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->set_key_type(key_type);
+}
+
 static PyGetSetDef sorted_dict_type_getset[] = {
     {
         .name = "key_type",
         .get = sorted_dict_type_get_key_type,
+        .set = sorted_dict_type_set_key_type,
         .doc = sorted_dict_type_get_key_type_doc,
     },
     { nullptr },
