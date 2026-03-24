@@ -130,7 +130,7 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         }
 
         // The first key-value pair is being inserted.
-        if (this->set_key_type(reinterpret_cast<PyObject*>(Py_TYPE(key))) == -1)
+        if (this->set_key_type(reinterpret_cast<PyObject*>(Py_TYPE(key)), key) == -1)
         {
             return false;
         }
@@ -465,10 +465,14 @@ PyObject* SortedDictType::get_key_type(void)
     return Py_NewRef(this->key_type);  // 🆕
 }
 
-int SortedDictType::set_key_type(PyObject* key_type)
+int SortedDictType::set_key_type(PyObject* key_type, PyObject* key)
 {
     if (this->key_type != nullptr)
     {
+        if (Py_Is(key_type, reinterpret_cast<PyObject*>(this->key_type)))
+        {
+            return 0;
+        }
         PyErr_SetString(PyExc_AttributeError, "cannot change key type");
         return -1;
     }
@@ -506,7 +510,14 @@ int SortedDictType::set_key_type(PyObject* key_type)
         }
     }
 
-    PyErr_Format(PyExc_ValueError, "got unsupported key type %R", key_type);
+    if (key != nullptr)
+    {
+        PyErr_Format(PyExc_ValueError, "got key %R of unsupported type %R", key, key_type);
+    }
+    else
+    {
+        PyErr_Format(PyExc_ValueError, "got %R, want a supported key type", key_type);
+    }
     return -1;
 }
 
