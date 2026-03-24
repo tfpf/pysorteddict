@@ -512,10 +512,13 @@ int SortedDictType::set_key_type(PyObject* key_type, PyObject* key)
 
     if (key != nullptr)
     {
-        PyErr_Format(PyExc_ValueError, "got key %R of unsupported type %R", key, key_type);
+        // The user supplied a key of the wrong type.
+        PyErr_Format(PyExc_TypeError, "got key %R of unsupported type %R", key, key_type);
     }
     else
     {
+        // The user supplied an incorrect value (which should have been a
+        // supported type).
         PyErr_Format(PyExc_ValueError, "got %R, want a supported key type", key_type);
     }
     return -1;
