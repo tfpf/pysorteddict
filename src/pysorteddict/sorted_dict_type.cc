@@ -491,8 +491,9 @@ PyObject* SortedDictType::get_key_type(void)
     return Py_NewRef(this->key_type);  // 🆕
 }
 
-int SortedDictType::set_key_type(PyObject*key_type){
-        return 0;
+int SortedDictType::set_key_type(PyObject* key_type)
+{
+    return 0;
 }
 
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
