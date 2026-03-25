@@ -97,8 +97,12 @@ def prec_active_iterators_locked_not_all_keys(self) -> bool:
         self.keys
     )
 
+
 def rule_key_type_wrong() -> SearchStrategy:
-    return st.runner().flatmap(lambda self: st.sampled_from([key_type for key_type in strategy_mapping if key_type is not self.key_type]))
+    return st.runner().flatmap(
+        lambda self: st.sampled_from([key_type for key_type in strategy_mapping if key_type is not self.key_type])
+    )
+
 
 def rule_key_wrong_type() -> SearchStrategy:
     return st.runner().flatmap(lambda self: strategy_mapping_complement[self.key_type])

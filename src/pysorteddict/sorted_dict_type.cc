@@ -467,7 +467,8 @@ PyObject* SortedDictType::get_key_type(void)
 
 int SortedDictType::set_key_type(PyObject* key_type, PyObject* key)
 {
-    if(key_type == nullptr){
+    if (key_type == nullptr)
+    {
         PyErr_SetString(PyExc_AttributeError, "cannot delete attribute");
         return -1;
     }
