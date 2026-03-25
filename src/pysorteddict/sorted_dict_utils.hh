@@ -13,7 +13,7 @@
 /**
  * C++-style clean-up implementation for Python objects.
  */
-struct PyObject_Unreferencer
+struct PyObjectUnreferencer
 {
     void operator()(PyObject* ob)
     {
@@ -21,14 +21,14 @@ struct PyObject_Unreferencer
     }
 };
 
-using PyObjectWrapper = std::unique_ptr<PyObject, PyObject_Unreferencer>;
+using PyObjectWrapper = std::unique_ptr<PyObject, PyObjectUnreferencer>;
 
 /**
  * Automatic post-return clearer of the Python error indicator.
  */
-struct PyError_Clearer
+struct PyErrorClearer
 {
-    ~PyError_Clearer(void)
+    ~PyErrorClearer(void)
     {
         PyErr_Clear();
     }

@@ -55,7 +55,7 @@ Sorted Dictionary
           print("import math", file=writer)
           print('Decimal = type("Decimal", (float,), {"is_nan": lambda self: math.isnan(self)})', file=writer)
 
-      from pysorteddict import *
+      from pysorteddict import SortedDict
 
       from decimal import Decimal
 
@@ -84,7 +84,7 @@ Sorted Dictionary
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          assert d.key_type is None
@@ -111,7 +111,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          "foo" in d
@@ -121,7 +121,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ("bar", "baz")
@@ -132,7 +132,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d[1.1] = ("racecar",)
@@ -174,7 +174,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"]
@@ -184,7 +184,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ("bar", "baz")
@@ -195,7 +195,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d[1.1] = ("racecar",)
@@ -206,7 +206,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ("bar", "baz")
@@ -233,7 +233,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d[["eggs"]] = None
@@ -243,7 +243,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ("bar", "baz")
@@ -254,7 +254,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d[1.1] = ("racecar",)
@@ -279,7 +279,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          del d["foo"]
@@ -289,7 +289,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ("bar", "baz")
@@ -300,7 +300,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d[1.1] = ("racecar",)
@@ -311,7 +311,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ("bar", "baz")
@@ -324,7 +324,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          for i in range(5):
@@ -341,7 +341,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          for i in range(5):
@@ -367,7 +367,7 @@ Sorted Dictionary
 
          import gc
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = "bar"
@@ -393,7 +393,7 @@ Sorted Dictionary
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ()
@@ -412,7 +412,7 @@ Sorted Dictionary
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ()
@@ -440,7 +440,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = "bar"
@@ -464,7 +464,7 @@ Sorted Dictionary
 
          import gc
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = "bar"
@@ -491,7 +491,7 @@ Sorted Dictionary
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = "bar"
@@ -511,7 +511,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d.get("foo")
@@ -521,7 +521,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ("bar", "baz")
@@ -532,7 +532,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d[1.1] = ("racecar",)
@@ -548,7 +548,7 @@ Sorted Dictionary
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          items = d.items()
@@ -569,7 +569,7 @@ Sorted Dictionary
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          keys = d.keys()
@@ -591,7 +591,7 @@ Sorted Dictionary
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = "bar"
@@ -613,7 +613,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d.setdefault("foo")
@@ -623,7 +623,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ("bar", "baz")
@@ -634,7 +634,7 @@ Sorted Dictionary
       .. jupyter-execute::
          :raises:
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d[1.1] = ("racecar",)
@@ -650,7 +650,7 @@ Sorted Dictionary
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          values = d.values()
@@ -701,7 +701,7 @@ There are three view types.
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          items = d.items()
@@ -731,7 +731,7 @@ There are three view types.
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ()
@@ -765,7 +765,7 @@ There are three view types.
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ()
@@ -813,7 +813,7 @@ There are three view types.
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          keys = d.keys()
@@ -843,7 +843,7 @@ There are three view types.
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ()
@@ -877,7 +877,7 @@ There are three view types.
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ()
@@ -925,7 +925,7 @@ There are three view types.
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          values = d.values()
@@ -955,7 +955,7 @@ There are three view types.
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ()
@@ -989,7 +989,7 @@ There are three view types.
 
       .. jupyter-execute::
 
-         from pysorteddict import *
+         from pysorteddict import SortedDict
 
          d = SortedDict()
          d["foo"] = ()

@@ -26,7 +26,7 @@
  */
 static PyTypeObject* import_python_type(char const* module_name, char const* type_name)
 {
-    PyError_Clearer _;
+    PyErrorClearer _;
     PyObjectWrapper module_ob(PyImport_ImportModule(module_name));  // 🆕
     if (module_ob == nullptr)
     {
@@ -82,7 +82,7 @@ bool SortedDictType::is_key_good(PyObject* key)
     }
     if (this->key_type == PyDecimal_Type)
     {
-        PyError_Clearer _;
+        PyErrorClearer _;
         PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));  // 🆕
         if (key_is_nan_callable == nullptr)
         {
