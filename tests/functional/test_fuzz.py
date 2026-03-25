@@ -49,7 +49,9 @@ strategy_mapping_complement = {
     tp: st.one_of(other_strat for other_tp, other_strat in strategy_mapping.items() if other_tp is not tp)
     for tp in strategy_mapping
 }
+supported_key_types = st.sampled_from(strategy_mapping.keys())
 supported_keys = st.one_of(strategy_mapping.values())
+unsupported_key_types = st.sampled_from([bytearray, list, memoryview, tuple])
 unsupported_keys = st.lists(st.integers())
 all_keys = st.one_of(supported_keys, unsupported_keys)
 
@@ -691,6 +693,10 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule(key=rule_key_exists())
     def sedefault_existing(self, key):
         assert self.sorted_dict.setdefault(key) == self.normal_dict.setdefault(key)
+
+    ###########################################################################
+    # `init`.
+    ###########################################################################
 
     ###########################################################################
     # `init`.
