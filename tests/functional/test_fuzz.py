@@ -49,9 +49,9 @@ strategy_mapping_complement = {
     tp: st.one_of(other_strat for other_tp, other_strat in strategy_mapping.items() if other_tp is not tp)
     for tp in strategy_mapping
 }
-supported_key_types = st.sampled_from(strategy_mapping.keys())
-supported_keys = st.one_of(strategy_mapping.values())
+supported_key_types = st.sampled_from([*strategy_mapping])
 unsupported_key_types = st.sampled_from([bytearray, list, memoryview, tuple])
+supported_keys = st.one_of(strategy_mapping.values())
 unsupported_keys = st.lists(st.integers())
 all_keys = st.one_of(supported_keys, unsupported_keys)
 
@@ -97,6 +97,8 @@ def prec_active_iterators_locked_not_all_keys(self) -> bool:
         self.keys
     )
 
+def rule_key_type_wrong() -> SearchStrategy:
+    return st.runner().flatmap(lambda self: st.sampled_from([key_type for key_type in strategy_mapping if key_type is not self.key_type]))
 
 def rule_key_wrong_type() -> SearchStrategy:
     return st.runner().flatmap(lambda self: strategy_mapping_complement[self.key_type])
@@ -260,7 +262,7 @@ class FuzzMachine(RuleBasedStateMachine):
     def always(self):
         sorted_normal_dict = dict(sorted(self.normal_dict.items()))
         sorted_normal_dict_items_list = [*sorted_normal_dict.items()]
-        sorted_normal_dict_keys_list = [*sorted_normal_dict.keys()]
+        sorted_normal_dict_keys_list = [*sorted_normal_dict]
         sorted_normal_dict_values_list = [*sorted_normal_dict.values()]
         assert repr(self.sorted_dict) == f"SortedDict({sorted_normal_dict})"
         assert repr(self.sorted_dict_items) == f"SortedDictItems({sorted_normal_dict_items_list})"
@@ -273,8 +275,8 @@ class FuzzMachine(RuleBasedStateMachine):
         assert len(self.sorted_dict_keys) == sorted_normal_dict_len
         assert len(self.sorted_dict_values) == sorted_normal_dict_len
 
-        assert [*self.sorted_dict] == [*sorted_normal_dict]
-        assert [*reversed(self.sorted_dict)] == [*reversed(sorted_normal_dict)]
+        assert [*self.sorted_dict] == sorted_normal_dict_keys_list
+        assert [*reversed(self.sorted_dict)] == sorted_normal_dict_keys_list[::-1]
         assert [*self.sorted_dict_items] == sorted_normal_dict_items_list
         assert [*reversed(self.sorted_dict_items)] == sorted_normal_dict_items_list[::-1]
         assert [*self.sorted_dict_keys] == sorted_normal_dict_keys_list
@@ -695,8 +697,35 @@ class FuzzMachine(RuleBasedStateMachine):
         assert self.sorted_dict.setdefault(key) == self.normal_dict.setdefault(key)
 
     ###########################################################################
-    # `init`.
+    # `key_type`.
     ###########################################################################
+
+    @precondition(prec_key_type_not_set)
+    @rule(key_type=unsupported_key_types)
+    def set_key_type_unsupported(self, key_type):
+        with pytest.raises(ValueError, match=f"got {key_type!r}, want a supported key type"):
+            self.sorted_dict.key_type = key_type
+
+    @precondition(prec_key_type_set)
+    @rule(key_type=rule_key_type_wrong())
+    def set_key_type_wrong(self, key_type):
+        with pytest.raises(AttributeError, match=f"cannot change key type from {self.key_type!r} to {key_type!r}"):
+            self.sorted_dict.key_type = key_type
+
+    @precondition(prec_key_type_not_set)
+    @rule(key_type=supported_key_types)
+    def set_key_type_when_not_set(self, key_type):
+        self.key_type = self.sorted_dict.key_type = key_type
+
+    @precondition(prec_key_type_set)
+    @rule()
+    def set_key_type_same(self):
+        self.sorted_dict.key_type = self.key_type
+
+    @rule()
+    def del_key_type(self):
+        with pytest.raises(AttributeError, match="cannot delete attribute"):
+            del self.sorted_dict.key_type
 
     ###########################################################################
     # `init`.
