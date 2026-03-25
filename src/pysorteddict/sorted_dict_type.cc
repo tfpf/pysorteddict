@@ -102,13 +102,13 @@ bool SortedDictType::is_key_good(PyObject* key)
  * Check whether the key type and the given key-value pair satisfy one of the
  * following conditions.
  *
- * 1. The key type is unset; the given key is of a supported type and has a
+ * 1. The key type is not set; the given key is of a supported type and has a
  *    good value (defined above); and the given value is not null.
  *
  * 2. The key type is set; and the given key is of that type and has a good
  *    value.
  *
- * On success, set the key type to the type of the given key if it was unset.
+ * On success, set the key type to the type of the given key if it was not set.
  * On failure, set a Python exception.
  *
  * @param key Key.
