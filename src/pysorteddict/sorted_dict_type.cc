@@ -467,13 +467,18 @@ PyObject* SortedDictType::get_key_type(void)
 
 int SortedDictType::set_key_type(PyObject* key_type, PyObject* key)
 {
+    if(key_type == nullptr){
+        PyErr_SetString(PyExc_AttributeError, "cannot delete attribute");
+        return -1;
+    }
+
     if (this->key_type != nullptr)
     {
         if (Py_Is(key_type, reinterpret_cast<PyObject*>(this->key_type)))
         {
             return 0;
         }
-        PyErr_SetString(PyExc_AttributeError, "cannot change key type");
+        PyErr_Format(PyExc_AttributeError, "cannot change key type from %R to %R", this->key_type, key_type);
         return -1;
     }
 
@@ -517,8 +522,8 @@ int SortedDictType::set_key_type(PyObject* key_type, PyObject* key)
     }
     else
     {
-        // The user supplied an incorrect value (which should have been a
-        // supported type).
+        // The user supplied a wrong value (which should have been a supported
+        // type).
         PyErr_Format(PyExc_ValueError, "got %R, want a supported key type", key_type);
     }
     return -1;
