@@ -712,7 +712,7 @@ static PyMethodDef sorted_dict_type_methods[] = {
 };
 
 PyDoc_STRVAR(
-    sorted_dict_type_get_key_type_doc,
+    sorted_dict_type_key_type_doc,
     "d.key_type: type | None\n"
     "The key type of the sorted dictionary ``d``, or ``None`` if no key-value pairs have been inserted in it."
 );
@@ -723,11 +723,18 @@ static PyObject* sorted_dict_type_get_key_type(PyObject* self, void* closure)
     return sd->get_key_type();
 }
 
+static int sorted_dict_type_set_key_type(PyObject* self, PyObject* key_type, void* closure)
+{
+    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
+    return sd->set_key_type(key_type);
+}
+
 static PyGetSetDef sorted_dict_type_getset[] = {
     {
         .name = "key_type",
         .get = sorted_dict_type_get_key_type,
-        .doc = sorted_dict_type_get_key_type_doc,
+        .set = sorted_dict_type_set_key_type,
+        .doc = sorted_dict_type_key_type_doc,
     },
     { nullptr },
 };
