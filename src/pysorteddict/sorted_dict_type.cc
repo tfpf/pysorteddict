@@ -403,20 +403,24 @@ PyObject* SortedDictType::copy(void)
     return sd_copy;
 }
 
-PyObject* SortedDictType::get(PyObject* args)
+PyObject* SortedDictType::get(PyObject* const* args, Py_ssize_t nargs)
 {
-    PyObject* key;
-    PyObject* Default = Py_None;
-    if (!PyArg_ParseTuple(args, "O|O:get", &key, &Default))
+    if (nargs < 1 || 2 < nargs)
     {
-        return nullptr;
+        return PyErr_Format(PyExc_TypeError, "get() takes 1 to 2 positional arguments (%zd given)", nargs);
     }
+    PyObject* key = args[0];
     if (!this->are_key_type_and_key_value_pair_good(key))
     {
         return nullptr;
     }
     auto it = this->map->find(key);
-    return Py_NewRef(it == this->map->end() ? Default : it->second.value);
+    if (it == this->map->end())
+    {
+        PyObject* Default = nargs > 1 ? args[1] : Py_None;
+        return Py_NewRef(Default);
+    }
+    return Py_NewRef(it->second.value);
 }
 
 PyObject* SortedDictType::items(PyTypeObject* type)

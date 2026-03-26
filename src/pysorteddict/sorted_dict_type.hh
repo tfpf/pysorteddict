@@ -74,7 +74,7 @@ public:
     PyObject* reversed(PyTypeObject*);
     PyObject* clear(void);
     PyObject* copy(void);
-    PyObject* get(PyObject*);
+    PyObject* get(PyObject* const*, Py_ssize_t);
     PyObject* items(PyTypeObject*);
     PyObject* keys(PyTypeObject*);
     PyObject* setdefault(PyObject*);

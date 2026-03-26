@@ -615,10 +615,10 @@ class FuzzMachine(RuleBasedStateMachine):
     # `get`.
     ###########################################################################
 
-    @rule()
-    def get_wrong_call(self):
-        with pytest.raises(TypeError, match=re.escape("get() takes at most 2 arguments (3 given)")):
-            self.sorted_dict.get(object, object, object)
+    @rule(args=st.sampled_from([(), (object, object, object)]))
+    def get_wrong_call(self, args):
+        with pytest.raises(TypeError, match=re.escape(f"get() takes 1 to 2 positional arguments ({len(args)} given)")):
+            self.sorted_dict.get(*args)
 
     @precondition(prec_key_type_not_set)
     @rule(key=all_keys)
