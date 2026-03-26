@@ -415,12 +415,12 @@ PyObject* SortedDictType::get(PyObject* const* args, Py_ssize_t nargs)
         return nullptr;
     }
     auto it = this->map->find(key);
-    if (it == this->map->end())
+    if (it != this->map->end())
     {
-        PyObject* Default = nargs > 1 ? args[1] : Py_None;
-        return Py_NewRef(Default);
+        return Py_NewRef(it->second.value);
     }
-    return Py_NewRef(it->second.value);
+    PyObject* Default = nargs > 1 ? args[1] : Py_None;
+    return Py_NewRef(Default);
 }
 
 PyObject* SortedDictType::items(PyTypeObject* type)
@@ -433,14 +433,13 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
     return SortedDictKeysType::New(type, this);
 }
 
-PyObject* SortedDictType::setdefault(PyObject* args)
+PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
 {
-    PyObject* key;
-    PyObject* Default = Py_None;
-    if (!PyArg_ParseTuple(args, "O|O:setdefault", &key, &Default))
+    if (nargs < 1 || 2 < nargs)
     {
-        return nullptr;
+        return PyErr_Format(PyExc_TypeError, "setdefault() takes 1 to 2 positional arguments (%zd given)", nargs);
     }
+    PyObject* key = args[0];
     if (!this->are_key_type_and_key_value_pair_good(key))
     {
         return nullptr;
@@ -451,6 +450,7 @@ PyObject* SortedDictType::setdefault(PyObject* args)
     {
         return Py_NewRef(it->second.value);
     }
+    PyObject* Default = nargs > 1 ? args[1] : Py_None;
     this->map->emplace_hint(it, Py_NewRef(key), Py_NewRef(Default));  // 🆕
     return Py_NewRef(Default);  // 🆕
 }
