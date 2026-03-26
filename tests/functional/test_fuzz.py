@@ -707,13 +707,13 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_key_type_not_set)
     @rule(key_type=unsupported_key_types)
     def set_key_type_unsupported(self, key_type):
-        with pytest.raises(ValueError, match=f"got {key_type!r}, want a supported key type"):
+        with pytest.raises(ValueError, match=f"got {key_type}, want a supported key type"):
             self.sorted_dict.key_type = key_type
 
     @precondition(prec_key_type_set)
     @rule(key_type=rule_key_type_wrong())
     def set_key_type_wrong(self, key_type):
-        with pytest.raises(AttributeError, match=f"cannot change key type from {self.key_type!r} to {key_type!r}"):
+        with pytest.raises(AttributeError, match=f"cannot change key type from {self.key_type} to {key_type}"):
             self.sorted_dict.key_type = key_type
 
     @precondition(prec_key_type_not_set)
