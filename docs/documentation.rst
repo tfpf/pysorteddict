@@ -92,6 +92,48 @@ Sorted Dictionary
          d[b"foo"] = ()
          assert d.key_type is bytes
 
+      If the key type is ``None``, it can manually be set to a supported key type. This is useful to avoid the
+      ``RuntimeError``\s which would otherwise be raised on any read operations.
+
+      .. jupyter-execute::
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d.key_type = bytes
+         d[b"foo"] = ()
+
+      .. raw:: html
+
+         <details class="warning">
+
+         <summary>This property may raise exceptions.</summary>
+
+      :raises ValueError: if an attempt is made to set it to an unsupported key type.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d.key_type = list
+
+      :raises AttributeError: if an attempt is made to change it after it has been set.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d[b"foo"] = ()
+         d.key_type = str
+
+      .. raw:: html
+
+         </details>
+
    .. method:: __repr__() -> str
 
       Return a human-readable representation of the sorted dictionary.
