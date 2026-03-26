@@ -417,10 +417,10 @@ PyObject* SortedDictType::get(PyObject* const* args, Py_ssize_t nargs)
     auto it = this->map->find(key);
     if (it != this->map->end())
     {
-        return Py_NewRef(it->second.value);
+        return Py_NewRef(it->second.value);  // 🆕
     }
     PyObject* Default = nargs > 1 ? args[1] : Py_None;
-    return Py_NewRef(Default);
+    return Py_NewRef(Default);  // 🆕
 }
 
 PyObject* SortedDictType::items(PyTypeObject* type)
@@ -448,7 +448,7 @@ PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
     bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
     if (found)
     {
-        return Py_NewRef(it->second.value);
+        return Py_NewRef(it->second.value);  // 🆕
     }
     PyObject* Default = nargs > 1 ? args[1] : Py_None;
     this->map->emplace_hint(it, Py_NewRef(key), Py_NewRef(Default));  // 🆕

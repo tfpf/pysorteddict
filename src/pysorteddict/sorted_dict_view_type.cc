@@ -71,7 +71,7 @@ void SortedDictViewIterType<RevIterType>::track(RevIterType it)
 template<typename T>
 void SortedDictViewIterType<T>::track_begin(void)
 {
-    Py_INCREF(this->sd);
+    Py_INCREF(this->sd);  // 🆕
     ++this->sd->known_referrers;
     this->should_raise_stop_iteration = false;
 }
@@ -378,7 +378,7 @@ PyObject* SortedDictViewType::New(
 
     SortedDictViewType* sdv = reinterpret_cast<SortedDictViewType*>(self);
     sdv->sd = sd;
-    Py_INCREF(sdv->sd);
+    Py_INCREF(sdv->sd);  // 🆕
     sdv->forward_iterator_to_object = forward_iterator_to_object;
     sdv->reverse_iterator_to_object = reverse_iterator_to_object;
     return self;
