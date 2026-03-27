@@ -11,6 +11,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 * `SortedDict` property `key_type` setter ([#264](https://github.com/tfpf/pysorteddict/pull/264)).
 
+### Changed
+
+* `SortedDict` methods `get` and `setdefault` use the fast calling convention, resulting in a 10% speedup of the hot
+  path ([#268](https://github.com/tfpf/pysorteddict/pull/268)).
+
 ## [0.13.1](https://github.com/tfpf/pysorteddict/compare/v0.13.0...v0.13.1) (2026-02-16)
 
 ### Fixed
