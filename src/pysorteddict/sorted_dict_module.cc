@@ -605,10 +605,10 @@ PyDoc_STRVAR(
     "Return the value mapped to ``key`` in the sorted dictionary ``d``, or ``default`` if ``key`` isn't in ``d``."
 );
 
-static PyObject* sorted_dict_type_get(PyObject* self, PyObject* args)
+static PyObject* sorted_dict_type_get(PyObject* self, PyObject* const* args, Py_ssize_t nargs)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->get(args);
+    return sd->get(args, nargs);
 }
 
 PyDoc_STRVAR(
@@ -652,10 +652,10 @@ PyDoc_STRVAR(
     "Return ``d.get(key, default)``, and map ``default`` to ``key`` if ``key`` isn't in the sorted dictionary ``d``."
 );
 
-static PyObject* sorted_dict_type_setdefault(PyObject* self, PyObject* args)
+static PyObject* sorted_dict_type_setdefault(PyObject* self, PyObject* const* args, Py_ssize_t nargs)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->setdefault(args);
+    return sd->setdefault(args, nargs);
 }
 
 PyDoc_STRVAR(
@@ -691,8 +691,8 @@ static PyMethodDef sorted_dict_type_methods[] = {
     },
     {
         .ml_name = "get",
-        .ml_meth = sorted_dict_type_get,
-        .ml_flags = METH_VARARGS,
+        .ml_meth = reinterpret_cast<PyCFunction>(sorted_dict_type_get),
+        .ml_flags = METH_FASTCALL,
         .ml_doc = sorted_dict_type_get_doc,
     },
     {
@@ -709,8 +709,8 @@ static PyMethodDef sorted_dict_type_methods[] = {
     },
     {
         .ml_name = "setdefault",
-        .ml_meth = sorted_dict_type_setdefault,
-        .ml_flags = METH_VARARGS,
+        .ml_meth = reinterpret_cast<PyCFunction>(sorted_dict_type_setdefault),
+        .ml_flags = METH_FASTCALL,
         .ml_doc = sorted_dict_type_setdefault_doc,
     },
     {

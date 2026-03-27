@@ -4,7 +4,7 @@ build-backend = "mesonpy"
 
 [project]
 name = "pysorteddict"
-version = "0.13.1"
+version = "0.13.2"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
