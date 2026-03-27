@@ -197,6 +197,28 @@ bool SortedDictType::is_deletion_allowed(Py_ssize_t kv_known_referrers)
     return true;
 }
 
+/**
+ * Check whether the number of arguments falls within the specified range.
+ *
+ * @param caller Caller requesting the check.
+ * @param nargs Number of arguments.
+ * @param at_least Minimum number of arguments.
+ * @param at_most Maximum number of arguments.
+ *
+ * @return `true` if the check succeeds, else `false`.
+ */
+bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_least, int at_most)
+{
+    if (nargs < at_least || at_most < nargs)
+    {
+        PyErr_Format(
+            PyExc_TypeError, "%s() takes %d to %d positional arguments (%zd given)", caller, at_least, at_most, nargs
+        );
+        return false;
+    }
+    return true;
+}
+
 void SortedDictType::Delete(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
@@ -405,9 +427,9 @@ PyObject* SortedDictType::copy(void)
 
 PyObject* SortedDictType::get(PyObject* const* args, Py_ssize_t nargs)
 {
-    if (nargs < 1 || 2 < nargs)
+    if (!this->is_nargs_good(__func__, nargs, 1, 2))
     {
-        return PyErr_Format(PyExc_TypeError, "get() takes 1 to 2 positional arguments (%zd given)", nargs);
+        return nullptr;
     }
     PyObject* key = args[0];
     if (!this->are_key_type_and_key_value_pair_good(key))
@@ -435,9 +457,9 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
 
 PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
 {
-    if (nargs < 1 || 2 < nargs)
+    if (!this->is_nargs_good(__func__, nargs, 1, 2))
     {
-        return PyErr_Format(PyExc_TypeError, "setdefault() takes 1 to 2 positional arguments (%zd given)", nargs);
+        return nullptr;
     }
     PyObject* key = args[0];
     if (!this->are_key_type_and_key_value_pair_good(key))
