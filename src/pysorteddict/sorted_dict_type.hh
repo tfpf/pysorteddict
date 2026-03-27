@@ -62,6 +62,7 @@ private:
     bool are_key_type_and_key_value_pair_good(PyObject*, PyObject* value = nullptr);
     bool is_deletion_allowed(void);
     static bool is_deletion_allowed(Py_ssize_t);
+    static bool is_nargs_good(char const*, Py_ssize_t, int, int);
 
 public:
     static void Delete(PyObject*);
@@ -74,10 +75,10 @@ public:
     PyObject* reversed(PyTypeObject*);
     PyObject* clear(void);
     PyObject* copy(void);
-    PyObject* get(PyObject*);
+    PyObject* get(PyObject* const*, Py_ssize_t);
     PyObject* items(PyTypeObject*);
     PyObject* keys(PyTypeObject*);
-    PyObject* setdefault(PyObject*);
+    PyObject* setdefault(PyObject* const*, Py_ssize_t);
     PyObject* values(PyTypeObject*);
     PyObject* get_key_type(void);
     int set_key_type(PyObject*, PyObject* key = nullptr);
