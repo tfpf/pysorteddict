@@ -197,6 +197,28 @@ bool SortedDictType::is_deletion_allowed(Py_ssize_t kv_known_referrers)
     return true;
 }
 
+/**
+ * Check whether the number of arguments falls within the specified range.
+ *
+ * @param caller Caller requesting the check.
+ * @param nargs Number of arguments.
+ * @param at_least Minimum number of arguments.
+ * @param at_most Maximum number of arguments.
+ *
+ * @return `true` if the check succeeds, else `false`.
+ */
+bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_least, int at_most)
+{
+    if (nargs < at_least || at_most < nargs)
+    {
+        PyErr_Format(
+            PyExc_TypeError, "%s() takes %d to %d positional arguments (%zd given)", caller, at_least, at_most, nargs
+        );
+        return false;
+    }
+    return true;
+}
+
 void SortedDictType::Delete(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
@@ -403,20 +425,24 @@ PyObject* SortedDictType::copy(void)
     return sd_copy;
 }
 
-PyObject* SortedDictType::get(PyObject* args)
+PyObject* SortedDictType::get(PyObject* const* args, Py_ssize_t nargs)
 {
-    PyObject* key;
-    PyObject* Default = Py_None;
-    if (!PyArg_ParseTuple(args, "O|O:get", &key, &Default))
+    if (!this->is_nargs_good(__func__, nargs, 1, 2))
     {
         return nullptr;
     }
+    PyObject* key = args[0];
     if (!this->are_key_type_and_key_value_pair_good(key))
     {
         return nullptr;
     }
     auto it = this->map->find(key);
-    return Py_NewRef(it == this->map->end() ? Default : it->second.value);
+    if (it != this->map->end())
+    {
+        return Py_NewRef(it->second.value);  // 🆕
+    }
+    PyObject* Default = nargs > 1 ? args[1] : Py_None;
+    return Py_NewRef(Default);  // 🆕
 }
 
 PyObject* SortedDictType::items(PyTypeObject* type)
@@ -429,14 +455,13 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
     return SortedDictKeysType::New(type, this);
 }
 
-PyObject* SortedDictType::setdefault(PyObject* args)
+PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
 {
-    PyObject* key;
-    PyObject* Default = Py_None;
-    if (!PyArg_ParseTuple(args, "O|O:setdefault", &key, &Default))
+    if (!this->is_nargs_good(__func__, nargs, 1, 2))
     {
         return nullptr;
     }
+    PyObject* key = args[0];
     if (!this->are_key_type_and_key_value_pair_good(key))
     {
         return nullptr;
@@ -445,8 +470,9 @@ PyObject* SortedDictType::setdefault(PyObject* args)
     bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
     if (found)
     {
-        return Py_NewRef(it->second.value);
+        return Py_NewRef(it->second.value);  // 🆕
     }
+    PyObject* Default = nargs > 1 ? args[1] : Py_None;
     this->map->emplace_hint(it, Py_NewRef(key), Py_NewRef(Default));  // 🆕
     return Py_NewRef(Default);  // 🆕
 }
