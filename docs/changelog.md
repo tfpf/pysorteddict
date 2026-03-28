@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 * `SortedDict` property `key_type` setter ([#264](https://github.com/tfpf/pysorteddict/pull/264)).
+* `SortedDict` class method `__class_getitem__` ([#270](https://github.com/tfpf/pysorteddict/pull/270)).
 
 ### Changed
 
