@@ -80,7 +80,8 @@ Sorted Dictionary
    .. property:: key_type
       :type: type | None
 
-      The key type of the sorted dictionary, or ``None`` if no key-value pairs have been inserted yet.
+      The key type of the sorted dictionary. It is initially not set (so it evaluates to ``None``), and is
+      automatically set when a key-value pair is inserted.
 
       .. jupyter-execute::
 
@@ -92,7 +93,7 @@ Sorted Dictionary
          d[b"foo"] = ()
          assert d.key_type is bytes
 
-      If the key type is ``None``, it can manually be set to a supported key type. This is useful to avoid the
+      It can manually be set to a supported key type before inserting a key-value pair. This is useful to avoid the
       ``RuntimeError``\s which would otherwise be raised on any read operations.
 
       .. jupyter-execute::
@@ -148,7 +149,7 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises RuntimeError: if no key-value pairs have been inserted yet.
+      :raises RuntimeError: if the key type of the sorted dictionary is not set.
 
       .. jupyter-execute::
          :raises:
@@ -158,7 +159,7 @@ Sorted Dictionary
          d = SortedDict()
          "foo" in d
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -211,7 +212,7 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises RuntimeError: if no key-value pairs have been inserted yet.
+      :raises RuntimeError: if the key type of the sorted dictionary is not set.
 
       .. jupyter-execute::
          :raises:
@@ -221,7 +222,7 @@ Sorted Dictionary
          d = SortedDict()
          d["foo"]
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -269,8 +270,8 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises TypeError: if no key-value pairs have been inserted yet and ``type(key)`` isn't one of the supported
-       types.
+      :raises TypeError: if the key type of the sorted dictionary is not set and ``type(key)`` isn't one of the
+       supported types.
 
       .. jupyter-execute::
          :raises:
@@ -280,7 +281,7 @@ Sorted Dictionary
          d = SortedDict()
          d[["eggs"]] = None
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -316,7 +317,7 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises RuntimeError: if no key-value pairs have been inserted yet.
+      :raises RuntimeError: if the key type of the sorted dictionary is not set.
 
       .. jupyter-execute::
          :raises:
@@ -326,7 +327,7 @@ Sorted Dictionary
          d = SortedDict()
          del d["foo"]
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -548,7 +549,7 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises RuntimeError: if no key-value pairs have been inserted yet.
+      :raises RuntimeError: if the key type of the sorted dictionary is not set.
 
       .. jupyter-execute::
          :raises:
@@ -558,7 +559,7 @@ Sorted Dictionary
          d = SortedDict()
          d.get("foo")
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -650,7 +651,7 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises RuntimeError: if no key-value pairs have been inserted yet.
+      :raises RuntimeError: if the key type of the sorted dictionary is not set.
 
       .. jupyter-execute::
          :raises:
@@ -660,7 +661,7 @@ Sorted Dictionary
          d = SortedDict()
          d.setdefault("foo")
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
