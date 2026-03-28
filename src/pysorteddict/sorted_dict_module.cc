@@ -661,6 +661,12 @@ static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
 
 static PyMethodDef sorted_dict_type_methods[] = {
     {
+        .ml_name = "__class_getitem__",
+        .ml_meth = Py_GenericAlias,
+        .ml_flags = METH_O | METH_CLASS,
+        .ml_doc = "See PEP 585.",
+    },
+    {
         .ml_name = "__reversed__",
         .ml_meth = sorted_dict_type_reversed,
         .ml_flags = METH_NOARGS,
