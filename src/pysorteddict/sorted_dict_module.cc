@@ -650,7 +650,7 @@ static PyObject* sorted_dict_type_setdefault(PyObject* self, PyObject* const* ar
 PyDoc_STRVAR(
     sorted_dict_type_update_doc,
     "d.update(*args, **kwargs)\n"
-    "Update the sorted dictionary ``d`` with the keys and values from ``args`` and ``kwargs``."
+    "Update the sorted dictionary ``d`` with the keys and values from ``args``."
 );
 
 static PyObject* sorted_dict_type_update(PyObject* self, PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
@@ -716,8 +716,8 @@ static PyMethodDef sorted_dict_type_methods[] = {
     },
     {
         // Using the fast calling convention speeds up the common case but
-        // slows down the rare case (that of unpacking a dictionary and
-        // creating a new one from it). See
+        // slows down the rare case (that of unpacking a dictionary into
+        // keyword arguments and creating a new dictionary from them). See
         // https://github.com/python/cpython/pull/14589#issuecomment-509356084.
         // Keyword arguments are currently ignored, so the rare case is anyway
         // irrelevant right now.
