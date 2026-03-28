@@ -477,6 +477,12 @@ PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
     return Py_NewRef(Default);  // 🆕
 }
 
+PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
+{
+    fprintf(stderr, "%s\n", PyUnicode_AsUTF8(PyObjectWrapper(PyObject_Repr(kwnames)).get()));
+    Py_RETURN_NOTIMPLEMENTED;
+}
+
 PyObject* SortedDictType::values(PyTypeObject* type)
 {
     return SortedDictValuesType::New(type, this);
