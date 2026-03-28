@@ -28,3 +28,6 @@ def test_remove_first_element_while_referenced_by_reverse_iterator():
     del sorted_dict[0]
     with pytest.raises(StopIteration):
         next(r)
+
+def test_type_hint():
+    _ = SortedDict[str, float]
