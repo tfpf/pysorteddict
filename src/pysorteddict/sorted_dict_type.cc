@@ -479,7 +479,10 @@ PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
 
 PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
 {
-    fprintf(stderr, "%s\n", PyUnicode_AsUTF8(PyObjectWrapper(PyObject_Repr(kwnames)).get()));
+    if (!this->is_nargs_good(__func__, nargs, 0, 1))
+    {
+        return nullptr;
+    }
     Py_RETURN_NOTIMPLEMENTED;
 }
 

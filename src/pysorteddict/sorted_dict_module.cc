@@ -715,6 +715,12 @@ static PyMethodDef sorted_dict_type_methods[] = {
         .ml_doc = sorted_dict_type_setdefault_doc,
     },
     {
+        // Using the fast calling convention speeds up the common case but
+        // slows down the rare case (that of unpacking a dictionary and
+        // creating a new one from it). See
+        // https://github.com/python/cpython/pull/14589#issuecomment-509356084.
+        // Keyword arguments are currently ignored, so the rare case is anyway
+        // irrelevant right now.
         .ml_name = "update",
         .ml_meth = reinterpret_cast<PyCFunction>(sorted_dict_type_update),
         .ml_flags = METH_FASTCALL | METH_KEYWORDS,
