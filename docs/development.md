@@ -49,15 +49,15 @@ Miscellanies for ease of development.
 
 ### `tests/functional/`
 
-Functional (behavioural) tests.
+Functional tests.
 
 #### `test_fuzz.py`
 
-Randomised tests which cover most scenarios.
+Randomised attribute-based behavioural tests which cover most scenarios.
 
-#### `test_uncommon_errors.py`
+#### `test_specific.py`
 
-Tests for errors not expected to occur during regular usage.
+Tests for specific scenarios not covered by the above.
 
 ### `tests/performance/`
 
