@@ -219,6 +219,33 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
     return true;
 }
 
+/**
+ * Update the sorted dictionary with the keys and values from the given object.
+ *
+ * @param ob Object.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_object(PyObject* ob)
+{
+    return true;
+}
+
+/**
+ * Update the sorted dictionary with the keys and values provided.
+ *
+ * This method currently does nothing and always succeeds.
+ *
+ * @param keys Python tuple of keys.
+ * @param values C array of values.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_key_value_pairs(PyObject* keys, PyObject* const* values)
+{
+    return true;
+}
+
 void SortedDictType::Delete(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
@@ -483,7 +510,15 @@ PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObje
     {
         return nullptr;
     }
-    Py_RETURN_NOTIMPLEMENTED;
+    if (nargs == 1 && !this->update_from_object(args[0]))
+    {
+        return nullptr;
+    }
+    if (kwnames != nullptr && !this->update_from_key_value_pairs(kwnames, args + nargs))
+    {
+        return nullptr;
+    }
+    Py_RETURN_NONE;
 }
 
 PyObject* SortedDictType::values(PyTypeObject* type)
