@@ -741,7 +741,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_as_mapping = &sorted_dict_type_mapping,
     .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,
+    .tp_flags = Py_TPFLAGS_BASETYPE | Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,
     .tp_doc = "Sorted dictionary: a dictionary in which the keys are always in ascending order.\n\n"
               "See https://tfpf.github.io/pysorteddict/documentation.html.",
     .tp_iter = sorted_dict_type_iter,
