@@ -636,17 +636,6 @@ static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 }
 
 PyDoc_STRVAR(
-    sorted_dict_type_update_doc,
-    "d.update(*args, **kwargs)\n"
-    "Update the sorted dictionary ``d`` with the keys and values from ``args`` and ``kwargs``."
-);
-
-static PyObject* sorted_dict_type_update(PyObject* self, PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
-{
-    Py_RETURN_NONE;
-}
-
-PyDoc_STRVAR(
     sorted_dict_type_setdefault_doc,
     "d.setdefault(key: Any, default: Any = None, /) -> Any\n"
     "Return ``d.get(key, default)``, and map ``default`` to ``key`` if ``key`` isn't in the sorted dictionary ``d``."
@@ -656,6 +645,17 @@ static PyObject* sorted_dict_type_setdefault(PyObject* self, PyObject* const* ar
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
     return sd->setdefault(args, nargs);
+}
+
+PyDoc_STRVAR(
+    sorted_dict_type_update_doc,
+    "d.update(*args, **kwargs)\n"
+    "Update the sorted dictionary ``d`` with the keys and values from ``args`` and ``kwargs``."
+);
+
+static PyObject* sorted_dict_type_update(PyObject* self, PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
+{
+    Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(
