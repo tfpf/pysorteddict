@@ -19,8 +19,7 @@ static void sorted_dict_items_fwd_iter_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_items_fwd_iter_type_next(PyObject* self)
 {
-    SortedDictItemsIterType<FwdIterType>* sdifi = reinterpret_cast<SortedDictItemsIterType<FwdIterType>*>(self);
-    return sdifi->next();
+    return reinterpret_cast<SortedDictItemsIterType<FwdIterType>*>(self)->next();
 }
 
 static PyTypeObject sorted_dict_items_fwd_iter_type = {
@@ -52,8 +51,7 @@ static void sorted_dict_items_rev_iter_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_items_rev_iter_type_next(PyObject* self)
 {
-    SortedDictItemsIterType<RevIterType>* sdiri = reinterpret_cast<SortedDictItemsIterType<RevIterType>*>(self);
-    return sdiri->next();
+    return reinterpret_cast<SortedDictItemsIterType<RevIterType>*>(self)->next();
 }
 
 static PyTypeObject sorted_dict_items_rev_iter_type = {
@@ -93,8 +91,7 @@ static PyObject* sorted_dict_items_type_repr(PyObject* self)
  */
 static Py_ssize_t sorted_dict_items_type_len(PyObject* self)
 {
-    SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
-    return sdi->len();
+    return reinterpret_cast<SortedDictItemsType*>(self)->len();
 }
 
 /**
@@ -102,8 +99,7 @@ static Py_ssize_t sorted_dict_items_type_len(PyObject* self)
  */
 static int sorted_dict_items_type_contains(PyObject* self, PyObject* item)
 {
-    SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
-    return sdi->contains(item);
+    return reinterpret_cast<SortedDictItemsType*>(self)->contains(item);
 }
 
 static PySequenceMethods sorted_dict_items_type_sequence = {
@@ -116,8 +112,7 @@ static PySequenceMethods sorted_dict_items_type_sequence = {
  */
 static PyObject* sorted_dict_items_type_getitem(PyObject* self, PyObject* idx)
 {
-    SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
-    return sdi->getitem(idx);
+    return reinterpret_cast<SortedDictItemsType*>(self)->getitem(idx);
 }
 
 static PyMappingMethods sorted_dict_items_type_mapping = {
@@ -129,16 +124,14 @@ static PyMappingMethods sorted_dict_items_type_mapping = {
  */
 static PyObject* sorted_dict_items_type_iter(PyObject* self)
 {
-    SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
-    return sdi->iter(&sorted_dict_items_fwd_iter_type);
+    return reinterpret_cast<SortedDictItemsType*>(self)->iter(&sorted_dict_items_fwd_iter_type);
 }
 
 PyDoc_STRVAR(sorted_dict_items_type_reversed_doc, "Implement reversed(self).");
 
 static PyObject* sorted_dict_items_type_reversed(PyObject* self, PyObject* args)
 {
-    SortedDictItemsType* sdi = reinterpret_cast<SortedDictItemsType*>(self);
-    return sdi->reversed(&sorted_dict_items_rev_iter_type);
+    return reinterpret_cast<SortedDictItemsType*>(self)->reversed(&sorted_dict_items_rev_iter_type);
 }
 
 static PyMethodDef sorted_dict_items_type_methods[] = {
@@ -184,8 +177,7 @@ static void sorted_dict_keys_fwd_iter_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_keys_fwd_iter_type_next(PyObject* self)
 {
-    SortedDictKeysIterType<FwdIterType>* sdkfi = reinterpret_cast<SortedDictKeysIterType<FwdIterType>*>(self);
-    return sdkfi->next();
+    return reinterpret_cast<SortedDictKeysIterType<FwdIterType>*>(self)->next();
 }
 
 static PyTypeObject sorted_dict_keys_fwd_iter_type = {
@@ -217,8 +209,7 @@ static void sorted_dict_keys_rev_iter_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_keys_rev_iter_type_next(PyObject* self)
 {
-    SortedDictKeysIterType<RevIterType>* sdkri = reinterpret_cast<SortedDictKeysIterType<RevIterType>*>(self);
-    return sdkri->next();
+    return reinterpret_cast<SortedDictKeysIterType<RevIterType>*>(self)->next();
 }
 
 static PyTypeObject sorted_dict_keys_rev_iter_type = {
@@ -258,8 +249,7 @@ static PyObject* sorted_dict_keys_type_repr(PyObject* self)
  */
 static Py_ssize_t sorted_dict_keys_type_len(PyObject* self)
 {
-    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
-    return sdk->len();
+    return reinterpret_cast<SortedDictKeysType*>(self)->len();
 }
 
 /**
@@ -267,8 +257,7 @@ static Py_ssize_t sorted_dict_keys_type_len(PyObject* self)
  */
 static int sorted_dict_keys_type_contains(PyObject* self, PyObject* key)
 {
-    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
-    return sdk->contains(key);
+    return reinterpret_cast<SortedDictKeysType*>(self)->contains(key);
 }
 
 static PySequenceMethods sorted_dict_keys_type_sequence = {
@@ -281,8 +270,7 @@ static PySequenceMethods sorted_dict_keys_type_sequence = {
  */
 static PyObject* sorted_dict_keys_type_getitem(PyObject* self, PyObject* idx)
 {
-    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
-    return sdk->getitem(idx);
+    return reinterpret_cast<SortedDictKeysType*>(self)->getitem(idx);
 }
 
 static PyMappingMethods sorted_dict_keys_type_mapping = {
@@ -294,16 +282,14 @@ static PyMappingMethods sorted_dict_keys_type_mapping = {
  */
 static PyObject* sorted_dict_keys_type_iter(PyObject* self)
 {
-    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
-    return sdk->iter(&sorted_dict_keys_fwd_iter_type);
+    return reinterpret_cast<SortedDictKeysType*>(self)->iter(&sorted_dict_keys_fwd_iter_type);
 }
 
 PyDoc_STRVAR(sorted_dict_keys_type_reversed_doc, "Implement reversed(self).");
 
 static PyObject* sorted_dict_keys_type_reversed(PyObject* self, PyObject* args)
 {
-    SortedDictKeysType* sdk = reinterpret_cast<SortedDictKeysType*>(self);
-    return sdk->reversed(&sorted_dict_keys_rev_iter_type);
+    return reinterpret_cast<SortedDictKeysType*>(self)->reversed(&sorted_dict_keys_rev_iter_type);
 }
 
 static PyMethodDef sorted_dict_keys_type_methods[] = {
@@ -349,8 +335,7 @@ static void sorted_dict_values_fwd_iter_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_values_fwd_iter_type_next(PyObject* self)
 {
-    SortedDictValuesIterType<FwdIterType>* sdvfi = reinterpret_cast<SortedDictValuesIterType<FwdIterType>*>(self);
-    return sdvfi->next();
+    return reinterpret_cast<SortedDictValuesIterType<FwdIterType>*>(self)->next();
 }
 
 static PyTypeObject sorted_dict_values_fwd_iter_type = {
@@ -382,8 +367,7 @@ static void sorted_dict_values_rev_iter_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_values_rev_iter_type_next(PyObject* self)
 {
-    SortedDictValuesIterType<RevIterType>* sdvri = reinterpret_cast<SortedDictValuesIterType<RevIterType>*>(self);
-    return sdvri->next();
+    return reinterpret_cast<SortedDictValuesIterType<RevIterType>*>(self)->next();
 }
 
 static PyTypeObject sorted_dict_values_rev_iter_type = {
@@ -423,8 +407,7 @@ static PyObject* sorted_dict_values_type_repr(PyObject* self)
  */
 static Py_ssize_t sorted_dict_values_type_len(PyObject* self)
 {
-    SortedDictValuesType* sdv = reinterpret_cast<SortedDictValuesType*>(self);
-    return sdv->len();
+    return reinterpret_cast<SortedDictValuesType*>(self)->len();
 }
 
 static PySequenceMethods sorted_dict_values_type_sequence = {
@@ -436,8 +419,7 @@ static PySequenceMethods sorted_dict_values_type_sequence = {
  */
 static PyObject* sorted_dict_values_type_getitem(PyObject* self, PyObject* idx)
 {
-    SortedDictValuesType* sdv = reinterpret_cast<SortedDictValuesType*>(self);
-    return sdv->getitem(idx);
+    return reinterpret_cast<SortedDictValuesType*>(self)->getitem(idx);
 }
 
 static PyMappingMethods sorted_dict_values_type_mapping = {
@@ -449,16 +431,14 @@ static PyMappingMethods sorted_dict_values_type_mapping = {
  */
 static PyObject* sorted_dict_values_type_iter(PyObject* self)
 {
-    SortedDictValuesType* sdv = reinterpret_cast<SortedDictValuesType*>(self);
-    return sdv->iter(&sorted_dict_values_fwd_iter_type);
+    return reinterpret_cast<SortedDictValuesType*>(self)->iter(&sorted_dict_values_fwd_iter_type);
 }
 
 PyDoc_STRVAR(sorted_dict_values_type_reversed_doc, "Implement reversed(self).");
 
 static PyObject* sorted_dict_values_type_reversed(PyObject* self, PyObject* args)
 {
-    SortedDictValuesType* sdv = reinterpret_cast<SortedDictValuesType*>(self);
-    return sdv->reversed(&sorted_dict_values_rev_iter_type);
+    return reinterpret_cast<SortedDictValuesType*>(self)->reversed(&sorted_dict_values_rev_iter_type);
 }
 
 static PyMethodDef sorted_dict_values_type_methods[] = {
@@ -508,8 +488,7 @@ static void sorted_dict_type_dealloc(PyObject* self)
  */
 static PyObject* sorted_dict_type_repr(PyObject* self)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->repr();
+    return reinterpret_cast<SortedDictType*>(self)->repr();
 }
 
 /**
@@ -517,8 +496,7 @@ static PyObject* sorted_dict_type_repr(PyObject* self)
  */
 static int sorted_dict_type_contains(PyObject* self, PyObject* key)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->contains(key);
+    return reinterpret_cast<SortedDictType*>(self)->contains(key);
 }
 
 static PySequenceMethods sorted_dict_type_sequence = {
@@ -530,8 +508,7 @@ static PySequenceMethods sorted_dict_type_sequence = {
  */
 static Py_ssize_t sorted_dict_type_len(PyObject* self)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->len();
+    return reinterpret_cast<SortedDictType*>(self)->len();
 }
 
 /**
@@ -539,8 +516,7 @@ static Py_ssize_t sorted_dict_type_len(PyObject* self)
  */
 static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->getitem(key);
+    return reinterpret_cast<SortedDictType*>(self)->getitem(key);
 }
 
 /**
@@ -548,8 +524,7 @@ static PyObject* sorted_dict_type_getitem(PyObject* self, PyObject* key)
  */
 static int sorted_dict_type_setitem(PyObject* self, PyObject* key, PyObject* value)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->setitem(key, value);
+    return reinterpret_cast<SortedDictType*>(self)->setitem(key, value);
 }
 
 static PyMappingMethods sorted_dict_type_mapping = {
@@ -563,16 +538,14 @@ static PyMappingMethods sorted_dict_type_mapping = {
  */
 static PyObject* sorted_dict_type_iter(PyObject* self)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->iter(&sorted_dict_keys_fwd_iter_type);
+    return reinterpret_cast<SortedDictType*>(self)->iter(&sorted_dict_keys_fwd_iter_type);
 }
 
 PyDoc_STRVAR(sorted_dict_type_reversed_doc, "Implement reversed(self).");
 
 static PyObject* sorted_dict_type_reversed(PyObject* self, PyObject* args)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->reversed(&sorted_dict_keys_rev_iter_type);
+    return reinterpret_cast<SortedDictType*>(self)->reversed(&sorted_dict_keys_rev_iter_type);
 }
 
 PyDoc_STRVAR(
@@ -583,8 +556,7 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_clear(PyObject* self, PyObject* args)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->clear();
+    return reinterpret_cast<SortedDictType*>(self)->clear();
 }
 
 PyDoc_STRVAR(
@@ -595,8 +567,7 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_copy(PyObject* self, PyObject* args)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->copy();
+    return reinterpret_cast<SortedDictType*>(self)->copy();
 }
 
 PyDoc_STRVAR(
@@ -607,8 +578,7 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_get(PyObject* self, PyObject* const* args, Py_ssize_t nargs)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->get(args, nargs);
+    return reinterpret_cast<SortedDictType*>(self)->get(args, nargs);
 }
 
 PyDoc_STRVAR(
@@ -619,8 +589,7 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->items(&sorted_dict_items_type);
+    return reinterpret_cast<SortedDictType*>(self)->items(&sorted_dict_items_type);
 }
 
 PyDoc_STRVAR(
@@ -631,8 +600,7 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_keys(PyObject* self, PyObject* args)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->keys(&sorted_dict_keys_type);
+    return reinterpret_cast<SortedDictType*>(self)->keys(&sorted_dict_keys_type);
 }
 
 PyDoc_STRVAR(
@@ -643,8 +611,7 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_setdefault(PyObject* self, PyObject* const* args, Py_ssize_t nargs)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->setdefault(args, nargs);
+    return reinterpret_cast<SortedDictType*>(self)->setdefault(args, nargs);
 }
 
 PyDoc_STRVAR(
@@ -655,8 +622,7 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_values(PyObject* self, PyObject* args)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->values(&sorted_dict_values_type);
+    return reinterpret_cast<SortedDictType*>(self)->values(&sorted_dict_values_type);
 }
 
 static PyMethodDef sorted_dict_type_methods[] = {
@@ -725,14 +691,12 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_get_key_type(PyObject* self, void* closure)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->get_key_type();
+    return reinterpret_cast<SortedDictType*>(self)->get_key_type();
 }
 
 static int sorted_dict_type_set_key_type(PyObject* self, PyObject* key_type, void* closure)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->set_key_type(key_type);
+    return reinterpret_cast<SortedDictType*>(self)->set_key_type(key_type);
 }
 
 static PyGetSetDef sorted_dict_type_getset[] = {
@@ -750,8 +714,7 @@ static PyGetSetDef sorted_dict_type_getset[] = {
  */
 static int sorted_dict_type_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->init(args, kwargs);
+    return reinterpret_cast<SortedDictType*>(self)->init(args, kwargs);
 }
 
 /**
@@ -778,7 +741,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_as_mapping = &sorted_dict_type_mapping,
     .tp_hash = PyObject_HashNotImplemented,
     .tp_getattro = PyObject_GenericGetAttr,
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,
+    .tp_flags = Py_TPFLAGS_BASETYPE | Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DICT_SUBCLASS,
     .tp_doc = "Sorted dictionary: a dictionary in which the keys are always in ascending order.\n\n"
               "See https://tfpf.github.io/pysorteddict/documentation.html.",
     .tp_iter = sorted_dict_type_iter,
