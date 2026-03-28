@@ -71,7 +71,8 @@ Sorted Dictionary
 
       </details>
 
-   The methods of ``SortedDict`` are somewhat similar to those of ``dict``.
+   ``SortedDict`` can be type-specified for use in type hints as, for instance, ``SortedDict[str, float]``, similar to
+   ``dict``.
 
    .. method:: __init__()
 
