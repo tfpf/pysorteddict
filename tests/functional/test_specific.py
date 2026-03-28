@@ -29,5 +29,10 @@ def test_remove_first_element_while_referenced_by_reverse_iterator():
     with pytest.raises(StopIteration):
         next(r)
 
+
 def test_type_hint():
-    _ = SortedDict[str, float]
+    SortedDict[str, float]
+
+
+def test_subclassable():
+    type("SortedDictSubclass", (SortedDict,), {})
