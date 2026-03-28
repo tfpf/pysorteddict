@@ -719,8 +719,7 @@ static PyMethodDef sorted_dict_type_methods[] = {
         // slows down the rare case (that of unpacking a dictionary into
         // keyword arguments and creating a new dictionary from them). See
         // https://github.com/python/cpython/pull/14589#issuecomment-509356084.
-        // Keyword arguments are currently ignored, so the rare case is anyway
-        // irrelevant right now.
+        // Since I ignore keyword arguments, the rare case is irrelevant.
         .ml_name = "update",
         .ml_meth = reinterpret_cast<PyCFunction>(sorted_dict_type_update),
         .ml_flags = METH_FASTCALL | METH_KEYWORDS,
