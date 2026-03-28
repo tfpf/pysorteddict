@@ -622,8 +622,7 @@ PyDoc_STRVAR(
 
 static PyObject* sorted_dict_type_update(PyObject* self, PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
-    return sd->update(args, nargs, kwnames);
+    return reinterpret_cast<SortedDictType*>(self)->update(args, nargs, kwnames);
 }
 
 PyDoc_STRVAR(
