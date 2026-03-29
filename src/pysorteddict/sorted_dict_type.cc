@@ -278,7 +278,7 @@ bool SortedDictType::update_from_sequence(PyObject* sq)
             return PyErr_Occurred() == nullptr;
         }
         PyObjectWrapper item_unpacked(
-            PySequence_Fast(item.get(), "could not convert all update sequence elements to sequences")  // 🆕
+            PySequence_Fast(item.get(), "got non-sequence element, want all elements to be sequences")  // 🆕
         );
         if (item_unpacked == nullptr)
         {
@@ -288,8 +288,7 @@ bool SortedDictType::update_from_sequence(PyObject* sq)
         if (sz != 2)
         {
             PyErr_Format(
-                PyExc_ValueError, "got update sequence element of length %zd at index %zd, want element of length 2",
-                sz, i
+                PyExc_ValueError, "got element of length %zd at position %zd, want element of length 2", sz, i
             );
             return false;
         }
