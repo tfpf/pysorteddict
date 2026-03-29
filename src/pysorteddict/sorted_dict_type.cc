@@ -219,11 +219,23 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
  * mapping.
  *
  * @param mp Mapping.
- * @param keys Python container of keys.
  *
  * @return `true` if successful, else `false`.
  */
-bool SortedDictType::update_from_mapping(PyObject* mp, PyObject* keys)
+bool SortedDictType::update_from_mapping(PyObject* mp)
+{
+    return true;
+}
+
+/**
+ * Update the sorted dictionary with the keys and values from the given
+ * sequence.
+ *
+ * @param sq Sequence.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_sequence(PyObject* sq)
 {
     return true;
 }
@@ -237,19 +249,7 @@ bool SortedDictType::update_from_mapping(PyObject* mp, PyObject* keys)
  */
 bool SortedDictType::update_from_object(PyObject* ob)
 {
-    PyObjectWrapper ob_keys_callable(PyObject_GetAttrString(ob, "keys"));
-    if (ob_keys_callable != nullptr)
-    {
-        PyObjectWrapper ob_keys_result(PyObject_CallNoArgs(ob_keys_callable.get()));
-        if (ob_keys_result == nullptr)
-        {
-            return false;
-        }
-        return this->update_from_mapping(ob, ob_keys_result.get());
-    }
-
-    PyErr_Clear();
-    return true;
+    return PyObject_HasAttrString(ob, "keys") ? this->update_from_mapping(ob) : this->update_from_sequence(ob);
 }
 
 /**
