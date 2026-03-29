@@ -699,8 +699,31 @@ class FuzzMachine(RuleBasedStateMachine):
 
     @precondition(prec_keys_not_empty)
     @rule(key=rule_key_exists())
-    def sedefault_existing(self, key):
+    def setdefault_existing(self, key):
         assert self.sorted_dict.setdefault(key) == self.normal_dict.setdefault(key)
+
+    ###########################################################################
+    # `update` without data.
+    ###########################################################################
+
+    @rule(other=st.sampled_from(({}, [], ())))
+    def update_empty(self, other):
+        self.sorted_dict.update(other)
+
+    @rule()
+    def update_nothing(self):
+        self.sorted_dict.update()
+
+
+    ###########################################################################
+    # `update` with a dictionary.
+    ###########################################################################
+
+
+    ###########################################################################
+    # `update` with an iterable.
+    ###########################################################################
+
 
     ###########################################################################
     # `key_type`.
