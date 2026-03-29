@@ -236,18 +236,18 @@ bool SortedDictType::update_from_mapping(PyObject* mp)
     }
     while (true)
     {
-        PyObjectWrapper key(PyIter_Next(keys_iter));
+        PyObjectWrapper key(PyIter_Next(keys_iter.get()));
         if (key == nullptr)
         {
             // Was there an error or did I exhaust all elements?
             return PyErr_Occurred() == nullptr;
         }
-        PyObjectWrapper value(PyObject_GetItem(mp, key));
+        PyObjectWrapper value(PyObject_GetItem(mp, key.get()));
         if (value == nullptr)
         {
             return false;
         }
-        if (this->setitem(key, value) == -1)
+        if (this->setitem(key.get(), value.get()) == -1)
         {
             return false;
         }
