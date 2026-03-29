@@ -224,7 +224,34 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
  */
 bool SortedDictType::update_from_mapping(PyObject* mp)
 {
-    return true;
+    // The built-in dictionary in CPython creates a list of the keys and
+    // iterates over it. This differs from what the docstring claims: that it
+    // iterates over the mapping. That is functionally the same thing. (If not,
+    // the mapping is non-compliant.) I iterate over the mapping, since that
+    // avoids creating the list.
+    PyObjectWrapper keys_iter(PyObject_GetIter(mp));
+    if (keys_iter == nullptr)
+    {
+        return false;
+    }
+    while (true)
+    {
+        PyObjectWrapper key(PyIter_Next(keys_iter));
+        if (key == nullptr)
+        {
+            // Was there an error or did I exhaust all elements?
+            return PyErr_Occurred() == nullptr;
+        }
+        PyObjectWrapper value(PyObject_GetItem(mp, key));
+        if (value == nullptr)
+        {
+            return false;
+        }
+        if (this->setitem(key, value) == -1)
+        {
+            return false;
+        }
+    }
 }
 
 /**

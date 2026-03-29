@@ -688,7 +688,7 @@ static PyMethodDef sorted_dict_type_methods[] = {
     {
         // Using the fast calling convention speeds up the common case but
         // slows down the rare case (that of unpacking a dictionary into
-        // keyword arguments). See
+        // keyword arguments) in CPython. See
         // https://github.com/python/cpython/pull/14589#issuecomment-509356084.
         // Since I ignore keyword arguments, the rare case is irrelevant.
         .ml_name = "update",
