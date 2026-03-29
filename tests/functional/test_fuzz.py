@@ -186,11 +186,11 @@ def rule_valid_slice() -> SearchStrategy:
 
 
 def rule_unsupported_items() -> SearchStrategy:
-    return st.lists(st.tuples(unsupported_keys, st.integers()), min_size=1, max_size=2)
+    return st.lists(st.tuples(unsupported_keys, st.integers()), min_size=1, max_size=10)
 
 
 def rule_nan_items() -> SearchStrategy:
-    return st.lists(st.tuples(st.sampled_from((float("nan"), Decimal("nan"))), st.integers()), min_size=1, max_size=2)
+    return st.lists(st.tuples(st.sampled_from((float("nan"), Decimal("nan"))), st.integers()), min_size=1, max_size=10)
 
 
 def rule_supported_items() -> SearchStrategy:
@@ -198,7 +198,7 @@ def rule_supported_items() -> SearchStrategy:
     # generate lists containing items in which the first element is always of
     # that type.
     return st.sampled_from([*strategy_mapping.values()]).flatmap(
-        lambda strat: st.lists(st.tuples(strat, st.integers()), min_size=1, max_size=2)
+        lambda strat: st.lists(st.tuples(strat, st.integers()), min_size=1, max_size=10)
     )
 
 
