@@ -52,7 +52,7 @@ strategy_mapping_complement = {
 supported_key_types = st.sampled_from([*strategy_mapping])
 unsupported_key_types = st.sampled_from([bytearray, list, memoryview, tuple])
 supported_keys = st.one_of(strategy_mapping.values())
-unsupported_keys = st.lists(st.integers())
+unsupported_keys = st.one_of(st.lists(st.integers()), st.sets(st.integers()), st.tuples(st.floats(), st.integers()))
 all_keys = st.one_of(supported_keys, unsupported_keys)
 
 
@@ -183,6 +183,23 @@ def rule_valid_position() -> SearchStrategy:
 
 def rule_valid_slice() -> SearchStrategy:
     return st.runner().flatmap(lambda self: st.slices(len(self.keys)))
+
+
+def rule_unsupported_items() -> SearchStrategy:
+    return st.lists(st.tuples(unsupported_keys, st.integers()), min_size=1, max_size=2)
+
+
+def rule_nan_items() -> SearchStrategy:
+    return st.lists(st.tuples(st.sampled_from((float("nan"), Decimal("nan"))), st.integers()), min_size=1, max_size=2)
+
+
+def rule_supported_items() -> SearchStrategy:
+    # Pick a supported key type by sampling the available strategies. Then
+    # generate lists containing items in which the first element is always of
+    # that type.
+    return st.sampled_from([*strategy_mapping.values()]).flatmap(
+        lambda strat: st.lists(st.tuples(strat, st.integers()), min_size=1, max_size=2)
+    )
 
 
 class IteratorWrapper:
@@ -714,16 +731,35 @@ class FuzzMachine(RuleBasedStateMachine):
     def update_nothing(self):
         self.sorted_dict.update()
 
-
     ###########################################################################
     # `update` with a dictionary.
     ###########################################################################
-
 
     ###########################################################################
     # `update` with an iterable.
     ###########################################################################
 
+    @precondition(prec_key_type_not_set)
+    @rule(other=rule_unsupported_items())
+    def update2_unsupported(self, other):
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {other[0][0]!r} of unsupported type {type(other[0][0])!r}")
+        ):
+            self.sorted_dict.update(other)
+
+    @precondition(prec_key_type_not_set)
+    @rule(other=rule_nan_items())
+    def update2_nan(self, other):
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {other[0][0]!r} of type {type(other[0][0])!r}")):
+            self.sorted_dict.update(other)
+
+    @precondition(prec_key_type_not_set)
+    @rule(other=rule_supported_items())
+    def update2(self, other):
+        self.key_type = type(other[0][0])
+        self.keys.extend({key for key, _ in other if key not in self.normal_dict})
+        self.normal_dict.update(other)
+        self.sorted_dict.update(other)
 
     ###########################################################################
     # `key_type`.
