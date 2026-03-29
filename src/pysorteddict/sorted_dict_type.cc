@@ -229,20 +229,20 @@ bool SortedDictType::update_from_mapping(PyObject* mp)
     // iterates over the mapping. That is functionally the same thing. (If not,
     // the mapping is non-compliant.) I iterate over the mapping, since that
     // avoids creating the list.
-    PyObjectWrapper keys_iter(PyObject_GetIter(mp));
+    PyObjectWrapper keys_iter(PyObject_GetIter(mp));  // 🆕
     if (keys_iter == nullptr)
     {
         return false;
     }
     while (true)
     {
-        PyObjectWrapper key(PyIter_Next(keys_iter.get()));
+        PyObjectWrapper key(PyIter_Next(keys_iter.get()));  // 🆕
         if (key == nullptr)
         {
             // Was there an error or did I exhaust all elements?
             return PyErr_Occurred() == nullptr;
         }
-        PyObjectWrapper value(PyObject_GetItem(mp, key.get()));
+        PyObjectWrapper value(PyObject_GetItem(mp, key.get()));  // 🆕
         if (value == nullptr)
         {
             return false;
@@ -264,6 +264,42 @@ bool SortedDictType::update_from_mapping(PyObject* mp)
  */
 bool SortedDictType::update_from_sequence(PyObject* sq)
 {
+    PyObjectWrapper items_iter(PyObject_GetIter(sq));  // 🆕
+    if (items_iter == nullptr)
+    {
+        return false;
+    }
+    for (Py_ssize_t i = 0;; ++i)
+    {
+        PyObjectWrapper item(PyIter_Next(items_iter.get()));  // 🆕
+        if (item == nullptr)
+        {
+            // Was there an error or did I exhaust all elements?
+            return PyErr_Occurred() == nullptr;
+        }
+        PyObjectWrapper item_unpacked(
+            PySequence_Fast(item.get(), "could not convert all update sequence elements to sequences")  // 🆕
+        );
+        if (item_unpacked == nullptr)
+        {
+            return false;
+        }
+        Py_ssize_t sz = PySequence_Fast_GET_SIZE(item_unpacked.get());
+        if (sz != 2)
+        {
+            PyErr_Format(
+                PyExc_ValueError, "got update sequence element of length %zd at index %zd, want element of length 2",
+                sz, i
+            );
+            return false;
+        }
+        PyObject* key = PySequence_Fast_GET_ITEM(item_unpacked.get(), 0);
+        PyObject* value = PySequence_Fast_GET_ITEM(item_unpacked.get(), 1);
+        if (this->setitem(key, value) == -1)
+        {
+            return false;
+        }
+    }
     return true;
 }
 
