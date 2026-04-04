@@ -1,4 +1,4 @@
-import heapq
+import bisect
 import re
 import string
 import sys
@@ -69,7 +69,7 @@ def prec_key_type_admits_nan(self) -> bool:
 
 
 def prec_keys_not_empty(self) -> bool:
-    return bool(self.keys)
+    return bool(self.sorted_keys)
 
 
 def prec_active_iterators_not_empty(self) -> bool:
@@ -94,7 +94,7 @@ def prec_active_iterators_locked_some_keys(self) -> bool:
 
 def prec_active_iterators_locked_not_all_keys(self) -> bool:
     return len({iterator.locked_key for iterator in self.active_iterators if iterator.locked_key is not None}) < len(
-        self.keys
+        self.sorted_keys
     )
 
 
@@ -113,7 +113,7 @@ def rule_key_right_type() -> SearchStrategy:
 
 
 def rule_key_exists() -> SearchStrategy:
-    return st.runner().flatmap(lambda self: st.sampled_from(self.keys))
+    return st.runner().flatmap(lambda self: st.sampled_from(self.sorted_keys))
 
 
 def rule_key_is_nan() -> SearchStrategy:
@@ -153,7 +153,7 @@ def rule_locked_key() -> SearchStrategy:
 def rule_unlocked_key() -> SearchStrategy:
     return st.runner().flatmap(
         lambda self: st.sampled_from(
-            [key for key in self.keys if key not in {iterator.locked_key for iterator in self.active_iterators}]
+            [key for key in self.sorted_keys if key not in {iterator.locked_key for iterator in self.active_iterators}]
         )
     )
 
@@ -169,7 +169,7 @@ def rule_inactive_iterator() -> SearchStrategy:
 def rule_invalid_position() -> SearchStrategy:
     return st.runner().flatmap(
         lambda self: st.one_of(
-            st.integers(min_value=-sys.maxsize - 1, max_value=-(keys_len := len(self.keys)) - 1),
+            st.integers(min_value=-sys.maxsize - 1, max_value=-(keys_len := len(self.sorted_keys)) - 1),
             st.integers(min_value=keys_len, max_value=sys.maxsize),
         )
     )
@@ -177,12 +177,12 @@ def rule_invalid_position() -> SearchStrategy:
 
 def rule_valid_position() -> SearchStrategy:
     return st.runner().flatmap(
-        lambda self: st.integers(min_value=-(keys_len := len(self.keys)), max_value=keys_len - 1)
+        lambda self: st.integers(min_value=-(keys_len := len(self.sorted_keys)), max_value=keys_len - 1)
     )
 
 
 def rule_valid_slice() -> SearchStrategy:
-    return st.runner().flatmap(lambda self: st.slices(len(self.keys)))
+    return st.runner().flatmap(lambda self: st.slices(len(self.sorted_keys)))
 
 
 def rule_unsupported_items() -> SearchStrategy:
@@ -203,16 +203,16 @@ def rule_supported_items() -> SearchStrategy:
 
 
 class IteratorWrapper:
-    def __init__(self, iterator: Iterator, *, fwd: bool, keys: list[Any]):
+    def __init__(self, iterator: Iterator, *, fwd: bool, sorted_keys: list[Any]):
         self.iterator = iterator
         self.fwd = fwd
-        self.keys = keys
-        if not self.keys:
+        self.sorted_keys = sorted_keys
+        if not self.sorted_keys:
             self.active = False
             return
         self.active = True
         if self.fwd:
-            self.locked_key = min(self.keys)
+            self.locked_key = self.sorted_keys[0]
         else:
             self.locked_key = None
 
@@ -227,8 +227,8 @@ class IteratorWrapper:
         next_key = self.locked_key
         observed = next(self.iterator)
         try:
-            self.locked_key = min(key for key in self.keys if key > self.locked_key)
-        except ValueError:
+            self.locked_key = self.sorted_keys[bisect.bisect_right(self.sorted_keys, self.locked_key)]
+        except IndexError:
             self.active = False
         return next_key, observed
 
@@ -237,17 +237,16 @@ class IteratorWrapper:
         # due to the way C++ reverse iterators work.
         if self.locked_key is None:
             # Nothing has been yielded yet.
-            self.locked_key = max(self.keys)
+            self.locked_key = self.sorted_keys[-1]
+        elif (idx := bisect.bisect_left(self.sorted_keys, self.locked_key)) != 0:
+            self.locked_key = self.sorted_keys[idx - 1]
         else:
-            try:
-                self.locked_key = max(key for key in self.keys if key < self.locked_key)
-            except ValueError:
-                # This edge case is tested in another file.
-                self.active = False
-                return None, None
+            # This edge case is tested in another file.
+            self.active = False
+            return None, None
         next_key = self.locked_key
         observed = next(self.iterator)
-        if self.locked_key == min(self.keys):
+        if self.locked_key == self.sorted_keys[0]:
             # All keys have been yielded.
             self.active = False
         return next_key, observed
@@ -260,7 +259,7 @@ class FuzzMachine(RuleBasedStateMachine):
 
     def reinitialise(self):
         self.key_type = None
-        self.keys = []
+        self.sorted_keys = []
         self.normal_dict = {}
         self.sorted_dict = SortedDict()
         self.sorted_dict_items = self.sorted_dict.items()
@@ -306,6 +305,10 @@ class FuzzMachine(RuleBasedStateMachine):
         assert [*reversed(self.sorted_dict_values)] == sorted_normal_dict_values_list[::-1]
 
         assert self.sorted_dict.key_type is self.key_type
+
+        # It is useful to have a list of the keys. Instead of updating it
+        # constantly, just do it here.
+        self.sorted_keys[:] = [*sorted_normal_dict]
 
         # Prevent inactive iterators from being finalised by holding references
         # to them. This serves to check whether they release their locks before
@@ -443,17 +446,13 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule(instance=rule_sorted_dict_items_or_keys_or_values(), idx=rule_valid_position())
     def getitem2_position(self, instance, idx):
         observed = instance[idx]
-        if idx < 0:
-            idx += len(self.keys)
-        expected = self.key_to_item_or_key_or_value(heapq.nsmallest(idx + 1, self.keys)[-1], instance)
+        expected = self.key_to_item_or_key_or_value(self.sorted_keys[idx], instance)
         assert observed == expected
 
     @rule(instance=rule_sorted_dict_items_or_keys_or_values(), idx=rule_valid_slice())
     def getitem2_slice(self, instance, idx):
         observed = instance[idx]
-        sorted_keys = sorted(self.keys)
-        idx_range = range(*idx.indices(len(self.keys)))
-        expected = [self.key_to_item_or_key_or_value(sorted_keys[i], instance) for i in idx_range]
+        expected = [self.key_to_item_or_key_or_value(key, instance) for key in self.sorted_keys[idx]]
         assert observed == expected
 
     ###########################################################################
@@ -490,15 +489,12 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule(key=supported_keys, value=st.integers())
     def setitem_empty(self, key, value):
         self.key_type = type(key)
-        self.keys.append(key)
         self.normal_dict[key] = value
         self.sorted_dict[key] = value
 
     @precondition(prec_key_type_set)
     @rule(key=rule_key_right_type(), value=st.integers())
     def setitem_probably_new(self, key, value):
-        if key not in self.normal_dict:
-            self.keys.append(key)
         self.normal_dict[key] = value
         self.sorted_dict[key] = value
 
@@ -550,7 +546,6 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_active_iterators_locked_not_all_keys)
     @rule(key=rule_unlocked_key())
     def delitem(self, key):
-        self.keys.remove(key)
         del self.normal_dict[key]
         del self.sorted_dict[key]
 
@@ -560,7 +555,7 @@ class FuzzMachine(RuleBasedStateMachine):
 
     @rule(instance=rule_sorted_dict_or_sorted_dict_items_or_keys_or_values())
     def iter(self, instance):
-        self.active_iterators.append(IteratorWrapper(iter(instance), fwd=True, keys=self.keys))
+        self.active_iterators.append(IteratorWrapper(iter(instance), fwd=True, sorted_keys=self.sorted_keys))
 
     ###########################################################################
     # `reversed`.
@@ -568,7 +563,7 @@ class FuzzMachine(RuleBasedStateMachine):
 
     @rule(instance=rule_sorted_dict_or_sorted_dict_items_or_keys_or_values())
     def reversed(self, instance):
-        self.active_iterators.append(IteratorWrapper(reversed(instance), fwd=False, keys=self.keys))
+        self.active_iterators.append(IteratorWrapper(reversed(instance), fwd=False, sorted_keys=self.sorted_keys))
 
     ###########################################################################
     # `next`.
@@ -607,9 +602,6 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_active_iterators_empty)
     @rule()
     def clear(self):
-        # Do not reassign this member because references to it are held by
-        # another member.
-        self.keys.clear()
         self.normal_dict.clear()
         self.sorted_dict.clear()
         self.active_iterators.clear()
@@ -703,15 +695,11 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_key_type_set)
     @rule(key=rule_key_right_type())
     def setdefault_probably_new(self, key):
-        if key not in self.normal_dict:
-            self.keys.append(key)
         assert self.sorted_dict.setdefault(key) == self.normal_dict.setdefault(key)
 
     @precondition(prec_key_type_set)
     @rule(key=rule_key_right_type(), value=st.integers())
     def setdefault_probably_new_default(self, key, value):
-        if key not in self.normal_dict:
-            self.keys.append(key)
         assert self.sorted_dict.setdefault(key, value) == self.normal_dict.setdefault(key, value)
 
     @precondition(prec_keys_not_empty)
