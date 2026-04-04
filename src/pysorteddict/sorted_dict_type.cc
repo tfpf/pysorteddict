@@ -89,6 +89,7 @@ bool SortedDictType::is_key_good(PyObject* key)
             return false;
         }
         return Py_IsFalse(key_is_nan.get());
+        // return Py_Is(key_is_nan.get(), Py_False);
     }
     return true;
 }
