@@ -83,17 +83,12 @@ bool SortedDictType::is_key_good(PyObject* key)
     if (this->key_type == PyDecimal_Type)
     {
         PyErrorClearer _;
-        PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));  // 🆕
-        if (key_is_nan_callable == nullptr)
+        PyObjectWrapper key_is_nan(PyObject_CallMethod(key, "is_nan", nullptr));  // 🆕
+        if (key_is_nan == nullptr)
         {
             return false;
         }
-        PyObjectWrapper key_is_nan_result(PyObject_CallNoArgs(key_is_nan_callable.get()));  // 🆕
-        if (key_is_nan_result == nullptr)
-        {
-            return false;
-        }
-        return PyObject_IsTrue(key_is_nan_result.get()) == 0;
+        return Py_Is(key_is_nan.get(), Py_False);
     }
     return true;
 }
