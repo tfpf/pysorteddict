@@ -299,7 +299,6 @@ bool SortedDictType::update_from_sequence(PyObject* sq)
             return false;
         }
     }
-    return true;
 }
 
 /**
