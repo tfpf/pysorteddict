@@ -290,6 +290,10 @@ class FuzzMachine(RuleBasedStateMachine):
 
         assert self.sorted_dict.key_type is self.key_type
 
+        # It is useful to have a list of the keys. Instead of updating it
+        # constantly, just do it here.
+        self.keys[:] = [*self.normal_dict]
+
         # Prevent inactive iterators from being finalised by holding references
         # to them. This serves to check whether they release their locks before
         # finalisation.
@@ -473,15 +477,12 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule(key=supported_keys, value=st.integers())
     def setitem_empty(self, key, value):
         self.key_type = type(key)
-        self.keys.append(key)
         self.normal_dict[key] = value
         self.sorted_dict[key] = value
 
     @precondition(prec_key_type_set)
     @rule(key=rule_key_right_type(), value=st.integers())
     def setitem_probably_new(self, key, value):
-        if key not in self.normal_dict:
-            self.keys.append(key)
         self.normal_dict[key] = value
         self.sorted_dict[key] = value
 
@@ -533,7 +534,6 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_active_iterators_locked_not_all_keys)
     @rule(key=rule_unlocked_key())
     def delitem(self, key):
-        self.keys.remove(key)
         del self.normal_dict[key]
         del self.sorted_dict[key]
 
@@ -590,9 +590,6 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_active_iterators_empty)
     @rule()
     def clear(self):
-        # Do not reassign this member because references to it are held by
-        # another member.
-        self.keys.clear()
         self.normal_dict.clear()
         self.sorted_dict.clear()
         self.active_iterators.clear()
@@ -686,15 +683,11 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_key_type_set)
     @rule(key=rule_key_right_type())
     def setdefault_probably_new(self, key):
-        if key not in self.normal_dict:
-            self.keys.append(key)
         assert self.sorted_dict.setdefault(key) == self.normal_dict.setdefault(key)
 
     @precondition(prec_key_type_set)
     @rule(key=rule_key_right_type(), value=st.integers())
     def setdefault_probably_new_default(self, key, value):
-        if key not in self.normal_dict:
-            self.keys.append(key)
         assert self.sorted_dict.setdefault(key, value) == self.normal_dict.setdefault(key, value)
 
     @precondition(prec_keys_not_empty)
