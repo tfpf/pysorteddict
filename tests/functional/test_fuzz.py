@@ -1,4 +1,4 @@
-import heapq
+import bisect
 import re
 import string
 import sys
@@ -195,7 +195,7 @@ class IteratorWrapper:
             return
         self.active = True
         if self.fwd:
-            self.locked_key = min(self.sorted_keys)
+            self.locked_key = self.sorted_keys[0]
         else:
             self.locked_key = None
 
@@ -210,8 +210,8 @@ class IteratorWrapper:
         next_key = self.locked_key
         observed = next(self.iterator)
         try:
-            self.locked_key = min(key for key in self.sorted_keys if key > self.locked_key)
-        except ValueError:
+            self.locked_key = self.sorted_keys[bisect.bisect_right(self.sorted_keys, self.locked_key)]
+        except IndexError:
             self.active = False
         return next_key, observed
 
@@ -220,17 +220,16 @@ class IteratorWrapper:
         # due to the way C++ reverse iterators work.
         if self.locked_key is None:
             # Nothing has been yielded yet.
-            self.locked_key = max(self.sorted_keys)
+            self.locked_key = self.sorted_keys[-1]
+        elif (idx := bisect.bisect_left(self.sorted_keys, self.locked_key)) != 0:
+            self.locked_key = self.sorted_keys[idx - 1]
         else:
-            try:
-                self.locked_key = max(key for key in self.sorted_keys if key < self.locked_key)
-            except ValueError:
-                # This edge case is tested in another file.
-                self.active = False
-                return None, None
+            # This edge case is tested in another file.
+            self.active = False
+            return None, None
         next_key = self.locked_key
         observed = next(self.iterator)
-        if self.locked_key == min(self.sorted_keys):
+        if self.locked_key == self.sorted_keys[0]:
             # All keys have been yielded.
             self.active = False
         return next_key, observed
@@ -430,16 +429,13 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule(instance=rule_sorted_dict_items_or_keys_or_values(), idx=rule_valid_position())
     def getitem2_position(self, instance, idx):
         observed = instance[idx]
-        if idx < 0:
-            idx += len(self.sorted_keys)
-        expected = self.key_to_item_or_key_or_value(heapq.nsmallest(idx + 1, self.sorted_keys)[-1], instance)
+        expected = self.key_to_item_or_key_or_value(self.sorted_keys[idx], instance)
         assert observed == expected
 
     @rule(instance=rule_sorted_dict_items_or_keys_or_values(), idx=rule_valid_slice())
     def getitem2_slice(self, instance, idx):
         observed = instance[idx]
-        idx_range = range(*idx.indices(len(self.sorted_keys)))
-        expected = [self.key_to_item_or_key_or_value(self.sorted_keys[i], instance) for i in idx_range]
+        expected = [self.key_to_item_or_key_or_value(key, instance) for key in self.sorted_keys[idx]]
         assert observed == expected
 
     ###########################################################################
