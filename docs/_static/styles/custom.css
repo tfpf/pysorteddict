@@ -120,3 +120,11 @@ body .jupyter_container .cell_output .highlight {
 .cell_output .highlight {
   padding: 20px;
 }
+
+/**
+ * Draw small text in embedded SVGs and use the correct colour.
+ */
+svg text {
+  font-size: 50%;
+  fill: var(--color-content-foreground);
+}
