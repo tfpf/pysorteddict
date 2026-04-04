@@ -365,6 +365,25 @@ Sorted Dictionary
        dictionary pointing to ``key`` (meaning that calling ``next`` on the iterator would return ``(key, d[key])``,
        ``key`` or ``d[key]`` respectively).
 
+      .. raw:: html
+
+         <svg version="1.1" width="100%" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+           <circle cx="30" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+           <circle cx="40" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+           <circle cx="50" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+           <polygon points="70,40 70,60 90,50" fill="#27B4A6" opacity="0.4" />
+           <rect x="110" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+           <text x="140" y="10" text-anchor="middle" dominant-baseline="middle">Last yielded (if any)</text>
+           <polygon points="190,40 190,60 210,50" fill="#27B4A6" opacity="0.4" />
+           <rect x="230" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+           <text x="260" y="10" text-anchor="middle" dominant-baseline="middle">Next to yield</text>
+           <text x="260" y="90" text-anchor="middle" dominant-baseline="middle">Deletion forbidden</text>
+           <polygon points="310,40 310,60 330,50" fill="#27B4A6" opacity="0.4" />
+           <circle cx="350" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+           <circle cx="360" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+           <circle cx="370" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+         </svg>
+
       .. jupyter-execute::
          :raises:
 
@@ -381,6 +400,25 @@ Sorted Dictionary
       :raises RuntimeError: if there exists a reverse iterator over the items, keys or values of the sorted
        dictionary pointing to the key immediately less than ``key`` (meaning that calling ``next`` on the iterator
        last returned ``(key, d[key])``, ``key`` or ``d[key]`` respectively).
+
+      .. raw:: html
+
+         <svg version="1.1" width="100%" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+           <circle cx="30" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+           <circle cx="40" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+           <circle cx="50" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+           <polygon points="70,50 90,60 90,40" fill="#27B4A6" opacity="0.4" />
+           <rect x="110" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+           <text x="140" y="10" text-anchor="middle" dominant-baseline="middle">Next to yield</text>
+           <polygon points="190,50 210,60 210,40" fill="#27B4A6" opacity="0.4" />
+           <rect x="230" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+           <text x="260" y="10" text-anchor="middle" dominant-baseline="middle">Last yielded</text>
+           <text x="260" y="90" text-anchor="middle" dominant-baseline="middle">Deletion forbidden</text>
+           <polygon points="310,50 330,60 330,40" fill="#27B4A6" opacity="0.4" />
+           <circle cx="350" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+           <circle cx="360" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+           <circle cx="370" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+         </svg>
 
       .. jupyter-execute::
          :raises:
