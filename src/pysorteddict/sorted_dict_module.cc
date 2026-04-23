@@ -4,6 +4,7 @@
 #include "sorted_dict_items_type.hh"
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
+#include "sorted_dict_utils.hh"
 #include "sorted_dict_values_type.hh"
 
 /**
@@ -786,6 +787,22 @@ static int sorted_dict_module_exec(PyObject* mod)
         return -1;
     }
     if (PyModule_AddObjectRef(mod, "SortedDict", reinterpret_cast<PyObject*>(&sorted_dict_type)) < 0)  // 🆕
+    {
+        return -1;
+    }
+
+    // Query the version from the metadata and set it as an attribute. This is
+    // admittedly backwards: when the Python ecosystem was still young, the
+    // version attribute used to be the source of truth. However, today, the
+    // metadata is the source of truth. I still want to provide a version
+    // attribute for completeness.
+    PyObjectWrapper metadata(PyImport_ImportModule("importlib.metadata"));
+    if (metadata == nullptr)
+    {
+        return -1;
+    }
+    PyObjectWrapper metadata_version(PyObject_CallMethod(metadata.get(), "version", "s", "pysorteddict"));  // 🆕
+    if (PyModule_AddObjectRef(mod, "__version__", metadata_version.get()) < 0)  // 🆕
     {
         return -1;
     }
