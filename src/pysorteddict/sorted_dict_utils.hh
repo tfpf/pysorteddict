@@ -34,21 +34,4 @@ struct PyErrorClearer
     }
 };
 
-/**
- * Retrieve the version of a module.
- *
- * @param module_name Module name.
- *
- * @return Module version.
- */
-inline PyObject* version(char const* module_name)
-{
-    PyObjectWrapper importlib_metadata(PyImport_ImportModule("importlib.metadata"));
-    if (importlib_metadata == nullptr)
-    {
-        return nullptr;
-    }
-    return PyObject_CallMethod(importlib_metadata.get(), "version", "s", "pysorteddict");  // 🆕
-}
-
 #endif

@@ -774,10 +774,14 @@ static int sorted_dict_module_exec(PyObject* mod)
     // version attribute used to be the source of truth. However, today, the
     // metadata is the source of truth. I still want to provide a version
     // attribute for completeness.
-    PyObject* version_pysorteddict = version("pysorteddict");
-    if (PyModule_AddObject(mod, "__version__", version_pysorteddict) < 0)
+    PyObjectWrapper metadata(PyImport_ImportModule("importlib.metadata"));
+    if (metadata == nullptr)
     {
-        Py_XDECREF(version_pysorteddict);
+        return -1;
+    }
+    PyObjectWrapper metadata_version(PyObject_CallMethod(metadata.get(), "version", "s", "pysorteddict"));  // 🆕
+    if (PyModule_AddObjectRef(mod, "__version__", metadata_version.get()) < 0)  // 🆕
+    {
         return -1;
     }
     return 0;
