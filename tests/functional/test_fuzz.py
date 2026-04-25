@@ -185,15 +185,18 @@ def rule_valid_slice() -> SearchStrategy:
     return st.runner().flatmap(lambda self: st.slices(len(self.sorted_keys)))
 
 
-def rule_unsupported_items() -> SearchStrategy:
+def rule_items_unsupported() -> SearchStrategy:
     return st.lists(st.tuples(unsupported_keys, st.integers()), min_size=1, max_size=10)
 
 
-def rule_nan_items() -> SearchStrategy:
-    return st.lists(st.tuples(st.sampled_from((float("nan"), Decimal("nan"))), st.integers()), min_size=1, max_size=10)
+def rule_items_wrong_type() -> SearchStrategy:
+    return st.runner().flatmap(lambda self: st.lists(st.tuples(strategy_mapping_complement[self.key_type], st.integers()), min_size=1, max_size=10))
+
+def rule_items_right_type() ->SearchStrategy:
+    return st.runner().flatmap(lambda self: st.lists(st.tuples(strategy_mapping[self.key_type], st.integers()), min_size=1, max_size=10))
 
 
-def rule_supported_items() -> SearchStrategy:
+def rule_items_supported() -> SearchStrategy:
     # Pick a supported key type by sampling the available strategies. Then
     # generate lists containing items in which the first element is always of
     # that type.
@@ -201,6 +204,8 @@ def rule_supported_items() -> SearchStrategy:
         lambda strat: st.lists(st.tuples(strat, st.integers()), min_size=1, max_size=10)
     )
 
+def rule_items_float() -> SearchStrategy:
+    return st.lists(st.tuples(strategy_mapping[float], st.integers()), min_size=1, max_size=10)
 
 class IteratorWrapper:
     def __init__(self, iterator: Iterator, *, fwd: bool, sorted_keys: list[Any]):
@@ -711,8 +716,12 @@ class FuzzMachine(RuleBasedStateMachine):
     # `update` without data.
     ###########################################################################
 
-    @rule(other=st.sampled_from(({}, [], ())))
-    def update_empty(self, other):
+    @rule()
+    def update_empty_dict(self):
+        self.sorted_dict.update({})
+
+    @rule(other=st.sampled_from(([], set(), ())))
+    def update_empty_sequence(self, other):
         self.sorted_dict.update(other)
 
     @rule()
@@ -728,26 +737,38 @@ class FuzzMachine(RuleBasedStateMachine):
     ###########################################################################
 
     @precondition(prec_key_type_not_set)
-    @rule(other=rule_unsupported_items())
-    def update2_unsupported(self, other):
+    @rule(bad_other=rule_items_unsupported())
+    def update2_unsupported_empty(self, bad_other):
+        key = bad_other[0][0]
         with pytest.raises(
-            TypeError, match=re.escape(f"got key {other[0][0]!r} of unsupported type {type(other[0][0])!r}")
+            TypeError, match=re.escape(f"got key {key!r} of unsupported type {type(key)}")
         ):
-            self.sorted_dict.update(other)
+            self.sorted_dict.update(bad_other)
 
     @precondition(prec_key_type_not_set)
-    @rule(other=rule_nan_items())
-    def update2_nan(self, other):
-        with pytest.raises(ValueError, match=re.escape(f"got bad key {other[0][0]!r} of type {type(other[0][0])!r}")):
-            self.sorted_dict.update(other)
+    @rule(key=rule_key_is_nan())
+    def update2_nan_empty(self, key):
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
+            self.sorted_dict.update([(key, 0)])
 
     @precondition(prec_key_type_not_set)
-    @rule(other=rule_supported_items())
-    def update2(self, other):
-        self.key_type = type(other[0][0])
-        self.keys.extend({key for key, _ in other if key not in self.normal_dict})
-        self.normal_dict.update(other)
-        self.sorted_dict.update(other)
+    @rule(good_other=rule_items_supported(), bad_other=rule_items_unsupported())
+    def update2_items_wrong_type_empty(self, good_other, bad_other):
+        self.key_type = type(good_other[0][0])
+        self.normal_dict.update(good_other)
+        key = bad_other[0][0]
+        with pytest.raises(match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")):
+            self.sorted_dict.update(good_other + bad_other)
+
+    @precondition(prec_key_type_not_set)
+    @rule(good_other=rule_items_float())
+    def update2_nan_after_empty(self, good_other):
+        self.key_type = type(good_other[0][0])
+        self.normal_dict.update(good_other)
+        key = self.key_type("nan")
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
+            self.sorted_dict.update(good_other + [(key, 0)])
+
 
     ###########################################################################
     # `key_type`.
