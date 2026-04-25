@@ -190,10 +190,17 @@ def rule_items_unsupported() -> SearchStrategy:
 
 
 def rule_items_wrong_type() -> SearchStrategy:
-    return st.runner().flatmap(lambda self: st.lists(st.tuples(strategy_mapping_complement[self.key_type], st.integers()), min_size=1, max_size=10))
+    return st.runner().flatmap(
+        lambda self: st.lists(
+            st.tuples(strategy_mapping_complement[self.key_type], st.integers()), min_size=1, max_size=10
+        )
+    )
 
-def rule_items_right_type() ->SearchStrategy:
-    return st.runner().flatmap(lambda self: st.lists(st.tuples(strategy_mapping[self.key_type], st.integers()), min_size=1, max_size=10))
+
+def rule_items_right_type() -> SearchStrategy:
+    return st.runner().flatmap(
+        lambda self: st.lists(st.tuples(strategy_mapping[self.key_type], st.integers()), min_size=1, max_size=10)
+    )
 
 
 def rule_items_supported() -> SearchStrategy:
@@ -204,8 +211,10 @@ def rule_items_supported() -> SearchStrategy:
         lambda strat: st.lists(st.tuples(strat, st.integers()), min_size=1, max_size=10)
     )
 
+
 def rule_items_float() -> SearchStrategy:
     return st.lists(st.tuples(strategy_mapping[float], st.integers()), min_size=1, max_size=10)
+
 
 class IteratorWrapper:
     def __init__(self, iterator: Iterator, *, fwd: bool, sorted_keys: list[Any]):
@@ -740,9 +749,7 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule(bad_other=rule_items_unsupported())
     def update2_unsupported_empty(self, bad_other):
         key = bad_other[0][0]
-        with pytest.raises(
-            TypeError, match=re.escape(f"got key {key!r} of unsupported type {type(key)}")
-        ):
+        with pytest.raises(TypeError, match=re.escape(f"got key {key!r} of unsupported type {type(key)}")):
             self.sorted_dict.update(bad_other)
 
     @precondition(prec_key_type_not_set)
@@ -757,8 +764,10 @@ class FuzzMachine(RuleBasedStateMachine):
         self.key_type = type(good_other[0][0])
         self.normal_dict.update(good_other)
         key = bad_other[0][0]
-        with pytest.raises(match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")):
-            self.sorted_dict.update(good_other + bad_other)
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+        ):
+            self.sorted_dict.update([*good_other, *bad_other])
 
     @precondition(prec_key_type_not_set)
     @rule(good_other=rule_items_float())
@@ -767,8 +776,7 @@ class FuzzMachine(RuleBasedStateMachine):
         self.normal_dict.update(good_other)
         key = self.key_type("nan")
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
-            self.sorted_dict.update(good_other + [(key, 0)])
-
+            self.sorted_dict.update([*good_other, (key, 0)])
 
     ###########################################################################
     # `key_type`.
