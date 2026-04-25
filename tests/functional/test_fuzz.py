@@ -722,7 +722,7 @@ class FuzzMachine(RuleBasedStateMachine):
         assert self.sorted_dict.setdefault(key) == self.normal_dict.setdefault(key)
 
     ###########################################################################
-    # `update` without data.
+    # `update` without changes.
     ###########################################################################
 
     @rule()
@@ -741,6 +741,11 @@ class FuzzMachine(RuleBasedStateMachine):
     def update_kwargs(self):
         # This currently does nothing.
         self.sorted_dict.update(abc="def")
+
+    @rule()
+    def update_wrong_call(self):
+        with pytest.raises(TypeError, match=re.escape("update() takes 0 to 1 positional arguments (2 given)")):
+            self.sorted_dict.update(None, None)
 
     ###########################################################################
     # `update` with a dictionary.
