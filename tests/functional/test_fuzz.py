@@ -745,6 +745,11 @@ class FuzzMachine(RuleBasedStateMachine):
     # `update` with an iterable.
     ###########################################################################
 
+    @rule()
+    def update2_not_iterable(self):
+        with pytest.raises(TypeError, match="object is not iterable"):
+            self.sorted_dict.update(None)
+
     @precondition(prec_key_type_not_set)
     @rule(bad_other=rule_items_unsupported())
     def update2_unsupported_empty(self, bad_other):
@@ -757,6 +762,24 @@ class FuzzMachine(RuleBasedStateMachine):
     def update2_nan_empty(self, key):
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
             self.sorted_dict.update([(key, 0)])
+
+    @precondition(prec_key_type_not_set)
+    @rule(good_other=rule_items_supported())
+    def update2_not_unpackable_after_empty(self, good_other):
+        self.key_type = type(good_other[0][0])
+        self.normal_dict.update(good_other)
+        with pytest.raises(TypeError, match="got non-sequence element, want all elements to be sequences"):
+            self.sorted_dict.update([*good_other, None])
+
+    @precondition(prec_key_type_not_set)
+    @rule(good_other=rule_items_supported())
+    def update2_unpack_into_too_few_after_empty(self, good_other):
+        self.key_type = type(good_other[0][0])
+        self.normal_dict.update(good_other)
+        with pytest.raises(
+            ValueError, match=f"got element of length 0 at position {len(good_other)}, want element of length 2"
+        ):
+            self.sorted_dict.update([*good_other, ()])
 
     @precondition(prec_key_type_not_set)
     @rule(good_other=rule_items_supported(), bad_other=rule_items_unsupported())
@@ -777,6 +800,13 @@ class FuzzMachine(RuleBasedStateMachine):
         key = self.key_type("nan")
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
             self.sorted_dict.update([*good_other, (key, 0)])
+
+    @precondition(prec_key_type_not_set)
+    @rule(good_other=rule_items_supported())
+    def update2_empty(self, good_other):
+        self.key_type = type(good_other[0][0])
+        self.normal_dict.update(good_other)
+        self.sorted_dict.update(good_other)
 
     ###########################################################################
     # `key_type`.
