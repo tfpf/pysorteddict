@@ -817,7 +817,9 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule(bad_other=rule_items_wrong_type())
     def update2_unsupported(self, bad_other):
         key = bad_other[0][0]
-        with pytest.raises(TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")):
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+        ):
             self.sorted_dict.update(bad_other)
 
     @precondition(prec_key_type_admits_nan)
