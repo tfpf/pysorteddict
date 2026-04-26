@@ -288,7 +288,7 @@ bool SortedDictType::update_from_sequence(PyObject* sq)
         if (sz != 2)
         {
             PyErr_Format(
-                PyExc_ValueError, "got element of length %zd at position %zd, want element of length 2", sz, i
+                PyExc_ValueError, "got sequence of length %zd at position %zd, want sequence of length 2", sz, i
             );
             return false;
         }
