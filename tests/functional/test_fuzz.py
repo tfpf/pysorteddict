@@ -878,7 +878,7 @@ class FuzzMachine(RuleBasedStateMachine):
         self.key_type = type(good_other[0][0])
         self.normal_dict.update(good_other)
         with pytest.raises(
-            ValueError, match=f"got element of length 0 at position {len(good_other)}, want element of length 2"
+            ValueError, match=f"got sequence of length 0 at position {len(good_other)}, want sequence of length 2"
         ):
             self.sorted_dict.update([*good_other, ()])
 
@@ -936,7 +936,7 @@ class FuzzMachine(RuleBasedStateMachine):
     def update2_unpack_into_too_few_after(self, good_other):
         self.normal_dict.update(good_other)
         with pytest.raises(
-            ValueError, match=f"got element of length 0 at position {len(good_other)}, want element of length 2"
+            ValueError, match=f"got sequence of length 0 at position {len(good_other)}, want sequence of length 2"
         ):
             self.sorted_dict.update([*good_other, ()])
 
