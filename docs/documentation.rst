@@ -740,6 +740,70 @@ Sorted Dictionary
 
          </details>
 
+   .. method:: update(other: dict | Iterable[Sequence[Any]], **kwargs)
+
+      Update the sorted dictionary with the keys and values from ``other``. ``kwargs`` is ignored.
+
+      If ``other`` has a ``keys`` method, it is assumed to be a dictionary, and the keys and values in it are inserted
+      into the sorted dictionary. Else, it must be an iterable which yields 2-length sequences; these are treated as
+      key-value pairs and inserted into the sorted dictionary. The rough Python equivalent of the logic written in C++
+      is as follows.
+
+      .. code-block:: python
+
+         def update(self, other):
+            if hasattr(other, "keys"):
+                for key in other:
+                    self[key] = other[key]
+            else:
+                for key, value in other:
+                    self[key] = value
+
+      .. raw:: html
+
+         <details class="warning">
+
+         <summary>This method may raise exceptions.</summary>
+
+      :raises TypeError: if ``other`` is not iterable.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d.update(None)
+
+      :raises TypeError: if ``other`` did not yield a sequence at some point.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d.update([None])
+
+      :raises ValueError: if ``other`` did not yield a 2-length sequence at some point.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d.update([[None]])
+
+      :raises: the same exception that iterating over ``other`` raises (if any).
+      :raises: the same exception that reading ``other[key]`` raises (if any).
+      :raises: the same exception that writing ``self[key]`` (:meth:`SortedDict.__setitem__`) raises (if
+       any).
+
+      .. raw:: html
+
+         </details>
+
    .. method:: values() -> SortedDictValues
 
       Return a dynamic view on the values in the sorted dictionary.
