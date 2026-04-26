@@ -4,6 +4,7 @@
 #include "sorted_dict_items_type.hh"
 #include "sorted_dict_keys_type.hh"
 #include "sorted_dict_type.hh"
+#include "sorted_dict_utils.hh"
 #include "sorted_dict_values_type.hh"
 
 /**
@@ -615,6 +616,17 @@ static PyObject* sorted_dict_type_setdefault(PyObject* self, PyObject* const* ar
 }
 
 PyDoc_STRVAR(
+    sorted_dict_type_update_doc,
+    "d.update(*args, **kwargs)\n"
+    "Update the sorted dictionary ``d`` with the keys and values from ``args``."
+);
+
+static PyObject* sorted_dict_type_update(PyObject* self, PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
+{
+    return reinterpret_cast<SortedDictType*>(self)->update(args, nargs, kwnames);
+}
+
+PyDoc_STRVAR(
     sorted_dict_type_values_doc,
     "d.values() -> SortedDictValues\n"
     "Return a dynamic view on the values in the sorted dictionary ``d``."
@@ -673,6 +685,17 @@ static PyMethodDef sorted_dict_type_methods[] = {
         .ml_meth = reinterpret_cast<PyCFunction>(sorted_dict_type_setdefault),
         .ml_flags = METH_FASTCALL,
         .ml_doc = sorted_dict_type_setdefault_doc,
+    },
+    {
+        // Using the fast calling convention speeds up the common case but
+        // slows down the rare case (that of unpacking a dictionary into
+        // keyword arguments) in CPython. See
+        // https://github.com/python/cpython/pull/14589#issuecomment-509356084.
+        // Since I ignore keyword arguments, the rare case is irrelevant.
+        .ml_name = "update",
+        .ml_meth = reinterpret_cast<PyCFunction>(sorted_dict_type_update),
+        .ml_flags = METH_FASTCALL | METH_KEYWORDS,
+        .ml_doc = sorted_dict_type_update_doc,
     },
     {
         .ml_name = "values",
@@ -764,6 +787,22 @@ static int sorted_dict_module_exec(PyObject* mod)
         return -1;
     }
     if (PyModule_AddObjectRef(mod, "SortedDict", reinterpret_cast<PyObject*>(&sorted_dict_type)) < 0)  // 🆕
+    {
+        return -1;
+    }
+
+    // Query the version from the metadata and set it as an attribute. This is
+    // admittedly backwards: when the Python ecosystem was still young, the
+    // version attribute used to be the source of truth. However, today, the
+    // metadata is the source of truth. I still want to provide a version
+    // attribute for completeness.
+    PyObjectWrapper metadata(PyImport_ImportModule("importlib.metadata"));
+    if (metadata == nullptr)
+    {
+        return -1;
+    }
+    PyObjectWrapper metadata_version(PyObject_CallMethod(metadata.get(), "version", "s", "pysorteddict"));  // 🆕
+    if (PyModule_AddObjectRef(mod, "__version__", metadata_version.get()) < 0)  // 🆕
     {
         return -1;
     }

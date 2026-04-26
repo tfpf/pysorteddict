@@ -1,8 +1,9 @@
 import sys
+from importlib.metadata import version
 
 import pytest
 
-from pysorteddict import SortedDict
+from pysorteddict import SortedDict, __version__
 
 
 def test_key_repr_error():
@@ -36,3 +37,7 @@ def test_type_hint():
 
 def test_subclassable():
     type("SortedDictSubclass", (SortedDict,), {})
+
+
+def test_version():
+    assert version("pysorteddict") == __version__
