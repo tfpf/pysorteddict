@@ -5,6 +5,20 @@ Documentation
 
 .. currentmodule:: pysorteddict
 
+.. data:: __version__
+   :type: str
+
+   The installed version of pysorteddict.
+
+   .. jupyter-execute::
+
+      from importlib.metadata import version
+
+      import pysorteddict
+
+      assert version("pysorteddict") == pysorteddict.__version__
+      print(pysorteddict.__version__)
+
 Sorted Dictionary
 *****************
 
@@ -72,7 +86,7 @@ Sorted Dictionary
       </details>
 
    ``SortedDict`` can be type-specified for use in type hints as, for instance, ``SortedDict[str, float]``, similar to
-   ``dict``.
+   ``dict``. It can also be subclassed to override its methods.
 
    .. method:: __init__()
 
