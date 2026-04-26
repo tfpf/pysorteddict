@@ -773,7 +773,7 @@ class FuzzMachine(RuleBasedStateMachine):
     @precondition(prec_key_type_not_set)
     @rule()
     def update_getitem_error_empty(self):
-        bad_other = type("NotDict", (), {"__iter__": lambda *args: (i for i in range(10)), "keys": None})()
+        bad_other = type("NotDict", (), {"__iter__": lambda *_: (i for i in range(10)), "keys": None})()
         with pytest.raises(TypeError, match="object is not subscriptable"):
             self.sorted_dict.update(bad_other)
 
@@ -841,7 +841,6 @@ class FuzzMachine(RuleBasedStateMachine):
     def update(self, good_other):
         self.normal_dict.update(good_other)
         self.sorted_dict.update(dict(good_other))
-
 
     ###########################################################################
     # `update` with an iterable.
