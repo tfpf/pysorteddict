@@ -744,20 +744,33 @@ Sorted Dictionary
 
       Update the sorted dictionary with the keys and values from ``other``. ``kwargs`` is ignored.
 
-      If ``other`` has a ``keys`` method, it is assumed to be a dictionary, and the keys and values in it are inserted
-      into the sorted dictionary. Else, it must be an iterable which yields 2-length sequences; these are treated as
-      key-value pairs and inserted into the sorted dictionary. The rough Python equivalent of the logic written in C++
-      is as follows.
+      The rough Python equivalent of the logic written in C++ is as follows.
 
       .. code-block:: python
 
-         def update(self, other):
+         def update(self, other, **kwargs):
             if hasattr(other, "keys"):
                 for key in other:
                     self[key] = other[key]
             else:
                 for key, value in other:
                     self[key] = value
+
+      If ``other`` has a ``keys`` method, it is assumed to be a dictionary, and the keys and values in it are inserted
+      into the sorted dictionary. Else, it must be an iterable which yields 2-length sequences; these are treated as
+      key-value pairs and inserted into the sorted dictionary.
+
+      .. jupyter-execute::
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+
+         d.update({"spam": {}, "eggs": ""})
+         print(d)
+
+         d.update([("foo", ()), ("bar", [100]), ("baz", 3.14)])
+         print(d)
 
       .. raw:: html
 
