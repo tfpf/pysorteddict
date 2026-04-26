@@ -5,6 +5,20 @@ Documentation
 
 .. currentmodule:: pysorteddict
 
+.. data:: __version__
+   :type: str
+
+   The installed version of pysorteddict.
+
+   .. jupyter-execute::
+
+      from importlib.metadata import version
+
+      import pysorteddict
+
+      assert version("pysorteddict") == pysorteddict.__version__
+      print(pysorteddict.__version__)
+
 Sorted Dictionary
 *****************
 
@@ -71,7 +85,8 @@ Sorted Dictionary
 
       </details>
 
-   The methods of ``SortedDict`` are somewhat similar to those of ``dict``.
+   ``SortedDict`` can be type-specified for use in type hints as, for instance, ``SortedDict[str, float]``, similar to
+   ``dict``. It can also be subclassed to override its methods.
 
    .. method:: __init__()
 
@@ -80,7 +95,8 @@ Sorted Dictionary
    .. property:: key_type
       :type: type | None
 
-      The key type of the sorted dictionary, or ``None`` if no key-value pairs have been inserted yet.
+      The key type of the sorted dictionary. It is initially not set (so it evaluates to ``None``), and is
+      automatically set when a key-value pair is inserted.
 
       .. jupyter-execute::
 
@@ -91,6 +107,48 @@ Sorted Dictionary
 
          d[b"foo"] = ()
          assert d.key_type is bytes
+
+      It can manually be set to a supported key type before inserting a key-value pair. This is useful to avoid the
+      ``RuntimeError``\s which would otherwise be raised on any read operations.
+
+      .. jupyter-execute::
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d.key_type = bytes
+         d[b"foo"] = ()
+
+      .. raw:: html
+
+         <details class="warning">
+
+         <summary>This property may raise exceptions.</summary>
+
+      :raises ValueError: if an attempt is made to set it to an unsupported key type.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d.key_type = list
+
+      :raises AttributeError: if an attempt is made to change it after it has been set.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d[b"foo"] = ()
+         d.key_type = str
+
+      .. raw:: html
+
+         </details>
 
    .. method:: __repr__() -> str
 
@@ -106,7 +164,7 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises RuntimeError: if no key-value pairs have been inserted yet.
+      :raises RuntimeError: if the key type of the sorted dictionary is not set.
 
       .. jupyter-execute::
          :raises:
@@ -116,7 +174,7 @@ Sorted Dictionary
          d = SortedDict()
          "foo" in d
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -169,7 +227,7 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises RuntimeError: if no key-value pairs have been inserted yet.
+      :raises RuntimeError: if the key type of the sorted dictionary is not set.
 
       .. jupyter-execute::
          :raises:
@@ -179,7 +237,7 @@ Sorted Dictionary
          d = SortedDict()
          d["foo"]
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -227,8 +285,8 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises TypeError: if no key-value pairs have been inserted yet and ``type(key)`` isn't one of the supported
-       types.
+      :raises TypeError: if the key type of the sorted dictionary is not set and ``type(key)`` isn't one of the
+       supported types.
 
       .. jupyter-execute::
          :raises:
@@ -238,7 +296,7 @@ Sorted Dictionary
          d = SortedDict()
          d[["eggs"]] = None
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -274,7 +332,7 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises RuntimeError: if no key-value pairs have been inserted yet.
+      :raises RuntimeError: if the key type of the sorted dictionary is not set.
 
       .. jupyter-execute::
          :raises:
@@ -284,7 +342,7 @@ Sorted Dictionary
          d = SortedDict()
          del d["foo"]
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -544,7 +602,7 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises RuntimeError: if no key-value pairs have been inserted yet.
+      :raises RuntimeError: if the key type of the sorted dictionary is not set.
 
       .. jupyter-execute::
          :raises:
@@ -554,7 +612,7 @@ Sorted Dictionary
          d = SortedDict()
          d.get("foo")
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -646,7 +704,7 @@ Sorted Dictionary
 
          <summary>This method may raise exceptions.</summary>
 
-      :raises RuntimeError: if no key-value pairs have been inserted yet.
+      :raises RuntimeError: if the key type of the sorted dictionary is not set.
 
       .. jupyter-execute::
          :raises:
@@ -656,7 +714,7 @@ Sorted Dictionary
          d = SortedDict()
          d.setdefault("foo")
 
-      :raises TypeError: if ``type(key)`` does not match the type of the first key inserted.
+      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
 
       .. jupyter-execute::
          :raises:
@@ -677,6 +735,83 @@ Sorted Dictionary
          d = SortedDict()
          d[1.1] = ("racecar",)
          d.setdefault(float("nan"))
+
+      .. raw:: html
+
+         </details>
+
+   .. method:: update(other: dict | Iterable[Sequence[Any]], **kwargs)
+
+      Update the sorted dictionary with the keys and values from ``other``. ``kwargs`` is ignored.
+
+      The rough Python equivalent of the logic written in C++ is as follows.
+
+      .. code-block:: python
+
+         def update(self, other, **kwargs):
+            if hasattr(other, "keys"):
+                for key in other:
+                    self[key] = other[key]
+            else:
+                for key, value in other:
+                    self[key] = value
+
+      If ``other`` has a ``keys`` method, it is assumed to be a dictionary, and the keys and values in it are inserted
+      into the sorted dictionary. Else, it must be an iterable which yields 2-length sequences; these are treated as
+      key-value pairs and inserted into the sorted dictionary.
+
+      .. jupyter-execute::
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+
+         d.update({"spam": {}, "eggs": ""})
+         print(d)
+
+         d.update([("foo", ()), ("bar", [100]), ("baz", 3.14)])
+         print(d)
+
+      .. raw:: html
+
+         <details class="warning">
+
+         <summary>This method may raise exceptions.</summary>
+
+      :raises TypeError: if ``other`` is not iterable.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d.update(None)
+
+      :raises TypeError: if ``other`` did not yield a sequence at some point.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d.update([None])
+
+      :raises ValueError: if ``other`` did not yield a 2-length sequence at some point.
+
+      .. jupyter-execute::
+         :raises:
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         d.update([[None]])
+
+      :raises: the same exception that iterating over ``other`` raises (if any).
+      :raises: the same exception that reading ``other[key]`` raises (if any).
+      :raises: the same exception that writing ``self[key]`` (:meth:`SortedDict.__setitem__`) raises (if
+       any).
 
       .. raw:: html
 
