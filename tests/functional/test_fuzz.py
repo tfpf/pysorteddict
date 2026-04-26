@@ -52,7 +52,7 @@ strategy_mapping_complement = {
 supported_key_types = st.sampled_from([*strategy_mapping])
 unsupported_key_types = st.sampled_from([bytearray, list, memoryview, tuple])
 supported_keys = st.one_of(strategy_mapping.values())
-unsupported_keys = st.one_of(st.lists(st.integers()), st.sets(st.integers()), st.tuples(st.floats(), st.integers()))
+unsupported_keys = st.tuples(st.floats(), st.integers())
 all_keys = st.one_of(supported_keys, unsupported_keys)
 
 
@@ -750,6 +750,98 @@ class FuzzMachine(RuleBasedStateMachine):
     ###########################################################################
     # `update` with a dictionary.
     ###########################################################################
+
+    @rule()
+    def update_not_iterable(self):
+        bad_other = type("NotDict", (), {"keys": None})()
+        with pytest.raises(TypeError, match="object is not iterable"):
+            self.sorted_dict.update(bad_other)
+
+    @precondition(prec_key_type_not_set)
+    @rule(bad_other=rule_items_unsupported())
+    def update_unsupported_empty(self, bad_other):
+        key = bad_other[0][0]
+        with pytest.raises(TypeError, match=re.escape(f"got key {key!r} of unsupported type {type(key)}")):
+            self.sorted_dict.update(dict(bad_other))
+
+    @precondition(prec_key_type_not_set)
+    @rule(key=rule_key_is_nan())
+    def update_nan_empty(self, key):
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
+            self.sorted_dict.update({key: 0})
+
+    @precondition(prec_key_type_not_set)
+    @rule()
+    def update_getitem_error_empty(self):
+        bad_other = type("NotDict", (), {"__iter__": lambda *args: (i for i in range(10)), "keys": None})()
+        with pytest.raises(TypeError, match="object is not subscriptable"):
+            self.sorted_dict.update(bad_other)
+
+    @precondition(prec_key_type_not_set)
+    @rule(good_other=rule_items_supported(), bad_other=rule_items_unsupported())
+    def update_items_wrong_type_empty(self, good_other, bad_other):
+        self.key_type = type(good_other[0][0])
+        self.normal_dict.update(good_other)
+        key = bad_other[0][0]
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+        ):
+            self.sorted_dict.update(dict([*good_other, *bad_other]))
+
+    @precondition(prec_key_type_not_set)
+    @rule(good_other=rule_items_float())
+    def update_nan_after_empty(self, good_other):
+        self.key_type = type(good_other[0][0])
+        self.normal_dict.update(good_other)
+        key = self.key_type("nan")
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
+            self.sorted_dict.update(dict([*good_other, (key, 0)]))
+
+    @precondition(prec_key_type_not_set)
+    @rule(good_other=rule_items_supported())
+    def update_empty(self, good_other):
+        self.key_type = type(good_other[0][0])
+        self.normal_dict.update(good_other)
+        self.sorted_dict.update(dict(good_other))
+
+    @precondition(prec_key_type_set)
+    @rule(bad_other=rule_items_wrong_type())
+    def update_unsupported(self, bad_other):
+        key = bad_other[0][0]
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+        ):
+            self.sorted_dict.update(dict(bad_other))
+
+    @precondition(prec_key_type_admits_nan)
+    @rule(key=rule_key_is_nan())
+    def update_nan(self, key):
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
+            self.sorted_dict.update({key: 0})
+
+    # @precondition(prec_key_type_set)
+    # @rule(good_other=rule_items_right_type(), bad_other=rule_items_wrong_type())
+    # def update_items_wrong_type_after(self, good_other, bad_other):
+    #     self.normal_dict.update(good_other)
+    #     key = bad_other[0][0]
+    #     with pytest.raises(
+    #         TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+    #     ):
+    #         self.sorted_dict.update(dict([*good_other, *bad_other]))
+
+    @precondition(prec_key_type_admits_nan)
+    @rule(good_other=rule_items_right_type(), key=rule_key_is_nan())
+    def update_nan_after(self, good_other, key):
+        self.normal_dict.update(good_other)
+        with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
+            self.sorted_dict.update(dict([*good_other, (key, 0)]))
+
+    @precondition(prec_key_type_set)
+    @rule(good_other=rule_items_right_type())
+    def update(self, good_other):
+        self.normal_dict.update(good_other)
+        self.sorted_dict.update(dict(good_other))
+
 
     ###########################################################################
     # `update` with an iterable.
