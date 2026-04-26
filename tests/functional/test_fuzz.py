@@ -819,15 +819,15 @@ class FuzzMachine(RuleBasedStateMachine):
         with pytest.raises(ValueError, match=re.escape(f"got bad key {key!r} of type {type(key)}")):
             self.sorted_dict.update({key: 0})
 
-    # @precondition(prec_key_type_set)
-    # @rule(good_other=rule_items_right_type(), bad_other=rule_items_wrong_type())
-    # def update_items_wrong_type_after(self, good_other, bad_other):
-    #     self.normal_dict.update(good_other)
-    #     key = bad_other[0][0]
-    #     with pytest.raises(
-    #         TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
-    #     ):
-    #         self.sorted_dict.update(dict([*good_other, *bad_other]))
+    @precondition(prec_key_type_set)
+    @rule(good_other=rule_items_right_type(), bad_other=rule_items_unsupported())
+    def update_items_unsupported_after(self, good_other, bad_other):
+        self.normal_dict.update(good_other)
+        key = bad_other[0][0]
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+        ):
+            self.sorted_dict.update(dict([*good_other, *bad_other]))
 
     @precondition(prec_key_type_admits_nan)
     @rule(good_other=rule_items_right_type(), key=rule_key_is_nan())
@@ -942,8 +942,8 @@ class FuzzMachine(RuleBasedStateMachine):
             self.sorted_dict.update([*good_other, ()])
 
     @precondition(prec_key_type_set)
-    @rule(good_other=rule_items_right_type(), bad_other=rule_items_wrong_type())
-    def update2_items_wrong_type_after(self, good_other, bad_other):
+    @rule(good_other=rule_items_right_type(), bad_other=rule_items_unsupported())
+    def update2_items_unsupported_after(self, good_other, bad_other):
         self.normal_dict.update(good_other)
         key = bad_other[0][0]
         with pytest.raises(
