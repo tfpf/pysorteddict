@@ -616,6 +616,17 @@ static PyObject* sorted_dict_type_setdefault(PyObject* self, PyObject* const* ar
 }
 
 PyDoc_STRVAR(
+    sorted_dict_type_update_doc,
+    "d.update(*args, **kwargs)\n"
+    "Update the sorted dictionary ``d`` with the keys and values from ``args``."
+);
+
+static PyObject* sorted_dict_type_update(PyObject* self, PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
+{
+    return reinterpret_cast<SortedDictType*>(self)->update(args, nargs, kwnames);
+}
+
+PyDoc_STRVAR(
     sorted_dict_type_values_doc,
     "d.values() -> SortedDictValues\n"
     "Return a dynamic view on the values in the sorted dictionary ``d``."
@@ -674,6 +685,17 @@ static PyMethodDef sorted_dict_type_methods[] = {
         .ml_meth = reinterpret_cast<PyCFunction>(sorted_dict_type_setdefault),
         .ml_flags = METH_FASTCALL,
         .ml_doc = sorted_dict_type_setdefault_doc,
+    },
+    {
+        // Using the fast calling convention speeds up the common case but
+        // slows down the rare case (that of unpacking a dictionary into
+        // keyword arguments) in CPython. See
+        // https://github.com/python/cpython/pull/14589#issuecomment-509356084.
+        // Since I ignore keyword arguments, the rare case is irrelevant.
+        .ml_name = "update",
+        .ml_meth = reinterpret_cast<PyCFunction>(sorted_dict_type_update),
+        .ml_flags = METH_FASTCALL | METH_KEYWORDS,
+        .ml_doc = sorted_dict_type_update_doc,
     },
     {
         .ml_name = "values",

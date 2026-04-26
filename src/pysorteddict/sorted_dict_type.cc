@@ -214,6 +214,120 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
     return true;
 }
 
+/**
+ * Update the sorted dictionary with the keys and values from the given
+ * mapping.
+ *
+ * @param mp Mapping.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_mapping(PyObject* mp)
+{
+    // The built-in dictionary in CPython creates a list of the keys and
+    // iterates over it. This differs from what the docstring claims: that it
+    // iterates over the mapping. That is functionally the same thing. (If not,
+    // the mapping is non-compliant.) I iterate over the mapping, since that
+    // avoids creating the list.
+    PyObjectWrapper keys_iter(PyObject_GetIter(mp));  // 🆕
+    if (keys_iter == nullptr)
+    {
+        return false;
+    }
+    while (true)
+    {
+        PyObjectWrapper key(PyIter_Next(keys_iter.get()));  // 🆕
+        if (key == nullptr)
+        {
+            // Was there an error or did I exhaust all elements?
+            return PyErr_Occurred() == nullptr;
+        }
+        PyObjectWrapper value(PyObject_GetItem(mp, key.get()));  // 🆕
+        if (value == nullptr)
+        {
+            return false;
+        }
+        if (this->setitem(key.get(), value.get()) == -1)
+        {
+            return false;
+        }
+    }
+}
+
+/**
+ * Update the sorted dictionary with the keys and values from the given
+ * sequence.
+ *
+ * @param sq Sequence.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_sequence(PyObject* sq)
+{
+    PyObjectWrapper items_iter(PyObject_GetIter(sq));  // 🆕
+    if (items_iter == nullptr)
+    {
+        return false;
+    }
+    for (Py_ssize_t i = 0;; ++i)
+    {
+        PyObjectWrapper item(PyIter_Next(items_iter.get()));  // 🆕
+        if (item == nullptr)
+        {
+            // Was there an error or did I exhaust all elements?
+            return PyErr_Occurred() == nullptr;
+        }
+        PyObjectWrapper item_unpacked(
+            PySequence_Fast(item.get(), "got non-sequence element, want all elements to be sequences")  // 🆕
+        );
+        if (item_unpacked == nullptr)
+        {
+            return false;
+        }
+        Py_ssize_t sz = PySequence_Fast_GET_SIZE(item_unpacked.get());
+        if (sz != 2)
+        {
+            PyErr_Format(
+                PyExc_ValueError, "got element of length %zd at position %zd, want element of length 2", sz, i
+            );
+            return false;
+        }
+        PyObject* key = PySequence_Fast_GET_ITEM(item_unpacked.get(), 0);
+        PyObject* value = PySequence_Fast_GET_ITEM(item_unpacked.get(), 1);
+        if (this->setitem(key, value) == -1)
+        {
+            return false;
+        }
+    }
+}
+
+/**
+ * Update the sorted dictionary with the keys and values from the given object.
+ *
+ * @param ob Object.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_object(PyObject* ob)
+{
+    return PyObject_HasAttrString(ob, "keys") ? this->update_from_mapping(ob) : this->update_from_sequence(ob);
+}
+
+/**
+ * Update the sorted dictionary with the keys and values provided.
+ *
+ * This method currently does nothing and always succeeds.
+ *
+ * @param keys Python tuple of keys.
+ * @param values C array of values.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_key_value_pairs(PyObject* keys, PyObject* const* values)
+{
+    return true;
+}
+
 void SortedDictType::Delete(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
@@ -470,6 +584,23 @@ PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
     PyObject* Default = nargs > 1 ? args[1] : Py_None;
     this->map->emplace_hint(it, Py_NewRef(key), Py_NewRef(Default));  // 🆕
     return Py_NewRef(Default);  // 🆕
+}
+
+PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
+{
+    if (!this->is_nargs_good(__func__, nargs, 0, 1))
+    {
+        return nullptr;
+    }
+    if (nargs == 1 && !this->update_from_object(args[0]))
+    {
+        return nullptr;
+    }
+    if (kwnames != nullptr && !this->update_from_key_value_pairs(kwnames, args + nargs))
+    {
+        return nullptr;
+    }
+    Py_RETURN_NONE;
 }
 
 PyObject* SortedDictType::values(PyTypeObject* type)
