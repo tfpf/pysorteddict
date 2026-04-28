@@ -94,9 +94,14 @@ features = ["cov"]
 [tool.hatch.envs.cov.scripts]
 # To report C++ code coverage, the build directory must persist, because
 # reporting coverage requires data from both coverage and object files.
-cov = [
+github_actions = [
+    "pip install -C build-dir=cov/ -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -v .",
+    "pytest",
+    "gcovr --json-summary-pretty | tee coverage.json | jq -e '.line_percent >= 95'",
+]
+local = [
     "rm -fr cov/",
-    "pip install -C build-dir=cov -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -q .",
+    "pip install -C build-dir=cov/ -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -q .",
     "pytest -q",
     "gcovr --html-details cov/index.html",
 ]
