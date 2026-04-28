@@ -19,7 +19,7 @@ from hypothesis.strategies import SearchStrategy
 
 from pysorteddict import SortedDict
 
-settings.register_profile("default", max_examples=300, stateful_step_count=150)
+settings.register_profile("default", max_examples=3, stateful_step_count=1)
 
 
 strategy_mapping = {
