@@ -1,12 +1,11 @@
 #! /usr/bin/env bash
 
-shopt -s extglob globstar
+shopt -s globstar
 
-cd "${0%/*}"
-files=(src/**/*.{cc,hh})
-if [ "$1" = check ]
+files=("${0%/*}"/src/**/*.{cc,hh})
+if [ -n "${GITHUB_ACTIONS+.}" ]
 then
-    clang-format --verbose --dry-run -Werror ${files[@]}
+    clang-format --dry-run --verbose --Werror "${files[@]}"
 else
-    clang-format --verbose -i ${files[@]}
+    clang-format -i --verbose "${files[@]}"
 fi
