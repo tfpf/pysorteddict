@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - run: ./clang-format.bash check
+      - run: ./clang-format.bash
       - run: pipx run hatch fmt --check
         if: success() || failure()
 

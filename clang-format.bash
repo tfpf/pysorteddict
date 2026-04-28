@@ -2,8 +2,8 @@
 
 shopt -s globstar
 
-files=("${0%/*}"/../src/**/*.{cc,hh})
-if [ "$1" = gha ]
+files=("${0%/*}"/src/**/*.{cc,hh})
+if [ -n "${GITHUB_ACTIONS+.}" ]
 then
     clang-format --dry-run --verbose --Werror "${files[@]}"
 else
