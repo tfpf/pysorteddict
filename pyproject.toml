@@ -111,7 +111,7 @@ features = ["docs"]
 
 [tool.hatch.envs.docs.scripts]
 assets = "cd docs/ && zip -FSr assets.zip _static/fonts/ _static/images/ extra/simple/pysorteddict/*.whl"
-docs = "./scripts/sphinx-build.bash"
+docs = "sphinx-build docs/ docs/_build/"
 
 [tool.meson-python.args]
 compile = ["-v"]
