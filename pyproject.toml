@@ -96,7 +96,7 @@ features = ["cov"]
 github_actions = [
     "pip install -C build-dir=cov -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -v .",
     "pytest",
-    "gcovr --json-summary-pretty | tee cov/coverage.json | jq -e '.line_coverage >= 95'",
+    "gcovr --json-summary-pretty | tee cov/coverage.json | jq -e '.line_percent >= 95'",
 ]
 local = [
     "rm -fr cov/",
