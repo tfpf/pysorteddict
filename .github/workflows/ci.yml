@@ -29,16 +29,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-      - run: |
-          pip install -C build-dir=cov -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -v .[cov]
-          pytest
-          gcovr --json-summary-pretty | tee coverage.json
-          [ $(jq '.line_percent*10' coverage.json) -ge 950 ]
+      - run: pipx run hatch run cov:github_actions
       - uses: stellarhub/push-gist-action@v1
         with:
           token: ${{ secrets.PAT }}
           gist_id: 20ce6b322e80fe740f1ba6365fe7f110
-          file_path: coverage.json
+          file_path: cov/coverage.json
         if: github.ref_type == 'tag'
 
   build-native:
