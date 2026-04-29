@@ -12,7 +12,7 @@
  */
 static void sorted_dict_items_fwd_iter_type_dealloc(PyObject* self)
 {
-   SortedDictItemsIterType<FwdIterType>::Delete(self);
+    SortedDictItemsIterType<FwdIterType>::Delete(self);
 }
 
 /**
