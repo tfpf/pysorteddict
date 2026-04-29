@@ -94,7 +94,12 @@ features = ["cov"]
 [tool.hatch.envs.cov.scripts]
 # To report C++ code coverage, the build directory must persist, because
 # reporting coverage requires data from both coverage and object files.
-cov = [
+github_actions = [
+    "pip install -C build-dir=cov -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -v .",
+    "pytest",
+    "gcovr --json-summary-pretty | tee cov/coverage.json",
+]
+local = [
     "rm -fr cov/",
     "pip install -C build-dir=cov -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -q .",
     "pytest -q",
@@ -106,7 +111,7 @@ features = ["docs"]
 
 [tool.hatch.envs.docs.scripts]
 assets = "cd docs/ && zip -FSr assets.zip _static/fonts/ _static/images/ extra/simple/pysorteddict/*.whl"
-docs = "sphinx-build docs/ docs/_build/"
+docs = "cd docs/ && sphinx-build ./ _build/"
 
 [tool.meson-python.args]
 compile = ["-v"]
