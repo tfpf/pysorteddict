@@ -2,8 +2,6 @@ name: pages
 
 on:
   push:
-    branches:
-      - main
     paths:
       - '.github/workflows/pages.yml'
       - 'docs/**'
@@ -34,8 +32,3 @@ jobs:
         with:
           python-version: '3.11'
       - run: pipx run hatch run docs:docs
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/_build/
-      - uses: actions/deploy-pages@v4
-        id: deployment
