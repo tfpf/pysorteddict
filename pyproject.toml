@@ -88,7 +88,6 @@ pre-install-commands = [
 
 [tool.hatch.envs.cov]
 detached = true
-env-exclude = ["PIP_NO_BUILD_ISOLATION"]
 features = ["cov"]
 
 [tool.hatch.envs.cov.scripts]
