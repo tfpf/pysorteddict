@@ -19,8 +19,7 @@ Documentation
       assert version("pysorteddict") == pysorteddict.__version__
       print(pysorteddict.__version__)
 
-Sorted Dictionary
-*****************
+.. rubric:: Sorted Dictionary
 
 .. class:: SortedDict
 
@@ -838,10 +837,8 @@ Sorted Dictionary
 
       See :ref:`sorted-dictionary-views`.
 
-.. _sorted-dictionary-views:
-
-Sorted Dictionary Views
-***********************
+.. rubric:: Sorted Dictionary Views
+   :name: sorted-dictionary-views
 
 Sorted dictionary views are dynamic views on a sorted dictionary: they are immutable and cannot be used to mutate the
 sorted dictionary, but always reflect its current state.
