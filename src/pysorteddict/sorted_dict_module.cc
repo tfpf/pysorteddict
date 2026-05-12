@@ -585,7 +585,7 @@ static PyObject* sorted_dict_type_get(PyObject* self, PyObject* const* args, Py_
 PyDoc_STRVAR(
     sorted_dict_type_items_doc,
     "d.items() -> SortedDictItems\n"
-    "Return a dynamic view on the items in the sorted dictionary ``d``."
+    "Return a dynamic view on the key-value pairs in the sorted dictionary ``d``."
 );
 
 static PyObject* sorted_dict_type_items(PyObject* self, PyObject* args)
@@ -617,8 +617,8 @@ static PyObject* sorted_dict_type_setdefault(PyObject* self, PyObject* const* ar
 
 PyDoc_STRVAR(
     sorted_dict_type_update_doc,
-    "d.update(*args, **kwargs)\n"
-    "Update the sorted dictionary ``d`` with the keys and values from ``args``."
+    "d.update(other: dict | Iterable[Sequence[Any]], **kwargs)\n"
+    "Update the sorted dictionary ``d`` with the keys and values from ``other``. ``kwargs`` is ignored."
 );
 
 static PyObject* sorted_dict_type_update(PyObject* self, PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)

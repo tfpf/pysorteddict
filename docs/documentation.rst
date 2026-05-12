@@ -19,8 +19,7 @@ Documentation
       assert version("pysorteddict") == pysorteddict.__version__
       print(pysorteddict.__version__)
 
-Sorted Dictionary
-*****************
+.. rubric:: Sorted Dictionary
 
 .. class:: SortedDict
 
@@ -85,8 +84,22 @@ Sorted Dictionary
 
       </details>
 
-   ``SortedDict`` can be type-specified for use in type hints as, for instance, ``SortedDict[str, float]``, similar to
-   ``dict``. It can also be subclassed to override its methods.
+   .. classmethod:: __class_getitem__(hint: tuple(type, type))
+
+      Return a generic alias for use in type hints.
+
+      .. code-block:: python
+
+         from pysorteddict import SortedDict
+
+
+         def func(d: SortedDict[str, float]):
+            pass
+
+
+         d = SortedDict()
+         d["baz"] = 3.14
+         func(d)
 
    .. method:: __init__()
 
@@ -742,7 +755,8 @@ Sorted Dictionary
 
    .. method:: update(other: dict | Iterable[Sequence[Any]], **kwargs)
 
-      Update the sorted dictionary with the keys and values from ``other``. ``kwargs`` is ignored.
+      Update the sorted dictionary with the keys and values from ``other``. ``kwargs`` is reserved for future use and
+      currently ignored; this behaviour is not stable and may change without a major version bump.
 
       The rough Python equivalent of the logic written in C++ is as follows.
 
@@ -838,10 +852,8 @@ Sorted Dictionary
 
       See :ref:`sorted-dictionary-views`.
 
-.. _sorted-dictionary-views:
-
-Sorted Dictionary Views
-***********************
+.. rubric:: Sorted Dictionary Views
+   :name: sorted-dictionary-views
 
 Sorted dictionary views are dynamic views on a sorted dictionary: they are immutable and cannot be used to mutate the
 sorted dictionary, but always reflect its current state.
@@ -867,10 +879,10 @@ There are three view types.
       If ``ob`` is not a two-element ``tuple``, return ``False``. Otherwise, the behaviour is equivalent to that of
       ``ob[0] in d and d[ob[0]] == ob[1]`` where ``d`` is the underlying sorted dictionary.
 
-   .. method:: __getitem__(index_or_slice: int | slice) -> Any
+   .. method:: __getitem__(index: int | slice) -> Any
 
-      Return the key-value pair at the given index or those in the given slice. The behaviour is equivalent to indexing
-      or slicing a ``list`` containing the key-value pairs.
+      Return the key-value pair at the given position or those in the given slice. The behaviour is equivalent to
+      indexing a ``list`` containing the key-value pairs.
 
       .. jupyter-execute::
 
@@ -979,10 +991,10 @@ There are three view types.
       The behaviour is equivalent to that of :meth:`ob in d <SortedDict.__contains__>` where ``d`` is the underlying
       sorted dictionary.
 
-   .. method:: __getitem__(index_or_slice: int | slice) -> Any
+   .. method:: __getitem__(index: int | slice) -> Any
 
-      Return the key at the given index or those in the given slice. The behaviour is equivalent to indexing or slicing
-      a ``list`` containing the keys.
+      Return the key at the given position or those in the given slice. The behaviour is equivalent to indexing a
+      ``list`` containing the keys.
 
       .. jupyter-execute::
 
@@ -1091,10 +1103,10 @@ There are three view types.
       The behaviour is equivalent to that of ``ob in l`` where ``l`` is a ``list`` of the elements in the view in the
       same order. In other words, making this call leads to an element-by-element comparison.
 
-   .. method:: __getitem__(index_or_slice: int | slice) -> Any
+   .. method:: __getitem__(index: int | slice) -> Any
 
-      Return the value at the given index or those in the given slice. The behaviour is equivalent to indexing or
-      slicing a ``list`` containing the values.
+      Return the value at the given position or those in the given slice. The behaviour is equivalent to indexing a
+      ``list`` containing the values.
 
       .. jupyter-execute::
 
