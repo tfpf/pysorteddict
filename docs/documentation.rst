@@ -272,207 +272,189 @@ Documentation
       Insert ``key`` into the sorted dictionary (if it isn't already in it) and map ``value`` to it, replacing the
       previously mapped value (if any).
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``TypeError`` if the key type of the sorted dictionary is not set and ``type(key)`` isn't one of the
+         supported types.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if the key type of the sorted dictionary is not set and ``type(key)`` isn't one of the
-       supported types.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d[["eggs"]] = None
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         d[["eggs"]] = None
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            d[100] = "spam"
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         d[100] = "spam"
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         d[float("nan")] = {}
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            d[float("nan")] = {}
 
    .. method:: __delitem__(key: Any)
 
       Remove ``key`` and the value mapped to it from the sorted dictionary.
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if the key type of the sorted dictionary is not set.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if the key type of the sorted dictionary is not set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            del d["foo"]
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         del d["foo"]
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            del d[100]
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         del d[100]
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            del d[float("nan")]
 
-         from pysorteddict import SortedDict
+         Raises ``KeyError`` if ``key`` is not present in the sorted dictionary.
 
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         del d[float("nan")]
+         .. jupyter-execute::
+            :raises:
 
-      :raises KeyError: if ``key`` is not present in the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            del d["spam"]
 
-         from pysorteddict import SortedDict
+         Raises ``RuntimeError`` if there exists a forward iterator over the items, keys or values of the sorted
+         dictionary pointing to ``key`` (meaning that calling ``next`` on the iterator would return ``(key, d[key])``,
+         ``key`` or ``d[key]`` respectively).
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         del d["spam"]
+         .. raw:: html
 
-      :raises RuntimeError: if there exists a forward iterator over the items, keys or values of the sorted
-       dictionary pointing to ``key`` (meaning that calling ``next`` on the iterator would return ``(key, d[key])``,
-       ``key`` or ``d[key]`` respectively).
+            <svg version="1.1" width="100%" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="40" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="50" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <polygon points="70,40 70,60 90,50" fill="#27B4A6" opacity="0.4" />
+              <rect x="110" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+              <text x="140" y="10" text-anchor="middle" dominant-baseline="middle">Last yielded (if any)</text>
+              <polygon points="190,40 190,60 210,50" fill="#27B4A6" opacity="0.4" />
+              <rect x="230" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+              <text x="260" y="10" text-anchor="middle" dominant-baseline="middle">Next to yield</text>
+              <text x="260" y="90" text-anchor="middle" dominant-baseline="middle">Deletion forbidden</text>
+              <polygon points="310,40 310,60 330,50" fill="#27B4A6" opacity="0.4" />
+              <circle cx="350" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="360" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="370" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+            </svg>
 
-      .. raw:: html
+         .. jupyter-execute::
+            :raises:
 
-         <svg version="1.1" width="100%" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
-           <circle cx="30" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="40" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="50" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <polygon points="70,40 70,60 90,50" fill="#27B4A6" opacity="0.4" />
-           <rect x="110" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
-           <text x="140" y="10" text-anchor="middle" dominant-baseline="middle">Last yielded (if any)</text>
-           <polygon points="190,40 190,60 210,50" fill="#27B4A6" opacity="0.4" />
-           <rect x="230" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
-           <text x="260" y="10" text-anchor="middle" dominant-baseline="middle">Next to yield</text>
-           <text x="260" y="90" text-anchor="middle" dominant-baseline="middle">Deletion forbidden</text>
-           <polygon points="310,40 310,60 330,50" fill="#27B4A6" opacity="0.4" />
-           <circle cx="350" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="360" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="370" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-         </svg>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            for i in range(5):
+                d[i] = None
+            ii = iter(d.items())
+            ki = iter(d.keys())
+            vi = iter(d.values())
+            del d[0]
 
-         from pysorteddict import SortedDict
+         Raises ``RuntimeError`` if there exists a reverse iterator over the items, keys or values of the sorted
+         dictionary pointing to the key immediately less than ``key`` (meaning that calling ``next`` on the iterator
+         last returned ``(key, d[key])``, ``key`` or ``d[key]`` respectively).
 
-         d = SortedDict()
-         for i in range(5):
-             d[i] = None
-         ii = iter(d.items())
-         ki = iter(d.keys())
-         vi = iter(d.values())
-         del d[0]
+         .. raw:: html
 
-      :raises RuntimeError: if there exists a reverse iterator over the items, keys or values of the sorted
-       dictionary pointing to the key immediately less than ``key`` (meaning that calling ``next`` on the iterator
-       last returned ``(key, d[key])``, ``key`` or ``d[key]`` respectively).
+            <svg version="1.1" width="100%" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="40" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="50" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <polygon points="70,50 90,60 90,40" fill="#27B4A6" opacity="0.4" />
+              <rect x="110" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+              <text x="140" y="10" text-anchor="middle" dominant-baseline="middle">Next to yield</text>
+              <polygon points="190,50 210,60 210,40" fill="#27B4A6" opacity="0.4" />
+              <rect x="230" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+              <text x="260" y="10" text-anchor="middle" dominant-baseline="middle">Last yielded</text>
+              <text x="260" y="90" text-anchor="middle" dominant-baseline="middle">Deletion forbidden</text>
+              <polygon points="310,50 330,60 330,40" fill="#27B4A6" opacity="0.4" />
+              <circle cx="350" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="360" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="370" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+            </svg>
 
-      .. raw:: html
+         .. jupyter-execute::
+            :raises:
 
-         <svg version="1.1" width="100%" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
-           <circle cx="30" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="40" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="50" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <polygon points="70,50 90,60 90,40" fill="#27B4A6" opacity="0.4" />
-           <rect x="110" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
-           <text x="140" y="10" text-anchor="middle" dominant-baseline="middle">Next to yield</text>
-           <polygon points="190,50 210,60 210,40" fill="#27B4A6" opacity="0.4" />
-           <rect x="230" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
-           <text x="260" y="10" text-anchor="middle" dominant-baseline="middle">Last yielded</text>
-           <text x="260" y="90" text-anchor="middle" dominant-baseline="middle">Deletion forbidden</text>
-           <polygon points="310,50 330,60 330,40" fill="#27B4A6" opacity="0.4" />
-           <circle cx="350" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="360" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="370" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-         </svg>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            for i in range(5):
+                d[i] = None
+            ii = reversed(d.items())
+            ki = reversed(d.keys())
+            vi = reversed(d.values())
+            assert (next(ii), next(ki), next(vi)) == ((4, None), 4, None)
+            del d[4]
 
-         from pysorteddict import SortedDict
 
-         d = SortedDict()
-         for i in range(5):
-             d[i] = None
-         ii = reversed(d.items())
-         ki = reversed(d.keys())
-         vi = reversed(d.values())
-         assert (next(ii), next(ki), next(vi)) == ((4, None), 4, None)
-         del d[4]
+      .. details:: This method may behave differently with PyPy.
+         :class: warning
 
-      .. raw:: html
+         PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, iterators
+         deleted prematurely will keep a key-value pair locked.
 
-         </details>
+         .. code-block:: python
 
-         <details class="warning">
+            import gc
 
-         <summary>This method may behave differently with PyPy.</summary>
+            from pysorteddict import SortedDict
 
-      PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, iterators
-      deleted prematurely will keep a key-value pair locked.
+            d = SortedDict()
+            d["foo"] = "bar"
+            d["baz"] = 1
+            ii = iter(d.items())
+            ki = iter(d.keys())
+            vi = iter(d.values())
+            del ii, ki, vi
+            # gc.collect()
+            del d["baz"]
 
-      .. code-block:: python
-
-         import gc
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d["foo"] = "bar"
-         d["baz"] = 1
-         ii = iter(d.items())
-         ki = iter(d.keys())
-         vi = iter(d.values())
-         del ii, ki, vi
-         # gc.collect()
-         del d["baz"]
-
-      Uncommenting the commented line runs any required destructors, ensuring that no exception is raised.
-
-      .. raw:: html
-
-         </details>
+         Uncommenting the commented line runs any required destructors, ensuring that no exception is raised.
 
    .. method:: __iter__() -> SortedDictKeysFwdIter
 
