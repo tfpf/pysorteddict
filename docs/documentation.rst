@@ -21,6 +21,12 @@ Documentation
 
 .. rubric:: Sorted Dictionary
 
+.. details:: how and why in science
+   :class: warning
+   :open:
+
+   This is something else!
+
 .. class:: SortedDict
 
    Sorted analogue of the ``dict`` type. Wraps the C++ sorted dictionary (``std::map``): key-value pairs are stored

@@ -7,7 +7,7 @@ from pathlib import Path
 import tomllib
 
 this_file = Path(__file__)
-sys.path.append((this_file / "_ext").resolve())
+sys.path.append(str(this_file.with_name("_ext").resolve()))
 
 with zipfile.ZipFile(assets_src := this_file.with_name("assets.zip")) as zf:
     assets_dst, modification_time_tuples = assets_src.parent, {}
