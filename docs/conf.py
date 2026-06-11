@@ -1,11 +1,15 @@
 import os
 import time
 import zipfile
+import sys
 from pathlib import Path
 
 import tomllib
 
-with zipfile.ZipFile(assets_src := Path(__file__).with_name("assets.zip")) as zf:
+this_file = Path(__file__)
+sys.path.append((this_file / "_ext").resolve())
+
+with zipfile.ZipFile(assets_src := this_file.with_name("assets.zip")) as zf:
     assets_dst, modification_time_tuples = assets_src.parent, {}
     for zi in zf.infolist():
         if not (target := assets_dst / zi.filename).exists():
@@ -20,7 +24,7 @@ with zipfile.ZipFile(assets_src := Path(__file__).with_name("assets.zip")) as zf
         os.utime(target, (modification_timestamp, modification_timestamp))
 
 # Show all available wheels similar to how PyPI does.
-whl_dir = Path(__file__).with_name("extra") / "simple" / "pysorteddict"
+whl_dir = this_file.with_name("extra") / "simple" / "pysorteddict"
 with open(whl_dir / "index.html", "w") as writer:
     print("<!DOCTYPE html><html><head><title>Links for pysorteddict</title></head><body>", file=writer)
     for whl_file in sorted(whl_dir.iterdir(), reverse=True):
@@ -28,14 +32,14 @@ with open(whl_dir / "index.html", "w") as writer:
             print(f'<a href="{whl_file.name}">{whl_file.name}</a><br />', file=writer)
     print("</body></html>", file=writer)
 
-with open(Path(__file__).parents[1] / "pyproject.toml", "rb") as reader:
+with open(this_file.parents[1] / "pyproject.toml", "rb") as reader:
     metadata = tomllib.load(reader)["project"]
 author = metadata["authors"][0]["name"]
 copyright = f"2025–2026, {author}"
 release = metadata["version"]
 project = metadata["name"] + " " + release
 
-extensions = ["jupyter_sphinx", "jupyterlite_sphinx", "myst_parser", "sphinx_inline_tabs"]
+extensions = ["details", "jupyter_sphinx", "jupyterlite_sphinx", "myst_parser", "sphinx_inline_tabs"]
 source_suffix = [".md", ".rst"]
 exclude_patterns = ["_build"]
 
