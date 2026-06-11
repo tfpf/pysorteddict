@@ -559,47 +559,40 @@ Documentation
          assert d.get("baz") is None
          assert d.get("spam", "eggs") == "eggs"
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if the key type of the sorted dictionary is not set.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if the key type of the sorted dictionary is not set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.get("foo")
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         d.get("foo")
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            d.get(100)
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         d.get(100)
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         d.get(float("nan"))
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            d.get(float("nan"))
 
    .. method:: items() -> SortedDictItems
 
@@ -661,47 +654,40 @@ Documentation
          assert d.setdefault("spam", "eggs") == "eggs"
          assert d["spam"] == "eggs"
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if the key type of the sorted dictionary is not set.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if the key type of the sorted dictionary is not set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.setdefault("foo")
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         d.setdefault("foo")
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            d.setdefault(100)
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         d.setdefault(100)
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         d.setdefault(float("nan"))
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            d.setdefault(float("nan"))
 
    .. method:: update(other: dict | Iterable[Sequence[Any]], **kwargs)
 
@@ -736,50 +722,44 @@ Documentation
          d.update([("foo", ()), ("bar", [100]), ("baz", 3.14)])
          print(d)
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``TypeError`` if ``other`` is not iterable.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``other`` is not iterable.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.update(None)
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``other`` did not yield a sequence at some point.
 
-         d = SortedDict()
-         d.update(None)
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``other`` did not yield a sequence at some point.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.update([None])
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``other`` did not yield a 2-length sequence at some point.
 
-         d = SortedDict()
-         d.update([None])
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``other`` did not yield a 2-length sequence at some point.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.update([[None]])
 
-         from pysorteddict import SortedDict
+         Raises the same exception that:
 
-         d = SortedDict()
-         d.update([[None]])
-
-      :raises: the same exception that iterating over ``other`` raises (if any).
-      :raises: the same exception that reading ``other[key]`` raises (if any).
-      :raises: the same exception that writing ``self[key]`` (:meth:`SortedDict.__setitem__`) raises (if
-       any).
-
-      .. raw:: html
-
-         </details>
+         * iterating over ``other`` raises (if any).
+         * reading ``other[key]`` raises (if any).
+         * writing ``self[key]`` (:meth:`SortedDict.__setitem__`) raises (if any).
 
    .. method:: values() -> SortedDictValues
 
