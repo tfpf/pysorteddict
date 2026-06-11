@@ -140,36 +140,29 @@ Documentation
          d.key_type = bytes
          d[b"foo"] = ()
 
-      .. raw:: html
+      .. details:: This property may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``ValueError`` if an attempt is made to set it to an unsupported key type.
 
-         <summary>This property may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if an attempt is made to set it to an unsupported key type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.key_type = list
 
-         from pysorteddict import SortedDict
+         Raises ``AttributeError`` if an attempt is made to change it after it has been set.
 
-         d = SortedDict()
-         d.key_type = list
+         .. jupyter-execute::
+            :raises:
 
-      :raises AttributeError: if an attempt is made to change it after it has been set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d[b"foo"] = ()
-         d.key_type = str
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d[b"foo"] = ()
+            d.key_type = str
 
    .. method:: __repr__() -> str
 
@@ -179,121 +172,100 @@ Documentation
 
       Return whether ``key`` is present in the sorted dictionary.
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if the key type of the sorted dictionary is not set.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if the key type of the sorted dictionary is not set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            "foo" in d
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         "foo" in d
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            100 in d
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         100 in d
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         float("nan") in d
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            float("nan") in d
 
    .. method:: __len__() -> int
 
       Return the number of key-value pairs in the sorted dictionary.
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
-
-         <summary>This method may raise exceptions.</summary>
-
-      :raises OverflowError: if the number of key-value pairs exceeds ``PY_SSIZE_T_MAX`` (which is usually
-       9223372036854775807 on 64-bit operating systems, making this exception astronomically unlikely).
-
-      .. raw:: html
-
-         </details>
+         Raises ``OverflowError`` if the number of key-value pairs exceeds ``PY_SSIZE_T_MAX`` (which is usually
+         9223372036854775807 on 64-bit operating systems, making this exception astronomically unlikely).
 
    .. method:: __getitem__(key: Any) -> Any
 
       Return the value mapped to ``key`` in the sorted dictionary.
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if the key type of the sorted dictionary is not set.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if the key type of the sorted dictionary is not set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"]
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         d["foo"]
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            d[100]
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         d[100]
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            d[float("nan")]
 
-         from pysorteddict import SortedDict
+         Raises ``KeyError`` if ``key`` is not present in the sorted dictionary.
 
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         d[float("nan")]
+         .. jupyter-execute::
+            :raises:
 
-      :raises KeyError: if ``key`` is not present in the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         d["spam"]
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            d["spam"]
 
    .. method:: __setitem__(key: Any, value: Any)
 
