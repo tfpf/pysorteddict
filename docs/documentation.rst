@@ -70,7 +70,11 @@ Documentation
                      """
                      import math
 
-                     Decimal = type("Decimal", (float,), {"is_nan": lambda self: math.isnan(self)})
+                     Decimal = type(
+                        "Decimal",
+                        (float,),
+                        {"is_nan": lambda self: math.isnan(self)},
+                     )
                      """
                  ),
                  file=writer,
