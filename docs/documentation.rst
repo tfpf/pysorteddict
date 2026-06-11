@@ -5,6 +5,8 @@ Documentation
 
 .. currentmodule:: pysorteddict
 
+.. rubric:: Module
+
 .. data:: __version__
    :type: str
 
@@ -20,12 +22,6 @@ Documentation
       print(pysorteddict.__version__)
 
 .. rubric:: Sorted Dictionary
-
-.. details:: how and why in science
-   :class: warning
-   :open:
-
-   This is something else!
 
 .. class:: SortedDict
 
@@ -60,35 +56,37 @@ Documentation
    * ``time.struct_time``
    * ``uuid.UUID``
 
-   .. raw:: html
+   .. details:: Shadowing standard library modules providing these types may lead to undefined behaviour.
+      :class: warning
 
-      <details class="warning">
+      .. code-block:: python
 
-      <summary>Shadowing standard library modules providing these types may lead to undefined behaviour.</summary>
+         import textwrap
+         from pathlib import Path
 
-   .. code-block:: python
+         with Path(__file__).with_name("decimal.py").open("w") as writer:
+             print(
+                 textwrap.dedent(
+                     """
+                     import math
 
-      from pathlib import Path
+                     Decimal = type("Decimal", (float,), {"is_nan": lambda self: math.isnan(self)})
+                     """
+                 ),
+                 file=writer,
+             )
 
-      with Path(__file__).with_name("decimal.py").open("w") as writer:
-          print("import math", file=writer)
-          print('Decimal = type("Decimal", (float,), {"is_nan": lambda self: math.isnan(self)})', file=writer)
+         from decimal import Decimal
 
-      from pysorteddict import SortedDict
+         from pysorteddict import SortedDict
 
-      from decimal import Decimal
+         d = SortedDict()
+         d[Decimal(0)] = None
 
-      d = SortedDict()
-      d[Decimal(0)] = None
-
-   Here, the imported ``Decimal`` (which is actually ``float`` with an ``is_nan`` method defined) came from the
-   newly created ``decimal.py`` instead of the standard library module ``decimal``. This will work. However, if
-   ``Decimal.__lt__`` (the comparison function used by the underlying C++ ``std::map``) is overridden to raise an
-   exception, undefined behaviour will result.
-
-   .. raw:: html
-
-      </details>
+      Here, the imported ``Decimal`` (which is actually ``float`` with an ``is_nan`` method defined) came from the
+      newly created ``decimal.py`` instead of the standard library module ``decimal``. This will work. However, if
+      ``Decimal.__lt__`` (the comparison function used by the underlying C++ ``std::map``) is overridden to raise an
+      exception, undefined behaviour will result.
 
    .. classmethod:: __class_getitem__(hint: tuple(type, type))
 
