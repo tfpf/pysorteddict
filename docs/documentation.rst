@@ -499,58 +499,46 @@ Documentation
 
       Remove all key-value pairs in the sorted dictionary.
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if there exist unexhausted iterators over the items, keys or values of the sorted
+         dictionary.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if there exist unexhausted iterators over the items, keys or values of the sorted
-       dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = "bar"
+            ii = iter(d.items())
+            ki = iter(d.keys())
+            vi = reversed(d.values())
+            d.clear()
 
-         from pysorteddict import SortedDict
+      .. details:: This method may behave differently with PyPy.
+         :class: warning
 
-         d = SortedDict()
-         d["foo"] = "bar"
-         ii = iter(d.items())
-         ki = iter(d.keys())
-         vi = reversed(d.values())
-         d.clear()
+         PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, iterators
+         deleted prematurely will keep a sorted dictionary locked.
 
-      .. raw:: html
+         .. code-block:: python
 
-         </details>
+            import gc
 
-         <details class="warning">
+            from pysorteddict import SortedDict
 
-         <summary>This method may behave differently with PyPy.</summary>
+            d = SortedDict()
+            d["foo"] = "bar"
+            ii = iter(d.items())
+            ki = iter(d.keys())
+            vi = reversed(d.values())
+            del ii, ki, vi
+            # gc.collect()
+            d.clear()
 
-      PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, iterators deleted
-      prematurely will keep a sorted dictionary locked.
-
-      .. code-block:: python
-
-         import gc
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d["foo"] = "bar"
-         ii = iter(d.items())
-         ki = iter(d.keys())
-         vi = reversed(d.values())
-         del ii, ki, vi
-         # gc.collect()
-         d.clear()
-
-      Uncommenting the commented line runs any required destructors, ensuring that no exception is raised.
-
-      .. raw:: html
-
-         </details>
+         Uncommenting the commented line runs any required destructors, ensuring that no exception is raised.
 
    .. method:: copy() -> SortedDict
 
