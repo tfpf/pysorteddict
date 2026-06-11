@@ -1,7 +1,7 @@
 import os
+import sys
 import time
 import zipfile
-import sys
 from pathlib import Path
 
 import tomllib
