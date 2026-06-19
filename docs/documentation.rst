@@ -866,8 +866,7 @@ There are three view types.
             for key, value in d.items():
                print(key, "->", value)
 
-         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-         that apply.
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
    .. method:: __reversed__() -> SortedDictItemsRevIter
 
@@ -893,8 +892,7 @@ There are three view types.
             for key, value in d.items():
                print(key, "->", value)
 
-         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-         that apply.
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
 .. class:: SortedDictKeys
 
@@ -964,8 +962,7 @@ There are three view types.
             for key, value in d.items():
                print(key, "->", value)
 
-         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-         that apply.
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
    .. method:: __reversed__() -> SortedDictKeysRevIter
 
@@ -994,8 +991,7 @@ There are three view types.
          for key, value in d.items():
             print(key, "->", value)
 
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-      that apply.
+      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
       .. raw:: html
 
@@ -1072,8 +1068,7 @@ There are three view types.
          for key, value in d.items():
             print(key, "->", value)
 
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-      that apply.
+      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
       .. raw:: html
 
@@ -1106,8 +1101,7 @@ There are three view types.
          for key, value in d.items():
             print(key, "->", value)
 
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-      that apply.
+      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
       .. raw:: html
 
