@@ -968,34 +968,27 @@ There are three view types.
 
       Return a reverse iterator over the keys in the sorted dictionary view.
 
-      .. raw:: html
+      .. details:: Modifications made while iterating over the keys have well-defined behaviour.
+         :class: notice
 
-         <details class="notice">
+         .. jupyter-execute::
 
-         <summary>Modifications made while iterating over the keys have well-defined behaviour.</summary>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
+            d = SortedDict()
+            d["foo"] = ()
+            d["bar"] = [100]
+            d["baz"] = 3.14
+            for key in reversed(d):
+                d[key] = "spam"
+                d["z_" + key] = "eggs"
+                if "bar" in d:
+                    del d["bar"]
 
-         from pysorteddict import SortedDict
+            for key, value in d.items():
+               print(key, "->", value)
 
-         d = SortedDict()
-         d["foo"] = ()
-         d["bar"] = [100]
-         d["baz"] = 3.14
-         for key in reversed(d):
-             d[key] = "spam"
-             d["z_" + key] = "eggs"
-             if "bar" in d:
-                 del d["bar"]
-
-         for key, value in d.items():
-            print(key, "->", value)
-
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
-
-      .. raw:: html
-
-         </details>
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
 .. class:: SortedDictValues
 
@@ -1045,64 +1038,50 @@ There are three view types.
 
       Return a forward iterator over the values in the sorted dictionary view.
 
-      .. raw:: html
+      .. details:: Modifications made while iterating over the values have well-defined behaviour.
+         :class: notice
 
-         <details class="notice">
+         .. jupyter-execute::
 
-         <summary>Modifications made while iterating over the values have well-defined behaviour.</summary>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
+            d = SortedDict()
+            d["foo"] = ()
+            d["bar"] = [100]
+            d["baz"] = 3.14
+            for value in d.values():
+                d[f"a_{value}"] = f"spam_{value}"
+                d["eggs"] = value
+                if "foo" in d:
+                    del d["foo"]
 
-         from pysorteddict import SortedDict
+            for key, value in d.items():
+               print(key, "->", value)
 
-         d = SortedDict()
-         d["foo"] = ()
-         d["bar"] = [100]
-         d["baz"] = 3.14
-         for value in d.values():
-             d[f"a_{value}"] = f"spam_{value}"
-             d["eggs"] = value
-             if "foo" in d:
-                 del d["foo"]
-
-         for key, value in d.items():
-            print(key, "->", value)
-
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
-
-      .. raw:: html
-
-         </details>
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
    .. method:: __reversed__() -> SortedDictValuesRevIter
 
       Return a reverse iterator over the values in the sorted dictionary view.
 
-      .. raw:: html
+      .. details:: Modifications made while iterating over the values have well-defined behaviour.
+         :class: notice
 
-         <details class="notice">
+         .. jupyter-execute::
 
-         <summary>Modifications made while iterating over the values have well-defined behaviour.</summary>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
+            d = SortedDict()
+            d["foo"] = ()
+            d["bar"] = [100]
+            d["baz"] = 3.14
+            for value in reversed(d.values()):
+                d[f"z_{value}"] = f"spam_{value}"
+                d["eggs"] = value
+                if "bar" in d:
+                    del d["bar"]
 
-         from pysorteddict import SortedDict
+            for key, value in d.items():
+               print(key, "->", value)
 
-         d = SortedDict()
-         d["foo"] = ()
-         d["bar"] = [100]
-         d["baz"] = 3.14
-         for value in reversed(d.values()):
-             d[f"z_{value}"] = f"spam_{value}"
-             d["eggs"] = value
-             if "bar" in d:
-                 del d["bar"]
-
-         for key, value in d.items():
-            print(key, "->", value)
-
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
-
-      .. raw:: html
-
-         </details>
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
