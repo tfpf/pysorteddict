@@ -26,11 +26,11 @@ pysorteddict and Sorted Containers differ greatly in their sorted dictionary imp
 | CPU                            | Intel Core i9-12900H                         |
 | CPU Frequency Scaling Governor | powersave                                    |
 | RAM                            | 16 GiB DDR5                                  |
-| Kernel                         | Linux 6.1.0 (64-bit)                         |
-| Operating System               | Debian 12 "bookworm"                         |
-| Operating System Libraries     | GNU C Library 2.36, GNU C++ Library 12.2.0   |
-| Python Interpreter             | CPython 3.11.2                               |
-| Python Interpreter Libraries   | pysorteddict 0.13.0, Sorted Containers 2.4.0 |
+| Kernel                         | Linux 6.12.74 (64-bit)                       |
+| Operating System               | Debian 13 "trixie"                           |
+| Operating System Libraries     | GNU C Library 2.41, GNU C++ Library 14.2.0   |
+| Python Interpreter             | CPython 3.13.5                               |
+| Python Interpreter Libraries   | pysorteddict 0.14.0, Sorted Containers 2.4.0 |
 
 ## Strategy
 
