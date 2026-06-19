@@ -1,9 +1,14 @@
 Documentation
 #############
 
+Exception messages are not a part of the stable API. Return types, exception classes and all behaviours are stable
+unless noted otherwise.
+
 .. default-domain:: py
 
 .. currentmodule:: pysorteddict
+
+.. rubric:: Module
 
 .. data:: __version__
    :type: str
@@ -54,35 +59,41 @@ Documentation
    * ``time.struct_time``
    * ``uuid.UUID``
 
-   .. raw:: html
+   .. details:: Shadowing standard library modules providing these types may lead to undefined behaviour.
+      :class: warning
 
-      <details class="warning">
+      .. code-block:: python
 
-      <summary>Shadowing standard library modules providing these types may lead to undefined behaviour.</summary>
+         import textwrap
+         from pathlib import Path
 
-   .. code-block:: python
+         with Path(__file__).with_name("decimal.py").open("w") as writer:
+             print(
+                 textwrap.dedent(
+                     """
+                     import math
 
-      from pathlib import Path
+                     Decimal = type(
+                        "Decimal",
+                        (float,),
+                        {"is_nan": lambda self: math.isnan(self)},
+                     )
+                     """
+                 ),
+                 file=writer,
+             )
 
-      with Path(__file__).with_name("decimal.py").open("w") as writer:
-          print("import math", file=writer)
-          print('Decimal = type("Decimal", (float,), {"is_nan": lambda self: math.isnan(self)})', file=writer)
+         from decimal import Decimal
 
-      from pysorteddict import SortedDict
+         from pysorteddict import SortedDict
 
-      from decimal import Decimal
+         d = SortedDict()
+         d[Decimal(0)] = None
 
-      d = SortedDict()
-      d[Decimal(0)] = None
-
-   Here, the imported ``Decimal`` (which is actually ``float`` with an ``is_nan`` method defined) came from the
-   newly created ``decimal.py`` instead of the standard library module ``decimal``. This will work. However, if
-   ``Decimal.__lt__`` (the comparison function used by the underlying C++ ``std::map``) is overridden to raise an
-   exception, undefined behaviour will result.
-
-   .. raw:: html
-
-      </details>
+      Here, the imported ``Decimal`` (which is actually ``float`` with an ``is_nan`` method defined) came from the
+      newly created ``decimal.py`` instead of the standard library module ``decimal``. This will work. However, if
+      ``Decimal.__lt__`` (the comparison function used by the underlying C++ ``std::map``) is overridden to raise an
+      exception, undefined behaviour will result.
 
    .. classmethod:: __class_getitem__(hint: tuple(type, type))
 
@@ -132,36 +143,29 @@ Documentation
          d.key_type = bytes
          d[b"foo"] = ()
 
-      .. raw:: html
+      .. details:: This property may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``ValueError`` if an attempt is made to set it to an unsupported key type.
 
-         <summary>This property may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if an attempt is made to set it to an unsupported key type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.key_type = list
 
-         from pysorteddict import SortedDict
+         Raises ``AttributeError`` if an attempt is made to change it after it has been set.
 
-         d = SortedDict()
-         d.key_type = list
+         .. jupyter-execute::
+            :raises:
 
-      :raises AttributeError: if an attempt is made to change it after it has been set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d[b"foo"] = ()
-         d.key_type = str
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d[b"foo"] = ()
+            d.key_type = str
 
    .. method:: __repr__() -> str
 
@@ -171,328 +175,289 @@ Documentation
 
       Return whether ``key`` is present in the sorted dictionary.
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if the key type of the sorted dictionary is not set.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if the key type of the sorted dictionary is not set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            "foo" in d
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         "foo" in d
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            100 in d
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         100 in d
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         float("nan") in d
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            float("nan") in d
 
    .. method:: __len__() -> int
 
       Return the number of key-value pairs in the sorted dictionary.
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
-
-         <summary>This method may raise exceptions.</summary>
-
-      :raises OverflowError: if the number of key-value pairs exceeds ``PY_SSIZE_T_MAX`` (which is usually
-       9223372036854775807 on 64-bit operating systems, making this exception astronomically unlikely).
-
-      .. raw:: html
-
-         </details>
+         Raises ``OverflowError`` if the number of key-value pairs exceeds ``PY_SSIZE_T_MAX`` (which is usually
+         9223372036854775807 on 64-bit operating systems, making this exception astronomically unlikely).
 
    .. method:: __getitem__(key: Any) -> Any
 
       Return the value mapped to ``key`` in the sorted dictionary.
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if the key type of the sorted dictionary is not set.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if the key type of the sorted dictionary is not set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"]
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         d["foo"]
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            d[100]
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         d[100]
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            d[float("nan")]
 
-         from pysorteddict import SortedDict
+         Raises ``KeyError`` if ``key`` is not present in the sorted dictionary.
 
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         d[float("nan")]
+         .. jupyter-execute::
+            :raises:
 
-      :raises KeyError: if ``key`` is not present in the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         d["spam"]
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            d["spam"]
 
    .. method:: __setitem__(key: Any, value: Any)
 
       Insert ``key`` into the sorted dictionary (if it isn't already in it) and map ``value`` to it, replacing the
       previously mapped value (if any).
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``TypeError`` if the key type of the sorted dictionary is not set and ``type(key)`` isn't one of the
+         supported types.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if the key type of the sorted dictionary is not set and ``type(key)`` isn't one of the
-       supported types.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d[["eggs"]] = None
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         d[["eggs"]] = None
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            d[100] = "spam"
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         d[100] = "spam"
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         d[float("nan")] = {}
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            d[float("nan")] = {}
 
    .. method:: __delitem__(key: Any)
 
       Remove ``key`` and the value mapped to it from the sorted dictionary.
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if the key type of the sorted dictionary is not set.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if the key type of the sorted dictionary is not set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            del d["foo"]
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         del d["foo"]
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            del d[100]
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         del d[100]
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            del d[float("nan")]
 
-         from pysorteddict import SortedDict
+         Raises ``KeyError`` if ``key`` is not present in the sorted dictionary.
 
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         del d[float("nan")]
+         .. jupyter-execute::
+            :raises:
 
-      :raises KeyError: if ``key`` is not present in the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            del d["spam"]
 
-         from pysorteddict import SortedDict
+         Raises ``RuntimeError`` if there exists a forward iterator over the items, keys or values of the sorted
+         dictionary pointing to ``key`` (meaning that calling ``next`` on the iterator would return ``(key, d[key])``,
+         ``key`` or ``d[key]`` respectively).
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         del d["spam"]
+         .. raw:: html
 
-      :raises RuntimeError: if there exists a forward iterator over the items, keys or values of the sorted
-       dictionary pointing to ``key`` (meaning that calling ``next`` on the iterator would return ``(key, d[key])``,
-       ``key`` or ``d[key]`` respectively).
+            <svg version="1.1" width="100%" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="40" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="50" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <polygon points="70,40 70,60 90,50" fill="#27B4A6" opacity="0.4" />
+              <rect x="110" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+              <text x="140" y="10" text-anchor="middle" dominant-baseline="middle">Last yielded (if any)</text>
+              <polygon points="190,40 190,60 210,50" fill="#27B4A6" opacity="0.4" />
+              <rect x="230" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+              <text x="260" y="10" text-anchor="middle" dominant-baseline="middle">Next to yield</text>
+              <text x="260" y="90" text-anchor="middle" dominant-baseline="middle">Deletion forbidden</text>
+              <polygon points="310,40 310,60 330,50" fill="#27B4A6" opacity="0.4" />
+              <circle cx="350" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="360" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="370" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+            </svg>
 
-      .. raw:: html
+         .. jupyter-execute::
+            :raises:
 
-         <svg version="1.1" width="100%" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
-           <circle cx="30" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="40" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="50" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <polygon points="70,40 70,60 90,50" fill="#27B4A6" opacity="0.4" />
-           <rect x="110" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
-           <text x="140" y="10" text-anchor="middle" dominant-baseline="middle">Last yielded (if any)</text>
-           <polygon points="190,40 190,60 210,50" fill="#27B4A6" opacity="0.4" />
-           <rect x="230" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
-           <text x="260" y="10" text-anchor="middle" dominant-baseline="middle">Next to yield</text>
-           <text x="260" y="90" text-anchor="middle" dominant-baseline="middle">Deletion forbidden</text>
-           <polygon points="310,40 310,60 330,50" fill="#27B4A6" opacity="0.4" />
-           <circle cx="350" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="360" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="370" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-         </svg>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            for i in range(5):
+                d[i] = None
+            ii = iter(d.items())
+            ki = iter(d.keys())
+            vi = iter(d.values())
+            del d[0]
 
-         from pysorteddict import SortedDict
+         Raises ``RuntimeError`` if there exists a reverse iterator over the items, keys or values of the sorted
+         dictionary pointing to the key immediately less than ``key`` (meaning that calling ``next`` on the iterator
+         last returned ``(key, d[key])``, ``key`` or ``d[key]`` respectively).
 
-         d = SortedDict()
-         for i in range(5):
-             d[i] = None
-         ii = iter(d.items())
-         ki = iter(d.keys())
-         vi = iter(d.values())
-         del d[0]
+         .. raw:: html
 
-      :raises RuntimeError: if there exists a reverse iterator over the items, keys or values of the sorted
-       dictionary pointing to the key immediately less than ``key`` (meaning that calling ``next`` on the iterator
-       last returned ``(key, d[key])``, ``key`` or ``d[key]`` respectively).
+            <svg version="1.1" width="100%" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="40" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="50" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <polygon points="70,50 90,60 90,40" fill="#27B4A6" opacity="0.4" />
+              <rect x="110" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+              <text x="140" y="10" text-anchor="middle" dominant-baseline="middle">Next to yield</text>
+              <polygon points="190,50 210,60 210,40" fill="#27B4A6" opacity="0.4" />
+              <rect x="230" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
+              <text x="260" y="10" text-anchor="middle" dominant-baseline="middle">Last yielded</text>
+              <text x="260" y="90" text-anchor="middle" dominant-baseline="middle">Deletion forbidden</text>
+              <polygon points="310,50 330,60 330,40" fill="#27B4A6" opacity="0.4" />
+              <circle cx="350" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="360" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+              <circle cx="370" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
+            </svg>
 
-      .. raw:: html
+         .. jupyter-execute::
+            :raises:
 
-         <svg version="1.1" width="100%" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
-           <circle cx="30" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="40" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="50" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <polygon points="70,50 90,60 90,40" fill="#27B4A6" opacity="0.4" />
-           <rect x="110" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
-           <text x="140" y="10" text-anchor="middle" dominant-baseline="middle">Next to yield</text>
-           <polygon points="190,50 210,60 210,40" fill="#27B4A6" opacity="0.4" />
-           <rect x="230" y="20" width="60" height="60" fill="#27B4A6" opacity="0.4"/>
-           <text x="260" y="10" text-anchor="middle" dominant-baseline="middle">Last yielded</text>
-           <text x="260" y="90" text-anchor="middle" dominant-baseline="middle">Deletion forbidden</text>
-           <polygon points="310,50 330,60 330,40" fill="#27B4A6" opacity="0.4" />
-           <circle cx="350" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="360" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-           <circle cx="370" cy="50" r="2" fill="#27B4A6" opacity="0.4" />
-         </svg>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            for i in range(5):
+                d[i] = None
+            ii = reversed(d.items())
+            ki = reversed(d.keys())
+            vi = reversed(d.values())
+            assert (next(ii), next(ki), next(vi)) == ((4, None), 4, None)
+            del d[4]
 
-         from pysorteddict import SortedDict
 
-         d = SortedDict()
-         for i in range(5):
-             d[i] = None
-         ii = reversed(d.items())
-         ki = reversed(d.keys())
-         vi = reversed(d.values())
-         assert (next(ii), next(ki), next(vi)) == ((4, None), 4, None)
-         del d[4]
+      .. details:: This method may behave differently with PyPy.
+         :class: warning
 
-      .. raw:: html
+         PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, iterators
+         deleted prematurely will keep a key-value pair locked.
 
-         </details>
+         .. code-block:: python
 
-         <details class="warning">
+            import gc
 
-         <summary>This method may behave differently with PyPy.</summary>
+            from pysorteddict import SortedDict
 
-      PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, iterators
-      deleted prematurely will keep a key-value pair locked.
+            d = SortedDict()
+            d["foo"] = "bar"
+            d["baz"] = 1
+            ii = iter(d.items())
+            ki = iter(d.keys())
+            vi = iter(d.values())
+            del ii, ki, vi
+            # gc.collect()
+            del d["baz"]
 
-      .. code-block:: python
-
-         import gc
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d["foo"] = "bar"
-         d["baz"] = 1
-         ii = iter(d.items())
-         ki = iter(d.keys())
-         vi = iter(d.values())
-         del ii, ki, vi
-         # gc.collect()
-         del d["baz"]
-
-      Uncommenting the commented line runs any required destructors, ensuring that no exception is raised.
-
-      .. raw:: html
-
-         </details>
+         Uncommenting the commented line runs any required destructors, ensuring that no exception is raised.
 
    .. method:: __iter__() -> SortedDictKeysFwdIter
 
@@ -537,58 +502,46 @@ Documentation
 
       Remove all key-value pairs in the sorted dictionary.
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if there exist unexhausted iterators over the items, keys or values of the sorted
+         dictionary.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if there exist unexhausted iterators over the items, keys or values of the sorted
-       dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = "bar"
+            ii = iter(d.items())
+            ki = iter(d.keys())
+            vi = reversed(d.values())
+            d.clear()
 
-         from pysorteddict import SortedDict
+      .. details:: This method may behave differently with PyPy.
+         :class: warning
 
-         d = SortedDict()
-         d["foo"] = "bar"
-         ii = iter(d.items())
-         ki = iter(d.keys())
-         vi = reversed(d.values())
-         d.clear()
+         PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, iterators
+         deleted prematurely will keep a sorted dictionary locked.
 
-      .. raw:: html
+         .. code-block:: python
 
-         </details>
+            import gc
 
-         <details class="warning">
+            from pysorteddict import SortedDict
 
-         <summary>This method may behave differently with PyPy.</summary>
+            d = SortedDict()
+            d["foo"] = "bar"
+            ii = iter(d.items())
+            ki = iter(d.keys())
+            vi = reversed(d.values())
+            del ii, ki, vi
+            # gc.collect()
+            d.clear()
 
-      PyPy does not run the destructor of an object immediately after it becomes unreachable. Hence, iterators deleted
-      prematurely will keep a sorted dictionary locked.
-
-      .. code-block:: python
-
-         import gc
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d["foo"] = "bar"
-         ii = iter(d.items())
-         ki = iter(d.keys())
-         vi = reversed(d.values())
-         del ii, ki, vi
-         # gc.collect()
-         d.clear()
-
-      Uncommenting the commented line runs any required destructors, ensuring that no exception is raised.
-
-      .. raw:: html
-
-         </details>
+         Uncommenting the commented line runs any required destructors, ensuring that no exception is raised.
 
    .. method:: copy() -> SortedDict
 
@@ -609,47 +562,40 @@ Documentation
          assert d.get("baz") is None
          assert d.get("spam", "eggs") == "eggs"
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if the key type of the sorted dictionary is not set.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if the key type of the sorted dictionary is not set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.get("foo")
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         d.get("foo")
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            d.get(100)
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         d.get(100)
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         d.get(float("nan"))
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            d.get(float("nan"))
 
    .. method:: items() -> SortedDictItems
 
@@ -711,52 +657,50 @@ Documentation
          assert d.setdefault("spam", "eggs") == "eggs"
          assert d["spam"] == "eggs"
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``RuntimeError`` if the key type of the sorted dictionary is not set.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises RuntimeError: if the key type of the sorted dictionary is not set.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.setdefault("foo")
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``type(key)`` does not match the key type of the sorted dictionary.
 
-         d = SortedDict()
-         d.setdefault("foo")
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``type(key)`` does not match the key type of the sorted dictionary.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d["foo"] = ("bar", "baz")
+            d.setdefault(100)
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``key`` is not comparable with instances of its type.
 
-         d = SortedDict()
-         d["foo"] = ("bar", "baz")
-         d.setdefault(100)
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``key`` is not comparable with instances of its type.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
-
-         from pysorteddict import SortedDict
-
-         d = SortedDict()
-         d[1.1] = ("racecar",)
-         d.setdefault(float("nan"))
-
-      .. raw:: html
-
-         </details>
+            d = SortedDict()
+            d[1.1] = ("racecar",)
+            d.setdefault(float("nan"))
 
    .. method:: update(other: dict | Iterable[Sequence[Any]], **kwargs)
 
-      Update the sorted dictionary with the keys and values from ``other``. ``kwargs`` is reserved for future use and
-      currently ignored; this behaviour is not stable and may change without a major version bump.
+      Update the sorted dictionary with the keys and values from ``other``.
+
+      .. details:: This method is not a part of the stable API.
+         :class: warning
+
+         ``kwargs`` is reserved for future use and currently ignored. This behaviour is not stable and may change
+         without a major version bump.
 
       The rough Python equivalent of the logic written in C++ is as follows.
 
@@ -786,50 +730,44 @@ Documentation
          d.update([("foo", ()), ("bar", [100]), ("baz", 3.14)])
          print(d)
 
-      .. raw:: html
+      .. details:: This method may raise exceptions.
+         :class: warning
 
-         <details class="warning">
+         Raises ``TypeError`` if ``other`` is not iterable.
 
-         <summary>This method may raise exceptions.</summary>
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``other`` is not iterable.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.update(None)
 
-         from pysorteddict import SortedDict
+         Raises ``TypeError`` if ``other`` did not yield a sequence at some point.
 
-         d = SortedDict()
-         d.update(None)
+         .. jupyter-execute::
+            :raises:
 
-      :raises TypeError: if ``other`` did not yield a sequence at some point.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.update([None])
 
-         from pysorteddict import SortedDict
+         Raises ``ValueError`` if ``other`` did not yield a 2-length sequence at some point.
 
-         d = SortedDict()
-         d.update([None])
+         .. jupyter-execute::
+            :raises:
 
-      :raises ValueError: if ``other`` did not yield a 2-length sequence at some point.
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
-         :raises:
+            d = SortedDict()
+            d.update([[None]])
 
-         from pysorteddict import SortedDict
+         Raises the same exception that:
 
-         d = SortedDict()
-         d.update([[None]])
-
-      :raises: the same exception that iterating over ``other`` raises (if any).
-      :raises: the same exception that reading ``other[key]`` raises (if any).
-      :raises: the same exception that writing ``self[key]`` (:meth:`SortedDict.__setitem__`) raises (if
-       any).
-
-      .. raw:: html
-
-         </details>
+         * iterating over ``other`` raises (if any).
+         * reading ``other[key]`` raises (if any).
+         * writing ``self[key]`` (:meth:`SortedDict.__setitem__`) raises (if any).
 
    .. method:: values() -> SortedDictValues
 
@@ -908,69 +846,53 @@ There are three view types.
 
       Return a forward iterator over the key-value pairs in the sorted dictionary view.
 
-      .. raw:: html
+      .. details:: Modifications made while iterating over the key-value pairs have well-defined behaviour.
+         :class: notice
 
-         <details class="notice">
+         .. jupyter-execute::
 
-         <summary>Modifications made while iterating over the key-value pairs have well-defined behaviour.</summary>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
+            d = SortedDict()
+            d["foo"] = ()
+            d["bar"] = [100]
+            d["baz"] = 3.14
+            for key, value in d.items():
+                d[key] = f"spam_{value}"
+                d["a_" + key] = f"eggs_{value}"
+                if "foo" in d:
+                    del d["foo"]
 
-         from pysorteddict import SortedDict
+            for key, value in d.items():
+               print(key, "->", value)
 
-         d = SortedDict()
-         d["foo"] = ()
-         d["bar"] = [100]
-         d["baz"] = 3.14
-         for key, value in d.items():
-             d[key] = f"spam_{value}"
-             d["a_" + key] = f"eggs_{value}"
-             if "foo" in d:
-                 del d["foo"]
-
-         for key, value in d.items():
-            print(key, "->", value)
-
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-      that apply.
-
-      .. raw:: html
-
-         </details>
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
    .. method:: __reversed__() -> SortedDictItemsRevIter
 
       Return a reverse iterator over the key-value pairs in the sorted dictionary view.
 
-      .. raw:: html
+      .. details:: Modifications made while iterating over the key-value pairs have well-defined behaviour.
+         :class: notice
 
-         <details class="notice">
+         .. jupyter-execute::
 
-         <summary>Modifications made while iterating over the key-value pairs have well-defined behaviour.</summary>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
+            d = SortedDict()
+            d["foo"] = ()
+            d["bar"] = [100]
+            d["baz"] = 3.14
+            for key, value in reversed(d.items()):
+                d[key] = f"spam_{value}"
+                d["z_" + key] = f"eggs_{value}"
+                if "bar" in d:
+                    del d["bar"]
 
-         from pysorteddict import SortedDict
+            for key, value in d.items():
+               print(key, "->", value)
 
-         d = SortedDict()
-         d["foo"] = ()
-         d["bar"] = [100]
-         d["baz"] = 3.14
-         for key, value in reversed(d.items()):
-             d[key] = f"spam_{value}"
-             d["z_" + key] = f"eggs_{value}"
-             if "bar" in d:
-                 del d["bar"]
-
-         for key, value in d.items():
-            print(key, "->", value)
-
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-      that apply.
-
-      .. raw:: html
-
-         </details>
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
 .. class:: SortedDictKeys
 
@@ -1020,69 +942,53 @@ There are three view types.
 
       Return a forward iterator over the keys in the sorted dictionary view.
 
-      .. raw:: html
+      .. details:: Modifications made while iterating over the keys have well-defined behaviour.
+         :class: notice
 
-         <details class="notice">
+         .. jupyter-execute::
 
-         <summary>Modifications made while iterating over the keys have well-defined behaviour.</summary>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
+            d = SortedDict()
+            d["foo"] = ()
+            d["bar"] = [100]
+            d["baz"] = 3.14
+            for key in d:
+                d[key] = "spam"
+                d["a_" + key] = "eggs"
+                if "foo" in d:
+                    del d["foo"]
 
-         from pysorteddict import SortedDict
+            for key, value in d.items():
+               print(key, "->", value)
 
-         d = SortedDict()
-         d["foo"] = ()
-         d["bar"] = [100]
-         d["baz"] = 3.14
-         for key in d:
-             d[key] = "spam"
-             d["a_" + key] = "eggs"
-             if "foo" in d:
-                 del d["foo"]
-
-         for key, value in d.items():
-            print(key, "->", value)
-
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-      that apply.
-
-      .. raw:: html
-
-         </details>
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
    .. method:: __reversed__() -> SortedDictKeysRevIter
 
       Return a reverse iterator over the keys in the sorted dictionary view.
 
-      .. raw:: html
+      .. details:: Modifications made while iterating over the keys have well-defined behaviour.
+         :class: notice
 
-         <details class="notice">
+         .. jupyter-execute::
 
-         <summary>Modifications made while iterating over the keys have well-defined behaviour.</summary>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
+            d = SortedDict()
+            d["foo"] = ()
+            d["bar"] = [100]
+            d["baz"] = 3.14
+            for key in reversed(d):
+                d[key] = "spam"
+                d["z_" + key] = "eggs"
+                if "bar" in d:
+                    del d["bar"]
 
-         from pysorteddict import SortedDict
+            for key, value in d.items():
+               print(key, "->", value)
 
-         d = SortedDict()
-         d["foo"] = ()
-         d["bar"] = [100]
-         d["baz"] = 3.14
-         for key in reversed(d):
-             d[key] = "spam"
-             d["z_" + key] = "eggs"
-             if "bar" in d:
-                 del d["bar"]
-
-         for key, value in d.items():
-            print(key, "->", value)
-
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-      that apply.
-
-      .. raw:: html
-
-         </details>
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
 .. class:: SortedDictValues
 
@@ -1132,66 +1038,50 @@ There are three view types.
 
       Return a forward iterator over the values in the sorted dictionary view.
 
-      .. raw:: html
+      .. details:: Modifications made while iterating over the values have well-defined behaviour.
+         :class: notice
 
-         <details class="notice">
+         .. jupyter-execute::
 
-         <summary>Modifications made while iterating over the values have well-defined behaviour.</summary>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
+            d = SortedDict()
+            d["foo"] = ()
+            d["bar"] = [100]
+            d["baz"] = 3.14
+            for value in d.values():
+                d[f"a_{value}"] = f"spam_{value}"
+                d["eggs"] = value
+                if "foo" in d:
+                    del d["foo"]
 
-         from pysorteddict import SortedDict
+            for key, value in d.items():
+               print(key, "->", value)
 
-         d = SortedDict()
-         d["foo"] = ()
-         d["bar"] = [100]
-         d["baz"] = 3.14
-         for value in d.values():
-             d[f"a_{value}"] = f"spam_{value}"
-             d["eggs"] = value
-             if "foo" in d:
-                 del d["foo"]
-
-         for key, value in d.items():
-            print(key, "->", value)
-
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-      that apply.
-
-      .. raw:: html
-
-         </details>
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
 
    .. method:: __reversed__() -> SortedDictValuesRevIter
 
       Return a reverse iterator over the values in the sorted dictionary view.
 
-      .. raw:: html
+      .. details:: Modifications made while iterating over the values have well-defined behaviour.
+         :class: notice
 
-         <details class="notice">
+         .. jupyter-execute::
 
-         <summary>Modifications made while iterating over the values have well-defined behaviour.</summary>
+            from pysorteddict import SortedDict
 
-      .. jupyter-execute::
+            d = SortedDict()
+            d["foo"] = ()
+            d["bar"] = [100]
+            d["baz"] = 3.14
+            for value in reversed(d.values()):
+                d[f"z_{value}"] = f"spam_{value}"
+                d["eggs"] = value
+                if "bar" in d:
+                    del d["bar"]
 
-         from pysorteddict import SortedDict
+            for key, value in d.items():
+               print(key, "->", value)
 
-         d = SortedDict()
-         d["foo"] = ()
-         d["bar"] = [100]
-         d["baz"] = 3.14
-         for value in reversed(d.values()):
-             d[f"z_{value}"] = f"spam_{value}"
-             d["eggs"] = value
-             if "bar" in d:
-                 del d["bar"]
-
-         for key, value in d.items():
-            print(key, "->", value)
-
-      See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the restrictions
-      that apply.
-
-      .. raw:: html
-
-         </details>
+         See the exceptions raised by :meth:`SortedDict.__delitem__` and :meth:`SortedDict.clear` for the caveats.
