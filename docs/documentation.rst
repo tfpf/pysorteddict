@@ -1,6 +1,9 @@
 Documentation
 #############
 
+Exception messages are not a part of the stable API. Return types, exception classes and all behaviours are stable
+unless noted otherwise.
+
 .. default-domain:: py
 
 .. currentmodule:: pysorteddict
@@ -691,8 +694,13 @@ Documentation
 
    .. method:: update(other: dict | Iterable[Sequence[Any]], **kwargs)
 
-      Update the sorted dictionary with the keys and values from ``other``. ``kwargs`` is reserved for future use and
-      currently ignored; this behaviour is not stable and may change without a major version bump.
+      Update the sorted dictionary with the keys and values from ``other``.
+
+      .. details:: This method is not a part of the stable API.
+         :class: warning
+
+         ``kwargs`` is reserved for future use and currently ignored. This behaviour is not stable and may change
+         without a major version bump.
 
       The rough Python equivalent of the logic written in C++ is as follows.
 
