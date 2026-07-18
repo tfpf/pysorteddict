@@ -102,7 +102,7 @@ should return to the original state, allowing it to be used for the next round o
 be in a different state because of rebalancing operations. But that change of state can be assumed to simulate the
 real-world effects of insertions and deletions, so this is a sound strategy.
 
-This benchmark was repeated for three different lengths of the `list` of random `float`s: 33, 67 and 100.
+This benchmark was repeated for four different lengths of the `list` of random `float`s: 100, 200, 300 and 400.
 
 :::{image} _static/images/perf-setitem-light.svg
 :align: center
@@ -111,6 +111,28 @@ This benchmark was repeated for three different lengths of the `list` of random 
 :::
 
 :::{image} _static/images/perf-setitem-dark.svg
+:align: center
+:class: only-dark
+:width: 100%
+:::
+
+### Batch Insertion and Deletion
+
+Extending the logic of the previous benchmark, the strategy here was:
+
+* generate a `list` of `tuple`s of random `float`s and `None`;
+* update the sorted dictionary with them; and
+* clear the sorted dictionary.
+
+In effect, this benchmark indicates the time taken to populate and empty a sorted dictionary.
+
+:::{image} _static/images/perf-update_clear-light.svg
+:align: center
+:class: only-light
+:width: 100%
+:::
+
+:::{image} _static/images/perf-update_clear-dark.svg
 :align: center
 :class: only-dark
 :width: 100%
