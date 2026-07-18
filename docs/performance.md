@@ -4,33 +4,23 @@
 
 pysorteddict was performance-benchmarked in order to:
 
-* evaluate it under workloads resembling real applications; and
-* see where it stands in comparison to Sorted Containers.
+* evaluate it under synthetic workloads targeting the specific features it provides; and
+* understand how well the underlying data structure (typically a red-black tree) handles those workloads.
 
-Sorted Containers is a mature Python library which has seen use in popular open-source projects, and is thus an
-appropriate yardstick to measure pysorteddict against. While it provides sorted list, set and dictionary types, only
-the latter falls within the scope of this exercise.
-
-<div class="notice">
-pysorteddict and Sorted Containers differ greatly in their sorted dictionary implementations.
-
-* `pysorteddict.SortedDict` is typically a red-black tree—it is faster (by microseconds) for writes.
-* `sortedcontainers.sorteddict.SortedDict` is typically a hash table and a sorted set of keys—it is faster (by
-  nanoseconds) for reads.
-</div>
+Nonetheless, the results should still be broadly indicative of real-world performance.
 
 ## Environment
 
-| Component                      | Specification                                |
-| :----------------------------: | :------------------------------------------: |
-| CPU                            | Intel Core i9-12900H                         |
-| CPU Frequency Scaling Governor | powersave                                    |
-| RAM                            | 16 GiB DDR5                                  |
-| Kernel                         | Linux 6.12.74 (64-bit)                       |
-| Operating System               | Debian 13 "trixie"                           |
-| Operating System Libraries     | GNU C Library 2.41, GNU C++ Library 14.2.0   |
-| Python Interpreter             | CPython 3.13.5                               |
-| Python Interpreter Libraries   | pysorteddict 0.14.0, Sorted Containers 2.4.0 |
+| Component                      | Specification                              |
+| :----------------------------: | :----------------------------------------: |
+| CPU                            | Intel Core i9-12900H                       |
+| CPU Frequency Scaling Governor | powersave                                  |
+| RAM                            | 16 GiB DDR5                                |
+| Kernel                         | Linux 6.12.74 (64-bit)                     |
+| Operating System               | Debian 13 "trixie"                         |
+| Operating System Libraries     | GNU C Library 2.41, GNU C++ Library 14.2.0 |
+| Python Interpreter             | CPython 3.13.5                             |
+| Python Interpreter Libraries   | pysorteddict 0.14.0                        |
 
 ## Strategy
 
@@ -46,15 +36,14 @@ generate the data and graphs on this page.
 
 ## Overview
 
-The average execution times of some expressions are tabulated against the lengths of the `pysorteddict.SortedDict`s
-used.
+The average execution times of some expressions are tabulated against the lengths of the sorted dictionaries used.
 
 ```{eval-rst}
 .. table::
    :widths: 3 1 1 1 1 1 1
 
    +--------------------------------+-----------------------------------------------------------------------------------------------------+
-   | Expression                     | ``pysorteddict.SortedDict`` Length                                                                  |
+   | Expression                     | Sorted Dictionary Length                                                                            |
    |                                +----------------+----------------+----------------+----------------+----------------+----------------+
    |                                | 10\ :sup:`2`   | 10\ :sup:`3`   | 10\ :sup:`4`   | 10\ :sup:`5`   | 10\ :sup:`6`   | 10\ :sup:`7`   |
    +================================+================+================+================+================+================+================+
@@ -98,9 +87,6 @@ red-black tree backing any `pysorteddict.SortedDict` will not terminate permatur
 :width: 100%
 :::
 
-Since `sortedcontainers.sorteddict.SortedDict` looks up keys in a hash table in constant time, its performance is
-independent of the length of the sorted dictionary.
-
 ### Insertion and Deletion
 
 Inserting or deleting an item into or from a sorted dictionary changes its length. Hence, benchmarks which only insert
@@ -130,9 +116,6 @@ This benchmark was repeated for three different lengths of the `list` of random 
 :width: 100%
 :::
 
-Since `pysorteddict.SortedDict` inserts and deletes keys from a red-black tree in logarithmic time, it is much faster
-at mutating data.
-
 ### Iteration
 
 :::{image} _static/images/perf-iter-light.svg
@@ -146,6 +129,3 @@ at mutating data.
 :class: only-dark
 :width: 100%
 :::
-
-Since `pysorteddict.SortedDict` does a lot of bookkeeping to allow mutation during iteration, it is slower at
-iterating.
