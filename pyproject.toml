@@ -112,6 +112,19 @@ features = ["docs"]
 assets = "cd docs/ && zip -FSr assets.zip _static/fonts/ _static/images/ extra/simple/pysorteddict/*.whl"
 docs = "cd docs/ && sphinx-build ./ _build/"
 
+[tool.hatch.envs.perf]
+dependencies = [
+    "jupyter",
+    "matplotlib",
+    "pandas",
+    "pysorteddict==0.14.0",
+]
+detached = true
+
+[tool.hatch.envs.perf.scripts]
+open = "jupyter-notebook -y tests/performance/performance.ipynb"
+perf = "jupyter-nbconvert --execute --inplace --to notebook tests/performance/performance.ipynb"
+
 [tool.meson-python.args]
 compile = ["-v"]
 setup = [
