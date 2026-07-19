@@ -119,9 +119,10 @@ dependencies = [
     "pandas",
     "pysorteddict==0.14.0",
 ]
+detached = true
 
 [tool.hatch.envs.perf.scripts]
-edit = "jupyter-notebook tests/performance/performance.ipynb"
+edit = "jupyter-notebook -y tests/performance/performance.ipynb"
 perf = "jupyter-nbconvert --execute --inplace --to notebook tests/performance/performance.ipynb"
 
 [tool.meson-python.args]
