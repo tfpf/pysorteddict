@@ -122,7 +122,7 @@ dependencies = [
 detached = true
 
 [tool.hatch.envs.perf.scripts]
-edit = "jupyter-notebook -y tests/performance/performance.ipynb"
+open = "jupyter-notebook -y tests/performance/performance.ipynb"
 perf = "jupyter-nbconvert --execute --inplace --to notebook tests/performance/performance.ipynb"
 
 [tool.meson-python.args]
