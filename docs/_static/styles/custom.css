@@ -97,7 +97,7 @@ summary:hover {
  * to draw a table on the performance page. However, the latter does not offer
  * a way to centre the contents of all table cells. This hack does it.
  */
-#overview table td {
+#data table td {
   text-align: center;
 }
 
