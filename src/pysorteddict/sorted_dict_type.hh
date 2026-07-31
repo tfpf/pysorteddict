@@ -83,7 +83,7 @@ public:
     PyObject* items(PyTypeObject*);
     PyObject* keys(PyTypeObject*);
     PyObject* setdefault(PyObject* const*, Py_ssize_t);
-    PyObject* update(PyObject* const*, Py_ssize_t, PyObject*);
+    PyObject* update(PyObject* const*, Py_ssize_t, PyObject*, char const* caller = "update");
     PyObject* values(PyTypeObject*);
     PyObject* get_key_type(void);
     int set_key_type(PyObject*, PyObject* key = nullptr);

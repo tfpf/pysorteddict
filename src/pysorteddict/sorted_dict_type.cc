@@ -586,9 +586,9 @@ PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
     return Py_NewRef(Default);  // 🆕
 }
 
-PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
+PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames, char const* caller)
 {
-    if (!this->is_nargs_good(__func__, nargs, 0, 1))
+    if (!this->is_nargs_good(caller, nargs, 0, 1))
     {
         return nullptr;
     }
@@ -694,7 +694,7 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
     PyObject** update_args = PySequence_Fast_ITEMS(args_seq.get());
     Py_ssize_t update_nargs = PySequence_Fast_GET_SIZE(args_seq.get());
     PyObject* update_kwnames = nullptr;
-    return this->update(update_args, update_nargs, update_kwnames) == nullptr ? -1 : 0;
+    return this->update(update_args, update_nargs, update_kwnames, "SortedDict") == nullptr ? -1 : 0;
 }
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
