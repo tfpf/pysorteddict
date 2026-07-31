@@ -693,7 +693,8 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
     PyObjectWrapper args_seq(PySequence_Fast(args, nullptr));  // 🆕
     PyObject** update_args = PySequence_Fast_ITEMS(args_seq.get());
     Py_ssize_t update_nargs = PySequence_Fast_GET_SIZE(args_seq.get());
-    return this->update(update_args, update_nargs, nullptr) == nullptr ? -1 : 0;
+    PyObject* update_kwnames = nullptr;
+    return this->update(update_args, update_nargs, update_kwnames) == nullptr ? -1 : 0;
 }
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
