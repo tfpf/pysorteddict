@@ -20,6 +20,11 @@ def test_value_repr_error():
         str(sorted_dict)
 
 
+def test_init_error():
+    with pytest.raises(TypeError, match="object is not iterable"):
+        SortedDict(None)
+
+
 def test_remove_first_element_while_referenced_by_reverse_iterator():
     sorted_dict = SortedDict()
     sorted_dict[0] = 0

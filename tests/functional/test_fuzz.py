@@ -269,13 +269,13 @@ class IteratorWrapper:
 class FuzzMachine(RuleBasedStateMachine):
     def __init__(self):
         super().__init__()
-        self.reinitialise()
+        self.reinitialise([])
 
-    def reinitialise(self):
-        self.key_type = None
-        self.sorted_keys = []
-        self.normal_dict = {}
-        self.sorted_dict = SortedDict()
+    def reinitialise(self, items):
+        self.key_type = type(items[0][0]) if items else None
+        self.sorted_keys = sorted(item[0] for item in items)
+        self.normal_dict = dict(items)
+        self.sorted_dict = SortedDict(items)
         self.sorted_dict_items = self.sorted_dict.items()
         self.sorted_dict_keys = self.sorted_dict.keys()
         self.sorted_dict_values = self.sorted_dict.values()
@@ -998,9 +998,9 @@ class FuzzMachine(RuleBasedStateMachine):
     # `init`.
     ###########################################################################
 
-    @rule()
-    def init(self):
-        self.reinitialise()
+    @rule(good_other=rule_items_supported())
+    def init(self, good_other):
+        self.reinitialise(good_other)
 
 
 TestFuzz = FuzzMachine.TestCase
