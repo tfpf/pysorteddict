@@ -684,10 +684,16 @@ int SortedDictType::set_key_type(PyObject* key_type, PyObject* key)
 
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
 {
-    // All initialisation is done immediately after allocation in order to
-    // avoid leaving essential members uninitialised. This method is kept to
-    // allow adding functionality in the future.
-    return 0;
+    // I am forced to use the legacy calling convention here. However, the
+    // method I call internally uses the fast calling convention for
+    // performance. Hence, it is necessary to convert the tuple of positional
+    // arguments into a C array of objects and the dictionary of keyword
+    // arguments into a C array of keyword names. However, said method ignores
+    // keyword arguments, so I need not bother with the latter.
+    PyObjectWrapper args_seq(PySequence_Fast(args, nullptr));  // 🆕
+    PyObject** update_args = PySequence_Fast_ITEMS(args_seq.get());
+    Py_ssize_t update_nargs = PySequence_Fast_GET_SIZE(args_seq.get());
+    return this->update(update_args, update_nargs, nullptr) == nullptr ? -1 : 0;
 }
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
