@@ -46,7 +46,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
-* `SortedDict` constructor never raises `ImportError`; if importing a supported key type fails, it is silently demoted
+* `SortedDict` initialiser never raises `ImportError`; if importing a supported key type fails, it is silently demoted
   to an unsupported key type ([#219](https://github.com/tfpf/pysorteddict/pull/219)).
 
 ## [0.12.0](https://github.com/tfpf/pysorteddict/compare/v0.11.0...v0.12.0) (2025-10-19)
@@ -158,7 +158,7 @@ No user-facing changes of note.
 
 ### Changed
 
-* `SortedDict` constructor checks whether the supported key type it imported is actually a type, and describes the
+* `SortedDict` initialiser checks whether the supported key type it imported is actually a type, and describes the
   problem more clearly in the exception message in case of failure
   ([84830cb2d98a](https://github.com/tfpf/pysorteddict/commit/84830cb2d98afa28a1be188f42da5938080a5435)).
 * `SortedDict` method `__contains__` raises the same exceptions as `__getitem__` (except `KeyError`) instead of
@@ -172,7 +172,7 @@ No user-facing changes of note.
 
 ### Fixed
 
-* `SortedDict` constructor always raises `ImportError` upon failure to import supported key types which are not
+* `SortedDict` initialiser always raises `ImportError` upon failure to import supported key types which are not
   built-in instead of relying on the exception raised by the import machinery
   ([#111](https://github.com/tfpf/pysorteddict/pull/111)).
 
@@ -232,8 +232,8 @@ No user-facing changes of note.
 
 ### Changed
 
-* `SortedDict` constructor ignores all arguments; `SortedDict` method `__setitem__` sets the key type upon succeeding
-  for the first time ([#47](https://github.com/tfpf/pysorteddict/pull/47)).
+* `SortedDict` allocator ignores all arguments; `SortedDict` method `__setitem__` sets the key type upon succeeding for
+  the first time ([#47](https://github.com/tfpf/pysorteddict/pull/47)).
 
 ### Removed
 
@@ -260,7 +260,7 @@ No user-facing changes of note.
 
 ### Fixed
 
-* `SortedDict` constructor raises `TypeError` instead of `ValueError` when it receives an unsupported type, and treats
+* `SortedDict` allocator raises `TypeError` instead of `ValueError` when it receives an unsupported type, and treats
   subclasses of supported types as unsupported; `SortedDict` method `__setitem__` rejects instances of subclasses of
   the key type ([#22](https://github.com/tfpf/pysorteddict/pull/22)).
 
@@ -280,11 +280,11 @@ No user-facing changes of note.
 
 ### Added
 
-* `SortedDict` and its constructor accepting the key type, which must be `int`
+* `SortedDict` and its allocator accepting the key type, which must be `int`
   ([8ef0310913b4](https://github.com/tfpf/pysorteddict/commit/8ef0310913b47b1539b6524d0cf94424825c0a38)).
-* `SortedDict` destructor ([#1](https://github.com/tfpf/pysorteddict/pull/1)).
+* `SortedDict` deallocator ([#1](https://github.com/tfpf/pysorteddict/pull/1)).
 * `SortedDict` methods `__len__`, `__getitem__`, `__setitem__`, `__delitem__` and `__str__`
   ([#2](https://github.com/tfpf/pysorteddict/pull/2)).
-  * `__setitem__` rejects a key if it is not a subclass of what was passed to the constructor.
+  * `__setitem__` rejects a key if it is not a subclass of what was passed to the allocator.
 * `SortedDict` methods `items`, `keys` and `values` ([#3](https://github.com/tfpf/pysorteddict/pull/3)).
   * All three return lists, not views.
