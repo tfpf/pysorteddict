@@ -57,7 +57,12 @@ archs = ["auto64"]
 build-verbosity = 1
 enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
-test-requires = ["hypothesis", "pytest"]
+test-requires = [
+    # Its newer versions are implemented using Rust, but no binary wheels are
+    # provided for PyPy 3.10.
+    "hypothesis<6.156.0",
+    "pytest",
+]
 
 [tool.cibuildwheel.config-settings]
 setup-args = [
