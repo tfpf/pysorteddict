@@ -59,7 +59,6 @@ enable = ["pypy"]
 test-command = "pytest {package}"
 test-requires = ["hypothesis", "pytest"]
 
-
 [tool.cibuildwheel.config-settings]
 setup-args = [
     "-Db_lto=true",
