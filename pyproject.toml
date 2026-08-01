@@ -59,6 +59,10 @@ enable = ["pypy"]
 test-command = "pytest {package}"
 test-requires = ["hypothesis", "pytest"]
 
+# Disable tests on Pyodide because there is a CI issue causing them to fail.
+[tool.cibuildwheel.pyodide]
+test-command = ""
+
 [tool.cibuildwheel.config-settings]
 setup-args = [
     "-Db_lto=true",
