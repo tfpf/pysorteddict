@@ -55,7 +55,7 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 [tool.cibuildwheel]
 archs = ["auto64"]
 build-verbosity = 1
-enable = ["pyodide-eol", "pypy", "pypy-eol"]
+enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
 test-requires = [
     # Newer versions are partially written in Rust, but their binary wheels are
