@@ -55,13 +55,14 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 [tool.cibuildwheel]
 archs = ["auto64"]
 build-verbosity = 1
-enable = ["pypy"]
+enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
-test-requires = ["hypothesis", "pytest"]
-
-# Disable tests on Pyodide because there is a CI issue causing them to fail.
-[tool.cibuildwheel.pyodide]
-test-command = ""
+test-requires = [
+    # Newer versions are partially written in Rust, but their binary wheels are
+    # not provided for PyPy 3.10.
+    "hypothesis==6.155.7",
+    "pytest",
+]
 
 [tool.cibuildwheel.config-settings]
 setup-args = [
