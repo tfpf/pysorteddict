@@ -67,6 +67,7 @@ private:
     bool update_from_sequence(PyObject*);
     bool update_from_object(PyObject*);
     bool update_from_key_value_pairs(PyObject*, PyObject* const*);
+    PyObject* update_impl(PyObject* const*, Py_ssize_t, PyObject*);
 
 public:
     static void Delete(PyObject*);

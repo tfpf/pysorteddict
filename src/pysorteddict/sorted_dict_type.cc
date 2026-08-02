@@ -328,6 +328,19 @@ bool SortedDictType::update_from_key_value_pairs(PyObject* keys, PyObject* const
     return true;
 }
 
+PyObject* SortedDictType::update_impl(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
+{
+    if (nargs == 1 && !this->update_from_object(args[0]))
+    {
+        return nullptr;
+    }
+    if (kwnames != nullptr && !this->update_from_key_value_pairs(kwnames, args + nargs))
+    {
+        return nullptr;
+    }
+    Py_RETURN_NONE;
+}
+
 void SortedDictType::Delete(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
@@ -592,15 +605,7 @@ PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObje
     {
         return nullptr;
     }
-    if (nargs == 1 && !this->update_from_object(args[0]))
-    {
-        return nullptr;
-    }
-    if (kwnames != nullptr && !this->update_from_key_value_pairs(kwnames, args + nargs))
-    {
-        return nullptr;
-    }
-    Py_RETURN_NONE;
+    return this->update_impl(args, nargs, kwnames);
 }
 
 PyObject* SortedDictType::values(PyTypeObject* type)
