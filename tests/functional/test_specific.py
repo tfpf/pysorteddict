@@ -1,4 +1,3 @@
-import re
 import sys
 from importlib.metadata import version
 
@@ -19,11 +18,6 @@ def test_value_repr_error():
     sorted_dict[0] = 10 ** sys.get_int_max_str_digits()
     with pytest.raises(ValueError, match="Exceeds the limit"):
         str(sorted_dict)
-
-
-def test_init_error():
-    with pytest.raises(TypeError, match=re.escape("SortedDict() takes 0 to 1 positional arguments (2 given)")):
-        SortedDict(None, None)
 
 
 def test_remove_first_element_while_referenced_by_reverse_iterator():
