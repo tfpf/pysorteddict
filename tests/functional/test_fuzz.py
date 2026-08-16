@@ -1004,8 +1004,9 @@ class FuzzMachine(RuleBasedStateMachine):
             SortedDict(object, object)
 
     @rule()
-    def init_error(self):
-        self.sorted_dict = SortedDict(object)
+    def init_not_iterable(self):
+        with pytest.raises(TypeError, match="object is not iterable"):
+            SortedDict(object)
 
     @rule()
     def init_empty(self):
