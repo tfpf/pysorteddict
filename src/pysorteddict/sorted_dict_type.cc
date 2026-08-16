@@ -218,8 +218,8 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
  * Find the lower bound of the given good key and report whether it was found.
  * (To determine whether a good key is present, check the second element of the
  * result; there is no meaningful performance impact of doing this instead of
- * calling `find` directly because that method internally determines the lower
- * bound, too.)
+ * calling `find` directly because it internally does the same thing done
+ * here.)
  *
  * @param key Good key.
  *
