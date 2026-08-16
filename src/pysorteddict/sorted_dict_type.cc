@@ -693,10 +693,19 @@ int SortedDictType::set_key_type(PyObject* key_type)
 
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
 {
-    // All initialisation is done immediately after allocation in order to
-    // avoid leaving essential members uninitialised. This method is kept to
-    // allow adding functionality in the future.
-    return 0;
+    // I am forced to use the legacy calling convention here. Since the method
+    // I call internally uses the fast calling convention for performance, it
+    // is necessary to convert the tuple of positional arguments into a C array
+    // of argument values. Said method ignores keyword arguments, so I ignore
+    // them here, too.
+    PyObjectWrapper args_seq(PySequence_Fast(args, nullptr));  // 🆕
+    PyObject** update_args = PySequence_Fast_ITEMS(args_seq.get());
+    Py_ssize_t update_nargs = PySequence_Fast_GET_SIZE(args_seq.get());
+    if (!this->is_nargs_good("SortedDict", update_nargs, 0, 1))
+    {
+        return -1;
+    }
+    return this->update_impl(update_args, update_nargs) == nullptr ? -1 : 0;
 }
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
