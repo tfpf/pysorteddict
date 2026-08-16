@@ -998,6 +998,10 @@ class FuzzMachine(RuleBasedStateMachine):
     # `init`.
     ###########################################################################
 
+    @rule()
+    def init_empty(self):
+        self.reinitialise([])
+
     @rule(good_other=rule_items_supported())
     def init(self, good_other):
         self.reinitialise(good_other)
