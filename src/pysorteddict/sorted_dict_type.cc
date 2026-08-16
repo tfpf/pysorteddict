@@ -63,9 +63,10 @@ static PyTypeObject* PyStructTime_Type;
 static PyTypeObject* PyUUID_Type;
 
 /**
- * Try to set the key type of the sorted dictionary to the non-null argument.
+ * Try to set the key type of the sorted dictionary. It should not already be
+ * set. The provided argument should not be a null pointer.
  *
- * @param key_type Non-null variable to set the key type to.
+ * @param key_type Key type.
  *
  * @return `true` if successful, else `false`.
  */
