@@ -217,7 +217,9 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
 /**
  * Find the lower bound of the given good key and report whether it was found.
  * (To determine whether a good key is present, check the second element of the
- * result.)
+ * result; there is no meaningful performance impact of doing this instead of
+ * calling `find` directly because that method internally determines the lower
+ * bound, too.)
  *
  * @param key Good key.
  *
@@ -225,10 +227,6 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
  */
 std::pair<FwdIterType, bool> SortedDictType::lower_bound_and_found(PyObject* key)
 {
-    // Using this method to just check whether a key is present has no
-    // meaningful performance impact over calling the dedicated method provided
-    // for that purpose, because it is implemented the same way (i.e.
-    // by finding the lower bound first).
     auto it = this->map->lower_bound(key);
     return { it, it != this->map->end() && !this->map->key_comp()(key, it->first) };
 }
