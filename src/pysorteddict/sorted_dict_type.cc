@@ -377,28 +377,9 @@ bool SortedDictType::update_from_object(PyObject* ob)
     return PyObject_HasAttrString(ob, "keys") ? this->update_from_mapping(ob) : this->update_from_sequence(ob);
 }
 
-/**
- * Update the sorted dictionary with the keys and values provided.
- *
- * This method currently does nothing and always succeeds.
- *
- * @param keys Python tuple of keys.
- * @param values C array of values.
- *
- * @return `true` if successful, else `false`.
- */
-bool SortedDictType::update_from_key_value_pairs(PyObject* keys, PyObject* const* values)
-{
-    return true;
-}
-
-PyObject* SortedDictType::update_impl(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
+PyObject* SortedDictType::update_impl(PyObject* const* args, Py_ssize_t nargs)
 {
     if (nargs == 1 && !this->update_from_object(args[0]))
-    {
-        return nullptr;
-    }
-    if (kwnames != nullptr && !this->update_from_key_value_pairs(kwnames, args + nargs))
     {
         return nullptr;
     }
@@ -667,7 +648,7 @@ PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObje
     {
         return nullptr;
     }
-    return this->update_impl(args, nargs, kwnames);
+    return this->update_impl(args, nargs);
 }
 
 PyObject* SortedDictType::values(PyTypeObject* type)
