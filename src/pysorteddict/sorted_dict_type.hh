@@ -3,6 +3,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <iterator>
 #include <map>
 
 /**
@@ -38,6 +39,9 @@ public:
     {
     }
 };
+
+using FwdIterType = std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator;
+using RevIterType = std::reverse_iterator<FwdIterType>;
 
 struct SortedDictType
 {

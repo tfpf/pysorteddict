@@ -3,13 +3,10 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include <iterator>
 #include <map>
 
 #include "sorted_dict_type.hh"
 
-using FwdIterType = std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator;
-using RevIterType = std::reverse_iterator<FwdIterType>;
 template<typename T>
 using IteratorToObject = PyObject* (*)(T);
 
