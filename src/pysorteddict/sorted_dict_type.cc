@@ -125,8 +125,9 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         }
 
         // The first key-value pair is being inserted.
-        if (this->set_key_type(reinterpret_cast<PyObject*>(Py_TYPE(key)), key) == -1)
+        if (!this->try_set_key_type(reinterpret_cast<PyObject*>(Py_TYPE(key))))
         {
+            PyErr_Format(PyExc_TypeError, "got key %R of unsupported type %R", key, key_type);
             return false;
         }
         key_type_set_here = true;
@@ -153,6 +154,50 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         return false;
     }
     return true;
+}
+
+/**
+ * Try to set the key type of the sorted dictionary to the non-null argument.
+ *
+ * @param key_type Non-null variable to set the key type to.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::try_set_key_type(PyObject* key_type)
+{
+    static PyTypeObject* allowed_key_types[] = {
+        &PyBool_Type,
+        &PyBytes_Type,
+        &PyFloat_Type,
+        &PyLong_Type,
+        &PyUnicode_Type,
+        // The following types are not built-in.
+        PyDate_Type = import_python_type("datetime", "date"),
+        PyTimeDelta_Type = import_python_type("datetime", "timedelta"),
+        PyDecimal_Type = import_python_type("decimal", "Decimal"),
+        PyFraction_Type = import_python_type("fractions", "Fraction"),
+        PyIPv4Address_Type = import_python_type("ipaddress", "IPv4Address"),
+        PyIPv4Interface_Type = import_python_type("ipaddress", "IPv4Interface"),
+        PyIPv4Network_Type = import_python_type("ipaddress", "IPv4Network"),
+        PyIPv6Address_Type = import_python_type("ipaddress", "IPv6Address"),
+        PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface"),
+        PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network"),
+        PyPosixPath_Type = import_python_type("pathlib", "PosixPath"),
+        PyPurePosixPath_Type = import_python_type("pathlib", "PurePosixPath"),
+        PyPureWindowsPath_Type = import_python_type("pathlib", "PureWindowsPath"),
+        PyWindowsPath_Type = import_python_type("pathlib", "WindowsPath"),
+        PyStructTime_Type = import_python_type("time", "struct_time"),
+        PyUUID_Type = import_python_type("uuid", "UUID"),
+    };
+    for (PyTypeObject* allowed_key_type : allowed_key_types)
+    {
+        if (allowed_key_type != nullptr && Py_Is(key_type, reinterpret_cast<PyObject*>(allowed_key_type)))
+        {
+            this->key_type = allowed_key_type;
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -637,7 +682,7 @@ PyObject* SortedDictType::get_key_type(void)
     return Py_NewRef(this->key_type);  // 🆕
 }
 
-int SortedDictType::set_key_type(PyObject* key_type, PyObject* key)
+int SortedDictType::set_key_type(PyObject* key_type)
 {
     if (key_type == nullptr)
     {
@@ -655,51 +700,12 @@ int SortedDictType::set_key_type(PyObject* key_type, PyObject* key)
         return -1;
     }
 
-    static PyTypeObject* allowed_key_types[] = {
-        &PyBool_Type,
-        &PyBytes_Type,
-        &PyFloat_Type,
-        &PyLong_Type,
-        &PyUnicode_Type,
-        // The following types are not built-in.
-        PyDate_Type = import_python_type("datetime", "date"),
-        PyTimeDelta_Type = import_python_type("datetime", "timedelta"),
-        PyDecimal_Type = import_python_type("decimal", "Decimal"),
-        PyFraction_Type = import_python_type("fractions", "Fraction"),
-        PyIPv4Address_Type = import_python_type("ipaddress", "IPv4Address"),
-        PyIPv4Interface_Type = import_python_type("ipaddress", "IPv4Interface"),
-        PyIPv4Network_Type = import_python_type("ipaddress", "IPv4Network"),
-        PyIPv6Address_Type = import_python_type("ipaddress", "IPv6Address"),
-        PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface"),
-        PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network"),
-        PyPosixPath_Type = import_python_type("pathlib", "PosixPath"),
-        PyPurePosixPath_Type = import_python_type("pathlib", "PurePosixPath"),
-        PyPureWindowsPath_Type = import_python_type("pathlib", "PureWindowsPath"),
-        PyWindowsPath_Type = import_python_type("pathlib", "WindowsPath"),
-        PyStructTime_Type = import_python_type("time", "struct_time"),
-        PyUUID_Type = import_python_type("uuid", "UUID"),
-    };
-    for (PyTypeObject* allowed_key_type : allowed_key_types)
+    if (!this->try_set_key_type(key_type))
     {
-        if (allowed_key_type != nullptr && Py_Is(key_type, reinterpret_cast<PyObject*>(allowed_key_type)))
-        {
-            this->key_type = allowed_key_type;
-            return 0;
-        }
-    }
-
-    if (key != nullptr)
-    {
-        // The user supplied a key of the wrong type.
-        PyErr_Format(PyExc_TypeError, "got key %R of unsupported type %R", key, key_type);
-    }
-    else
-    {
-        // The user supplied a wrong value (which should have been a supported
-        // type).
         PyErr_Format(PyExc_ValueError, "got %R, want a supported key type", key_type);
+        return -1;
     }
-    return -1;
+    return 0;
 }
 
 int SortedDictType::init(PyObject* args, PyObject* kwargs)

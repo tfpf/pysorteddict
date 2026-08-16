@@ -65,6 +65,7 @@ private:
 private:
     bool is_key_good(PyObject*);
     bool are_key_type_and_key_value_pair_good(PyObject*, PyObject* value = nullptr);
+    bool try_set_key_type(PyObject*);
     bool is_deletion_allowed(void);
     static bool is_deletion_allowed(Py_ssize_t);
     static bool is_nargs_good(char const*, Py_ssize_t, int, int);
@@ -93,7 +94,7 @@ public:
     PyObject* update(PyObject* const*, Py_ssize_t, PyObject*);
     PyObject* values(PyTypeObject*);
     PyObject* get_key_type(void);
-    int set_key_type(PyObject*, PyObject* key = nullptr);
+    int set_key_type(PyObject*);
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 
