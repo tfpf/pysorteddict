@@ -170,9 +170,10 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         }
 
         // The first key-value pair is being inserted.
-        if (!this->try_set_key_type(reinterpret_cast<PyObject*>(Py_TYPE(key))))
+        PyObject* key_type = reinterpret_cast<PyObject*>(Py_TYPE(key));
+        if (!this->try_set_key_type(key_type))
         {
-            PyErr_Format(PyExc_TypeError, "got key %R of unsupported type %R", key, Py_TYPE(key));
+            PyErr_Format(PyExc_TypeError, "got key %R of unsupported type %R", key, key_type);
             return false;
         }
         key_type_set_here = true;
