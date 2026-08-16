@@ -715,14 +715,16 @@ int SortedDictType::init(PyObject* args, PyObject* kwargs)
     // I am forced to use the legacy calling convention here. Since the method
     // I call internally uses the fast calling convention for performance, it
     // is necessary to convert the tuple of positional arguments into a C array
-    // of argument values and the dictionary of keyword arguments into a tuple
-    // of keyword names. However, said method ignores keyword arguments, so I
-    // need not bother with the latter.
+    // of argument values. Said method ignores keyword arguments, so I ignore
+    // them here, too.
     PyObjectWrapper args_seq(PySequence_Fast(args, nullptr));  // 🆕
     PyObject** update_args = PySequence_Fast_ITEMS(args_seq.get());
     Py_ssize_t update_nargs = PySequence_Fast_GET_SIZE(args_seq.get());
-    PyObject* update_kwnames = nullptr;
-    return this->update(update_args, update_nargs, update_kwnames, "SortedDict") == nullptr ? -1 : 0;
+    if (!this->is_nargs_good("SortedDict", update_nargs, 0, 1))
+    {
+        return -1;
+    }
+    return this->update_impl(update_args, update_nargs) == nullptr ? -1 : 0;
 }
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)
