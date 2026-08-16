@@ -1001,7 +1001,11 @@ class FuzzMachine(RuleBasedStateMachine):
     @rule()
     def init_wrong_call(self):
         with pytest.raises(TypeError, match=re.escape(f"SortedDict() takes 0 to 1 positional arguments (2 given)")):
-            self.sorted_dict = SortedDict(object, object)
+            SortedDict(object, object)
+
+    @rule()
+    def init_error(self):
+        self.sorted_dict = SortedDict(object)
 
     @rule()
     def init_empty(self):
