@@ -215,12 +215,13 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
 }
 
 /**
- * Find the lower bound of the given good key. To determine whether a good key
- * is present, check the second element of the result.
+ * Find the lower bound of the given good key and report whether it was found.
+ * (To determine whether a good key is present, check the second element of the
+ * result.)
  *
  * @param key Good key.
  *
- * @return The lower bound and status (whether its key matches the given key).
+ * @return The lower bound of the given key and whether it was found.
  */
 std::pair<FwdIterType, bool> SortedDictType::lower_bound_and_found(PyObject* key)
 {
