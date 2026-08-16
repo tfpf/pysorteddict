@@ -69,7 +69,7 @@ private:
     bool is_deletion_allowed(void);
     static bool is_deletion_allowed(Py_ssize_t);
     static bool is_nargs_good(char const*, Py_ssize_t, int, int);
-    std::pair<FwdIterType, bool> lower_bound_and_found(PyObject*);
+    std::pair<FwdIterType, bool> try_find(PyObject*);
     bool update_from_mapping(PyObject*);
     bool update_from_sequence(PyObject*);
     bool update_from_object(PyObject*);
