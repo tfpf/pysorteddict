@@ -661,9 +661,9 @@ PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
     return Py_NewRef(Default);  // 🆕
 }
 
-PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames, char const* caller)
+PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
 {
-    if (!this->is_nargs_good(caller, nargs, 0, 1))
+    if (!this->is_nargs_good(__func__, nargs, 0, 1))
     {
         return nullptr;
     }
