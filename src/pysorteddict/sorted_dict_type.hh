@@ -63,9 +63,9 @@ private:
     Py_ssize_t known_referrers;
 
 private:
+    bool try_set_key_type(PyObject*);
     bool is_key_good(PyObject*);
     bool are_key_type_and_key_value_pair_good(PyObject*, PyObject* value = nullptr);
-    bool try_set_key_type(PyObject*);
     bool is_deletion_allowed(void);
     static bool is_deletion_allowed(Py_ssize_t);
     static bool is_nargs_good(char const*, Py_ssize_t, int, int);

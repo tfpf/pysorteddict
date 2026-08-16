@@ -63,6 +63,50 @@ static PyTypeObject* PyStructTime_Type;
 static PyTypeObject* PyUUID_Type;
 
 /**
+ * Try to set the key type of the sorted dictionary to the non-null argument.
+ *
+ * @param key_type Non-null variable to set the key type to.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::try_set_key_type(PyObject* key_type)
+{
+    static PyTypeObject* allowed_key_types[] = {
+        &PyBool_Type,
+        &PyBytes_Type,
+        &PyFloat_Type,
+        &PyLong_Type,
+        &PyUnicode_Type,
+        // The following types are not built-in.
+        PyDate_Type = import_python_type("datetime", "date"),
+        PyTimeDelta_Type = import_python_type("datetime", "timedelta"),
+        PyDecimal_Type = import_python_type("decimal", "Decimal"),
+        PyFraction_Type = import_python_type("fractions", "Fraction"),
+        PyIPv4Address_Type = import_python_type("ipaddress", "IPv4Address"),
+        PyIPv4Interface_Type = import_python_type("ipaddress", "IPv4Interface"),
+        PyIPv4Network_Type = import_python_type("ipaddress", "IPv4Network"),
+        PyIPv6Address_Type = import_python_type("ipaddress", "IPv6Address"),
+        PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface"),
+        PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network"),
+        PyPosixPath_Type = import_python_type("pathlib", "PosixPath"),
+        PyPurePosixPath_Type = import_python_type("pathlib", "PurePosixPath"),
+        PyPureWindowsPath_Type = import_python_type("pathlib", "PureWindowsPath"),
+        PyWindowsPath_Type = import_python_type("pathlib", "WindowsPath"),
+        PyStructTime_Type = import_python_type("time", "struct_time"),
+        PyUUID_Type = import_python_type("uuid", "UUID"),
+    };
+    for (PyTypeObject* allowed_key_type : allowed_key_types)
+    {
+        if (allowed_key_type != nullptr && Py_Is(key_type, reinterpret_cast<PyObject*>(allowed_key_type)))
+        {
+            this->key_type = allowed_key_type;
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Check whether the given key can be inserted into this sorted dictionary. For
  * instance, NaN cannot be compared with other floating-point numbers, so it
  * cannot be inserted.
@@ -154,50 +198,6 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         return false;
     }
     return true;
-}
-
-/**
- * Try to set the key type of the sorted dictionary to the non-null argument.
- *
- * @param key_type Non-null variable to set the key type to.
- *
- * @return `true` if successful, else `false`.
- */
-bool SortedDictType::try_set_key_type(PyObject* key_type)
-{
-    static PyTypeObject* allowed_key_types[] = {
-        &PyBool_Type,
-        &PyBytes_Type,
-        &PyFloat_Type,
-        &PyLong_Type,
-        &PyUnicode_Type,
-        // The following types are not built-in.
-        PyDate_Type = import_python_type("datetime", "date"),
-        PyTimeDelta_Type = import_python_type("datetime", "timedelta"),
-        PyDecimal_Type = import_python_type("decimal", "Decimal"),
-        PyFraction_Type = import_python_type("fractions", "Fraction"),
-        PyIPv4Address_Type = import_python_type("ipaddress", "IPv4Address"),
-        PyIPv4Interface_Type = import_python_type("ipaddress", "IPv4Interface"),
-        PyIPv4Network_Type = import_python_type("ipaddress", "IPv4Network"),
-        PyIPv6Address_Type = import_python_type("ipaddress", "IPv6Address"),
-        PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface"),
-        PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network"),
-        PyPosixPath_Type = import_python_type("pathlib", "PosixPath"),
-        PyPurePosixPath_Type = import_python_type("pathlib", "PurePosixPath"),
-        PyPureWindowsPath_Type = import_python_type("pathlib", "PureWindowsPath"),
-        PyWindowsPath_Type = import_python_type("pathlib", "WindowsPath"),
-        PyStructTime_Type = import_python_type("time", "struct_time"),
-        PyUUID_Type = import_python_type("uuid", "UUID"),
-    };
-    for (PyTypeObject* allowed_key_type : allowed_key_types)
-    {
-        if (allowed_key_type != nullptr && Py_Is(key_type, reinterpret_cast<PyObject*>(allowed_key_type)))
-        {
-            this->key_type = allowed_key_type;
-            return true;
-        }
-    }
-    return false;
 }
 
 /**
