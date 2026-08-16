@@ -63,6 +63,7 @@ private:
     Py_ssize_t known_referrers;
 
 private:
+    bool try_set_key_type(PyObject*);
     bool is_key_good(PyObject*);
     bool are_key_type_and_key_value_pair_good(PyObject*, PyObject* value = nullptr);
     bool is_deletion_allowed(void);
@@ -93,7 +94,7 @@ public:
     PyObject* update(PyObject* const*, Py_ssize_t, PyObject*, char const* caller = "update");
     PyObject* values(PyTypeObject*);
     PyObject* get_key_type(void);
-    int set_key_type(PyObject*, PyObject* key = nullptr);
+    int set_key_type(PyObject*);
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 
