@@ -215,17 +215,17 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
 }
 
 /**
- * Find the lower bound of the given good key and report whether it was found.
- * (To determine whether a good key is present, check the second element of the
+ * Try to find the given good key.
+ *
+ * To determine whether a good key is present, check the second element of the
  * result; there is no meaningful performance impact of doing this instead of
- * calling `find` directly because it internally does the same thing done
- * here.)
+ * calling `find` directly because it internally does the same thing done here.
  *
  * @param key Good key.
  *
  * @return The lower bound of the given key and whether it was found.
  */
-std::pair<FwdIterType, bool> SortedDictType::lower_bound_and_found(PyObject* key)
+std::pair<FwdIterType, bool> SortedDictType::try_find(PyObject* key)
 {
     auto it = this->map->lower_bound(key);
     return { it, it != this->map->end() && !this->map->key_comp()(key, it->first) };
@@ -415,7 +415,7 @@ int SortedDictType::contains(PyObject* key, PyObject* value)
     {
         return -1;
     }
-    auto [it, found] = this->lower_bound_and_found(key);
+    auto [it, found] = this->try_find(key);
     if (!found)
     {
         return 0;
@@ -450,7 +450,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
     {
         return nullptr;
     }
-    auto [it, found] = this->lower_bound_and_found(key);
+    auto [it, found] = this->try_find(key);
     if (!found)
     {
         PyErr_SetObject(PyExc_KeyError, key);
@@ -477,7 +477,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
 
     // Insertion will be faster if the approximate location is known. Hence,
     // look for the nearest match.
-    auto [it, found] = this->lower_bound_and_found(key);
+    auto [it, found] = this->try_find(key);
 
     if (value == nullptr)
     {
@@ -574,7 +574,7 @@ PyObject* SortedDictType::get(PyObject* const* args, Py_ssize_t nargs)
     {
         return nullptr;
     }
-    auto [it, found] = this->lower_bound_and_found(key);
+    auto [it, found] = this->try_find(key);
     if (found)
     {
         return Py_NewRef(it->second.value);  // 🆕
@@ -604,7 +604,7 @@ PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
     {
         return nullptr;
     }
-    auto [it, found] = this->lower_bound_and_found(key);
+    auto [it, found] = this->try_find(key);
     if (found)
     {
         return Py_NewRef(it->second.value);  // 🆕
