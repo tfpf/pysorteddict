@@ -222,7 +222,7 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
  *
  * @return The lower bound and status (whether its key matches the given key).
  */
-std::pair<FwdIterType, bool> SortedDictType::getitem_impl(PyObject* key)
+std::pair<FwdIterType, bool> SortedDictType::lower_bound_and_found(PyObject* key)
 {
     // Using this method to just check whether a key is present has no
     // meaningful performance impact over calling the dedicated method provided
@@ -416,7 +416,7 @@ int SortedDictType::contains(PyObject* key, PyObject* value)
     {
         return -1;
     }
-    auto [it, found] = this->getitem_impl(key);
+    auto [it, found] = this->lower_bound_and_found(key);
     if (!found)
     {
         return 0;
@@ -451,7 +451,7 @@ PyObject* SortedDictType::getitem(PyObject* key)
     {
         return nullptr;
     }
-    auto [it, found] = this->getitem_impl(key);
+    auto [it, found] = this->lower_bound_and_found(key);
     if (!found)
     {
         PyErr_SetObject(PyExc_KeyError, key);
@@ -478,7 +478,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
 
     // Insertion will be faster if the approximate location is known. Hence,
     // look for the nearest match.
-    auto [it, found] = this->getitem_impl(key);
+    auto [it, found] = this->lower_bound_and_found(key);
 
     if (value == nullptr)
     {
@@ -575,7 +575,7 @@ PyObject* SortedDictType::get(PyObject* const* args, Py_ssize_t nargs)
     {
         return nullptr;
     }
-    auto [it, found] = this->getitem_impl(key);
+    auto [it, found] = this->lower_bound_and_found(key);
     if (found)
     {
         return Py_NewRef(it->second.value);  // 🆕
@@ -605,7 +605,7 @@ PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
     {
         return nullptr;
     }
-    auto [it, found] = this->getitem_impl(key);
+    auto [it, found] = this->lower_bound_and_found(key);
     if (found)
     {
         return Py_NewRef(it->second.value);  // 🆕
