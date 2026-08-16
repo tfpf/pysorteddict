@@ -215,6 +215,23 @@ bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_
 }
 
 /**
+ * Find the lower bound of the given good key and report whether it was found.
+ * (To determine whether a good key is present, check the second element of the
+ * result; there is no meaningful performance impact of doing this instead of
+ * calling `find` directly because it internally does the same thing done
+ * here.)
+ *
+ * @param key Good key.
+ *
+ * @return The lower bound of the given key and whether it was found.
+ */
+std::pair<FwdIterType, bool> SortedDictType::lower_bound_and_found(PyObject* key)
+{
+    auto it = this->map->lower_bound(key);
+    return { it, it != this->map->end() && !this->map->key_comp()(key, it->first) };
+}
+
+/**
  * Update the sorted dictionary with the keys and values from the given
  * mapping.
  *
@@ -328,6 +345,19 @@ bool SortedDictType::update_from_key_value_pairs(PyObject* keys, PyObject* const
     return true;
 }
 
+PyObject* SortedDictType::update_impl(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
+{
+    if (nargs == 1 && !this->update_from_object(args[0]))
+    {
+        return nullptr;
+    }
+    if (kwnames != nullptr && !this->update_from_key_value_pairs(kwnames, args + nargs))
+    {
+        return nullptr;
+    }
+    Py_RETURN_NONE;
+}
+
 void SortedDictType::Delete(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
@@ -385,8 +415,8 @@ int SortedDictType::contains(PyObject* key, PyObject* value)
     {
         return -1;
     }
-    auto it = this->map->find(key);
-    if (it == this->map->end())
+    auto [it, found] = this->lower_bound_and_found(key);
+    if (!found)
     {
         return 0;
     }
@@ -420,8 +450,8 @@ PyObject* SortedDictType::getitem(PyObject* key)
     {
         return nullptr;
     }
-    auto it = this->map->find(key);
-    if (it == this->map->end())
+    auto [it, found] = this->lower_bound_and_found(key);
+    if (!found)
     {
         PyErr_SetObject(PyExc_KeyError, key);
         return nullptr;
@@ -447,8 +477,7 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
 
     // Insertion will be faster if the approximate location is known. Hence,
     // look for the nearest match.
-    auto it = this->map->lower_bound(key);
-    bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
+    auto [it, found] = this->lower_bound_and_found(key);
 
     if (value == nullptr)
     {
@@ -545,8 +574,8 @@ PyObject* SortedDictType::get(PyObject* const* args, Py_ssize_t nargs)
     {
         return nullptr;
     }
-    auto it = this->map->find(key);
-    if (it != this->map->end())
+    auto [it, found] = this->lower_bound_and_found(key);
+    if (found)
     {
         return Py_NewRef(it->second.value);  // 🆕
     }
@@ -575,8 +604,7 @@ PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
     {
         return nullptr;
     }
-    auto it = this->map->lower_bound(key);
-    bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
+    auto [it, found] = this->lower_bound_and_found(key);
     if (found)
     {
         return Py_NewRef(it->second.value);  // 🆕
@@ -592,15 +620,7 @@ PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObje
     {
         return nullptr;
     }
-    if (nargs == 1 && !this->update_from_object(args[0]))
-    {
-        return nullptr;
-    }
-    if (kwnames != nullptr && !this->update_from_key_value_pairs(kwnames, args + nargs))
-    {
-        return nullptr;
-    }
-    Py_RETURN_NONE;
+    return this->update_impl(args, nargs, kwnames);
 }
 
 PyObject* SortedDictType::values(PyTypeObject* type)
