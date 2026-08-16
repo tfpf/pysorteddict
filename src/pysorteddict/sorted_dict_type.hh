@@ -5,6 +5,7 @@
 #include <Python.h>
 #include <iterator>
 #include <map>
+#include <utility>
 
 /**
  * C++-style comparison implementation for Python objects.
