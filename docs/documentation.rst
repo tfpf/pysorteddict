@@ -2,7 +2,7 @@ Documentation
 #############
 
 Exception messages are not a part of the stable API. Return types, exception classes and all behaviours are stable
-unless annotated with a warning about working differently in the future.
+unless annotated with a message about working differently in the future.
 
 .. default-domain:: py
 
