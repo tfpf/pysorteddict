@@ -2,7 +2,7 @@ Documentation
 #############
 
 Exception messages are not a part of the stable API. Return types, exception classes and all behaviours are stable
-unless noted otherwise.
+unless annotated with a warning about working differently in the future.
 
 .. default-domain:: py
 
@@ -112,9 +112,16 @@ unless noted otherwise.
          d["baz"] = 3.14
          func(d)
 
-   .. method:: __init__()
+   .. method:: __init__(other: dict | Iterable[Sequence[Any]], **kwargs)
 
-      Initialise an empty sorted dictionary.
+      Initialise a new sorted dictionary with the keys and values from ``other``. ``other`` may be omitted, in which
+      case, the sorted dictionary will be left empty.
+
+      .. details:: This method may work differently in the future.
+         :class: warning
+
+         ``kwargs`` is reserved for future use and currently ignored. This behaviour is not stable and may change
+         without a major version bump.
 
    .. property:: key_type
       :type: type | None
@@ -694,9 +701,10 @@ unless noted otherwise.
 
    .. method:: update(other: dict | Iterable[Sequence[Any]], **kwargs)
 
-      Update the sorted dictionary with the keys and values from ``other``.
+      Update the sorted dictionary with the keys and values from ``other``. ``other`` may be omitted, in which case,
+      this does nothing.
 
-      .. details:: This method is not a part of the stable API.
+      .. details:: This method may work differently in the future.
          :class: warning
 
          ``kwargs`` is reserved for future use and currently ignored. This behaviour is not stable and may change
