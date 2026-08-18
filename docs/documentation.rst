@@ -118,7 +118,7 @@ unless annotated with a warning about working differently in the future.
       case, the sorted dictionary will be left empty.
 
       .. details:: This method may work differently in the future.
-         :class: warning
+         :class: critical
 
          ``kwargs`` is reserved for future use and currently ignored. This behaviour is not stable and may change
          without a major version bump.
@@ -705,7 +705,7 @@ unless annotated with a warning about working differently in the future.
       this does nothing.
 
       .. details:: This method may work differently in the future.
-         :class: warning
+         :class: critical
 
          ``kwargs`` is reserved for future use and currently ignored. This behaviour is not stable and may change
          without a major version bump.
