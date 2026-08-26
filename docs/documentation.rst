@@ -112,7 +112,8 @@ unless annotated with a message about working differently in the future.
          d["baz"] = 3.14
          func(d)
 
-   .. method:: __init__(other: dict | Iterable[Sequence[Any]], **kwargs)
+   .. method:: __init__(other: Iterable[Sequence[Any]] | Mapping[Any, Any], /)
+               __init__()
 
       Initialise a new sorted dictionary with the keys and values from ``other``. ``other`` may be omitted, in which
       case, the sorted dictionary will be left empty.
@@ -120,8 +121,8 @@ unless annotated with a message about working differently in the future.
       .. details:: This method may work differently in the future.
          :class: critical
 
-         ``kwargs`` is reserved for future use and currently ignored. This behaviour is not stable and may change
-         without a major version bump.
+         Keyword arguments are accepted but currently ignored: they are reserved for future use. This behaviour is not
+         stable and may change without a major version bump.
 
    .. property:: key_type
       :type: type | None
@@ -699,7 +700,8 @@ unless annotated with a message about working differently in the future.
             d[1.1] = ("racecar",)
             d.setdefault(float("nan"))
 
-   .. method:: update(other: dict | Iterable[Sequence[Any]], **kwargs)
+   .. method:: update(other: Iterable[Sequence[Any]] | Mapping[Any, Any], /)
+               update()
 
       Update the sorted dictionary with the keys and values from ``other``. ``other`` may be omitted, in which case,
       this does nothing.
@@ -707,14 +709,14 @@ unless annotated with a message about working differently in the future.
       .. details:: This method may work differently in the future.
          :class: critical
 
-         ``kwargs`` is reserved for future use and currently ignored. This behaviour is not stable and may change
-         without a major version bump.
+         Keyword arguments are accepted but currently ignored: they are reserved for future use. This behaviour is not
+         stable and may change without a major version bump.
 
       The rough Python equivalent of the logic written in C++ is as follows.
 
       .. code-block:: python
 
-         def update(self, other, **kwargs):
+         def update(self, other):
             if hasattr(other, "keys"):
                 for key in other:
                     self[key] = other[key]
