@@ -61,5 +61,3 @@ NaN is unconditionally rejected as a key.
 ### Stable Under Mutation During Iteration
 
 Modifications to a sorted dictionary are allowed while iterating over it, and the results are well-defined.
-
-
