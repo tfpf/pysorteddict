@@ -1,6 +1,9 @@
 # pysorteddict
 
 Enriches Python with `SortedDict`, a sorted dictionary: a dictionary in which the keys are always in ascending order.
+They are not sorted when queried; they are genuinely stored such that iterating over them yields a monotonically
+increasing sequence. Needless to say, a given `SortedDict` instance only admits keys of a single type with a strict
+ordering defined.
 
 pysorteddict is implemented entirely in C++. `SortedDict` provides a Python interface to `std::map`.
 
@@ -29,3 +32,45 @@ desired, though.
 [[![changelog](_static/images/changelog.svg)<br>Changelog](changelog)]{.card}
 [[![development](_static/images/development.svg)<br>Development](development)]{.card}
 ]{.card-container}
+
+## Why pysorteddict?
+
+There are many sorted dictionary implementations for Python. Foremost among them is Sorted Containers, a mature library
+which has seen use in real-world applications. (It also provides sorted list and set implementations, but those aren't
+in the scope of pysorteddict.) So why use the sorted dictionary from pysorteddict instead of Sorted Containers?
+
+pysorteddict has some rather attractive features which Sorted Containers does not have.
+
+### Strongly Typed
+
+Keys are not automatically converted between compatible types. For instance, although `0 == 0.0` in Python, a sorted
+dictionary with integer keys will reject `0.0`.
+
+The sorted dictionary from Sorted Containers allows mixing integer and float keys.
+
+### Strict
+
+Conceptually different keys are considered different. For instance, although `0 == False` in Python, a sorted
+dictionary with integer keys will not fetch the value mapped to `0` when queried with `False`.
+
+The sorted dictionary from Sorted Containers inherits Python's default behaviour, treating `0` as `False` and `1` as
+`True`.
+
+### Correct
+
+NaN is unconditionally rejected as a key.
+
+The sorted dictionary from Sorted Containers accepts NaN, resulting in an order of keys which cannot truly be
+considered sorted. Subsequent reorderings will place NaN in arbitrary positions.
+
+### Stable Under Mutation During Iteration
+
+Modifications to a sorted dictionary are allowed while iterating over it, and the results are consistent and
+well-defined.
+
+The sorted dictionary from Sorted Containers also allows modifications while iterating over it, but the results are
+clearly wrong: for instance, an iterator over it will keep yielding keys even after the dictionary is cleared.
+
+### Robust
+
+Computations are relegated to the robust C++ sorted dictionary.
