@@ -37,7 +37,7 @@ desired, though.
 
 There are many sorted dictionary implementations for Python. Foremost among them is Sorted Containers, a mature library
 which has seen use in real-world applications. (It also provides sorted list and set implementations, but those aren't
-in scope of pysorteddict.) So why use the sorted dictionary from pysorteddict instead of Sorted Containers?
+in the scope of pysorteddict.) So why use the sorted dictionary from pysorteddict instead of Sorted Containers?
 
 pysorteddict has some rather attractive features which Sorted Containers does not have.
 
