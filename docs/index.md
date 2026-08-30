@@ -41,24 +41,36 @@ in the scope of pysorteddict.) So why use the sorted dictionary from pysorteddic
 
 pysorteddict has some rather attractive features which Sorted Containers does not have.
 
-### Robust
-
-Computations are relegated to the robust C++ sorted dictionary.
-
 ### Strongly Typed
 
 Keys are not automatically converted between compatible types. For instance, although `0 == 0.0` in Python, a sorted
 dictionary with integer keys will reject `0.0`.
+
+The sorted dictionary from Sorted Containers allows mixing integer and float keys.
 
 ### Strict
 
 Conceptually different keys are considered different. For instance, although `0 == False` in Python, a sorted
 dictionary with integer keys will not fetch the value mapped to `0` when queried with `False`.
 
+The sorted dictionary from Sorted Containers inherits Python's default behaviour, treating `0` as `False` and `1` as
+`True`.
+
 ### Correct
 
 NaN is unconditionally rejected as a key.
 
+The sorted dictionary from Sorted Containers accepts NaN, resulting in an order of keys which cannot truly be
+considered sorted. Subsequent reorderings will place NaN in arbitrary positions.
+
 ### Stable Under Mutation During Iteration
 
-Modifications to a sorted dictionary are allowed while iterating over it, and the results are well-defined.
+Modifications to a sorted dictionary are allowed while iterating over it, and the results are consistent and
+well-defined.
+
+The sorted dictionary from Sorted Containers also allows modifications while iterating over it, but the results are
+clearly wrong: for instance, an iterator over it will keep yielding keys even after the dictionary is cleared.
+
+### Robust
+
+Computations are relegated to the robust C++ sorted dictionary.
