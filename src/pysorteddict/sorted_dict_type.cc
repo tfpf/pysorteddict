@@ -428,6 +428,15 @@ PyObject* SortedDictType::repr(void)
     return PyUnicode_FromStringAndSize(this_repr_utf8.data(), this_repr_utf8.size());  // 🆕
 }
 
+PyObject* SortedDictType::ior(PyObject* other)
+{
+    if (!this->update_from_object(other))
+    {
+        return nullptr;
+    }
+    return reinterpret_cast<PyObject*>(this);
+}
+
 /**
  * Check whether a key is present.
  *

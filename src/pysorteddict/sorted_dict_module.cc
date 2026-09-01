@@ -493,6 +493,18 @@ static PyObject* sorted_dict_type_repr(PyObject* self)
 }
 
 /**
+ * In-place OR.
+ */
+static PyObject* sorted_dict_type_ior(PyObject* self, PyObject* args)
+{
+    return reinterpret_cast<SortedDictType*>(self)->ior(args);
+}
+
+static PyNumberMethods sorted_dict_type_number = {
+    .nb_inplace_or = sorted_dict_type_ior,
+};
+
+/**
  * Check whether a key is present.
  */
 static int sorted_dict_type_contains(PyObject* self, PyObject* key)
@@ -760,6 +772,7 @@ static PyTypeObject sorted_dict_type = {
     .tp_basicsize = sizeof(SortedDictType),
     .tp_dealloc = sorted_dict_type_dealloc,
     .tp_repr = sorted_dict_type_repr,
+    .tp_as_number = &sorted_dict_type_number,
     .tp_as_sequence = &sorted_dict_type_sequence,
     .tp_as_mapping = &sorted_dict_type_mapping,
     .tp_hash = PyObject_HashNotImplemented,
