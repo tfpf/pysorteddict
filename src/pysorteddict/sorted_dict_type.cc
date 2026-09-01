@@ -290,7 +290,7 @@ std::pair<FwdIterType, bool> SortedDictType::try_find(PyObject* key)
  */
 bool SortedDictType::update_from_sorted_dict(PyObject* sd)
 {
-    Py_RETURN_NOTIMPLEMENTED;
+    return true;
 }
 
 /**
