@@ -13,6 +13,8 @@
 #include "sorted_dict_values_type.hh"
 #include "sorted_dict_view_type.hh"
 
+extern PyTypeObject sorted_dict_type;
+
 /**
  * Import a Python type.
  *
@@ -280,6 +282,19 @@ std::pair<FwdIterType, bool> SortedDictType::try_find(PyObject* key)
 
 /**
  * Update the sorted dictionary with the keys and values from the given
+ * sorted dictionary.
+ *
+ * @param sd Sorted dictionary.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_sorted_dict(PyObject* sd)
+{
+    Py_RETURN_NOTIMPLEMENTED;
+}
+
+/**
+ * Update the sorted dictionary with the keys and values from the given
  * mapping.
  *
  * @param mp Mapping.
@@ -374,7 +389,15 @@ bool SortedDictType::update_from_sequence(PyObject* sq)
  */
 bool SortedDictType::update_from_object(PyObject* ob)
 {
-    return PyObject_HasAttrString(ob, "keys") ? this->update_from_mapping(ob) : this->update_from_sequence(ob);
+    if (PyObject_TypeCheck(ob, &sorted_dict_type) != 0)
+    {
+        return this->update_from_sorted_dict(ob);
+    }
+    if (PyObject_HasAttrString(ob, "keys") == 1)
+    {
+        this->update_from_mapping(ob);
+    }
+    return this->update_from_sequence(ob);
 }
 
 PyObject* SortedDictType::update_impl(PyObject* const* args, Py_ssize_t nargs)
