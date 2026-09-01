@@ -391,12 +391,15 @@ bool SortedDictType::update_from_object(PyObject* ob)
 {
     if (PyObject_TypeCheck(ob, &sorted_dict_type) != 0)
     {
+        fprintf(stderr, "update_from_sorted_dict\n");
         return this->update_from_sorted_dict(ob);
     }
     if (PyObject_HasAttrString(ob, "keys") == 1)
     {
-        this->update_from_mapping(ob);
+        fprintf(stderr, "update_from_mapping\n");
+        return this->update_from_mapping(ob);
     }
+    fprintf(stderr, "update_from_sequence\n");
     return this->update_from_sequence(ob);
 }
 
