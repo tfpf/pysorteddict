@@ -434,7 +434,7 @@ PyObject* SortedDictType::ior(PyObject* other)
     {
         return nullptr;
     }
-    return reinterpret_cast<PyObject*>(this);
+    return Py_NewRef(this);  // 🆕
 }
 
 /**
