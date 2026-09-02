@@ -31,6 +31,11 @@ def test_remove_first_element_while_referenced_by_reverse_iterator():
         next(r)
 
 
+def test_self_update():
+    sorted_dict = SortedDict(zip(range(10), range(10, 20), strict=False))
+    sorted_dict.update(sorted_dict)
+
+
 def test_type_hint():
     SortedDict[str, float]
 
