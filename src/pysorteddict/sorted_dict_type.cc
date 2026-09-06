@@ -391,6 +391,10 @@ bool SortedDictType::update_from_sequence(PyObject* sq)
  */
 bool SortedDictType::update_from_object(PyObject* ob)
 {
+    if (Py_Is(reinterpret_cast<PyObject*>(this), ob))
+    {
+        return true;
+    }
     if (PyObject_TypeCheck(ob, &sorted_dict_type) != 0)
     {
         return this->update_from_sorted_dict(ob);
