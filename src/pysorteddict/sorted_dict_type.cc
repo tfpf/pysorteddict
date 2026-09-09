@@ -315,6 +315,10 @@ bool SortedDictType::update_from_sorted_dict(PyObject* sd)
         }
         Py_INCREF(it->second.value);  // 🆕
     }
+    if (this->key_type == nullptr && !this->sd->map->empty())
+    {
+        this->key_type = sd_cast->key_type;
+    }
     return true;
 }
 
