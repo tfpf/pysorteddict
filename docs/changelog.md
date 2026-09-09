@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-* `SortedDict` method `update` handling (slightly faster processing) for `SortedDict` arguments
+* `SortedDict` method `update` enhancement (slightly faster processing) for `SortedDict` arguments
   ([#298](https://github.com/tfpf/pysorteddict/pull/298)).
 
 ### Fixed
