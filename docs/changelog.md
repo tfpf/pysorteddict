@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## Unreleased
 
+### Added
+
+* `SortedDict` method `update` handling (slightly faster processing) for `SortedDict` arguments
+  ([#298](https://github.com/tfpf/pysorteddict/pull/298)).
+
 ### Fixed
 
 * `SortedDict.update` does nothing if the argument is the same sorted dictionary instance
