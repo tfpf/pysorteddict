@@ -313,7 +313,7 @@ bool SortedDictType::update_from_sorted_dict(PyObject* sd)
             Py_DECREF(it->second.value);
             it->second.value = value;
         }
-        Py_INCREF(it->second.value);
+        Py_INCREF(it->second.value);  // 🆕
     }
     return true;
 }
