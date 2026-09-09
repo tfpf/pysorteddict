@@ -752,7 +752,7 @@ static PyObject* sorted_dict_type_new(PyTypeObject* type, PyObject* args, PyObje
     return SortedDictType::New(type, args, kwargs);
 }
 
-static PyTypeObject sorted_dict_type = {
+PyTypeObject sorted_dict_type = {
     // clang-format off
     .ob_base = PyVarObject_HEAD_INIT(&PyType_Type, 0)
     .tp_name = "pysorteddict.SortedDict",
