@@ -304,7 +304,7 @@ bool SortedDictType::update_from_sorted_dict(PyObject* sd)
         PyObject* key = item.first;
         PyObject* value = item.second.value;
         auto it = this->map->lower_bound(key);
-        if (this->map->key_comp(key, it->first))
+        if (this->map->key_comp()(key, it->first))
         {
             this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
         }
@@ -315,7 +315,7 @@ bool SortedDictType::update_from_sorted_dict(PyObject* sd)
         }
         Py_INCREF(it->second.value);  // 🆕
     }
-    if (this->key_type == nullptr && !this->sd->map->empty())
+    if (this->key_type == nullptr && !this->map->empty())
     {
         this->key_type = sd_cast->key_type;
     }
