@@ -290,9 +290,32 @@ std::pair<FwdIterType, bool> SortedDictType::try_find(PyObject* key)
  */
 bool SortedDictType::update_from_sorted_dict(PyObject* sd)
 {
-    SortedDictType* sd = reinterpret_cast<SortedDictType*>(sd);
-    if(this->key_type == nullptr || Py_Is(this))
-    for(auto& item: )
+    SortedDictType* sd_cast = reinterpret_cast<SortedDictType*>(sd);
+    if (this->key_type != nullptr && sd_cast->key_type != nullptr && this->key_type != sd_cast->key_type)
+    {
+        PyErr_Format(
+            PyExc_ValueError, "got sorted dictionary with key type %R, want sorted dictionary with key type %R",
+            sd_cast->key_type, this->key_type
+        );
+        return false;
+    }
+    for (auto& item : *sd_cast->map)
+    {
+        PyObject* key = item.first;
+        PyObject* value = item.second.value;
+        auto it = this->map->lower_bound(key);
+        if (this->map->key_comp(key, it->first))
+        {
+            this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
+        }
+        else
+        {
+            Py_DECREF(it->second.value);
+            it->second.value = value;
+        }
+        Py_INCREF(it->second.value);
+    }
+    return true;
 }
 
 /**
