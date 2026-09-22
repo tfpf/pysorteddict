@@ -314,7 +314,7 @@ int SortedDictType::delitem_impl(PyObject* key, FwdIterType it, bool found)
  * @param it Iterator pointing to the lower bound of the key.
  * @param found Whether the key was found (i.e. whether to modify or add).
  *
- * @return 0 if a key-value mapping was done, else -1.
+ * @return 0.
  */
 int SortedDictType::setitem_impl(PyObject* key, PyObject* value, FwdIterType it, bool found)
 {
@@ -357,16 +357,7 @@ bool SortedDictType::update_from_sorted_dict(PyObject* sd)
         PyObject* key = item.first;
         PyObject* value = item.second.value;
         auto [it, found] = this->try_find(key);
-        if (!found)
-        {
-            this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
-        }
-        else
-        {
-            Py_DECREF(it->second.value);
-            it->second.value = value;
-        }
-        Py_INCREF(value);  // 🆕
+        this->setitem_impl(key, value, it, found);
     }
     if (this->key_type == nullptr && !this->map->empty())
     {
