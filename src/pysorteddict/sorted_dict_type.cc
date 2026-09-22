@@ -303,8 +303,8 @@ bool SortedDictType::update_from_sorted_dict(PyObject* sd)
     {
         PyObject* key = item.first;
         PyObject* value = item.second.value;
-        auto it = this->map->lower_bound(key);
-        if (it == this->map->end() || this->map->key_comp()(key, it->first))
+        auto [it, found] = this->try_find(key);
+        if (!found)
         {
             this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
         }
