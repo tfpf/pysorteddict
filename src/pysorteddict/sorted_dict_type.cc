@@ -279,6 +279,58 @@ std::pair<FwdIterType, bool> SortedDictType::try_find(PyObject* key)
 }
 
 /**
+ * Remove a key-value pair.
+ *
+ * @param key Key of the key-value pair to remove.
+ * @param it Iterator pointing to the lower bound of the key.
+ * @param found Whether the key was found (i.e. whether removal is possible).
+ *
+ * @return 0 if a key-value pair was removed, else -1.
+ */
+int SortedDictType::delitem_impl(PyObject* key, FwdIterType it, bool found)
+{
+    if (!found)
+    {
+        PyErr_SetObject(PyExc_KeyError, key);
+        return -1;
+    }
+    if (!this->is_deletion_allowed(it->second.known_referrers))
+    {
+        return -1;
+    }
+    Py_DECREF(it->first);
+    Py_DECREF(it->second.value);
+    this->map->erase(it);
+    return 0;
+}
+
+/**
+ * Map a value to a key.
+ *
+ * @param key Key.
+ * @param value Value.
+ * @param it Iterator pointing to the lower bound of the key.
+ * @param found Whether the key was found (i.e. whether to modify or add).
+ *
+ * @return 0 if a key-value mapping was done, else -1.
+ */
+int SortedDictType::setitem_impl(PyObject* key, PyObject* value, FwdIterType it, bool found)
+{
+    if (!found)
+    {
+        // The hint is correct; the key will get inserted just before it.
+        this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
+    }
+    else
+    {
+        Py_DECREF(it->second.value);
+        it->second.value = value;
+    }
+    Py_INCREF(value);  // 🆕
+    return 0;
+}
+
+/**
  * Update the sorted dictionary with the keys and values from the given
  * mapping.
  *
