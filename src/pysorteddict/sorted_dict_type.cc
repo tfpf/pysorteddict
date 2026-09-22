@@ -316,7 +316,6 @@ int SortedDictType::delitem_impl(PyObject* key, FwdIterType it, bool found)
  */
 int SortedDictType::setitem_impl(PyObject* key, PyObject* value, FwdIterType it, bool found)
 {
-    Py_INCREF(value);  // 🆕
     if (!found)
     {
         // The hint is correct; the key-value pair will get inserted just
@@ -328,6 +327,7 @@ int SortedDictType::setitem_impl(PyObject* key, PyObject* value, FwdIterType it,
         Py_DECREF(it->second.value);
         it->second.value = value;
     }
+    Py_INCREF(value);  // 🆕
     return 0;
 }
 
