@@ -316,9 +316,11 @@ int SortedDictType::delitem_impl(PyObject* key, FwdIterType it, bool found)
  */
 int SortedDictType::setitem_impl(PyObject* key, PyObject* value, FwdIterType it, bool found)
 {
+    Py_INCREF(value);  // 🆕
     if (!found)
     {
-        // The hint is correct; the key will get inserted just before it.
+        // The hint is correct; the key-value pair will get inserted just
+        // before it.
         this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
     }
     else
@@ -326,7 +328,6 @@ int SortedDictType::setitem_impl(PyObject* key, PyObject* value, FwdIterType it,
         Py_DECREF(it->second.value);
         it->second.value = value;
     }
-    Py_INCREF(value);  // 🆕
     return 0;
 }
 
@@ -580,7 +581,11 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
         return -1;
     }
     auto [it, found] = this->try_find(key);
-    return value == nullptr ? this->delitem_impl(key, it, found) : this->setitem_impl(key, value, it, found);
+    if (value == nullptr)
+    {
+        return this->delitem_impl(key, it, found);
+    }
+    return this->setitem_impl(key, value, it, found);
 }
 
 PyObject* SortedDictType::iter(PyTypeObject* type)
