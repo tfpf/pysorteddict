@@ -527,47 +527,8 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     {
         return -1;
     }
-
-    // Insertion will be faster if the approximate location is known. Hence,
-    // look for the nearest match.
     auto [it, found] = this->try_find(key);
-
-    if (value == nullptr)
-    {
-        // Remove the key-value pair.
-        if (!found)
-        {
-            PyErr_SetObject(PyExc_KeyError, key);
-            return -1;
-        }
-        if (!this->is_deletion_allowed(it->second.known_referrers))
-        {
-            return -1;
-        }
-        Py_DECREF(it->first);
-        Py_DECREF(it->second.value);
-        this->map->erase(it);
-        return 0;
-    }
-
-    // Map the value to the key. This merely stores additional references to
-    // the key (if applicable) and the value. If I ever plan to allow mutable
-    // types as keys, I should store references to their copies instead. Like
-    // the C++ standard library containers do.
-    if (!found)
-    {
-        // Insert a new key-value pair. The hint is correct; the key will get
-        // inserted just before it.
-        this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
-    }
-    else
-    {
-        // Replace the previously-mapped value.
-        Py_DECREF(it->second.value);
-        it->second.value = value;
-    }
-    Py_INCREF(value);  // 🆕
-    return 0;
+    return value == nullptr ? this->delitem_impl(key, it, found) : this->setitem_impl(key, value, it, found);
 }
 
 PyObject* SortedDictType::iter(PyTypeObject* type)
