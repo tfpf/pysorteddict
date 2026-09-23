@@ -72,6 +72,7 @@ private:
     std::pair<FwdIterType, bool> try_find(PyObject*);
     int delitem_impl(PyObject*, FwdIterType, bool);
     int setitem_impl(PyObject*, PyObject*, FwdIterType, bool);
+    bool update_from_sorted_dict(PyObject*);
     bool update_from_mapping(PyObject*);
     bool update_from_sequence(PyObject*);
     bool update_from_object(PyObject*);

@@ -13,6 +13,8 @@
 #include "sorted_dict_values_type.hh"
 #include "sorted_dict_view_type.hh"
 
+extern PyTypeObject sorted_dict_type;
+
 /**
  * Import a Python type.
  *
@@ -312,7 +314,7 @@ int SortedDictType::delitem_impl(PyObject* key, FwdIterType it, bool found)
  * @param it Iterator pointing to the lower bound of the key.
  * @param found Whether the key was found (i.e. whether to modify or add).
  *
- * @return 0 if a key-value mapping was done, else -1.
+ * @return 0.
  */
 int SortedDictType::setitem_impl(PyObject* key, PyObject* value, FwdIterType it, bool found)
 {
@@ -329,6 +331,39 @@ int SortedDictType::setitem_impl(PyObject* key, PyObject* value, FwdIterType it,
     }
     Py_INCREF(value);  // 🆕
     return 0;
+}
+
+/**
+ * Update the sorted dictionary with the keys and values from the given
+ * sorted dictionary.
+ *
+ * @param sd Sorted dictionary.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_sorted_dict(PyObject* sd)
+{
+    SortedDictType* sd_cast = reinterpret_cast<SortedDictType*>(sd);
+    if (this->key_type != nullptr && sd_cast->key_type != nullptr && this->key_type != sd_cast->key_type)
+    {
+        PyErr_Format(
+            PyExc_ValueError, "got sorted dictionary with key type %R, want sorted dictionary with key type %R",
+            sd_cast->key_type, this->key_type
+        );
+        return false;
+    }
+    for (auto& item : *sd_cast->map)
+    {
+        PyObject* key = item.first;
+        PyObject* value = item.second.value;
+        auto [it, found] = this->try_find(key);
+        this->setitem_impl(key, value, it, found);
+    }
+    if (this->key_type == nullptr && !this->map->empty())
+    {
+        this->key_type = sd_cast->key_type;
+    }
+    return true;
 }
 
 /**
@@ -430,6 +465,10 @@ bool SortedDictType::update_from_object(PyObject* ob)
     if (Py_Is(reinterpret_cast<PyObject*>(this), ob))
     {
         return true;
+    }
+    if (PyObject_TypeCheck(ob, &sorted_dict_type) != 0)
+    {
+        return this->update_from_sorted_dict(ob);
     }
     if (PyObject_HasAttrString(ob, "keys") == 1)
     {
