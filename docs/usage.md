@@ -24,8 +24,9 @@ The keys are seen to be output in ascending order.
 
 ## Demo
 
-You can try pysorteddict out in the JupyterLite REPL below. When you click on 'Try Now', it will start a Pyodide kernel
-and run some code to install pysorteddict (using one of the hosted wheels) and import it. This will take a few seconds.
+You can try pysorteddict out in the JupyterLite REPL below (if your browser is supported). When you click on 'Try Now',
+it will start a Pyodide kernel and run some code to install pysorteddict (using one of the hosted wheels) and import
+it. This will take a few seconds.
 
 <div class="only-light">
 
