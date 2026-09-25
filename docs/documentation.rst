@@ -112,16 +112,76 @@ unless annotated with a message about working differently in the future.
          d["baz"] = 3.14
          func(d)
 
-   .. method:: __init__(other: dict | Iterable[Sequence[Any]], **kwargs)
+   .. method:: __init__(other: Iterable[Sequence[Any]] | Mapping[Any, Any], /)
+               __init__()
 
-      Initialise a new sorted dictionary with the keys and values from ``other``. ``other`` may be omitted, in which
-      case, the sorted dictionary will be left empty.
+      Initialise a new sorted dictionary with the keys and values from ``other``. ``other`` may be omitted (in which
+      case, the sorted dictionary will be left empty). Otherwise, the behaviour is roughly equivalent to the following.
+
+      .. code-block:: python
+
+         def __init__(self, other):
+            self.update(other)
+
+      The insertion of key-value pairs is delegated to :meth:`SortedDict.update`.
+
+      .. jupyter-execute::
+
+         from pysorteddict import SortedDict
+
+         d = SortedDict()
+         print(d)
+
+         d_from_iterable = SortedDict([("foo", ()), ("bar", [100]), ("baz", 3.14)])
+         print(d_from_iterable)
+
+         d_from_dict = SortedDict({"foo": (), "bar": [100], "baz": 3.14})
+         print(d_from_dict)
+
+         d_from_sorted_dict = SortedDict(d_from_dict)
+         print(d_from_sorted_dict)
 
       .. details:: This method may work differently in the future.
          :class: critical
 
-         ``kwargs`` is reserved for future use and currently ignored. This behaviour is not stable and may change
-         without a major version bump.
+         Keyword arguments are accepted but currently ignored: they are reserved for future use. This behaviour is not
+         stable and may change without a major version bump.
+
+      .. details:: This method may raise exceptions.
+         :class: warning
+
+         Raises ``TypeError`` if ``other`` is not iterable.
+
+         .. jupyter-execute::
+            :raises:
+
+            from pysorteddict import SortedDict
+
+            d = SortedDict(None)
+
+         Raises ``TypeError`` if ``other`` did not yield a sequence at some point.
+
+         .. jupyter-execute::
+            :raises:
+
+            from pysorteddict import SortedDict
+
+            d = SortedDict([None])
+
+         Raises ``ValueError`` if ``other`` did not yield a 2-length sequence at some point.
+
+         .. jupyter-execute::
+            :raises:
+
+            from pysorteddict import SortedDict
+
+            d = SortedDict([[None]])
+
+         Raises the same exception that:
+
+         * iterating over ``other`` raises (if any).
+         * reading ``other[key]`` raises (if any).
+         * writing ``self[key]`` (:meth:`SortedDict.__setitem__`) raises (if any).
 
    .. property:: key_type
       :type: type | None
@@ -699,22 +759,15 @@ unless annotated with a message about working differently in the future.
             d[1.1] = ("racecar",)
             d.setdefault(float("nan"))
 
-   .. method:: update(other: dict | Iterable[Sequence[Any]], **kwargs)
+   .. method:: update(other: Iterable[Sequence[Any]] | Mapping[Any, Any], /)
+               update()
 
-      Update the sorted dictionary with the keys and values from ``other``. ``other`` may be omitted, in which case,
-      this does nothing.
-
-      .. details:: This method may work differently in the future.
-         :class: critical
-
-         ``kwargs`` is reserved for future use and currently ignored. This behaviour is not stable and may change
-         without a major version bump.
-
-      The rough Python equivalent of the logic written in C++ is as follows.
+      Update the sorted dictionary with the keys and values from ``other``. ``other`` may be omitted (in which case,
+      this does nothing). Otherwise, the behaviour is roughly equivalent to the following.
 
       .. code-block:: python
 
-         def update(self, other, **kwargs):
+         def update(self, other):
             if hasattr(other, "keys"):
                 for key in other:
                     self[key] = other[key]
@@ -722,7 +775,7 @@ unless annotated with a message about working differently in the future.
                 for key, value in other:
                     self[key] = value
 
-      If ``other`` has a ``keys`` method, it is assumed to be a dictionary, and the keys and values in it are inserted
+      If ``other`` has a ``keys`` method, it is assumed to be a mapping, and the key-value pairs in it are inserted
       into the sorted dictionary. Else, it must be an iterable which yields 2-length sequences; these are treated as
       key-value pairs and inserted into the sorted dictionary.
 
@@ -732,11 +785,20 @@ unless annotated with a message about working differently in the future.
 
          d = SortedDict()
 
-         d.update({"spam": {}, "eggs": ""})
-         print(d)
-
          d.update([("foo", ()), ("bar", [100]), ("baz", 3.14)])
          print(d)
+
+         d.update({"spam": {}})
+         print(d)
+
+         d.update(SortedDict({"eggs": ""}))
+         print(d)
+
+      .. details:: This method may work differently in the future.
+         :class: critical
+
+         Keyword arguments are accepted but currently ignored: they are reserved for future use. This behaviour is not
+         stable and may change without a major version bump.
 
       .. details:: This method may raise exceptions.
          :class: warning

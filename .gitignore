@@ -4,10 +4,12 @@
 /dist/
 /docs/.jupyterlite.doit.db
 /docs/_build/
+/docs/_contents/
 /docs/_static/fonts/
 /docs/_static/images/
 /docs/extra/simple/pysorteddict/
 /docs/jupyter_execute/
 /tests/performance/.ipynb_checkpoints/
+/wheelhouse/
 
 __pycache__

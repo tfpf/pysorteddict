@@ -964,6 +964,44 @@ class FuzzMachine(RuleBasedStateMachine):
         self.sorted_dict.update(good_other)
 
     ###########################################################################
+    # `update` with a sorted dictionary.
+    ###########################################################################
+
+    @precondition(prec_key_type_set)
+    @rule(key=rule_key_wrong_type())
+    def update3_wrong_type(self, key):
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                f"got sorted dictionary with key type {type(key)}, want sorted dictionary with key type {self.key_type}"
+            ),
+        ):
+            self.sorted_dict.update(SortedDict({key: None}))
+
+    @precondition(prec_key_type_not_set)
+    @rule(good_other=rule_items_supported())
+    def update3_empty(self, good_other):
+        self.key_type = type(good_other[0][0])
+        self.normal_dict.update(good_other)
+        self.sorted_dict.update(SortedDict(good_other))
+
+    @precondition(prec_key_type_not_set)
+    @rule()
+    def update3_empty_nothing(self):
+        self.sorted_dict.update(SortedDict())
+
+    @precondition(prec_key_type_set)
+    @rule()
+    def update3_nothing(self):
+        self.sorted_dict.update(SortedDict())
+
+    @precondition(prec_key_type_set)
+    @rule(good_other=rule_items_right_type())
+    def update3(self, good_other):
+        self.sorted_dict.update(SortedDict(good_other))
+        self.normal_dict.update(good_other)
+
+    ###########################################################################
     # `key_type`.
     ###########################################################################
 

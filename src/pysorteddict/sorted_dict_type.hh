@@ -70,6 +70,9 @@ private:
     static bool is_deletion_allowed(Py_ssize_t);
     static bool is_nargs_good(char const*, Py_ssize_t, int, int);
     std::pair<FwdIterType, bool> try_find(PyObject*);
+    int delitem_impl(PyObject*, FwdIterType, bool);
+    int setitem_impl(PyObject*, PyObject*, FwdIterType, bool);
+    bool update_from_sorted_dict(PyObject*);
     bool update_from_mapping(PyObject*);
     bool update_from_sequence(PyObject*);
     bool update_from_object(PyObject*);
@@ -78,7 +81,8 @@ private:
 public:
     static void Delete(PyObject*);
     PyObject* repr(void);
-    int contains(PyObject*, PyObject* value = nullptr);
+    int contains(PyObject*);
+    int contains(PyObject*, PyObject*);
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);

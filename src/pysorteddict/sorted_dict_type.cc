@@ -13,6 +13,8 @@
 #include "sorted_dict_values_type.hh"
 #include "sorted_dict_view_type.hh"
 
+extern PyTypeObject sorted_dict_type;
+
 /**
  * Import a Python type.
  *
@@ -279,6 +281,92 @@ std::pair<FwdIterType, bool> SortedDictType::try_find(PyObject* key)
 }
 
 /**
+ * Remove a key-value pair.
+ *
+ * @param key Key of the key-value pair to remove.
+ * @param it Iterator pointing to the lower bound of the key.
+ * @param found Whether the key was found (i.e. whether removal is possible).
+ *
+ * @return 0 if a key-value pair was removed, else -1.
+ */
+int SortedDictType::delitem_impl(PyObject* key, FwdIterType it, bool found)
+{
+    if (!found)
+    {
+        PyErr_SetObject(PyExc_KeyError, key);
+        return -1;
+    }
+    if (!this->is_deletion_allowed(it->second.known_referrers))
+    {
+        return -1;
+    }
+    Py_DECREF(it->first);
+    Py_DECREF(it->second.value);
+    this->map->erase(it);
+    return 0;
+}
+
+/**
+ * Map a value to a key.
+ *
+ * @param key Key.
+ * @param value Value.
+ * @param it Iterator pointing to the lower bound of the key.
+ * @param found Whether the key was found (i.e. whether to modify or add).
+ *
+ * @return 0.
+ */
+int SortedDictType::setitem_impl(PyObject* key, PyObject* value, FwdIterType it, bool found)
+{
+    if (!found)
+    {
+        // The hint is correct; the key-value pair will get inserted just
+        // before it.
+        this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
+    }
+    else
+    {
+        Py_DECREF(it->second.value);
+        it->second.value = value;
+    }
+    Py_INCREF(value);  // 🆕
+    return 0;
+}
+
+/**
+ * Update the sorted dictionary with the keys and values from the given
+ * sorted dictionary.
+ *
+ * @param sd Sorted dictionary.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_sorted_dict(PyObject* sd)
+{
+    SortedDictType* sd_cast = reinterpret_cast<SortedDictType*>(sd);
+    if (this->key_type != nullptr && sd_cast->key_type != nullptr && this->key_type != sd_cast->key_type)
+    {
+        PyErr_Format(
+            PyExc_ValueError, "got sorted dictionary with key type %R, want sorted dictionary with key type %R",
+            sd_cast->key_type, this->key_type
+        );
+        return false;
+    }
+    for (auto& item : *sd_cast->map)
+    {
+        PyObject* key = item.first;
+        PyObject* value = item.second.value;
+        auto [it, found] = this->try_find(key);
+        this->setitem_impl(key, value, it, found);
+    }
+    if (this->key_type == nullptr && !this->map->empty())
+    {
+        this->key_type = sd_cast->key_type;
+    }
+    return true;
+}
+
+/**
  * Update the sorted dictionary with the keys and values from the given
  * mapping.
  *
@@ -374,7 +462,19 @@ bool SortedDictType::update_from_sequence(PyObject* sq)
  */
 bool SortedDictType::update_from_object(PyObject* ob)
 {
-    return PyObject_HasAttrString(ob, "keys") ? this->update_from_mapping(ob) : this->update_from_sequence(ob);
+    if (Py_Is(reinterpret_cast<PyObject*>(this), ob))
+    {
+        return true;
+    }
+    if (PyObject_TypeCheck(ob, &sorted_dict_type) != 0)
+    {
+        return this->update_from_sorted_dict(ob);
+    }
+    if (PyObject_HasAttrString(ob, "keys") == 1)
+    {
+        return this->update_from_mapping(ob);
+    }
+    return this->update_from_sequence(ob);
 }
 
 PyObject* SortedDictType::update_impl(PyObject* const* args, Py_ssize_t nargs)
@@ -429,8 +529,25 @@ PyObject* SortedDictType::repr(void)
 }
 
 /**
+ * Check whether a key is present.
+ *
+ * @param key Key.
+ *
+ * @return -1 on error. 1 if it is present, else 0.
+ */
+int SortedDictType::contains(PyObject* key)
+{
+    if (!this->are_key_type_and_key_value_pair_good(key))
+    {
+        return -1;
+    }
+    auto [it, found] = this->try_find(key);
+    return found ? 1 : 0;
+}
+
+/**
  * Check whether a key is present. Also check whether it is mapped to the given
- * value if it is provided.
+ * value.
  *
  * @param key Key.
  * @param value Value.
@@ -448,7 +565,7 @@ int SortedDictType::contains(PyObject* key, PyObject* value)
     {
         return 0;
     }
-    return value == nullptr ? 1 : PyObject_RichCompareBool(it->second.value, value, Py_EQ);
+    return PyObject_RichCompareBool(it->second.value, value, Py_EQ);
 }
 
 Py_ssize_t SortedDictType::len(void)
@@ -502,47 +619,12 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     {
         return -1;
     }
-
-    // Insertion will be faster if the approximate location is known. Hence,
-    // look for the nearest match.
     auto [it, found] = this->try_find(key);
-
     if (value == nullptr)
     {
-        // Remove the key-value pair.
-        if (!found)
-        {
-            PyErr_SetObject(PyExc_KeyError, key);
-            return -1;
-        }
-        if (!this->is_deletion_allowed(it->second.known_referrers))
-        {
-            return -1;
-        }
-        Py_DECREF(it->first);
-        Py_DECREF(it->second.value);
-        this->map->erase(it);
-        return 0;
+        return this->delitem_impl(key, it, found);
     }
-
-    // Map the value to the key. This merely stores additional references to
-    // the key (if applicable) and the value. If I ever plan to allow mutable
-    // types as keys, I should store references to their copies instead. Like
-    // the C++ standard library containers do.
-    if (!found)
-    {
-        // Insert a new key-value pair. The hint is correct; the key will get
-        // inserted just before it.
-        this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
-    }
-    else
-    {
-        // Replace the previously-mapped value.
-        Py_DECREF(it->second.value);
-        it->second.value = value;
-    }
-    Py_INCREF(value);  // 🆕
-    return 0;
+    return this->setitem_impl(key, value, it, found);
 }
 
 PyObject* SortedDictType::iter(PyTypeObject* type)
