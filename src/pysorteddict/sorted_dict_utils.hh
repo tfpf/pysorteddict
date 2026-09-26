@@ -9,6 +9,10 @@
 #define RIGHT_PARENTHESIS "\u0029"
 #define LEFT_CURLY_BRACKET "\u007B"
 #define RIGHT_CURLY_BRACKET "\u007D"
+#define SORTED_DICT_REPR_START "SortedDict"
+#define SORTED_DICT_REPR_RECURSIVE                                                                                    \
+    SORTED_DICT_REPR_START LEFT_PARENTHESIS LEFT_CURLY_BRACKET "..." RIGHT_CURLY_BRACKET RIGHT_PARENTHESIS
+#define SORTED_DICT_REPR_RECURSIVE_SIZE (sizeof SORTED_DICT_REPR_RECURSIVE - 1)
 
 /**
  * C++-style clean-up implementation for Python objects.
