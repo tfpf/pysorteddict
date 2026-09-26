@@ -20,7 +20,7 @@ Nonetheless, the results should still be broadly indicative of real-world perfor
 | Operating System               | Debian 13 "trixie"                         |
 | Operating System Libraries     | GNU C Library 2.41, GNU C++ Library 14.2.0 |
 | Python Interpreter             | CPython 3.13.5                             |
-| Python Interpreter Libraries   | pysorteddict 0.14.0                        |
+| Python Interpreter Libraries   | pysorteddict 0.15.1                        |
 
 ## Strategy
 
