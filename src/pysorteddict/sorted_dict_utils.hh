@@ -12,7 +12,7 @@
 #define SORTED_DICT_REPR_START "SortedDict"
 #define SORTED_DICT_REPR_RECURSIVE                                                                                    \
     SORTED_DICT_REPR_START LEFT_PARENTHESIS LEFT_CURLY_BRACKET "..." RIGHT_CURLY_BRACKET RIGHT_PARENTHESIS
-#define SORTED_DICT_REPR_RECURSIVE_SIZE sizeof(SORTED_DICT_REPR_RECURSIVE)
+#define SORTED_DICT_REPR_RECURSIVE_SIZE (sizeof SORTED_DICT_REPR_RECURSIVE - 1)
 
 /**
  * C++-style clean-up implementation for Python objects.
