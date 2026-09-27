@@ -39,10 +39,10 @@ generate the data and graphs on this page.
 ### Memory
 
 The C++ sorted dictionary does not expose public methods to estimate its memory usage. A practical workaround is to
-check the resident set size of the Python process before and after creating a sorted dictionary. However, this number
-is only an estimate of the actual memory usage, because it includes the space required by all objects Python may
-simultaneously create, and also because the operating system may reuse memory released by deleted objects, resulting in
-no memory spike if the sorted dictionary is small.
+check the resident set size of the Python process before and after creating a sorted dictionary. However, the
+difference between these number is only an estimate of the actual memory usage, because it includes the space required
+by all objects Python may simultaneously create, and also because the operating system may reuse memory released by
+deleted objects, resulting in no memory spike if the sorted dictionary is small.
 
 :::{image} _static/images/perf-memory-light.svg
 :align: center
