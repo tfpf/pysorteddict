@@ -502,7 +502,7 @@ PyObject* SortedDictType::repr(void)
 {
     char const* delimiter = "";
     char const* actual_delimiter = ", ";
-    std::string this_repr_utf8 = "SortedDict" LEFT_PARENTHESIS LEFT_CURLY_BRACKET;
+    std::string this_repr_utf8 = SORTED_DICT_REPR_START LEFT_PARENTHESIS LEFT_CURLY_BRACKET;
     for (auto& item : *this->map)
     {
         PyObjectWrapper key_repr(PyObject_Repr(item.first));  // 🆕
@@ -510,18 +510,26 @@ PyObject* SortedDictType::repr(void)
         {
             return nullptr;
         }
-        PyObjectWrapper value_repr(PyObject_Repr(item.second.value));  // 🆕
-        if (value_repr == nullptr)
-        {
-            return nullptr;
-        }
-        Py_ssize_t key_repr_size, value_repr_size;
+        Py_ssize_t key_repr_size;
         char const* key_repr_utf8 = PyUnicode_AsUTF8AndSize(key_repr.get(), &key_repr_size);
-        char const* value_repr_utf8 = PyUnicode_AsUTF8AndSize(value_repr.get(), &value_repr_size);
-        this_repr_utf8.append(delimiter)
-            .append(key_repr_utf8, key_repr_size)
-            .append(": ")
-            .append(value_repr_utf8, value_repr_size);
+        this_repr_utf8.append(delimiter).append(key_repr_utf8, key_repr_size).append(": ");
+
+        PyObject* value = item.second.value;
+        if (Py_Is(reinterpret_cast<PyObject*>(this), value))
+        {
+            this_repr_utf8.append(SORTED_DICT_REPR_RECURSIVE, SORTED_DICT_REPR_RECURSIVE_SIZE);
+        }
+        else
+        {
+            PyObjectWrapper value_repr(PyObject_Repr(value));  // 🆕
+            if (value_repr == nullptr)
+            {
+                return nullptr;
+            }
+            Py_ssize_t value_repr_size;
+            char const* value_repr_utf8 = PyUnicode_AsUTF8AndSize(value_repr.get(), &value_repr_size);
+            this_repr_utf8.append(value_repr_utf8, value_repr_size);
+        }
         delimiter = actual_delimiter;
     }
     this_repr_utf8.append(RIGHT_CURLY_BRACKET RIGHT_PARENTHESIS);

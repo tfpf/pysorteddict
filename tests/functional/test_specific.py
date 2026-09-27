@@ -48,3 +48,11 @@ def test_subclassable():
 
 def test_version():
     assert version("pysorteddict") == __version__
+
+
+def test_recursive_repr():
+    keys = [1, 5]
+    values = [None] * len(keys)
+    sorted_dict = SortedDict(zip(keys, values, strict=True))
+    sorted_dict[4] = sorted_dict
+    assert str(sorted_dict) == "SortedDict({1: None, 4: SortedDict({...}), 5: None})"

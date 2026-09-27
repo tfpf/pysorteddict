@@ -379,6 +379,14 @@ class FuzzMachine(RuleBasedStateMachine):
         assert (object, object, object) not in self.sorted_dict_items
 
     @precondition(prec_key_type_set)
+    @rule(key=rule_key_wrong_type(), value=st.integers())
+    def contains2_wrong_type(self, key, value):
+        with pytest.raises(
+            TypeError, match=re.escape(f"got key {key!r} of type {type(key)}, want key of type {self.key_type}")
+        ):
+            _ = (key, value) in self.sorted_dict_items
+
+    @precondition(prec_key_type_set)
     @rule(key=rule_key_right_type(), value=st.integers())
     def contains2_probably_false_because_of_key(self, key, value):
         assert ((key, value) in self.sorted_dict_items) == ((key, value) in self.normal_dict.items())
