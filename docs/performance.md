@@ -20,7 +20,7 @@ Nonetheless, the results should still be broadly indicative of real-world perfor
 | Operating System               | Debian 13 "trixie"                         |
 | Operating System Libraries     | GNU C Library 2.41, GNU C++ Library 14.2.0 |
 | Python Interpreter             | CPython 3.13.5                             |
-| Python Interpreter Libraries   | pysorteddict 0.14.0                        |
+| Python Interpreter Libraries   | pysorteddict 0.15.1                        |
 
 ## Strategy
 
@@ -35,6 +35,26 @@ generate the data and graphs on this page.
 </div>
 
 ## Results
+
+### Memory
+
+The C++ sorted dictionary does not expose public methods to estimate its memory usage. A practical workaround is to
+check the resident set size of the Python process before and after creating a sorted dictionary. However, the
+difference between these number is only an estimate of the actual memory usage, because it includes the space required
+by all objects Python may simultaneously create, and also because the operating system may reuse memory released by
+deleted objects, resulting in no memory spike if the sorted dictionary is small.
+
+:::{image} _static/images/perf-memory-light.svg
+:align: center
+:class: only-light
+:width: 100%
+:::
+
+:::{image} _static/images/perf-memory-dark.svg
+:align: center
+:class: only-dark
+:width: 100%
+:::
 
 ### Lookup
 
@@ -132,26 +152,28 @@ The benchmark data used to plot the above graphs is tabulated below.
    |                                +----------------+----------------+----------------+----------------+----------------+----------------+
    |                                | 10\ :sup:`2`   | 10\ :sup:`3`   | 10\ :sup:`4`   | 10\ :sup:`5`   | 10\ :sup:`6`   | 10\ :sup:`7`   |
    +================================+================+================+================+================+================+================+
-   | ``0.00 in d``                  | 40.2 ns        | 52.9 ns        | 69.1 ns        | 90.0 ns        | 109 ns         | 121 ns         |
+   | ``setup(…)``                   | 0 B            | 8.00 KiB       | 508 KiB        | 11.6 MiB       | 121 MiB        | 1.16 GiB       |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``0.33 in d``                  | 47.9 ns        | 66.5 ns        | 72.6 ns        | 89.6 ns        | 107 ns         | 122 ns         |
+   | ``0.00 in d``                  | 37.6 ns        | 50.2 ns        | 67.5 ns        | 83.6 ns        | 95.1 ns        | 115 ns         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``0.67 in d``                  | 41.6 ns        | 60.5 ns        | 73.0 ns        | 82.1 ns        | 107 ns         | 123 ns         |
+   | ``0.33 in d``                  | 42.9 ns        | 61.1 ns        | 66.4 ns        | 80.3 ns        | 95.8 ns        | 112 ns         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``1.00 in d``                  | 30.6 ns        | 60.4 ns        | 64.3 ns        | 84.7 ns        | 101 ns         | 117 ns         |
+   | ``0.67 in d``                  | 37.7 ns        | 56.1 ns        | 65.1 ns        | 73.8 ns        | 95.8 ns        | 113 ns         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``set_del(d, keys_100)``       | 13.3 μs        | 18.1 μs        | 24.6 μs        | 31.7 μs        | 39.3 μs        | 49.6 μs        |
+   | ``1.00 in d``                  | 29.0 ns        | 57.0 ns        | 58.3 ns        | 77.1 ns        | 84.9 ns        | 107 ns         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``set_del(d, keys_200)``       | 32.6 μs        | 42.9 μs        | 58.5 μs        | 73.9 μs        | 94.1 μs        | 164 μs         |
+   | ``set_del(d, keys_100)``       | 12.5 μs        | 17.0 μs        | 23.8 μs        | 33.0 μs        | 46.2 μs        | 65.0 μs        |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``set_del(d, keys_300)``       | 55.9 μs        | 69.5 μs        | 91.0 μs        | 116 μs         | 189 μs         | 344 μs         |
+   | ``set_del(d, keys_200)``       | 29.2 μs        | 42.2 μs        | 59.1 μs        | 83.0 μs        | 124 μs         | 206 μs         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``set_del(d, keys_400)``       | 79.9 μs        | 96.5 μs        | 124 μs         | 165 μs         | 293 μs         | 483 μs         |
+   | ``set_del(d, keys_300)``       | 52.0 μs        | 70.6 μs        | 94.7 μs        | 148 μs         | 246 μs         | 395 μs         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``update_clear(d, items)``     | 7.09 μs        | 132 μs         | 1.86 ms        | 30.4 ms        | 986 ms         | 19.5 s         |
+   | ``set_del(d, keys_400)``       | 76.8 μs        | 98.8 μs        | 131 μs         | 198 μs         | 365 μs         | 528 μs         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``for _ in d: pass``           | 607 ns         | 6.09 μs        | 98.2 μs        | 1.75 ms        | 99.6 ms        | 1.29 s         |
+   | ``update_clear(d, items)``     | 6.92 μs        | 127 μs         | 1.88 ms        | 30.8 ms        | 1.04 s         | 20.6 s         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
-   | ``for _ in reversed(d): pass`` | 834 ns         | 8.10 μs        | 124 μs         | 2.72 ms        | 107 ms         | 1.32 s         |
+   | ``for _ in d: pass``           | 615 ns         | 6.26 μs        | 106 μs         | 1.85 ms        | 103 ms         | 1.31 s         |
+   +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
+   | ``for _ in reversed(d): pass`` | 834 ns         | 8.21 μs        | 133 μs         | 2.15 ms        | 111 ms         | 1.36 s         |
    +--------------------------------+----------------+----------------+----------------+----------------+----------------+----------------+
 ```

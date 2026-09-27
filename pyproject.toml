@@ -120,7 +120,8 @@ dependencies = [
     "jupyter",
     "matplotlib",
     "pandas",
-    "pysorteddict==0.14.0",
+    "psutil",
+    "pysorteddict==0.15.1",
 ]
 detached = true
 
