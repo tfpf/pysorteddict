@@ -69,6 +69,14 @@ summary:hover {
   padding: 10px;
 }
 
+.critical {
+  background: rgba(227, 98, 97, 0.2);
+  border-left: 4px solid rgb(227, 98, 97);
+  border-radius: 6px;
+  margin: 20px 0px 20px 0px;
+  padding: 10px;
+}
+
 .card-container {
   column-gap: 13%;
   display: flex;
@@ -97,6 +105,34 @@ summary:hover {
  * to draw a table on the performance page. However, the latter does not offer
  * a way to centre the contents of all table cells. This hack does it.
  */
-#overview table td {
+#data table td {
   text-align: center;
+}
+
+/*
+ * The background colours of code and output cells remain light when the dark
+ * theme is enabled. Set them manually. Also make the spacing around the cells
+ * more comfortable.
+ */
+
+body .jupyter_container .cell_input .highlight {
+  background: var(--color-code-background);
+}
+
+body .jupyter_container,
+body .jupyter_container .cell_output .highlight {
+  background: var(--color-background-primary);
+}
+
+.cell_input .highlight,
+.cell_output .highlight {
+  padding: 20px;
+}
+
+/**
+ * Draw small text in embedded SVGs and use the correct colour.
+ */
+svg text {
+  font-size: 50%;
+  fill: var(--color-content-foreground);
 }

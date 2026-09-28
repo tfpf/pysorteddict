@@ -13,6 +13,8 @@
 #include "sorted_dict_values_type.hh"
 #include "sorted_dict_view_type.hh"
 
+extern PyTypeObject sorted_dict_type;
+
 /**
  * Import a Python type.
  *
@@ -26,7 +28,7 @@
  */
 static PyTypeObject* import_python_type(char const* module_name, char const* type_name)
 {
-    PyError_Clearer _;
+    PyErrorClearer _;
     PyObjectWrapper module_ob(PyImport_ImportModule(module_name));  // 🆕
     if (module_ob == nullptr)
     {
@@ -63,6 +65,51 @@ static PyTypeObject* PyStructTime_Type;
 static PyTypeObject* PyUUID_Type;
 
 /**
+ * Try to set the key type of the sorted dictionary. It should not already be
+ * set. The provided argument should not be a null pointer.
+ *
+ * @param key_type Key type.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::try_set_key_type(PyObject* key_type)
+{
+    static PyTypeObject* allowed_key_types[] = {
+        &PyBool_Type,
+        &PyBytes_Type,
+        &PyFloat_Type,
+        &PyLong_Type,
+        &PyUnicode_Type,
+        // The following types are not built-in.
+        PyDate_Type = import_python_type("datetime", "date"),
+        PyTimeDelta_Type = import_python_type("datetime", "timedelta"),
+        PyDecimal_Type = import_python_type("decimal", "Decimal"),
+        PyFraction_Type = import_python_type("fractions", "Fraction"),
+        PyIPv4Address_Type = import_python_type("ipaddress", "IPv4Address"),
+        PyIPv4Interface_Type = import_python_type("ipaddress", "IPv4Interface"),
+        PyIPv4Network_Type = import_python_type("ipaddress", "IPv4Network"),
+        PyIPv6Address_Type = import_python_type("ipaddress", "IPv6Address"),
+        PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface"),
+        PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network"),
+        PyPosixPath_Type = import_python_type("pathlib", "PosixPath"),
+        PyPurePosixPath_Type = import_python_type("pathlib", "PurePosixPath"),
+        PyPureWindowsPath_Type = import_python_type("pathlib", "PureWindowsPath"),
+        PyWindowsPath_Type = import_python_type("pathlib", "WindowsPath"),
+        PyStructTime_Type = import_python_type("time", "struct_time"),
+        PyUUID_Type = import_python_type("uuid", "UUID"),
+    };
+    for (PyTypeObject* allowed_key_type : allowed_key_types)
+    {
+        if (allowed_key_type != nullptr && Py_Is(key_type, reinterpret_cast<PyObject*>(allowed_key_type)))
+        {
+            this->key_type = allowed_key_type;
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Check whether the given key can be inserted into this sorted dictionary. For
  * instance, NaN cannot be compared with other floating-point numbers, so it
  * cannot be inserted.
@@ -82,26 +129,28 @@ bool SortedDictType::is_key_good(PyObject* key)
     }
     if (this->key_type == PyDecimal_Type)
     {
-        PyError_Clearer _;
-        PyObjectWrapper key_is_nan_callable(PyObject_GetAttrString(key, "is_nan"));  // 🆕
-        if (key_is_nan_callable == nullptr)
+        PyErrorClearer _;
+        PyObjectWrapper key_is_nan(PyObject_CallMethod(key, "is_nan", nullptr));  // 🆕
+        if (key_is_nan == nullptr)
         {
             return false;
         }
-        PyObjectWrapper key_is_nan_result(PyObject_CallNoArgs(key_is_nan_callable.get()));  // 🆕
-        if (key_is_nan_result == nullptr)
-        {
-            return false;
-        }
-        return PyObject_IsTrue(key_is_nan_result.get()) == 0;
+        return Py_Is(key_is_nan.get(), Py_False);
     }
     return true;
 }
 
 /**
- * Check whether the key type of this sorted dictionary is set and whether the
- * given key-value pair can be inserted into this sorted dictionary. If the
- * value is not supplied, check whether it is valid to get or delete the key.
+ * Check whether the key type and the given key-value pair satisfy one of the
+ * following conditions.
+ *
+ * 1. The key type is not set; the given key is of a supported type and has a
+ *    good value (defined above); and the given value is not null.
+ *
+ * 2. The key type is set; and the given key is of that type and has a good
+ *    value.
+ *
+ * On success, set the key type to the type of the given key if it was not set.
  * On failure, set a Python exception.
  *
  * @param key Key.
@@ -123,44 +172,13 @@ bool SortedDictType::are_key_type_and_key_value_pair_good(PyObject* key, PyObjec
         }
 
         // The first key-value pair is being inserted.
-        static PyTypeObject* allowed_key_types[] = {
-            &PyBool_Type,
-            &PyBytes_Type,
-            &PyFloat_Type,
-            &PyLong_Type,
-            &PyUnicode_Type,
-            // The following types are not built-in.
-            PyDate_Type = import_python_type("datetime", "date"),
-            PyTimeDelta_Type = import_python_type("datetime", "timedelta"),
-            PyDecimal_Type = import_python_type("decimal", "Decimal"),
-            PyFraction_Type = import_python_type("fractions", "Fraction"),
-            PyIPv4Address_Type = import_python_type("ipaddress", "IPv4Address"),
-            PyIPv4Interface_Type = import_python_type("ipaddress", "IPv4Interface"),
-            PyIPv4Network_Type = import_python_type("ipaddress", "IPv4Network"),
-            PyIPv6Address_Type = import_python_type("ipaddress", "IPv6Address"),
-            PyIPv6Interface_Type = import_python_type("ipaddress", "IPv6Interface"),
-            PyIPv6Network_Type = import_python_type("ipaddress", "IPv6Network"),
-            PyPosixPath_Type = import_python_type("pathlib", "PosixPath"),
-            PyPurePosixPath_Type = import_python_type("pathlib", "PurePosixPath"),
-            PyPureWindowsPath_Type = import_python_type("pathlib", "PureWindowsPath"),
-            PyWindowsPath_Type = import_python_type("pathlib", "WindowsPath"),
-            PyStructTime_Type = import_python_type("time", "struct_time"),
-            PyUUID_Type = import_python_type("uuid", "UUID"),
-        };
-        for (PyTypeObject* allowed_key_type : allowed_key_types)
+        PyObject* key_type = reinterpret_cast<PyObject*>(Py_TYPE(key));
+        if (!this->try_set_key_type(key_type))
         {
-            if (allowed_key_type != nullptr && Py_IS_TYPE(key, allowed_key_type))
-            {
-                this->key_type = allowed_key_type;
-                key_type_set_here = true;
-                break;
-            }
-        }
-        if (this->key_type == nullptr)
-        {
-            PyErr_Format(PyExc_TypeError, "got key %R of unsupported type %R", key, Py_TYPE(key));
+            PyErr_Format(PyExc_TypeError, "got key %R of unsupported type %R", key, key_type);
             return false;
         }
+        key_type_set_here = true;
     }
 
     // At this point, the key type is guaranteed to be non-null.
@@ -223,6 +241,251 @@ bool SortedDictType::is_deletion_allowed(Py_ssize_t kv_known_referrers)
     return true;
 }
 
+/**
+ * Check whether the number of arguments falls within the specified range.
+ *
+ * @param caller Caller requesting the check.
+ * @param nargs Number of arguments.
+ * @param at_least Minimum number of arguments.
+ * @param at_most Maximum number of arguments.
+ *
+ * @return `true` if the check succeeds, else `false`.
+ */
+bool SortedDictType::is_nargs_good(char const* caller, Py_ssize_t nargs, int at_least, int at_most)
+{
+    if (nargs < at_least || at_most < nargs)
+    {
+        PyErr_Format(
+            PyExc_TypeError, "%s() takes %d to %d positional arguments (%zd given)", caller, at_least, at_most, nargs
+        );
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Try to find the given good key.
+ *
+ * To determine whether a good key is present, check the second element of the
+ * result; there is no meaningful performance impact of doing this instead of
+ * calling `find` directly because it internally does the same thing done here.
+ *
+ * @param key Good key.
+ *
+ * @return The lower bound of the given key and whether it was found.
+ */
+std::pair<FwdIterType, bool> SortedDictType::try_find(PyObject* key)
+{
+    auto it = this->map->lower_bound(key);
+    return { it, it != this->map->end() && !this->map->key_comp()(key, it->first) };
+}
+
+/**
+ * Remove a key-value pair.
+ *
+ * @param key Key of the key-value pair to remove.
+ * @param it Iterator pointing to the lower bound of the key.
+ * @param found Whether the key was found (i.e. whether removal is possible).
+ *
+ * @return 0 if a key-value pair was removed, else -1.
+ */
+int SortedDictType::delitem_impl(PyObject* key, FwdIterType it, bool found)
+{
+    if (!found)
+    {
+        PyErr_SetObject(PyExc_KeyError, key);
+        return -1;
+    }
+    if (!this->is_deletion_allowed(it->second.known_referrers))
+    {
+        return -1;
+    }
+    Py_DECREF(it->first);
+    Py_DECREF(it->second.value);
+    this->map->erase(it);
+    return 0;
+}
+
+/**
+ * Map a value to a key.
+ *
+ * @param key Key.
+ * @param value Value.
+ * @param it Iterator pointing to the lower bound of the key.
+ * @param found Whether the key was found (i.e. whether to modify or add).
+ *
+ * @return 0.
+ */
+int SortedDictType::setitem_impl(PyObject* key, PyObject* value, FwdIterType it, bool found)
+{
+    if (!found)
+    {
+        // The hint is correct; the key-value pair will get inserted just
+        // before it.
+        this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
+    }
+    else
+    {
+        Py_DECREF(it->second.value);
+        it->second.value = value;
+    }
+    Py_INCREF(value);  // 🆕
+    return 0;
+}
+
+/**
+ * Update the sorted dictionary with the keys and values from the given
+ * sorted dictionary.
+ *
+ * @param sd Sorted dictionary.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_sorted_dict(PyObject* sd)
+{
+    SortedDictType* sd_cast = reinterpret_cast<SortedDictType*>(sd);
+    if (this->key_type != nullptr && sd_cast->key_type != nullptr && this->key_type != sd_cast->key_type)
+    {
+        PyErr_Format(
+            PyExc_ValueError, "got sorted dictionary with key type %R, want sorted dictionary with key type %R",
+            sd_cast->key_type, this->key_type
+        );
+        return false;
+    }
+    for (auto& item : *sd_cast->map)
+    {
+        PyObject* key = item.first;
+        PyObject* value = item.second.value;
+        auto [it, found] = this->try_find(key);
+        this->setitem_impl(key, value, it, found);
+    }
+    if (this->key_type == nullptr && !this->map->empty())
+    {
+        this->key_type = sd_cast->key_type;
+    }
+    return true;
+}
+
+/**
+ * Update the sorted dictionary with the keys and values from the given
+ * mapping.
+ *
+ * @param mp Mapping.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_mapping(PyObject* mp)
+{
+    // The built-in dictionary in CPython creates a list of the keys and
+    // iterates over it. This differs from what the docstring claims: that it
+    // iterates over the mapping. That is functionally the same thing. (If not,
+    // the mapping is non-compliant.) I iterate over the mapping, since that
+    // avoids creating the list.
+    PyObjectWrapper keys_iter(PyObject_GetIter(mp));  // 🆕
+    if (keys_iter == nullptr)
+    {
+        return false;
+    }
+    while (true)
+    {
+        PyObjectWrapper key(PyIter_Next(keys_iter.get()));  // 🆕
+        if (key == nullptr)
+        {
+            // Was there an error or did I exhaust all elements?
+            return PyErr_Occurred() == nullptr;
+        }
+        PyObjectWrapper value(PyObject_GetItem(mp, key.get()));  // 🆕
+        if (value == nullptr)
+        {
+            return false;
+        }
+        if (this->setitem(key.get(), value.get()) == -1)
+        {
+            return false;
+        }
+    }
+}
+
+/**
+ * Update the sorted dictionary with the keys and values from the given
+ * sequence.
+ *
+ * @param sq Sequence.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_sequence(PyObject* sq)
+{
+    PyObjectWrapper items_iter(PyObject_GetIter(sq));  // 🆕
+    if (items_iter == nullptr)
+    {
+        return false;
+    }
+    for (Py_ssize_t i = 0;; ++i)
+    {
+        PyObjectWrapper item(PyIter_Next(items_iter.get()));  // 🆕
+        if (item == nullptr)
+        {
+            // Was there an error or did I exhaust all elements?
+            return PyErr_Occurred() == nullptr;
+        }
+        PyObjectWrapper item_unpacked(
+            PySequence_Fast(item.get(), "got non-sequence element, want all elements to be sequences")  // 🆕
+        );
+        if (item_unpacked == nullptr)
+        {
+            return false;
+        }
+        Py_ssize_t sz = PySequence_Fast_GET_SIZE(item_unpacked.get());
+        if (sz != 2)
+        {
+            PyErr_Format(
+                PyExc_ValueError, "got sequence of length %zd at position %zd, want sequence of length 2", sz, i
+            );
+            return false;
+        }
+        PyObject* key = PySequence_Fast_GET_ITEM(item_unpacked.get(), 0);
+        PyObject* value = PySequence_Fast_GET_ITEM(item_unpacked.get(), 1);
+        if (this->setitem(key, value) == -1)
+        {
+            return false;
+        }
+    }
+}
+
+/**
+ * Update the sorted dictionary with the keys and values from the given object.
+ *
+ * @param ob Object.
+ *
+ * @return `true` if successful, else `false`.
+ */
+bool SortedDictType::update_from_object(PyObject* ob)
+{
+    if (Py_Is(reinterpret_cast<PyObject*>(this), ob))
+    {
+        return true;
+    }
+    if (PyObject_TypeCheck(ob, &sorted_dict_type) != 0)
+    {
+        return this->update_from_sorted_dict(ob);
+    }
+    if (PyObject_HasAttrString(ob, "keys") == 1)
+    {
+        return this->update_from_mapping(ob);
+    }
+    return this->update_from_sequence(ob);
+}
+
+PyObject* SortedDictType::update_impl(PyObject* const* args, Py_ssize_t nargs)
+{
+    if (nargs == 1 && !this->update_from_object(args[0]))
+    {
+        return nullptr;
+    }
+    Py_RETURN_NONE;
+}
+
 void SortedDictType::Delete(PyObject* self)
 {
     SortedDictType* sd = reinterpret_cast<SortedDictType*>(self);
@@ -239,7 +502,7 @@ PyObject* SortedDictType::repr(void)
 {
     char const* delimiter = "";
     char const* actual_delimiter = ", ";
-    std::string this_repr_utf8 = "SortedDict" LEFT_PARENTHESIS LEFT_CURLY_BRACKET;
+    std::string this_repr_utf8 = SORTED_DICT_REPR_START LEFT_PARENTHESIS LEFT_CURLY_BRACKET;
     for (auto& item : *this->map)
     {
         PyObjectWrapper key_repr(PyObject_Repr(item.first));  // 🆕
@@ -247,18 +510,26 @@ PyObject* SortedDictType::repr(void)
         {
             return nullptr;
         }
-        PyObjectWrapper value_repr(PyObject_Repr(item.second.value));  // 🆕
-        if (value_repr == nullptr)
-        {
-            return nullptr;
-        }
-        Py_ssize_t key_repr_size, value_repr_size;
+        Py_ssize_t key_repr_size;
         char const* key_repr_utf8 = PyUnicode_AsUTF8AndSize(key_repr.get(), &key_repr_size);
-        char const* value_repr_utf8 = PyUnicode_AsUTF8AndSize(value_repr.get(), &value_repr_size);
-        this_repr_utf8.append(delimiter)
-            .append(key_repr_utf8, key_repr_size)
-            .append(": ")
-            .append(value_repr_utf8, value_repr_size);
+        this_repr_utf8.append(delimiter).append(key_repr_utf8, key_repr_size).append(": ");
+
+        PyObject* value = item.second.value;
+        if (Py_Is(reinterpret_cast<PyObject*>(this), value))
+        {
+            this_repr_utf8.append(SORTED_DICT_REPR_RECURSIVE, SORTED_DICT_REPR_RECURSIVE_SIZE);
+        }
+        else
+        {
+            PyObjectWrapper value_repr(PyObject_Repr(value));  // 🆕
+            if (value_repr == nullptr)
+            {
+                return nullptr;
+            }
+            Py_ssize_t value_repr_size;
+            char const* value_repr_utf8 = PyUnicode_AsUTF8AndSize(value_repr.get(), &value_repr_size);
+            this_repr_utf8.append(value_repr_utf8, value_repr_size);
+        }
         delimiter = actual_delimiter;
     }
     this_repr_utf8.append(RIGHT_CURLY_BRACKET RIGHT_PARENTHESIS);
@@ -266,8 +537,25 @@ PyObject* SortedDictType::repr(void)
 }
 
 /**
+ * Check whether a key is present.
+ *
+ * @param key Key.
+ *
+ * @return -1 on error. 1 if it is present, else 0.
+ */
+int SortedDictType::contains(PyObject* key)
+{
+    if (!this->are_key_type_and_key_value_pair_good(key))
+    {
+        return -1;
+    }
+    auto [it, found] = this->try_find(key);
+    return found ? 1 : 0;
+}
+
+/**
  * Check whether a key is present. Also check whether it is mapped to the given
- * value if it is provided.
+ * value.
  *
  * @param key Key.
  * @param value Value.
@@ -280,12 +568,12 @@ int SortedDictType::contains(PyObject* key, PyObject* value)
     {
         return -1;
     }
-    auto it = this->map->find(key);
-    if (it == this->map->end())
+    auto [it, found] = this->try_find(key);
+    if (!found)
     {
         return 0;
     }
-    return value == nullptr ? 1 : PyObject_RichCompareBool(it->second.value, value, Py_EQ);
+    return PyObject_RichCompareBool(it->second.value, value, Py_EQ);
 }
 
 Py_ssize_t SortedDictType::len(void)
@@ -315,8 +603,8 @@ PyObject* SortedDictType::getitem(PyObject* key)
     {
         return nullptr;
     }
-    auto it = this->map->find(key);
-    if (it == this->map->end())
+    auto [it, found] = this->try_find(key);
+    if (!found)
     {
         PyErr_SetObject(PyExc_KeyError, key);
         return nullptr;
@@ -339,48 +627,12 @@ int SortedDictType::setitem(PyObject* key, PyObject* value)
     {
         return -1;
     }
-
-    // Insertion will be faster if the approximate location is known. Hence,
-    // look for the nearest match.
-    auto it = this->map->lower_bound(key);
-    bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
-
+    auto [it, found] = this->try_find(key);
     if (value == nullptr)
     {
-        // Remove the key-value pair.
-        if (!found)
-        {
-            PyErr_SetObject(PyExc_KeyError, key);
-            return -1;
-        }
-        if (!this->is_deletion_allowed(it->second.known_referrers))
-        {
-            return -1;
-        }
-        Py_DECREF(it->first);
-        Py_DECREF(it->second.value);
-        this->map->erase(it);
-        return 0;
+        return this->delitem_impl(key, it, found);
     }
-
-    // Map the value to the key. This merely stores additional references to
-    // the key (if applicable) and the value. If I ever plan to allow mutable
-    // types as keys, I should store references to their copies instead. Like
-    // the C++ standard library containers do.
-    if (!found)
-    {
-        // Insert a new key-value pair. The hint is correct; the key will get
-        // inserted just before it.
-        this->map->emplace_hint(it, Py_NewRef(key), value);  // 🆕
-    }
-    else
-    {
-        // Replace the previously-mapped value.
-        Py_DECREF(it->second.value);
-        it->second.value = value;
-    }
-    Py_INCREF(value);  // 🆕
-    return 0;
+    return this->setitem_impl(key, value, it, found);
 }
 
 PyObject* SortedDictType::iter(PyTypeObject* type)
@@ -393,38 +645,6 @@ PyObject* SortedDictType::reversed(PyTypeObject* type)
     return SortedDictKeysIterType<RevIterType>::New(type, this);
 }
 
-// GCOVR_EXCL_START
-PyObject* SortedDictType::debug(void)
-{
-    char const* delimiter = "";
-    char const* actual_delimiter = ", ";
-    std::clog << LEFT_CURLY_BRACKET;
-    for (auto& item : *this->map)
-    {
-        PyObjectWrapper key_repr(PyObject_Repr(item.first));  // 🆕
-        if (key_repr == nullptr)
-        {
-            return nullptr;
-        }
-        PyObjectWrapper value_repr(PyObject_Repr(item.second.value));  // 🆕
-        if (value_repr == nullptr)
-        {
-            return nullptr;
-        }
-        Py_ssize_t key_repr_size, value_repr_size;
-        char const* key_repr_utf8 = PyUnicode_AsUTF8AndSize(key_repr.get(), &key_repr_size);
-        char const* value_repr_utf8 = PyUnicode_AsUTF8AndSize(value_repr.get(), &value_repr_size);
-        std::clog << delimiter;
-        std::clog.write(key_repr_utf8, key_repr_size) << ": ";
-        std::clog.write(value_repr_utf8, value_repr_size) << " #";
-        std::clog << item.second.known_referrers;
-        delimiter = actual_delimiter;
-    }
-    std::clog << RIGHT_CURLY_BRACKET "\n";
-    Py_RETURN_NONE;
-}
-
-// GCOVR_EXCL_STOP
 PyObject* SortedDictType::clear(void)
 {
     if (!this->is_deletion_allowed())
@@ -461,20 +681,24 @@ PyObject* SortedDictType::copy(void)
     return sd_copy;
 }
 
-PyObject* SortedDictType::get(PyObject* args)
+PyObject* SortedDictType::get(PyObject* const* args, Py_ssize_t nargs)
 {
-    PyObject* key;
-    PyObject* Default = Py_None;
-    if (!PyArg_ParseTuple(args, "O|O:get", &key, &Default))
+    if (!this->is_nargs_good(__func__, nargs, 1, 2))
     {
         return nullptr;
     }
+    PyObject* key = args[0];
     if (!this->are_key_type_and_key_value_pair_good(key))
     {
         return nullptr;
     }
-    auto it = this->map->find(key);
-    return Py_NewRef(it == this->map->end() ? Default : it->second.value);
+    auto [it, found] = this->try_find(key);
+    if (found)
+    {
+        return Py_NewRef(it->second.value);  // 🆕
+    }
+    PyObject* Default = nargs > 1 ? args[1] : Py_None;
+    return Py_NewRef(Default);  // 🆕
 }
 
 PyObject* SortedDictType::items(PyTypeObject* type)
@@ -487,26 +711,34 @@ PyObject* SortedDictType::keys(PyTypeObject* type)
     return SortedDictKeysType::New(type, this);
 }
 
-PyObject* SortedDictType::setdefault(PyObject* args)
+PyObject* SortedDictType::setdefault(PyObject* const* args, Py_ssize_t nargs)
 {
-    PyObject* key;
-    PyObject* Default = Py_None;
-    if (!PyArg_ParseTuple(args, "O|O:setdefault", &key, &Default))
+    if (!this->is_nargs_good(__func__, nargs, 1, 2))
     {
         return nullptr;
     }
+    PyObject* key = args[0];
     if (!this->are_key_type_and_key_value_pair_good(key))
     {
         return nullptr;
     }
-    auto it = this->map->lower_bound(key);
-    bool found = it != this->map->end() && !this->map->key_comp()(key, it->first);
+    auto [it, found] = this->try_find(key);
     if (found)
     {
-        return Py_NewRef(it->second.value);
+        return Py_NewRef(it->second.value);  // 🆕
     }
+    PyObject* Default = nargs > 1 ? args[1] : Py_None;
     this->map->emplace_hint(it, Py_NewRef(key), Py_NewRef(Default));  // 🆕
     return Py_NewRef(Default);  // 🆕
+}
+
+PyObject* SortedDictType::update(PyObject* const* args, Py_ssize_t nargs, PyObject* kwnames)
+{
+    if (!this->is_nargs_good(__func__, nargs, 0, 1))
+    {
+        return nullptr;
+    }
+    return this->update_impl(args, nargs);
 }
 
 PyObject* SortedDictType::values(PyTypeObject* type)
@@ -523,12 +755,47 @@ PyObject* SortedDictType::get_key_type(void)
     return Py_NewRef(this->key_type);  // 🆕
 }
 
+int SortedDictType::set_key_type(PyObject* key_type)
+{
+    if (key_type == nullptr)
+    {
+        PyErr_SetString(PyExc_AttributeError, "cannot delete attribute");
+        return -1;
+    }
+
+    if (this->key_type != nullptr)
+    {
+        if (Py_Is(key_type, reinterpret_cast<PyObject*>(this->key_type)))
+        {
+            return 0;
+        }
+        PyErr_Format(PyExc_AttributeError, "cannot change key type from %R to %R", this->key_type, key_type);
+        return -1;
+    }
+
+    if (!this->try_set_key_type(key_type))
+    {
+        PyErr_Format(PyExc_ValueError, "got %R, want a supported key type", key_type);
+        return -1;
+    }
+    return 0;
+}
+
 int SortedDictType::init(PyObject* args, PyObject* kwargs)
 {
-    // All initialisation is done immediately after allocation in order to
-    // avoid leaving essential members uninitialised. This method is kept to
-    // allow adding functionality in the future.
-    return 0;
+    // I am forced to use the legacy calling convention here. Since the method
+    // I call internally uses the fast calling convention for performance, it
+    // is necessary to convert the tuple of positional arguments into a C array
+    // of argument values. Said method ignores keyword arguments, so I ignore
+    // them here, too.
+    PyObjectWrapper args_seq(PySequence_Fast(args, nullptr));  // 🆕
+    PyObject** update_args = PySequence_Fast_ITEMS(args_seq.get());
+    Py_ssize_t update_nargs = PySequence_Fast_GET_SIZE(args_seq.get());
+    if (!this->is_nargs_good("SortedDict", update_nargs, 0, 1))
+    {
+        return -1;
+    }
+    return this->update_impl(update_args, update_nargs) == nullptr ? -1 : 0;
 }
 
 PyObject* SortedDictType::New(PyTypeObject* type, PyObject* args, PyObject* kwargs)

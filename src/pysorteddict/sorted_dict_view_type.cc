@@ -21,19 +21,17 @@ void SortedDictViewIterType<FwdIterType>::track(FwdIterType it)
 {
     if (it == this->sd->map->begin())
     {
-        Py_INCREF(this->sd);
-        ++this->sd->known_referrers;
-        this->should_raise_stop_iteration = false;
+        this->track_begin();
     }
     if (it != this->sd->map->end())
     {
+        // Indicate that the key-value pair this iterator references must not
+        // be erased: erasure would invalidate the iterator.
         ++it->second.known_referrers;
     }
     else
     {
-        this->should_raise_stop_iteration = true;
-        --this->sd->known_referrers;
-        Py_DECREF(this->sd);
+        this->track_end();
     }
 }
 
@@ -51,12 +49,13 @@ void SortedDictViewIterType<RevIterType>::track(RevIterType it)
 {
     if (it == this->sd->map->rbegin())
     {
-        Py_INCREF(this->sd);
-        ++this->sd->known_referrers;
-        this->should_raise_stop_iteration = false;
+        this->track_begin();
     }
     if (it != this->sd->map->rend())
     {
+        // A reverse iterator is anchored by its underlying forward iterator.
+        // If this forward iterator references a key-value pair, indicate that
+        // it must not be erased: erasure would invalidate both iterators.
         FwdIterType it_base = it.base();
         if (it_base != this->sd->map->end())
         {
@@ -65,10 +64,24 @@ void SortedDictViewIterType<RevIterType>::track(RevIterType it)
     }
     else
     {
-        this->should_raise_stop_iteration = true;
-        --this->sd->known_referrers;
-        Py_DECREF(this->sd);
+        this->track_end();
     }
+}
+
+template<typename T>
+void SortedDictViewIterType<T>::track_begin(void)
+{
+    Py_INCREF(this->sd);  // 🆕
+    ++this->sd->known_referrers;
+    this->should_raise_stop_iteration = false;
+}
+
+template<typename T>
+void SortedDictViewIterType<T>::track_end(void)
+{
+    this->should_raise_stop_iteration = true;
+    --this->sd->known_referrers;
+    Py_DECREF(this->sd);
 }
 
 /**
@@ -118,14 +131,42 @@ void SortedDictViewIterType<T>::Delete(PyObject* self)
     Py_TYPE(self)->tp_free(self);
 }
 
-template<typename T>
-PyObject* SortedDictViewIterType<T>::next(void)
+template<>
+PyObject* SortedDictViewIterType<FwdIterType>::next(void)
 {
     if (this->should_raise_stop_iteration)
     {
         return nullptr;
     }
 
+    return this->next_when_has_next();
+}
+
+template<>
+PyObject* SortedDictViewIterType<RevIterType>::next(void)
+{
+    if (this->should_raise_stop_iteration)
+    {
+        return nullptr;
+    }
+
+    // Since a reverse iterator is anchored by its underlying forward iterator,
+    // a strategic sequence of erasures (for instance, erasing the first
+    // key-value pair when it was referencing the same pair) may result in it
+    // not currently referencing any key-value pair.
+    if (this->it == this->sd->map->rend())
+    {
+        this->untrack(this->it);
+        this->track_end();
+        return nullptr;
+    }
+
+    return this->next_when_has_next();
+}
+
+template<typename T>
+PyObject* SortedDictViewIterType<T>::next_when_has_next(void)
+{
     // The 'next' key-value pair is the current one the iterator points to.
     T curr = this->it++;
     this->untrack(curr);
@@ -337,7 +378,7 @@ PyObject* SortedDictViewType::New(
 
     SortedDictViewType* sdv = reinterpret_cast<SortedDictViewType*>(self);
     sdv->sd = sd;
-    Py_INCREF(sdv->sd);
+    Py_INCREF(sdv->sd);  // 🆕
     sdv->forward_iterator_to_object = forward_iterator_to_object;
     sdv->reverse_iterator_to_object = reverse_iterator_to_object;
     return self;

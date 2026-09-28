@@ -1,0 +1,58 @@
+import sys
+from importlib.metadata import version
+
+import pytest
+
+from pysorteddict import SortedDict, __version__
+
+
+def test_key_repr_error():
+    sorted_dict = SortedDict()
+    sorted_dict[10 ** sys.get_int_max_str_digits()] = 0
+    with pytest.raises(ValueError, match="Exceeds the limit"):
+        str(sorted_dict)
+
+
+def test_value_repr_error():
+    sorted_dict = SortedDict()
+    sorted_dict[0] = 10 ** sys.get_int_max_str_digits()
+    with pytest.raises(ValueError, match="Exceeds the limit"):
+        str(sorted_dict)
+
+
+def test_remove_first_element_while_referenced_by_reverse_iterator():
+    sorted_dict = SortedDict()
+    sorted_dict[0] = 0
+    sorted_dict[1] = 1
+    r = reversed(sorted_dict)
+    assert next(r) == 1
+    del sorted_dict[0]
+    with pytest.raises(StopIteration):
+        next(r)
+
+
+def test_self_update():
+    keys = [*range(10)]
+    sorted_dict = SortedDict(zip(keys, range(10, 20), strict=True))
+    sorted_dict.update(sorted_dict)
+    assert [*sorted_dict] == keys
+
+
+def test_type_hint():
+    SortedDict[str, float]
+
+
+def test_subclassable():
+    type("SortedDictSubclass", (SortedDict,), {})
+
+
+def test_version():
+    assert version("pysorteddict") == __version__
+
+
+def test_recursive_repr():
+    keys = [1, 5]
+    values = [None] * len(keys)
+    sorted_dict = SortedDict(zip(keys, values, strict=True))
+    sorted_dict[4] = sorted_dict
+    assert str(sorted_dict) == "SortedDict({1: None, 4: SortedDict({...}), 5: None})"

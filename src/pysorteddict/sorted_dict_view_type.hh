@@ -3,13 +3,10 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include <iterator>
 #include <map>
 
 #include "sorted_dict_type.hh"
 
-using FwdIterType = std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator;
-using RevIterType = std::reverse_iterator<FwdIterType>;
 template<typename T>
 using IteratorToObject = PyObject* (*)(T);
 
@@ -29,7 +26,10 @@ protected:
 
 private:
     void track(T);
+    void track_begin(void);
+    void track_end(void);
     void untrack(T);
+    PyObject* next_when_has_next(void);
 
 public:
     static void Delete(PyObject*);

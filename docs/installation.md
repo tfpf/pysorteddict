@@ -17,7 +17,7 @@ pip install pysorteddict
 Wheels for the Raspberry Pi family of computers can be found on piwheels.
 
 ```shell
-pip install --extra-index-url https://www.piwheels.org/simple pysorteddict
+pip install --extra-index-url https://www.piwheels.org/simple/ pysorteddict
 ```
 
 [View the project on piwheels.](https://www.piwheels.org/project/pysorteddict/)
@@ -25,6 +25,14 @@ pip install --extra-index-url https://www.piwheels.org/simple pysorteddict
 ## Emscripten
 
 Pyodide wheels for the Emscripten runtime (targeting WebAssembly) are hosted here.
+
+```python
+import micropip
+
+await micropip.install(
+    "pysorteddict", index_urls=["https://tfpf.github.io/pysorteddict/simple/"]
+)
+```
 
 <a href="simple/pysorteddict/">View all available Pyodide wheels.</a>
 

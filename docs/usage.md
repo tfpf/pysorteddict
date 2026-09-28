@@ -5,7 +5,7 @@
 All keys in a sorted dictionary must be of the same type, which is determined when the first key-value pair is inserted
 into it. The values, though, can be of any type.
 
-```python
+:::{jupyter-execute}
 from pysorteddict import SortedDict
 
 d = SortedDict()
@@ -18,21 +18,15 @@ assert d.key_type is str
 
 for key, value in d.items():
     print(key, "->", value)
-```
+:::
 
-The above Python script will output the keys in ascending order.
-
-```text
-gain is -> 31.692
-honestly -> weight
-losing -> ['weight']
-times -> easier than
-```
+The keys are seen to be output in ascending order.
 
 ## Demo
 
-You can try pysorteddict out in the JupyterLite REPL below. When you click on 'Try Now', it will start a Pyodide kernel
-and run some code to install pysorteddict (using one of the hosted wheels) and import it. This will take a few seconds.
+You can try pysorteddict out in the JupyterLite REPL below (if your browser is supported). When you click on 'Try Now',
+it will start a Pyodide kernel and run some code to install pysorteddict (using one of the hosted wheels) and import
+it. This will take a few seconds.
 
 <div class="only-light">
 
@@ -44,7 +38,11 @@ and run some code to install pysorteddict (using one of the hosted wheels) and i
 :toolbar: 1
 :width: 100%
 
-%pip install /pysorteddict/simple/pysorteddict/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
+import micropip
+
+await micropip.install(
+    "pysorteddict", index_urls=["https://tfpf.github.io/pysorteddict/simple/"]
+)
 
 from pysorteddict import SortedDict
 
@@ -63,7 +61,11 @@ d = SortedDict()
 :toolbar: 1
 :width: 100%
 
-%pip install /pysorteddict/simple/pysorteddict/pysorteddict-0.13.0-cp313-cp313-pyodide_2025_0_wasm32.whl
+import micropip
+
+await micropip.install(
+    "pysorteddict", index_urls=["https://tfpf.github.io/pysorteddict/simple/"]
+)
 
 from pysorteddict import SortedDict
 

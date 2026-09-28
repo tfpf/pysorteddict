@@ -3,7 +3,9 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <iterator>
 #include <map>
+#include <utility>
 
 /**
  * C++-style comparison implementation for Python objects.
@@ -39,6 +41,9 @@ public:
     }
 };
 
+using FwdIterType = std::map<PyObject*, SortedDictValue, SortedDictKeyCompare>::iterator;
+using RevIterType = std::reverse_iterator<FwdIterType>;
+
 struct SortedDictType
 {
 public:
@@ -58,29 +63,41 @@ private:
     Py_ssize_t known_referrers;
 
 private:
+    bool try_set_key_type(PyObject*);
     bool is_key_good(PyObject*);
     bool are_key_type_and_key_value_pair_good(PyObject*, PyObject* value = nullptr);
     bool is_deletion_allowed(void);
     static bool is_deletion_allowed(Py_ssize_t);
+    static bool is_nargs_good(char const*, Py_ssize_t, int, int);
+    std::pair<FwdIterType, bool> try_find(PyObject*);
+    int delitem_impl(PyObject*, FwdIterType, bool);
+    int setitem_impl(PyObject*, PyObject*, FwdIterType, bool);
+    bool update_from_sorted_dict(PyObject*);
+    bool update_from_mapping(PyObject*);
+    bool update_from_sequence(PyObject*);
+    bool update_from_object(PyObject*);
+    PyObject* update_impl(PyObject* const*, Py_ssize_t);
 
 public:
     static void Delete(PyObject*);
     PyObject* repr(void);
-    int contains(PyObject*, PyObject* value = nullptr);
+    int contains(PyObject*);
+    int contains(PyObject*, PyObject*);
     Py_ssize_t len(void);
     PyObject* getitem(PyObject*);
     int setitem(PyObject*, PyObject*);
     PyObject* iter(PyTypeObject*);
     PyObject* reversed(PyTypeObject*);
-    PyObject* debug(void);
     PyObject* clear(void);
     PyObject* copy(void);
-    PyObject* get(PyObject*);
+    PyObject* get(PyObject* const*, Py_ssize_t);
     PyObject* items(PyTypeObject*);
     PyObject* keys(PyTypeObject*);
-    PyObject* setdefault(PyObject*);
+    PyObject* setdefault(PyObject* const*, Py_ssize_t);
+    PyObject* update(PyObject* const*, Py_ssize_t, PyObject*);
     PyObject* values(PyTypeObject*);
     PyObject* get_key_type(void);
+    int set_key_type(PyObject*);
     int init(PyObject*, PyObject*);
     static PyObject* New(PyTypeObject*, PyObject*, PyObject*);
 

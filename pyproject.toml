@@ -2,19 +2,9 @@
 requires = ["meson-python"]
 build-backend = "mesonpy"
 
-[dependency-groups]
-docs = [
-    "furo~=2024.8",
-    # The JupyterLite notebook embedded in the website must install the WASM
-    # wheel for CPython 3.13, which this package provides.
-    "jupyterlite-pyodide-kernel~=0.7.0",
-    "jupyterlite-sphinx~=0.22.0",
-    "myst-parser~=4.0",
-]
-
 [project]
 name = "pysorteddict"
-version = "0.13.1rc3"
+version = "0.15.1"
 authors = [
     {name = "Vishal Pankaj Chandratreya"},
 ]
@@ -44,7 +34,15 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-cov = ["gcovr", "pytest-xdist"]
+cov = ["gcovr", "hypothesis", "pytest"]
+docs = [
+    "furo~=2024.8",
+    "jupyter-sphinx~=0.5.3",
+    "jupyterlite-pyodide-kernel~=0.8.0",
+    "jupyterlite-sphinx~=0.23.0",
+    "myst-parser~=4.0",
+    "sphinx-inline-tabs~=2025.12",
+]
 
 [project.urls]
 Homepage = "https://tfpf.github.io/pysorteddict/"
@@ -56,12 +54,41 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 archs = ["auto64"]
 build = ["cp311-manylinux*"]
 build-verbosity = 1
+enable = ["pypy", "pypy-eol"]
+test-command = "pytest {package}"
+test-requires = [
+    # Newer versions are partially written in Rust, but their binary wheels are
+    # not provided for PyPy 3.10.
+    "hypothesis==6.155.7",
+    "pytest",
+]
 
 [tool.cibuildwheel.config-settings]
-setup-args = ["-Db_lto=true", "-Doptimization=3"]
+setup-args = [
+    "-Db_lto=true",
+    "-Ddebug=false",
+    "-Doptimization=3",
+    # Python for Windows is built using MSVC, so C++ extension modules for it
+    # must also be built using MSVC. However, Meson uses Clang or GCC (if
+    # available). Hence, force it to use MSVC. This is harmless on other
+    # platforms. See
+    # https://mesonbuild.com/meson-python/how-to-guides/meson-args.html.
+    "-Dvsenv=true",
+]
+
+[tool.cibuildwheel.pyodide]
+archs = ["wasm32"]
 
 [tool.hatch.envs.default]
-dev-mode = false
+# Set an environment variable to disable build isolation. (Hatch does not
+# expose a setting to do so.) This is required for editable installations of a
+# C++ extension module to work correctly. See
+# https://mesonbuild.com/meson-python/how-to-guides/editable-installs.html.
+# The build dependencies must therefore be available in the environment.
+env-vars = {PIP_NO_BUILD_ISOLATION = "false"}
+pre-install-commands = [
+    "pip install meson-python ninja",
+]
 
 [tool.hatch.envs.cov]
 detached = true
@@ -70,37 +97,54 @@ features = ["cov"]
 [tool.hatch.envs.cov.scripts]
 # To report C++ code coverage, the build directory must persist, because
 # reporting coverage requires data from both coverage and object files.
-cov = [
-    "rm -fr build/ cov/",
-    "pip install -C build-dir=build -C setup-args=-Db_coverage=true -C setup-args=-Dbuildtype=debug -q .",
+github_actions = [
+    "pip install -C build-dir=cov -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -v .",
     "pytest",
-    "mkdir cov/",
+    "gcovr --json-summary-pretty | tee cov/coverage.json | jq -e '.line_percent >= 95'",
+]
+local = [
+    "rm -fr cov/",
+    "pip install -C build-dir=cov -C setup-args=-Db_coverage=true -C setup-args=-Doptimization=0 -q .",
+    "pytest -q",
     "gcovr --html-details cov/index.html",
 ]
 
 [tool.hatch.envs.docs]
-detached = true
+features = ["docs"]
 
 [tool.hatch.envs.docs.scripts]
 assets = "cd docs/ && zip -FSr assets.zip _static/fonts/ _static/images/ extra/simple/pysorteddict/*.whl"
-# Building the documentation does not require installing this project, but does
-# require some dependencies. I can't figure out a way to get Hatch to only
-# install those dependencies without repeating them here. Hence, install them
-# in this environment manually from the dependency group. Otherwise, the below
-# command will fail.
-docs = "sphinx-build docs/ docs/_build/"
+docs = "cd docs/ && sphinx-build ./ _build/"
+
+[tool.hatch.envs.perf]
+dependencies = [
+    "jupyter",
+    "matplotlib",
+    "pandas",
+    "psutil",
+    "pysorteddict==0.15.1",
+]
+detached = true
+
+[tool.hatch.envs.perf.scripts]
+open = "jupyter-notebook -y tests/performance/performance.ipynb"
+perf = "jupyter-nbconvert --execute --inplace --to notebook tests/performance/performance.ipynb"
 
 [tool.meson-python.args]
 compile = ["-v"]
-
-[tool.pytest.ini_options]
-addopts = "--dist=worksteal -n logical"
+setup = [
+    "-Ddebug=true",
+    "-Doptimization=g",
+    "-Dwarning_level=1",
+    "-Dwerror=true",
+]
 
 [tool.ruff]
 extend-exclude = ["tests/performance/"]
 line-length = 119
 
 [tool.ruff.lint.per-file-ignores]
-"docs/conf.py" = ["A001", "INP001", "RUF001"]
+"docs/**" = ["INP001"]
+"docs/conf.py" = ["A001", "RUF001"]
 "examples/*" = ["S101", "T201"]
 "tests/functional/*" = ["S101", "S311"]
