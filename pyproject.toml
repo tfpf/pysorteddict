@@ -52,7 +52,6 @@ Changelog = "https://tfpf.github.io/pysorteddict/changelog.html"
 
 [tool.cibuildwheel]
 archs = ["auto64"]
-build = ["cp311-manylinux*"]
 build-verbosity = 1
 enable = ["pypy", "pypy-eol"]
 test-command = "pytest {package}"
