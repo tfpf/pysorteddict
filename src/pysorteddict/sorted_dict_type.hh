@@ -81,6 +81,7 @@ private:
 public:
     static void Delete(PyObject*);
     PyObject* repr(void);
+    PyObject* ior(PyObject*);
     int contains(PyObject*);
     int contains(PyObject*, PyObject*);
     Py_ssize_t len(void);
